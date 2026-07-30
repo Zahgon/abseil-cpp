@@ -24,62 +24,16 @@
 namespace absl {
 ABSL_NAMESPACE_BEGIN
 
-void Notification::Notify() {
-  base_internal::TraceSignal(this, TraceObjectKind());
-  MutexLock l(this->mutex_);
+void Notification::Notify() { __builtin_trap() /* STUB: not implemented */; }
 
-#ifndef NDEBUG
-  if (ABSL_PREDICT_FALSE(notified_yet_.load(std::memory_order_relaxed))) {
-    ABSL_RAW_LOG(
-        FATAL,
-        "Notify() method called more than once for Notification object %p",
-        static_cast<void *>(this));
-  }
-#endif
+Notification::~Notification() { __builtin_trap() /* STUB: not implemented */; }
 
-  notified_yet_.store(true, std::memory_order_release);
-}
-
-Notification::~Notification() {
-  // Make sure that the thread running Notify() exits before the object is
-  // destructed.
-  MutexLock l(this->mutex_);
-}
-
-void Notification::WaitForNotification() const {
-  base_internal::TraceWait(this, TraceObjectKind());
-  if (!HasBeenNotifiedInternal(&this->notified_yet_)) {
-    this->mutex_.LockWhen(
-        Condition(&HasBeenNotifiedInternal, &this->notified_yet_));
-    this->mutex_.unlock();
-  }
-  base_internal::TraceContinue(this, TraceObjectKind());
-}
+void Notification::WaitForNotification() const { __builtin_trap() /* STUB: not implemented */; }
 
 bool Notification::WaitForNotificationWithTimeout(
-    absl::Duration timeout) const {
-  base_internal::TraceWait(this, TraceObjectKind());
-  bool notified = HasBeenNotifiedInternal(&this->notified_yet_);
-  if (!notified) {
-    notified = this->mutex_.LockWhenWithTimeout(
-        Condition(&HasBeenNotifiedInternal, &this->notified_yet_), timeout);
-    this->mutex_.unlock();
-  }
-  base_internal::TraceContinue(notified ? this : nullptr, TraceObjectKind());
-  return notified;
-}
+    absl::Duration timeout) const { __builtin_trap() /* STUB: not implemented */; }
 
-bool Notification::WaitForNotificationWithDeadline(absl::Time deadline) const {
-  base_internal::TraceWait(this, TraceObjectKind());
-  bool notified = HasBeenNotifiedInternal(&this->notified_yet_);
-  if (!notified) {
-    notified = this->mutex_.LockWhenWithDeadline(
-        Condition(&HasBeenNotifiedInternal, &this->notified_yet_), deadline);
-    this->mutex_.unlock();
-  }
-  base_internal::TraceContinue(notified ? this : nullptr, TraceObjectKind());
-  return notified;
-}
+bool Notification::WaitForNotificationWithDeadline(absl::Time deadline) const { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

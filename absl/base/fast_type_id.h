@@ -38,23 +38,17 @@ class FastTypeIdType final {
   constexpr FastTypeIdType() = default;
 
   template <typename H>
-  friend H AbslHashValue(H h, FastTypeIdType x) {
-    return H::combine(std::move(h), x.ptr_);
-  }
+  friend H AbslHashValue(H h, FastTypeIdType x) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend constexpr bool operator==(FastTypeIdType a, FastTypeIdType b) {
-    return a.ptr_ == b.ptr_;
-  }
-  friend constexpr bool operator!=(FastTypeIdType a, FastTypeIdType b) {
-    return a.ptr_ != b.ptr_;
-  }
+  friend constexpr bool operator==(FastTypeIdType a, FastTypeIdType b) { return {}; }
+  friend constexpr bool operator!=(FastTypeIdType a, FastTypeIdType b) { return {}; }
 
  private:
   // `FastTypeId<T>()` is the generator method for FastTypeIdType values.
   template <typename T>
   friend constexpr FastTypeIdType FastTypeId();
 
-  explicit constexpr FastTypeIdType(const void* ptr) : ptr_(ptr) {}
+  explicit constexpr FastTypeIdType(const void* ptr) : ptr_(ptr) { }
 
   const void* ptr_ = nullptr;
 };
@@ -63,9 +57,7 @@ class FastTypeIdType final {
 // passed-in type. These are meant to be good match for keys into maps or
 // straight up comparisons.
 template <typename Type>
-constexpr FastTypeIdType FastTypeId() {
-  return FastTypeIdType(&base_internal::FastTypeTag<Type>::kDummyVar);
-}
+constexpr FastTypeIdType FastTypeId() { return {}; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

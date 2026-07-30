@@ -103,23 +103,7 @@ ABSL_NAMESPACE_BEGIN
 //   absl::UntypedFormatSpec format("%d");
 //   std::string out;
 //   CHECK(absl::FormatUntyped(&out, format, {absl::FormatArg(1)}));
-class UntypedFormatSpec {
- public:
-  UntypedFormatSpec() = delete;
-  UntypedFormatSpec(const UntypedFormatSpec&) = delete;
-  UntypedFormatSpec& operator=(const UntypedFormatSpec&) = delete;
-
-  explicit UntypedFormatSpec(string_view s) : spec_(s) {}
-
- protected:
-  explicit UntypedFormatSpec(
-      const str_format_internal::ParsedFormatBase* absl_nonnull pc)
-      : spec_(pc) {}
-
- private:
-  friend str_format_internal::UntypedFormatSpecImpl;
-  str_format_internal::UntypedFormatSpecImpl spec_;
-};
+class UntypedFormatSpec { __builtin_trap() /* STUB: not implemented */; };
 
 // FormatStreamed()
 //
@@ -131,9 +115,7 @@ class UntypedFormatSpec {
 //
 //   absl::StrFormat("%s", absl::FormatStreamed(obj));
 template <typename T>
-str_format_internal::StreamedWrapper<T> FormatStreamed(const T& v) {
-  return str_format_internal::StreamedWrapper<T>(v);
-}
+str_format_internal::StreamedWrapper<T> FormatStreamed(const T& v) { __builtin_trap() /* STUB: not implemented */; }
 
 // FormatCountCapture
 //
@@ -153,7 +135,7 @@ str_format_internal::StreamedWrapper<T> FormatStreamed(const T& v) {
 //   EXPECT_EQ(8, n);
 class FormatCountCapture {
  public:
-  explicit FormatCountCapture(int* absl_nonnull p) : p_(p) {}
+  explicit FormatCountCapture(int* absl_nonnull p) : p_(p) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   // FormatCountCaptureHelper is used to define FormatConvertImpl() for this
@@ -162,7 +144,7 @@ class FormatCountCapture {
   // Unused() is here because of the false positive from -Wunused-private-field
   // p_ is used in the templated function of the friend FormatCountCaptureHelper
   // class.
-  int* absl_nonnull Unused() { return p_; }
+  int* absl_nonnull Unused() { __builtin_trap() /* STUB: not implemented */; }
   int* absl_nonnull p_;
 };
 
@@ -363,11 +345,7 @@ using ParsedFormat = str_format_internal::ExtendedParsedFormat<
 // Returns an empty string in case of error.
 template <typename... Args>
 [[nodiscard]] std::string StrFormat(const FormatSpec<Args...>& format,
-                                    const Args&... args) {
-  return str_format_internal::FormatPack(
-      str_format_internal::UntypedFormatSpecImpl::Extract(format),
-      {str_format_internal::FormatArgImpl(args)...});
-}
+                                    const Args&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 // StrAppendFormat()
 //
@@ -382,11 +360,7 @@ template <typename... Args>
 template <typename... Args>
 std::string& StrAppendFormat(std::string* absl_nonnull dst,
                              const FormatSpec<Args...>& format,
-                             const Args&... args) {
-  return str_format_internal::AppendPack(
-      dst, str_format_internal::UntypedFormatSpecImpl::Extract(format),
-      {str_format_internal::FormatArgImpl(args)...});
-}
+                             const Args&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 // StreamFormat()
 //
@@ -400,11 +374,7 @@ std::string& StrAppendFormat(std::string* absl_nonnull dst,
 //   std::cout << StreamFormat("%12.6f", 3.14);
 template <typename... Args>
 [[nodiscard]] str_format_internal::Streamable StreamFormat(
-    const FormatSpec<Args...>& format, const Args&... args) {
-  return str_format_internal::Streamable(
-      str_format_internal::UntypedFormatSpecImpl::Extract(format),
-      {str_format_internal::FormatArgImpl(args)...});
-}
+    const FormatSpec<Args...>& format, const Args&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 // PrintF()
 //
@@ -420,11 +390,7 @@ template <typename... Args>
 //   Outputs: "The capital of Mongolia is Ulaanbaatar"
 //
 template <typename... Args>
-int PrintF(const FormatSpec<Args...>& format, const Args&... args) {
-  return str_format_internal::FprintF(
-      stdout, str_format_internal::UntypedFormatSpecImpl::Extract(format),
-      {str_format_internal::FormatArgImpl(args)...});
-}
+int PrintF(const FormatSpec<Args...>& format, const Args&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 // FPrintF()
 //
@@ -441,11 +407,7 @@ int PrintF(const FormatSpec<Args...>& format, const Args&... args) {
 //
 template <typename... Args>
 int FPrintF(std::FILE* absl_nonnull output, const FormatSpec<Args...>& format,
-            const Args&... args) {
-  return str_format_internal::FprintF(
-      output, str_format_internal::UntypedFormatSpecImpl::Extract(format),
-      {str_format_internal::FormatArgImpl(args)...});
-}
+            const Args&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 // SNPrintF()
 //
@@ -470,11 +432,7 @@ int FPrintF(std::FILE* absl_nonnull output, const FormatSpec<Args...>& format,
 //
 template <typename... Args>
 int SNPrintF(char* absl_nonnull output, std::size_t size,
-             const FormatSpec<Args...>& format, const Args&... args) {
-  return str_format_internal::SnprintF(
-      output, size, str_format_internal::UntypedFormatSpecImpl::Extract(format),
-      {str_format_internal::FormatArgImpl(args)...});
-}
+             const FormatSpec<Args...>& format, const Args&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // Custom Output Formatting Functions
@@ -503,7 +461,7 @@ class FormatRawSink {
   template <typename T, typename = std::enable_if_t<std::is_constructible_v<
                             str_format_internal::FormatRawSinkImpl, T*>>>
   FormatRawSink(T* absl_nonnull raw)  // NOLINT
-      : sink_(raw) {}
+      : sink_(raw) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   friend str_format_internal::FormatRawSinkImpl;
@@ -528,12 +486,7 @@ class FormatRawSink {
 // unspecified.
 template <typename... Args>
 bool Format(FormatRawSink raw_sink, const FormatSpec<Args...>& format,
-            const Args&... args) {
-  return str_format_internal::FormatUntyped(
-      str_format_internal::FormatRawSinkImpl::Extract(raw_sink),
-      str_format_internal::UntypedFormatSpecImpl::Extract(format),
-      {str_format_internal::FormatArgImpl(args)...});
-}
+            const Args&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 // FormatArg
 //
@@ -586,11 +539,7 @@ using FormatArg = str_format_internal::FormatArgImpl;
 //
 [[nodiscard]] inline bool FormatUntyped(FormatRawSink raw_sink,
                                         const UntypedFormatSpec& format,
-                                        absl::Span<const FormatArg> args) {
-  return str_format_internal::FormatUntyped(
-      str_format_internal::FormatRawSinkImpl::Extract(raw_sink),
-      str_format_internal::UntypedFormatSpecImpl::Extract(format), args);
-}
+                                        absl::Span<const FormatArg> args) { __builtin_trap() /* STUB: not implemented */; }
 
 //------------------------------------------------------------------------------
 // StrFormat Extensions
@@ -712,14 +661,14 @@ class FormatConversionSpec {
   //
   // Indicates that width and precision are not specified, and no additional
   // flags are set for this conversion character in the format string.
-  bool is_basic() const { return impl_.is_basic(); }
+  bool is_basic() const { __builtin_trap() /* STUB: not implemented */; }
 
   // FormatConversionSpec::has_left_flag()
   //
   // Indicates whether the result should be left justified for this conversion
   // character in the format string. This flag is set through use of a '-'
   // character in the format string. E.g. "%-s"
-  bool has_left_flag() const { return impl_.has_left_flag(); }
+  bool has_left_flag() const { __builtin_trap() /* STUB: not implemented */; }
 
   // FormatConversionSpec::has_show_pos_flag()
   //
@@ -727,14 +676,14 @@ class FormatConversionSpec {
   // conversion character in the format string, even if the result is positive.
   // This flag is set through use of a '+' character in the format string.
   // E.g. "%+d"
-  bool has_show_pos_flag() const { return impl_.has_show_pos_flag(); }
+  bool has_show_pos_flag() const { __builtin_trap() /* STUB: not implemented */; }
 
   // FormatConversionSpec::has_sign_col_flag()
   //
   // Indicates whether a mandatory sign column is added to the result for this
   // conversion character. This flag is set through use of a space character
   // (' ') in the format string. E.g. "% i"
-  bool has_sign_col_flag() const { return impl_.has_sign_col_flag(); }
+  bool has_sign_col_flag() const { __builtin_trap() /* STUB: not implemented */; }
 
   // FormatConversionSpec::has_alt_flag()
   //
@@ -742,40 +691,38 @@ class FormatConversionSpec {
   // conversion character. Alternative forms depend on the type of conversion
   // character, and unallowed alternatives are undefined. This flag is set
   // through use of a '#' character in the format string. E.g. "%#h"
-  bool has_alt_flag() const { return impl_.has_alt_flag(); }
+  bool has_alt_flag() const { __builtin_trap() /* STUB: not implemented */; }
 
   // FormatConversionSpec::has_zero_flag()
   //
   // Indicates whether zeroes should be prepended to the result for this
   // conversion character instead of spaces. This flag is set through use of the
   // '0' character in the format string. E.g. "%0f"
-  bool has_zero_flag() const { return impl_.has_zero_flag(); }
+  bool has_zero_flag() const { __builtin_trap() /* STUB: not implemented */; }
 
   // FormatConversionSpec::conversion_char()
   //
   // Returns the underlying conversion character.
-  FormatConversionChar conversion_char() const {
-    return impl_.conversion_char();
-  }
+  FormatConversionChar conversion_char() const { __builtin_trap() /* STUB: not implemented */; }
 
   // FormatConversionSpec::width()
   //
   // Returns the specified width (indicated through use of a non-zero integer
   // value or '*' character) of the conversion character. If width is
   // unspecified, it returns a negative value.
-  int width() const { return impl_.width(); }
+  int width() const { __builtin_trap() /* STUB: not implemented */; }
 
   // FormatConversionSpec::precision()
   //
   // Returns the specified precision (through use of the '.' character followed
   // by a non-zero integer value or '*' character) of the conversion character.
   // If precision is unspecified, it returns a negative value.
-  int precision() const { return impl_.precision(); }
+  int precision() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   explicit FormatConversionSpec(
       str_format_internal::FormatConversionSpecImpl impl)
-      : impl_(impl) {}
+      : impl_(impl) { __builtin_trap() /* STUB: not implemented */; }
 
   friend str_format_internal::FormatConversionSpecImpl;
 
@@ -785,10 +732,7 @@ class FormatConversionSpec {
 // Type safe OR operator for FormatConversionCharSet to allow accepting multiple
 // conversion chars in custom format converters.
 constexpr FormatConversionCharSet operator|(FormatConversionCharSet a,
-                                            FormatConversionCharSet b) {
-  return static_cast<FormatConversionCharSet>(static_cast<uint64_t>(a) |
-                                              static_cast<uint64_t>(b));
-}
+                                            FormatConversionCharSet b) { return {}; }
 
 // FormatConversionCharSet
 //
@@ -842,11 +786,11 @@ class FormatSink {
   // FormatSink::Append()
   //
   // Appends `count` copies of `ch` to the format sink.
-  void Append(size_t count, char ch) { sink_->Append(count, ch); }
+  void Append(size_t count, char ch) { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of FormatSink::Append() for appending the characters of a string
   // view to a format sink.
-  void Append(string_view v) { sink_->Append(v); }
+  void Append(string_view v) { __builtin_trap() /* STUB: not implemented */; }
 
   // FormatSink::PutPaddedString()
   //
@@ -854,9 +798,7 @@ class FormatSink {
   // less than `width`, spaces will be appended first (if `left` is false), or
   // after (if `left` is true) to ensure the total amount appended is
   // at least `width`.
-  bool PutPaddedString(string_view v, int width, int precision, bool left) {
-    return sink_->PutPaddedString(v, width, precision, left);
-  }
+  bool PutPaddedString(string_view v, int width, int precision, bool left) { __builtin_trap() /* STUB: not implemented */; }
 
   // Support `absl::Format(&sink, format, args...)`.
   friend void AbslFormatFlush(FormatSink* absl_nonnull sink,
@@ -867,7 +809,7 @@ class FormatSink {
  private:
   friend str_format_internal::FormatSinkImpl;
   explicit FormatSink(str_format_internal::FormatSinkImpl* absl_nonnull s)
-      : sink_(s) {}
+      : sink_(s) { __builtin_trap() /* STUB: not implemented */; }
   str_format_internal::FormatSinkImpl* absl_nonnull sink_;
 };
 

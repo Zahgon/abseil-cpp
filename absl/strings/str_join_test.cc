@@ -253,10 +253,7 @@ TEST(AlphaNumFormatter, AlphaNum) {
 struct StreamableType {
   std::string contents;
 };
-inline std::ostream& operator<<(std::ostream& os, const StreamableType& t) {
-  os << "Streamable:" << t.contents;
-  return os;
-}
+inline std::ostream& operator<<(std::ostream& os, const StreamableType& t) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StreamFormatter, FormatterAPI) {
   auto f = absl::StreamFormatter();
@@ -279,9 +276,7 @@ TEST(StreamFormatter, FormatterAPI) {
 // below.
 struct TestingParenFormatter {
   template <typename T>
-  void operator()(std::string* s, const T& t) {
-    absl::StrAppend(s, "(", t, ")");
-  }
+  void operator()(std::string* s, const T& t) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(PairFormatter, FormatterAPI) {
@@ -517,9 +512,9 @@ TEST(StrJoin, Tuple) {
 // Anything that can be  `data()` and `size()` is OK.
 class TestValue {
  public:
-  TestValue(const char* data, size_t size) : data_(data), size_(size) {}
-  const char* data() const { return data_; }
-  size_t size() const { return size_; }
+  TestValue(const char* data, size_t size) : data_(data), size_(size) { __builtin_trap() /* STUB: not implemented */; }
+  const char* data() const { __builtin_trap() /* STUB: not implemented */; }
+  size_t size() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   const char* data_;
@@ -552,55 +547,31 @@ class TestIterator {
   using difference_type = int;
 
   // `data` must outlive the result.
-  static TestIterator begin(const std::vector<absl::string_view>& data) {
-    return TestIterator(&data, 0);
-  }
+  static TestIterator begin(const std::vector<absl::string_view>& data) { __builtin_trap() /* STUB: not implemented */; }
 
-  static TestIterator end(const std::vector<absl::string_view>& data) {
-    return TestIterator(nullptr, data.size());
-  }
+  static TestIterator end(const std::vector<absl::string_view>& data) { __builtin_trap() /* STUB: not implemented */; }
 
-  bool operator==(const TestIterator& other) const {
-    return pos_ == other.pos_;
-  }
-  bool operator!=(const TestIterator& other) const {
-    return pos_ != other.pos_;
-  }
+  bool operator==(const TestIterator& other) const { __builtin_trap() /* STUB: not implemented */; }
+  bool operator!=(const TestIterator& other) const { __builtin_trap() /* STUB: not implemented */; }
 
   // This deliberately returns a `prvalue`.
   // The requirement to return a reference was removed in C++20.
-  value_type operator*() const {
-    return ValueT((*data_)[pos_].data(), (*data_)[pos_].size());
-  }
+  value_type operator*() const { __builtin_trap() /* STUB: not implemented */; }
 
   // `operator->()` is deliberately omitted.
   // The requirement to provide it was removed in C++20.
 
-  TestIterator& operator++() {
-    ++pos_;
-    return *this;
-  }
+  TestIterator& operator++() { __builtin_trap() /* STUB: not implemented */; }
 
-  TestIterator operator++(int) {
-    TestIterator result = *this;
-    ++(*this);
-    return result;
-  }
+  TestIterator operator++(int) { __builtin_trap() /* STUB: not implemented */; }
 
-  TestIterator& operator--() {
-    --pos_;
-    return *this;
-  }
+  TestIterator& operator--() { __builtin_trap() /* STUB: not implemented */; }
 
-  TestIterator operator--(int) {
-    TestIterator result = *this;
-    --(*this);
-    return result;
-  }
+  TestIterator operator--(int) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   TestIterator(const std::vector<absl::string_view>* data, size_t pos)
-      : data_(data), pos_(pos) {}
+      : data_(data), pos_(pos) { __builtin_trap() /* STUB: not implemented */; }
 
   const std::vector<absl::string_view>* data_;
   size_t pos_;
@@ -612,10 +583,10 @@ class TestIteratorRange {
   // `data` must be non-null and must outlive the result.
   explicit TestIteratorRange(const std::vector<absl::string_view>& data)
       : begin_(TestIterator<ValueT>::begin(data)),
-        end_(TestIterator<ValueT>::end(data)) {}
+        end_(TestIterator<ValueT>::end(data)) { __builtin_trap() /* STUB: not implemented */; }
 
-  const TestIterator<ValueT>& begin() const { return begin_; }
-  const TestIterator<ValueT>& end() const { return end_; }
+  const TestIterator<ValueT>& begin() const { __builtin_trap() /* STUB: not implemented */; }
+  const TestIterator<ValueT>& end() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   TestIterator<ValueT> begin_;

@@ -29,99 +29,32 @@ namespace {
 
 constexpr int kHaystackSize = 10000;
 constexpr int64_t kHaystackSize64 = kHaystackSize;
-const char* MakeHaystack() {
-  char* haystack = new char[kHaystackSize];
-  for (int i = 0; i < kHaystackSize - 1; ++i) haystack[i] = 'a';
-  haystack[kHaystackSize - 1] = 'b';
-  return haystack;
-}
+const char* MakeHaystack() { __builtin_trap() /* STUB: not implemented */; }
 const char* const kHaystack = MakeHaystack();
 
-bool case_eq(const char a, const char b) {
-  return absl::ascii_tolower(a) == absl::ascii_tolower(b);
-}
+bool case_eq(const char a, const char b) { __builtin_trap() /* STUB: not implemented */; }
 
-void BM_Searchcase(benchmark::State& state) {
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(std::search(kHaystack, kHaystack + kHaystackSize,
-                                         kHaystack + kHaystackSize - 1,
-                                         kHaystack + kHaystackSize, case_eq));
-  }
-  state.SetBytesProcessed(kHaystackSize64 * state.iterations());
-}
+void BM_Searchcase(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_Searchcase);
 
-void BM_SearchcaseMedium(benchmark::State& state) {
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(std::search(kHaystack, kHaystack + kHaystackSize,
-                                         kHaystack + kHaystackSize - 2,
-                                         kHaystack + kHaystackSize, case_eq));
-  }
-  state.SetBytesProcessed(kHaystackSize64 * state.iterations());
-}
+void BM_SearchcaseMedium(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_SearchcaseMedium);
 
-void BM_SearchcasePathological(benchmark::State& state) {
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(std::search(kHaystack, kHaystack + kHaystackSize,
-                                         kHaystack + kHaystackSize / 2,
-                                         kHaystack + kHaystackSize, case_eq));
-  }
-  state.SetBytesProcessed(kHaystackSize64 * state.iterations());
-}
+void BM_SearchcasePathological(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_SearchcasePathological);
 
-char* memcasechr(const char* s, int c, size_t slen) {
-  c = absl::ascii_tolower(c);
-  for (; slen; ++s, --slen) {
-    if (absl::ascii_tolower(*s) == c) return const_cast<char*>(s);
-  }
-  return nullptr;
-}
+char* memcasechr(const char* s, int c, size_t slen) { __builtin_trap() /* STUB: not implemented */; }
 
 const char* memcasematch(const char* phaystack, size_t haylen,
-                         const char* pneedle, size_t neelen) {
-  if (0 == neelen) {
-    return phaystack;  // even if haylen is 0
-  }
-  if (haylen < neelen) return nullptr;
+                         const char* pneedle, size_t neelen) { __builtin_trap() /* STUB: not implemented */; }
 
-  const char* match;
-  const char* hayend = phaystack + haylen - neelen + 1;
-  while ((match = static_cast<char*>(
-              memcasechr(phaystack, pneedle[0], hayend - phaystack)))) {
-    if (absl::strings_internal::memcasecmp(match, pneedle, neelen) == 0)
-      return match;
-    else
-      phaystack = match + 1;
-  }
-  return nullptr;
-}
-
-void BM_Memcasematch(benchmark::State& state) {
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(memcasematch(kHaystack, kHaystackSize, "b", 1));
-  }
-  state.SetBytesProcessed(kHaystackSize64 * state.iterations());
-}
+void BM_Memcasematch(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_Memcasematch);
 
-void BM_MemcasematchMedium(benchmark::State& state) {
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(memcasematch(kHaystack, kHaystackSize, "ab", 2));
-  }
-  state.SetBytesProcessed(kHaystackSize64 * state.iterations());
-}
+void BM_MemcasematchMedium(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_MemcasematchMedium);
 
-void BM_MemcasematchPathological(benchmark::State& state) {
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(memcasematch(kHaystack, kHaystackSize,
-                                          kHaystack + kHaystackSize / 2,
-                                          kHaystackSize - kHaystackSize / 2));
-  }
-  state.SetBytesProcessed(kHaystackSize64 * state.iterations());
-}
+void BM_MemcasematchPathological(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_MemcasematchPathological);
 
 }  // namespace

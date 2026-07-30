@@ -72,14 +72,14 @@ class NonMutatingTest : public testing::Test {
 };
 
 struct AccumulateCalls {
-  void operator()(int value) { calls.push_back(value); }
+  void operator()(int value) { __builtin_trap() /* STUB: not implemented */; }
   std::vector<int> calls;
 };
 
-bool Predicate(int value) { return value < 3; }
-bool BinPredicate(int v1, int v2) { return v1 < v2; }
-bool Equals(int v1, int v2) { return v1 == v2; }
-bool IsOdd(int x) { return x % 2 != 0; }
+bool Predicate(int value) { __builtin_trap() /* STUB: not implemented */; }
+bool BinPredicate(int v1, int v2) { __builtin_trap() /* STUB: not implemented */; }
+bool Equals(int v1, int v2) { __builtin_trap() /* STUB: not implemented */; }
+bool IsOdd(int x) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Span, IsSpan) {
   static_assert(
@@ -859,14 +859,7 @@ TEST(MutatingTest, CopyNContainerWithNoSizeMethod) {
 }
 
 
-bool IsHardened() {
-  bool hardened = false;
-  ABSL_HARDENING_ASSERT([&hardened]() {
-    hardened = true;
-    return true;
-  }());
-  return hardened;
-}
+bool IsHardened() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(MutatingTest, CopyToCArrayInvalidSize) {
   const std::vector<int> input = {1, 2, 3};
@@ -1363,13 +1356,9 @@ TEST(MutatingTest, SortWithPredicate) {
 struct Element {
   int key;
   int value;
-  friend bool operator<(const Element& e1, const Element& e2) {
-    return e1.key < e2.key;
-  }
+  friend bool operator<(const Element& e1, const Element& e2) { __builtin_trap() /* STUB: not implemented */; }
   // Make gmock print useful diagnostics.
-  friend std::ostream& operator<<(std::ostream& o, const Element& e) {
-    return o << "{" << e.key << ", " << e.value << "}";
-  }
+  friend std::ostream& operator<<(std::ostream& o, const Element& e) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 MATCHER_P2(IsElement, key, value, "") {
@@ -2745,8 +2734,8 @@ TEST(ConstexprTest, PartialSumWithPredicate) {
 // A type that acts as both a container and an iterator.
 struct AmbiguousType {
   // Container requirements
-  int* begin() { return nullptr; }
-  int* end() { return nullptr; }
+  int* begin() { __builtin_trap() /* STUB: not implemented */; }
+  int* end() { __builtin_trap() /* STUB: not implemented */; }
 
   // Iterator requirements
   using iterator_category = std::input_iterator_tag;
@@ -2755,18 +2744,11 @@ struct AmbiguousType {
   using pointer = int*;
   using reference = int&;
 
-  int& operator*() {
-    static int x;
-    return x;
-  }
-  AmbiguousType& operator++() { return *this; }
-  AmbiguousType operator++(int) { return *this; }
-  friend bool operator==(const AmbiguousType&, const AmbiguousType&) {
-    return true;
-  }
-  friend bool operator!=(const AmbiguousType&, const AmbiguousType&) {
-    return false;
-  }
+  int& operator*() { __builtin_trap() /* STUB: not implemented */; }
+  AmbiguousType& operator++() { __builtin_trap() /* STUB: not implemented */; }
+  AmbiguousType operator++(int) { __builtin_trap() /* STUB: not implemented */; }
+  friend bool operator==(const AmbiguousType&, const AmbiguousType&) { __builtin_trap() /* STUB: not implemented */; }
+  friend bool operator!=(const AmbiguousType&, const AmbiguousType&) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename Container, typename Output, typename = void>

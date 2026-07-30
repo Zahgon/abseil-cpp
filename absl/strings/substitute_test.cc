@@ -28,11 +28,7 @@ namespace {
 
 struct MyStruct {
   template <typename Sink>
-  friend void AbslStringify(Sink& sink, const MyStruct& s) {
-    sink.Append("MyStruct{.value = ");
-    sink.Append(absl::StrCat(s.value));
-    sink.Append("}");
-  }
+  friend void AbslStringify(Sink& sink, const MyStruct& s) { __builtin_trap() /* STUB: not implemented */; }
   int value;
 };
 
@@ -260,9 +256,7 @@ TEST(SubstituteTest, Enums) {
 enum class EnumWithStringify { Many = 0, Choices = 1 };
 
 template <typename Sink>
-void AbslStringify(Sink& sink, EnumWithStringify e) {
-  sink.Append(e == EnumWithStringify::Many ? "Many" : "Choices");
-}
+void AbslStringify(Sink& sink, EnumWithStringify e) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(SubstituteTest, AbslStringifyWithEnum) {
   const auto e = EnumWithStringify::Choices;

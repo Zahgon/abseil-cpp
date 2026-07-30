@@ -51,7 +51,7 @@ constexpr int64_t kint64min = std::numeric_limits<int64_t>::min();
 
 // Approximates the given number of years. This is only used to make some test
 // code more readable.
-absl::Duration ApproxYears(int64_t n) { return absl::Hours(n) * 365 * 24; }
+absl::Duration ApproxYears(int64_t n) { __builtin_trap() /* STUB: not implemented */; }
 
 // A gMock matcher to match timespec values. Use this matcher like:
 // timespec ts1, ts2;
@@ -166,50 +166,7 @@ TEST(Duration, ToConversion) {
 }
 
 template <int64_t N>
-void TestToConversion() {
-  constexpr absl::Duration nano = absl::Nanoseconds(N);
-  EXPECT_EQ(N, absl::ToInt64Nanoseconds(nano));
-  EXPECT_EQ(0, absl::ToInt64Microseconds(nano));
-  EXPECT_EQ(0, absl::ToInt64Milliseconds(nano));
-  EXPECT_EQ(0, absl::ToInt64Seconds(nano));
-  EXPECT_EQ(0, absl::ToInt64Minutes(nano));
-  EXPECT_EQ(0, absl::ToInt64Hours(nano));
-  const absl::Duration micro = absl::Microseconds(N);
-  EXPECT_EQ(N * 1000, absl::ToInt64Nanoseconds(micro));
-  EXPECT_EQ(N, absl::ToInt64Microseconds(micro));
-  EXPECT_EQ(0, absl::ToInt64Milliseconds(micro));
-  EXPECT_EQ(0, absl::ToInt64Seconds(micro));
-  EXPECT_EQ(0, absl::ToInt64Minutes(micro));
-  EXPECT_EQ(0, absl::ToInt64Hours(micro));
-  const absl::Duration milli = absl::Milliseconds(N);
-  EXPECT_EQ(N * 1000 * 1000, absl::ToInt64Nanoseconds(milli));
-  EXPECT_EQ(N * 1000, absl::ToInt64Microseconds(milli));
-  EXPECT_EQ(N, absl::ToInt64Milliseconds(milli));
-  EXPECT_EQ(0, absl::ToInt64Seconds(milli));
-  EXPECT_EQ(0, absl::ToInt64Minutes(milli));
-  EXPECT_EQ(0, absl::ToInt64Hours(milli));
-  const absl::Duration sec = absl::Seconds(N);
-  EXPECT_EQ(N * 1000 * 1000 * 1000, absl::ToInt64Nanoseconds(sec));
-  EXPECT_EQ(N * 1000 * 1000, absl::ToInt64Microseconds(sec));
-  EXPECT_EQ(N * 1000, absl::ToInt64Milliseconds(sec));
-  EXPECT_EQ(N, absl::ToInt64Seconds(sec));
-  EXPECT_EQ(0, absl::ToInt64Minutes(sec));
-  EXPECT_EQ(0, absl::ToInt64Hours(sec));
-  const absl::Duration min = absl::Minutes(N);
-  EXPECT_EQ(N * 60 * 1000 * 1000 * 1000, absl::ToInt64Nanoseconds(min));
-  EXPECT_EQ(N * 60 * 1000 * 1000, absl::ToInt64Microseconds(min));
-  EXPECT_EQ(N * 60 * 1000, absl::ToInt64Milliseconds(min));
-  EXPECT_EQ(N * 60, absl::ToInt64Seconds(min));
-  EXPECT_EQ(N, absl::ToInt64Minutes(min));
-  EXPECT_EQ(0, absl::ToInt64Hours(min));
-  const absl::Duration hour = absl::Hours(N);
-  EXPECT_EQ(N * 60 * 60 * 1000 * 1000 * 1000, absl::ToInt64Nanoseconds(hour));
-  EXPECT_EQ(N * 60 * 60 * 1000 * 1000, absl::ToInt64Microseconds(hour));
-  EXPECT_EQ(N * 60 * 60 * 1000, absl::ToInt64Milliseconds(hour));
-  EXPECT_EQ(N * 60 * 60, absl::ToInt64Seconds(hour));
-  EXPECT_EQ(N * 60, absl::ToInt64Minutes(hour));
-  EXPECT_EQ(N, absl::ToInt64Hours(hour));
-}
+void TestToConversion() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Duration, ToConversionDeprecated) {
   TestToConversion<43>();
@@ -220,21 +177,7 @@ TEST(Duration, ToConversionDeprecated) {
 }
 
 template <int64_t N>
-void TestFromChronoBasicEquality() {
-  using std::chrono::hours;
-  using std::chrono::microseconds;
-  using std::chrono::milliseconds;
-  using std::chrono::minutes;
-  using std::chrono::nanoseconds;
-  using std::chrono::seconds;
-
-  static_assert(absl::Nanoseconds(N) == absl::FromChrono(nanoseconds(N)), "");
-  static_assert(absl::Microseconds(N) == absl::FromChrono(microseconds(N)), "");
-  static_assert(absl::Milliseconds(N) == absl::FromChrono(milliseconds(N)), "");
-  static_assert(absl::Seconds(N) == absl::FromChrono(seconds(N)), "");
-  static_assert(absl::Minutes(N) == absl::FromChrono(minutes(N)), "");
-  static_assert(absl::Hours(N) == absl::FromChrono(hours(N)), "");
-}
+void TestFromChronoBasicEquality() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Duration, FromChrono) {
   TestFromChronoBasicEquality<-123>();
@@ -285,37 +228,7 @@ TEST(Duration, FromChrono) {
 }
 
 template <int64_t N>
-void TestToChrono() {
-  using std::chrono::hours;
-  using std::chrono::microseconds;
-  using std::chrono::milliseconds;
-  using std::chrono::minutes;
-  using std::chrono::nanoseconds;
-  using std::chrono::seconds;
-
-  EXPECT_EQ(nanoseconds(N), absl::ToChronoNanoseconds(absl::Nanoseconds(N)));
-  EXPECT_EQ(microseconds(N), absl::ToChronoMicroseconds(absl::Microseconds(N)));
-  EXPECT_EQ(milliseconds(N), absl::ToChronoMilliseconds(absl::Milliseconds(N)));
-  EXPECT_EQ(seconds(N), absl::ToChronoSeconds(absl::Seconds(N)));
-
-  constexpr auto absl_minutes = absl::Minutes(N);
-  auto chrono_minutes = minutes(N);
-  if (absl_minutes == -absl::InfiniteDuration()) {
-    chrono_minutes = minutes::min();
-  } else if (absl_minutes == absl::InfiniteDuration()) {
-    chrono_minutes = minutes::max();
-  }
-  EXPECT_EQ(chrono_minutes, absl::ToChronoMinutes(absl_minutes));
-
-  constexpr auto absl_hours = absl::Hours(N);
-  auto chrono_hours = hours(N);
-  if (absl_hours == -absl::InfiniteDuration()) {
-    chrono_hours = hours::min();
-  } else if (absl_hours == absl::InfiniteDuration()) {
-    chrono_hours = hours::max();
-  }
-  EXPECT_EQ(chrono_hours, absl::ToChronoHours(absl_hours));
-}
+void TestToChrono() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Duration, ToChrono) {
   using std::chrono::hours;
@@ -1438,20 +1351,7 @@ TEST(Duration, SmallConversions) {
   EXPECT_THAT(ToTimeval(absl::Nanoseconds(2000)), TimevalMatcher(tv));
 }
 
-void VerifyApproxSameAsMul(double time_as_seconds, int* const misses) {
-  auto direct_seconds = absl::Seconds(time_as_seconds);
-  auto mul_by_one_second = time_as_seconds * absl::Seconds(1);
-  // These are expected to differ by up to one tick due to fused multiply/add
-  // contraction.
-  if (absl::AbsDuration(direct_seconds - mul_by_one_second) >
-      absl::time_internal::MakeDuration(0, 1u)) {
-    if (*misses > 10) return;
-    ASSERT_LE(++(*misses), 10) << "Too many errors, not reporting more.";
-    EXPECT_EQ(direct_seconds, mul_by_one_second)
-        << "given double time_as_seconds = " << std::setprecision(17)
-        << time_as_seconds;
-  }
-}
+void VerifyApproxSameAsMul(double time_as_seconds, int* const misses) { __builtin_trap() /* STUB: not implemented */; }
 
 // For a variety of interesting durations, we find the exact point
 // where one double converts to that duration, and the very next double

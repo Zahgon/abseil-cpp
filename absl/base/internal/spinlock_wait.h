@@ -81,15 +81,10 @@ void ABSL_INTERNAL_C_SYMBOL(AbslInternalSpinLockDelay)(
 }
 
 inline void absl::base_internal::SpinLockWake(std::atomic<uint32_t> *w,
-                                              bool all) {
-  ABSL_INTERNAL_C_SYMBOL(AbslInternalSpinLockWake)(w, all);
-}
+                                              bool all) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void absl::base_internal::SpinLockDelay(
     std::atomic<uint32_t> *w, uint32_t value, int loop,
-    absl::base_internal::SchedulingMode scheduling_mode) {
-  ABSL_INTERNAL_C_SYMBOL(AbslInternalSpinLockDelay)
-  (w, value, loop, scheduling_mode);
-}
+    absl::base_internal::SchedulingMode scheduling_mode) { __builtin_trap() /* STUB: not implemented */; }
 
 #endif  // ABSL_BASE_INTERNAL_SPINLOCK_WAIT_H_

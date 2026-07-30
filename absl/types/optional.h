@@ -38,23 +38,17 @@ using bad_optional_access ABSL_REFACTOR_INLINE
 
 template <typename T>
 ABSL_REFACTOR_INLINE constexpr decltype(std::make_optional(
-    std::declval<T>())) make_optional(T&& value) {
-  return std::make_optional(std::forward<T>(value));
-}
+    std::declval<T>())) make_optional(T&& value) { return {}; }
 
 template <typename T, typename... Args>
 constexpr decltype(std::make_optional<T>(
-    std::declval<Args>()...)) make_optional(Args&&... args) {
-  return std::make_optional<T>(std::forward<Args>(args)...);
-}
+    std::declval<Args>()...)) make_optional(Args&&... args) { }
 
 template <typename T, typename U, typename... Args>
 constexpr decltype(std::make_optional<T>(
     std::declval<std::initializer_list<U>>(),
     std::declval<Args>()...)) make_optional(std::initializer_list<U> il,
-                                            Args&&... args) {
-  return std::make_optional<T>(il, std::forward<Args>(args)...);
-}
+                                            Args&&... args) { }
 
 using std::nullopt ABSL_REFACTOR_INLINE;
 

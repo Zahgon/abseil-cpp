@@ -83,38 +83,19 @@ TYPED_TEST_SUITE_P(InstanceTest);
 // destroyed in the erase(begin, end) test.
 class RefCounted {
  public:
-  RefCounted(int value, int* count) : value_(value), count_(count) { Ref(); }
+  RefCounted(int value, int* count) : value_(value), count_(count) { __builtin_trap() /* STUB: not implemented */; }
 
-  RefCounted(const RefCounted& v) : value_(v.value_), count_(v.count_) {
-    Ref();
-  }
+  RefCounted(const RefCounted& v) : value_(v.value_), count_(v.count_) { __builtin_trap() /* STUB: not implemented */; }
 
-  ~RefCounted() {
-    Unref();
-    count_ = nullptr;
-  }
+  ~RefCounted() { __builtin_trap() /* STUB: not implemented */; }
 
-  friend void swap(RefCounted& a, RefCounted& b) {
-    using std::swap;
-    swap(a.value_, b.value_);
-    swap(a.count_, b.count_);
-  }
+  friend void swap(RefCounted& a, RefCounted& b) { __builtin_trap() /* STUB: not implemented */; }
 
-  RefCounted& operator=(RefCounted v) {
-    using std::swap;
-    swap(*this, v);
-    return *this;
-  }
+  RefCounted& operator=(RefCounted v) { __builtin_trap() /* STUB: not implemented */; }
 
-  void Ref() const {
-    CHECK_NE(count_, nullptr);
-    ++(*count_);
-  }
+  void Ref() const { __builtin_trap() /* STUB: not implemented */; }
 
-  void Unref() const {
-    --(*count_);
-    CHECK_GE(*count_, 0);
-  }
+  void Unref() const { __builtin_trap() /* STUB: not implemented */; }
 
   int value_;
   int* count_;
@@ -125,24 +106,16 @@ using RefCountedVec = absl::InlinedVector<RefCounted, 8>;
 // A class with a vtable pointer
 class Dynamic {
  public:
-  virtual ~Dynamic() {}
+  virtual ~Dynamic() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 using DynamicVec = absl::InlinedVector<Dynamic, 8>;
 
 // Append 0..len-1 to *v
 template <typename Container>
-static void Fill(Container* v, size_t len, int offset = 0) {
-  for (size_t i = 0; i < len; i++) {
-    v->push_back(static_cast<int>(i) + offset);
-  }
-}
+static void Fill(Container* v, size_t len, int offset = 0) { __builtin_trap() /* STUB: not implemented */; }
 
-static IntVec Fill(size_t len, int offset = 0) {
-  IntVec v;
-  Fill(&v, len, offset);
-  return v;
-}
+static IntVec Fill(size_t len, int offset = 0) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(IntVec, SimpleOps) {
   for (size_t len = 0; len < 20; len++) {
@@ -228,7 +201,7 @@ struct SmallMaxAllocator : std::allocator<T> {
   struct rebind {
     using other = SmallMaxAllocator<U>;
   };
-  size_t max_size() const noexcept { return 2; }
+  size_t max_size() const noexcept { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(IntVec, EmplaceLengthThrows) {
@@ -473,18 +446,18 @@ TEST(RefCountedVec, EraseBeginEnd) {
 }
 
 struct NoDefaultCtor {
-  explicit NoDefaultCtor(int) {}
+  explicit NoDefaultCtor(int) { __builtin_trap() /* STUB: not implemented */; }
 };
 struct NoCopy {
-  NoCopy() {}
+  NoCopy() { __builtin_trap() /* STUB: not implemented */; }
   NoCopy(const NoCopy&) = delete;
 };
 struct NoAssign {
-  NoAssign() {}
+  NoAssign() { __builtin_trap() /* STUB: not implemented */; }
   NoAssign& operator=(const NoAssign&) = delete;
 };
 struct MoveOnly {
-  MoveOnly() {}
+  MoveOnly() { __builtin_trap() /* STUB: not implemented */; }
   MoveOnly(MoveOnly&&) = default;
   MoveOnly& operator=(MoveOnly&&) = default;
 };
@@ -854,20 +827,15 @@ TEST(IntVec, MoveConstructorAndAssignment) {
 
 class NotTriviallyDestructible {
  public:
-  NotTriviallyDestructible() : p_(new int(1)) {}
-  explicit NotTriviallyDestructible(int i) : p_(new int(i)) {}
+  NotTriviallyDestructible() : p_(new int(1)) { __builtin_trap() /* STUB: not implemented */; }
+  explicit NotTriviallyDestructible(int i) : p_(new int(i)) { __builtin_trap() /* STUB: not implemented */; }
 
   NotTriviallyDestructible(const NotTriviallyDestructible& other)
-      : p_(new int(*other.p_)) {}
+      : p_(new int(*other.p_)) { __builtin_trap() /* STUB: not implemented */; }
 
-  NotTriviallyDestructible& operator=(const NotTriviallyDestructible& other) {
-    p_ = std::make_unique<int>(*other.p_);
-    return *this;
-  }
+  NotTriviallyDestructible& operator=(const NotTriviallyDestructible& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  bool operator==(const NotTriviallyDestructible& other) const {
-    return *p_ == *other.p_;
-  }
+  bool operator==(const NotTriviallyDestructible& other) const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   std::unique_ptr<int> p_;
@@ -1454,20 +1422,7 @@ TYPED_TEST_P(InstanceTest, CountElemAssignInlineBacking) {
 }
 
 template <typename Instance>
-void InstanceCountElemAssignWithAllocationTest() {
-  for (size_t original_size = 0; original_size <= 5; ++original_size) {
-    SCOPED_TRACE(original_size);
-    // Original contents are [12345, 12345, ...]
-    std::vector<Instance> original_contents(original_size, Instance(12345));
-
-    absl::InlinedVector<Instance, 2> v(original_contents.begin(),
-                                       original_contents.end());
-    v.assign(3, Instance(123));
-    EXPECT_THAT(v, AllOf(SizeIs(3u), ElementsAre(ValueIs(123), ValueIs(123),
-                                                 ValueIs(123))));
-    EXPECT_LE(v.size(), v.capacity());
-  }
-}
+void InstanceCountElemAssignWithAllocationTest() { __builtin_trap() /* STUB: not implemented */; }
 TEST(CountElemAssign, WithAllocationCopyableInstance) {
   InstanceCountElemAssignWithAllocationTest<CopyableOnlyInstance>();
 }
@@ -1498,45 +1453,10 @@ TEST(RangedConstructor, SimpleType) {
 // Test for ranged constructors using Instance as the element type and
 // SourceContainer as the source container type.
 template <typename Instance, typename SourceContainer, int inlined_capacity>
-void InstanceRangedConstructorTestForContainer() {
-  InstanceTracker tracker;
-  SourceContainer source_v = {Instance(0), Instance(1)};
-  tracker.ResetCopiesMovesSwaps();
-  absl::InlinedVector<Instance, inlined_capacity> v(source_v.begin(),
-                                                    source_v.end());
-  EXPECT_EQ(2u, v.size());
-  EXPECT_LT(1u, v.capacity());
-  EXPECT_EQ(0, v[0].value());
-  EXPECT_EQ(1, v[1].value());
-  EXPECT_EQ(tracker.copies(), 2);
-  EXPECT_EQ(tracker.moves(), 0);
-}
+void InstanceRangedConstructorTestForContainer() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Instance, int inlined_capacity>
-void InstanceRangedConstructorTestWithCapacity() {
-  // Test with const and non-const, random access and non-random-access sources.
-  // TODO(bsamwel): Test with an input iterator source.
-  {
-    SCOPED_TRACE("std::list");
-    InstanceRangedConstructorTestForContainer<Instance, std::list<Instance>,
-                                              inlined_capacity>();
-    {
-      SCOPED_TRACE("const std::list");
-      InstanceRangedConstructorTestForContainer<
-          Instance, const std::list<Instance>, inlined_capacity>();
-    }
-    {
-      SCOPED_TRACE("std::vector");
-      InstanceRangedConstructorTestForContainer<Instance, std::vector<Instance>,
-                                                inlined_capacity>();
-    }
-    {
-      SCOPED_TRACE("const std::vector");
-      InstanceRangedConstructorTestForContainer<
-          Instance, const std::vector<Instance>, inlined_capacity>();
-    }
-  }
-}
+void InstanceRangedConstructorTestWithCapacity() { __builtin_trap() /* STUB: not implemented */; }
 
 TYPED_TEST_P(InstanceTest, RangedConstructor) {
   using Instance = TypeParam;
@@ -1593,50 +1513,12 @@ TEST(RangedAssign, SimpleType) {
 
 // Returns true if lhs and rhs have the same value.
 template <typename Instance>
-static bool InstanceValuesEqual(const Instance& lhs, const Instance& rhs) {
-  return lhs.value() == rhs.value();
-}
+static bool InstanceValuesEqual(const Instance& lhs, const Instance& rhs) { __builtin_trap() /* STUB: not implemented */; }
 
 // Test for ranged assign() using Instance as the element type and
 // SourceContainer as the source container type.
 template <typename Instance, typename SourceContainer>
-void InstanceRangedAssignTestForContainer() {
-  // Test for all combinations of original sizes (empty and non-empty inline,
-  // and out of line) and target sizes.
-  for (size_t original_size = 0; original_size <= 5; ++original_size) {
-    SCOPED_TRACE(original_size);
-    // Original contents are [12345, 12345, ...]
-    std::vector<Instance> original_contents(original_size, Instance(12345));
-
-    for (size_t target_size = 0; target_size <= 5; ++target_size) {
-      SCOPED_TRACE(target_size);
-
-      // New contents are [3, 4, ...]
-      // Generate data using a non-const container, because SourceContainer
-      // itself may be const.
-      // TODO(bsamwel): Test with an input iterator.
-      std::vector<Instance> new_contents_in;
-      for (size_t i = 0; i < target_size; ++i) {
-        new_contents_in.push_back(Instance(static_cast<int>(i) + 3));
-      }
-      SourceContainer new_contents(new_contents_in.begin(),
-                                   new_contents_in.end());
-
-      absl::InlinedVector<Instance, 3> v(original_contents.begin(),
-                                         original_contents.end());
-      v.assign(new_contents.begin(), new_contents.end());
-
-      EXPECT_EQ(new_contents.size(), v.size());
-      EXPECT_LE(new_contents.size(), v.capacity());
-      if (target_size <= 3 && original_size <= 3) {
-        // Storage should stay inline when target size is small.
-        EXPECT_EQ(3u, v.capacity());
-      }
-      EXPECT_TRUE(std::equal(v.begin(), v.end(), new_contents.begin(),
-                             InstanceValuesEqual<Instance>));
-    }
-  }
-}
+void InstanceRangedAssignTestForContainer() { __builtin_trap() /* STUB: not implemented */; }
 
 TYPED_TEST_P(InstanceTest, RangedAssign) {
   using Instance = TypeParam;
@@ -2076,7 +1958,7 @@ TEST(InlinedVectorTest, AbslHashValueWorks) {
 class MoveConstructibleOnlyInstance
     : public absl::test_internal::BaseCountedInstance {
  public:
-  explicit MoveConstructibleOnlyInstance(int x) : BaseCountedInstance(x) {}
+  explicit MoveConstructibleOnlyInstance(int x) : BaseCountedInstance(x) { __builtin_trap() /* STUB: not implemented */; }
   MoveConstructibleOnlyInstance(MoveConstructibleOnlyInstance&& other) =
       default;
   MoveConstructibleOnlyInstance& operator=(
@@ -2185,7 +2067,7 @@ TEST(NonAssignableMoveAssignmentTest, AssignThis) {
 
 class NonSwappableInstance : public absl::test_internal::BaseCountedInstance {
  public:
-  explicit NonSwappableInstance(int x) : BaseCountedInstance(x) {}
+  explicit NonSwappableInstance(int x) : BaseCountedInstance(x) { __builtin_trap() /* STUB: not implemented */; }
   NonSwappableInstance(const NonSwappableInstance& other) = default;
   NonSwappableInstance& operator=(const NonSwappableInstance& other) = default;
   NonSwappableInstance(NonSwappableInstance&& other) = default;
@@ -2318,26 +2200,12 @@ struct ThrowOnMove {
   static constexpr uint32_t kAlive = 0xA11FE123;
   static constexpr uint32_t kDestroyed = 0xDEADBEEF;
 
-  explicit ThrowOnMove(int* count) : alive_count(count), sentinel(kAlive) {
-    if (alive_count) ++(*alive_count);
-  }
+  explicit ThrowOnMove(int* count) : alive_count(count), sentinel(kAlive) { __builtin_trap() /* STUB: not implemented */; }
   ThrowOnMove(const ThrowOnMove&) = delete;
   ThrowOnMove& operator=(const ThrowOnMove&) = delete;
   ThrowOnMove(ThrowOnMove&& other)
-      : alive_count(other.alive_count), sentinel(kAlive) {
-    if (other.should_throw) throw std::runtime_error("ThrowOnMove");
-    if (alive_count) ++(*alive_count);
-  }
-  ~ThrowOnMove() {
-    EXPECT_EQ(sentinel, kAlive)
-        << "Double destroy detected: destructor called twice on memory slot!";
-    sentinel = kDestroyed;
-    if (alive_count) {
-      EXPECT_GT(*alive_count, 0)
-          << "More destructors called than constructors!";
-      --(*alive_count);
-    }
-  }
+      : alive_count(other.alive_count), sentinel(kAlive) { __builtin_trap() /* STUB: not implemented */; }
+  ~ThrowOnMove() { __builtin_trap() /* STUB: not implemented */; }
 
   int* alive_count = nullptr;
   uint32_t sentinel = kDestroyed;

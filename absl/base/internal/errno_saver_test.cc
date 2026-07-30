@@ -26,10 +26,8 @@ using ::testing::Eq;
 struct ErrnoPrinter {
   int no;
 };
-std::ostream &operator<<(std::ostream &os, ErrnoPrinter ep) {
-  return os << absl::base_internal::StrError(ep.no) << " [" << ep.no << "]";
-}
-bool operator==(ErrnoPrinter one, ErrnoPrinter two) { return one.no == two.no; }
+std::ostream &operator<<(std::ostream &os, ErrnoPrinter ep) { __builtin_trap() /* STUB: not implemented */; }
+bool operator==(ErrnoPrinter one, ErrnoPrinter two) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ErrnoSaverTest, Works) {
   errno = EDOM;

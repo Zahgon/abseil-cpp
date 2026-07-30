@@ -16,14 +16,6 @@
 #include "benchmark/benchmark.h"
 
 namespace {
-void BM_FNMatch(benchmark::State& state) {
-  while (state.KeepRunning()) {
-    bool ret =
-        absl::log_internal::FNMatch("*?*asdf*?*we???asdf**asdf*we",
-                                    "QWERFASVWERASDFWEDFASDasdfQWERGFWASDERREWF"
-                                    "weHOOasdf@#$%TW#ZSERasdfQW#REGTZSERERwe");
-    benchmark::DoNotOptimize(ret);
-  }
-}
+void BM_FNMatch(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_FNMatch);
 }  // namespace

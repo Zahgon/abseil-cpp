@@ -48,7 +48,7 @@ class ConstBitGen {
 
 namespace {
 
-int FnTest(absl::BitGenRef gen_ref) { return absl::Uniform(gen_ref, 1, 7); }
+int FnTest(absl::BitGenRef gen_ref) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
 class BitGenRefTest : public testing::Test {};
@@ -107,17 +107,14 @@ TEST(BitGenRefTest, MockingBitGenBaseOverrides) {
 struct MinStdRand {
   // The URBG just returns 0.
   using result_type = absl::BitGen::result_type;
-  static constexpr result_type(min)() { return (absl::BitGen::min)(); }
-  static constexpr result_type(max)() { return (absl::BitGen::max)(); }
-  result_type operator()() { return 0; }
+  static constexpr result_type(min)() { }
+  static constexpr result_type(max)() { }
+  result_type operator()() { __builtin_trap() /* STUB: not implemented */; }
 
   // Implicit conversions allow passing MinStdRand to functions taking
   // absl::BitGenRef as well as explicitly constructing an absl::BitGenRef from
   // a MinStdRand.
-  operator absl::BitGenRef() const {
-    conversion_count++;
-    return absl::BitGenRef(minstd_gen);
-  }
+  operator absl::BitGenRef() const { __builtin_trap() /* STUB: not implemented */; }
 
   std::minstd_rand minstd_gen;
   mutable int conversion_count = 0;

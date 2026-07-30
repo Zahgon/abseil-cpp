@@ -80,29 +80,17 @@ class TransformPtr {
   template <typename R, typename... Args, typename CopiedTransform>
   explicit TransformPtr(R (*f)(Args...),
                         CopiedTransform copied_transform [[maybe_unused]])
-      : fun_ptr_(reinterpret_cast<FunPtr>(f)) {
-    static_assert(CopiedTransform::value);
-  }
+      : fun_ptr_(reinterpret_cast<FunPtr>(f)) { __builtin_trap() /* STUB: not implemented */; }
 
   // Construct from any other invokable object.
   template <typename T, typename CopiedTransform>
   explicit TransformPtr(const T& t,
                         CopiedTransform copied_transform [[maybe_unused]])
-      : ptr_(&t) {
-    static_assert(!CopiedTransform::value);
-  }
+      : ptr_(&t) { __builtin_trap() /* STUB: not implemented */; }
 
   // Casts the pointer to the given type.
   template <typename Transform>
-  auto get() const {
-    if constexpr (std::is_function_v<Transform>) {
-      return reinterpret_cast<const Transform*>(fun_ptr_);
-    } else if constexpr (std::is_function_v<std::remove_pointer_t<Transform>>) {
-      return reinterpret_cast<const Transform>(fun_ptr_);
-    } else {
-      return static_cast<const Transform*>(ptr_);
-    }
-  }
+  auto get() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   union {
@@ -126,26 +114,7 @@ struct TransformedContainer {
 // result. Does some validity checking to make sure the result is not a
 // temporary (proxy containers are not allowed).
 template <typename T, typename Transform, typename U>
-T& ApplyTransform(TransformPtr transform, U& u) {  // NOLINT(runtime/references)
-  const auto t = transform.get<Transform>();
-  ABSL_RAW_DCHECK(t != nullptr, "pointer cannot be null");
-
-  // If compilation fails here due to dropping a const qualifier, it usually
-  // means you tried to wrap a const container with a non-const AnySpan.
-  //
-  // If compilation fails here due to a reference to a temporary, it usually
-  // means that the container or transform cannot be converted to a reference to
-  // T. AnySpan requires that a valid instance of T exists, conversion to a
-  // value type (such as string -> StringPiece or int -> float) is not
-  // supported.
-  //
-  // If compilation fails here due to taking the address of a temporary object,
-  // it means that the transform is returning a temporary. This is disallowed.
-  // Transforms must return a reference to T, or a reference to an object that
-  // can be safely converted to a reference to T (such as a reference_wrapper or
-  // a class that inherits from T).
-  return *&std::invoke(*t, u);  // Failed compilation? See above.
-}
+T& ApplyTransform(TransformPtr transform, U& u) { __builtin_trap() /* STUB: not implemented */; }
 
 // The return type of GetterFunction<T>. GetterFunctions return non-const
 // references to support mutable -> const conversion of spans without additional
@@ -164,30 +133,18 @@ using GetterFunction = GetterFunctionResult<T> (*)(const TransformedContainer&,
 // A GetterFunction that works on arrays.
 template <typename T, typename Element, typename Transform>
 GetterFunctionResult<T> GetFromArray(const TransformedContainer& container,
-                                     std::size_t i) {
-  ABSL_RAW_DCHECK(container.ptr != nullptr, "cannot dereference null pointer");
-  auto* array = static_cast<Element*>(container.ptr);
-  return const_cast<GetterFunctionResult<T>>(
-      ApplyTransform<T, Transform>(container.transform, array[i]));
-}
+                                     std::size_t i) { __builtin_trap() /* STUB: not implemented */; }
 
 // A GetterFunction that works on containers.
 template <typename T, typename Container, typename Transform>
 GetterFunctionResult<T> GetFromContainer(const TransformedContainer& container,
-                                         std::size_t i) {
-  ABSL_RAW_DCHECK(container.ptr != nullptr, "cannot dereference null pointer");
-  Container& c = *static_cast<Container*>(container.ptr);
-  return const_cast<GetterFunctionResult<T>>(
-      ApplyTransform<T, Transform>(container.transform, c[i]));
-}
+                                         std::size_t i) { __builtin_trap() /* STUB: not implemented */; }
 
 // A GetterFunction that crashes, indicating an invalid AnySpan has been
 // accessed..
 template <typename T>
 GetterFunctionResult<T> GetFromUninitialized(const TransformedContainer&,
-                                             std::size_t) {
-  ABSL_RAW_LOG(FATAL, "Uninitialized AnySpan access.");
-}
+                                             std::size_t) { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // ArrayTag and PtrArrayTag are GetterFunctions that are never called. They are
@@ -196,14 +153,10 @@ GetterFunctionResult<T> GetFromUninitialized(const TransformedContainer&,
 //
 
 template <typename T>
-GetterFunctionResult<T> ArrayTag(const TransformedContainer&, std::size_t) {
-  ABSL_RAW_LOG(FATAL, "ArrayTag should never be called.");
-}
+GetterFunctionResult<T> ArrayTag(const TransformedContainer&, std::size_t) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
-GetterFunctionResult<T> PtrArrayTag(const TransformedContainer&, std::size_t) {
-  ABSL_RAW_LOG(FATAL, "PtrArrayTag should never be called.");
-}
+GetterFunctionResult<T> PtrArrayTag(const TransformedContainer&, std::size_t) { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // HasSize<Container> inherets from true_type if Container has a size() member.
@@ -256,71 +209,18 @@ using DataIsValid =
 // Used to access elements of a container or array.
 template <typename T>
 struct Getter {
-  Getter() {}
+  Getter() { __builtin_trap() /* STUB: not implemented */; }
 
   // Handle mutable -> const conversion.
   template <typename LazyT = T,
             typename = std::enable_if_t<std::is_const_v<LazyT>>>
-  explicit Getter(const Getter<std::remove_const_t<T>>& other) {
-    using MutableT = std::remove_const_t<T>;
-    if (other.fun == &ArrayTag<MutableT>) {
-      ABSL_RAW_DCHECK(other.offset == 0u, "offset must be zero");
-      fun = &ArrayTag<T>;
-      array = other.array;
-      offset = 0;
-    } else if (other.fun == &PtrArrayTag<MutableT>) {
-      ABSL_RAW_DCHECK(other.offset == 0u, "offset must be zero");
-      fun = &PtrArrayTag<T>;
-      ptr_array = other.ptr_array;
-      offset = 0;
-    } else {
-      fun = other.fun;
-      container = other.container;
-      offset = other.offset;
-    }
-  }
+  explicit Getter(const Getter<std::remove_const_t<T>>& other) { __builtin_trap() /* STUB: not implemented */; }
 
   // Returns the element at the given index.
-  T& Get(std::size_t index) const {
-    ABSL_RAW_DCHECK(fun != nullptr, "pointer cannot be null");
-    if (ABSL_PREDICT_TRUE(fun == &ArrayTag<T>)) {
-      ABSL_RAW_DCHECK(array != nullptr, "pointer cannot be null");
-      return array[index];
-    }
-    if (fun == &PtrArrayTag<T>) {
-      ABSL_RAW_DCHECK(ptr_array != nullptr, "pointer cannot be null");
-      return *ptr_array[index];
-    }
-    return fun(container, index + offset);
-  }
+  T& Get(std::size_t index) const { __builtin_trap() /* STUB: not implemented */; }
 
   // Returns a Getter offset into this one by pos.
-  Getter Offset(std::size_t pos) const {
-    // Special case when offset is zero. This safely handles empty spans and
-    // empty containers where data() can be null.
-    if (pos == 0) {
-      return *this;
-    }
-    ABSL_RAW_DCHECK(fun != nullptr, "pointer cannot be null");
-    Getter result;
-    result.fun = fun;
-    if (fun == &ArrayTag<T>) {
-      ABSL_RAW_DCHECK(array != nullptr, "pointer cannot be null");
-      ABSL_RAW_DCHECK(offset == 0u, "offset must be zero");
-      result.array = array + pos;
-      result.offset = 0;
-    } else if (fun == &PtrArrayTag<T>) {
-      ABSL_RAW_DCHECK(ptr_array != nullptr, "pointer cannot be null");
-      ABSL_RAW_DCHECK(offset == 0u, "offset must be zero");
-      result.ptr_array = ptr_array + pos;
-      result.offset = 0;
-    } else {
-      ABSL_RAW_DCHECK(container.ptr != nullptr, "pointer cannot be null");
-      result.container = container;
-      result.offset = offset + pos;
-    }
-    return result;
-  }
+  Getter Offset(std::size_t pos) const { __builtin_trap() /* STUB: not implemented */; }
 
   // A pointer to a function (or tag function) that specifies how to get an
   // element from the array or container.
@@ -347,26 +247,14 @@ struct Getter {
 template <typename SpanElement, typename ArrayElement, typename Transform>
 struct MakeArrayGetterImpl {
   template <typename U>
-  static Getter<U> Make(ArrayElement* array, const Transform& transform) {
-    Getter<U> result;
-    result.fun = &GetFromArray<U, ArrayElement, Transform>;
-    result.container.ptr = const_cast<void*>(static_cast<const void*>(array));
-    result.container.transform =
-        TransformPtr(transform, IsTransformCopied<Transform>{});
-    return result;
-  }
+  static Getter<U> Make(ArrayElement* array, const Transform& transform) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // When the span and the array are the same type.
 template <typename T>
 struct MakeArrayGetterImpl<T, T, any_span_transform::IdentityT> {
   template <typename U>
-  static Getter<U> Make(T* array, const any_span_transform::IdentityT&) {
-    Getter<U> result;
-    result.fun = &ArrayTag<U>;
-    result.array = array;
-    return result;
-  }
+  static Getter<U> Make(T* array, const any_span_transform::IdentityT&) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // If we are dereferencing an array of mutable elements (T*), it is safe to add
@@ -381,12 +269,7 @@ template <typename T>
 struct MakeArrayGetterImpl<T, T*, any_span_transform::DerefT> {
   template <typename U>
   static Getter<U> Make(T* const* ptr_array,
-                        const any_span_transform::DerefT&) {
-    Getter<U> result;
-    result.fun = &PtrArrayTag<U>;
-    result.ptr_array = ptr_array;
-    return result;
-  }
+                        const any_span_transform::DerefT&) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // If we are dereferencing an array that is mutable along any extent, it is safe
@@ -407,10 +290,7 @@ struct MakeArrayGetterImpl<const T, const T* const, any_span_transform::DerefT>
                                  any_span_transform::DerefT> {};
 
 template <typename T, typename Element, typename Transform>
-Getter<T> MakeArrayGetter(Element* array, const Transform& transform) {
-  return MakeArrayGetterImpl<T, Element, Transform>::template Make<T>(
-      array, transform);
-}
+Getter<T> MakeArrayGetter(Element* array, const Transform& transform) { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // MakeContainerGetter returns a Getter for a given container. It will pass
@@ -425,49 +305,26 @@ template <typename T, typename Container, typename Transform>
 Getter<T> MakeContainerGetterImpl(
     std::true_type /* DataIsValid<Container> */,
     Container& container,  // NOLINT(runtime/references)
-    const Transform& transform) {
-  return MakeArrayGetter<T, ElementType<Container>, Transform>(container.data(),
-                                                               transform);
-}
+    const Transform& transform) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, typename Container, typename Transform>
 Getter<T> MakeContainerGetterImpl(
     std::false_type /* DataIsValid<Container> */,
     Container& container,  // NOLINT(runtime/references)
-    const Transform& transform) {
-  Getter<T> result;
-  result.fun = &GetFromContainer<T, Container, Transform>;
-  result.container.ptr =
-      const_cast<void*>(static_cast<const void*>(&container));
-  result.container.transform =
-      TransformPtr(transform, IsTransformCopied<Transform>{});
-
-  return result;
-}
+    const Transform& transform) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, typename Container, typename Transform>
 Getter<T> MakeContainerGetter(
     Container& container,  // NOLINT(runtime/references)
-    const Transform& transform) {
-  static_assert(std::is_reference_v<decltype(container[0])>,
-                "AnySpan only works with containers that return a reference "
-                "(no vector<bool>, or containers that return by value).");
-  return MakeContainerGetterImpl<T>(DataIsValid<Container>(), container,
-                                    transform);
-}
+    const Transform& transform) { __builtin_trap() /* STUB: not implemented */; }
 
 // Used for testing. Returns true if the given AnySpan performs inline element
 // access.
 template <typename T>
-bool IsCheap(AnySpan<T> s) {
-  return s.getter_.fun == &ArrayTag<T> || s.getter_.fun == &PtrArrayTag<T>;
-}
+bool IsCheap(AnySpan<T> s) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
-bool EqualImpl(AnySpan<T> a, AnySpan<T> b) {
-  static_assert(std::is_const_v<T>, "");
-  return std::equal(a.begin(), a.end(), b.begin(), b.end());
-}
+bool EqualImpl(AnySpan<T> a, AnySpan<T> b) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace any_span_internal
 ABSL_NAMESPACE_END

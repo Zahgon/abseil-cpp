@@ -44,53 +44,7 @@ template <int base>
 void ExpectParsedFloat(std::string s, absl::chars_format format_flags,
                        FloatType expected_type, uint64_t expected_mantissa,
                        int expected_exponent,
-                       int expected_literal_exponent = -999) {
-  SCOPED_TRACE(s);
-
-  int begin_subrange = -1;
-  int end_subrange = -1;
-  // If s contains '[' and ']', then strip these characters and set the subrange
-  // indices appropriately.
-  std::string::size_type open_bracket_pos = s.find('[');
-  if (open_bracket_pos != std::string::npos) {
-    begin_subrange = static_cast<int>(open_bracket_pos);
-    s.replace(open_bracket_pos, 1, "");
-    std::string::size_type close_bracket_pos = s.find(']');
-    CHECK_NE(close_bracket_pos, absl::string_view::npos)
-        << "Test input contains [ without matching ]";
-    end_subrange = static_cast<int>(close_bracket_pos);
-    s.replace(close_bracket_pos, 1, "");
-  }
-  const std::string::size_type expected_characters_matched = s.find('$');
-  CHECK_NE(expected_characters_matched, std::string::npos)
-      << "Input string must contain $";
-  s.replace(expected_characters_matched, 1, "");
-
-  ParsedFloat parsed =
-      ParseFloat<base>(s.data(), s.data() + s.size(), format_flags);
-
-  EXPECT_NE(parsed.end, nullptr);
-  if (parsed.end == nullptr) {
-    return;  // The following tests are not useful if we fully failed to parse
-  }
-  EXPECT_EQ(parsed.type, expected_type);
-  if (begin_subrange == -1) {
-    EXPECT_EQ(parsed.subrange_begin, nullptr);
-    EXPECT_EQ(parsed.subrange_end, nullptr);
-  } else {
-    EXPECT_EQ(parsed.subrange_begin, s.data() + begin_subrange);
-    EXPECT_EQ(parsed.subrange_end, s.data() + end_subrange);
-  }
-  if (parsed.type == FloatType::kNumber) {
-    EXPECT_EQ(parsed.mantissa, expected_mantissa);
-    EXPECT_EQ(parsed.exponent, expected_exponent);
-    if (expected_literal_exponent != -999) {
-      EXPECT_EQ(parsed.literal_exponent, expected_literal_exponent);
-    }
-  }
-  auto characters_matched = static_cast<int>(parsed.end - s.data());
-  EXPECT_EQ(characters_matched, expected_characters_matched);
-}
+                       int expected_literal_exponent = -999) { __builtin_trap() /* STUB: not implemented */; }
 
 // Check that a given string input is parsed to the expected mantissa and
 // exponent.
@@ -100,29 +54,18 @@ void ExpectParsedFloat(std::string s, absl::chars_format format_flags,
 template <int base>
 void ExpectNumber(std::string s, absl::chars_format format_flags,
                   uint64_t expected_mantissa, int expected_exponent,
-                  int expected_literal_exponent = -999) {
-  ExpectParsedFloat<base>(std::move(s), format_flags, FloatType::kNumber,
-                          expected_mantissa, expected_exponent,
-                          expected_literal_exponent);
-}
+                  int expected_literal_exponent = -999) { __builtin_trap() /* STUB: not implemented */; }
 
 // Check that a given string input is parsed to the given special value.
 //
 // This tests against both number bases, since infinities and NaNs have
 // identical representations in both modes.
 void ExpectSpecial(const std::string& s, absl::chars_format format_flags,
-                   FloatType type) {
-  ExpectParsedFloat<10>(s, format_flags, type, 0, 0);
-  ExpectParsedFloat<16>(s, format_flags, type, 0, 0);
-}
+                   FloatType type) { __builtin_trap() /* STUB: not implemented */; }
 
 // Check that a given input string is not matched by Float.
 template <int base>
-void ExpectFailedParse(absl::string_view s, absl::chars_format format_flags) {
-  ParsedFloat parsed =
-      ParseFloat<base>(s.data(), s.data() + s.size(), format_flags);
-  EXPECT_EQ(parsed.end, nullptr);
-}
+void ExpectFailedParse(absl::string_view s, absl::chars_format format_flags) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ParseFloat, SimpleValue) {
   // Test that various forms of floating point numbers all parse correctly.

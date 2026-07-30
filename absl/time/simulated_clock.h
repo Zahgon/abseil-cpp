@@ -53,55 +53,7 @@ ABSL_NAMESPACE_BEGIN
 //   // now == absl::UnixEpoch() + absl::Seconds(3)
 //
 // This class is thread-safe.
-class SimulatedClock : public Clock {
- public:
-  explicit SimulatedClock(absl::Time t);
-  SimulatedClock() : SimulatedClock(absl::UnixEpoch()) {}
-
-  // The destructor should be called only if all Sleep(), etc. and
-  // AdvanceTime() calls have completed. The code does its best to let
-  // any pending calls finish gracefully, but there are no guarantees.
-  ~SimulatedClock() override;
-
-  // Returns the simulated time.
-  absl::Time TimeNow() override;
-
-  // Sleeps until the specified duration has elapsed according to this clock.
-  void Sleep(absl::Duration d) override;
-
-  // Sleeps until the specified wakeup_time.
-  void SleepUntil(absl::Time wakeup_time) override;
-
-  // Sets the simulated time to the argument.  Wakes up any threads whose
-  // sleeps have now expired. Returns the number of woken threads.
-  int64_t SetTime(absl::Time t);
-
-  // Advances the simulated time by the specified duration.  Wakes up any
-  // threads whose sleeps have now expired. Returns the number of woken threads.
-  int64_t AdvanceTime(absl::Duration d);
-
-  // Blocks until the condition is true or until the simulated clock is
-  // advanced to or beyond the wakeup time (or both).
-  bool AwaitWithDeadline(absl::Mutex* absl_nonnull mu,
-                         const absl::Condition& cond,
-                         absl::Time deadline) override
-      ABSL_SHARED_LOCKS_REQUIRED(mu);
-
-  // Returns the earliest wakeup time.
-  std::optional<absl::Time> GetEarliestWakeupTime() const;
-
- private:
-  template <class T>
-  int64_t UpdateTime(const T& now_updater) ABSL_LOCKS_EXCLUDED(lock_);
-
-  class WakeUpInfo;
-  using WaiterList = std::multimap<absl::Time, std::shared_ptr<WakeUpInfo>>;
-
-  mutable absl::Mutex lock_;
-  absl::Time now_ ABSL_GUARDED_BY(lock_);
-  WaiterList waiters_ ABSL_GUARDED_BY(lock_);
-  int64_t num_await_calls_ ABSL_GUARDED_BY(lock_) = 0;
-};
+class SimulatedClock : public Clock { __builtin_trap() /* STUB: not implemented */; };
 
 ABSL_NAMESPACE_END
 }  // namespace absl

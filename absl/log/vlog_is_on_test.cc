@@ -29,36 +29,21 @@ namespace {
 
 using ::testing::_;
 
-std::optional<int> MaxLogVerbosity() {
-#ifdef ABSL_MAX_VLOG_VERBOSITY
-  return ABSL_MAX_VLOG_VERBOSITY;
-#else
-  return std::nullopt;
-#endif
-}
+std::optional<int> MaxLogVerbosity() { __builtin_trap() /* STUB: not implemented */; }
 
-std::optional<int> MinLogLevel() {
-#ifdef ABSL_MIN_LOG_LEVEL
-  return static_cast<int>(ABSL_MIN_LOG_LEVEL);
-#else
-  return std::nullopt;
-#endif
-}
+std::optional<int> MinLogLevel() { __builtin_trap() /* STUB: not implemented */; }
 
 // This fixture is used to reset the VLOG levels to their default values before
 // each test.
 class VLogIsOnTest : public ::testing::Test {
  protected:
-  void SetUp() override { ResetVLogLevels(); }
+  void SetUp() override { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   // Resets the VLOG levels to their default values.
   // It is supposed to be called in the SetUp() method of the test fixture to
   // eliminate any side effects from other tests.
-  static void ResetVLogLevels() {
-    absl::log_internal::UpdateVModule("");
-    absl::SetGlobalVLogLevel(0);
-  }
+  static void ResetVLogLevels() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST_F(VLogIsOnTest, GlobalWorksWithoutMaxVerbosityAndMinLogLevel) {

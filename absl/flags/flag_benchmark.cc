@@ -41,18 +41,8 @@ struct OptionalInt : AbslOptionalInt {
 };
 // Next two functions represent Abseil Flags marshalling for OptionalInt.
 bool AbslParseFlag(absl::string_view src, OptionalInt* flag,
-                   std::string* error) {
-  int val;
-  if (src.empty())
-    flag->reset();
-  else if (!absl::ParseFlag(src, &val, error))
-    return false;
-  *flag = val;
-  return true;
-}
-std::string AbslUnparseFlag(const OptionalInt& flag) {
-  return !flag ? "" : absl::UnparseFlag(*flag);
-}
+                   std::string* error) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(const OptionalInt& flag) { __builtin_trap() /* STUB: not implemented */; }
 
 using AbslOptionalString = std::optional<std::string>;
 struct OptionalString : AbslOptionalString {
@@ -60,27 +50,17 @@ struct OptionalString : AbslOptionalString {
 };
 // Next two functions represent Abseil Flags marshalling for OptionalString.
 bool AbslParseFlag(absl::string_view src, OptionalString* flag,
-                   std::string* error) {
-  std::string val;
-  if (src.empty())
-    flag->reset();
-  else if (!absl::ParseFlag(src, &val, error))
-    return false;
-  *flag = val;
-  return true;
-}
-std::string AbslUnparseFlag(const OptionalString& flag) {
-  return !flag ? "" : absl::UnparseFlag(*flag);
-}
+                   std::string* error) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(const OptionalString& flag) { __builtin_trap() /* STUB: not implemented */; }
 
 struct UDT {
   UDT() = default;
   UDT(const UDT&) {}
-  UDT& operator=(const UDT&) { return *this; }
+  UDT& operator=(const UDT&) { __builtin_trap() /* STUB: not implemented */; }
 };
 // Next two functions represent Abseil Flags marshalling for UDT.
-bool AbslParseFlag(absl::string_view, UDT*, std::string*) { return true; }
-std::string AbslUnparseFlag(const UDT&) { return ""; }
+bool AbslParseFlag(absl::string_view, UDT*, std::string*) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(const UDT&) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace
 
@@ -198,17 +178,13 @@ struct Accumulator<UDT> {
 };
 
 template <typename T>
-void Accumulate(typename Accumulator<T>::type& a, const T& f) {
-  a += f;
-}
-void Accumulate(bool& a, bool f) { a = a || f; }
-void Accumulate(size_t& a, const std::string& f) { a += f.size(); }
-void Accumulate(size_t& a, const std::vector<std::string>& f) { a += f.size(); }
-void Accumulate(bool& a, const OptionalInt& f) { a |= f.has_value(); }
-void Accumulate(bool& a, const OptionalString& f) { a |= f.has_value(); }
-void Accumulate(bool& a, const UDT& f) {
-  a |= reinterpret_cast<int64_t>(&f) & 0x1;
-}
+void Accumulate(typename Accumulator<T>::type& a, const T& f) { __builtin_trap() /* STUB: not implemented */; }
+void Accumulate(bool& a, bool f) { __builtin_trap() /* STUB: not implemented */; }
+void Accumulate(size_t& a, const std::string& f) { __builtin_trap() /* STUB: not implemented */; }
+void Accumulate(size_t& a, const std::vector<std::string>& f) { __builtin_trap() /* STUB: not implemented */; }
+void Accumulate(bool& a, const OptionalInt& f) { __builtin_trap() /* STUB: not implemented */; }
+void Accumulate(bool& a, const OptionalString& f) { __builtin_trap() /* STUB: not implemented */; }
+void Accumulate(bool& a, const UDT& f) { __builtin_trap() /* STUB: not implemented */; }
 
 #define BM_ManyGetFlag(T)                            \
   void BM_ManyGetFlag_##T(benchmark::State& state) { \
@@ -224,19 +200,7 @@ void Accumulate(bool& a, const UDT& f) {
 
 BENCHMARKED_TYPES(BM_ManyGetFlag)
 
-void BM_ThreadedFindCommandLineFlag(benchmark::State& state) {
-  char dummy[] = "dummy";
-  char* argv[] = {dummy};
-  // We need to ensure that flags have been parsed. That is where the registry
-  // is finalized.
-  absl::ParseCommandLine(1, argv);
-
-  while (state.KeepRunningBatch(kNumFlags)) {
-    for (auto* flag_ptr : FlagPtrs_bool) {
-      benchmark::DoNotOptimize(absl::FindCommandLineFlag(flag_ptr->Name()));
-    }
-  }
-}
+void BM_ThreadedFindCommandLineFlag(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_ThreadedFindCommandLineFlag)->ThreadRange(1, 16);
 
 }  // namespace

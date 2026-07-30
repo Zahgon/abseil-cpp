@@ -212,31 +212,25 @@ class beta_distribution {
 
   // Generating functions
   template <typename URBG>
-  result_type operator()(URBG& g) {  // NOLINT(runtime/references)
-    return (*this)(g, param_);
-  }
+  result_type operator()(URBG& g) { return {}; }
 
   template <typename URBG>
   result_type operator()(URBG& g,  // NOLINT(runtime/references)
                          const param_type& p);
 
-  param_type param() const { return param_; }
-  void param(const param_type& p) { param_ = p; }
+  param_type param() const { __builtin_trap() /* STUB: not implemented */; }
+  void param(const param_type& p) { __builtin_trap() /* STUB: not implemented */; }
 
-  result_type(min)() const { return 0; }
-  result_type(max)() const { return 1; }
+  result_type(min)() const { __builtin_trap() /* STUB: not implemented */; }
+  result_type(max)() const { __builtin_trap() /* STUB: not implemented */; }
 
-  result_type alpha() const { return param_.alpha(); }
-  result_type beta() const { return param_.beta(); }
+  result_type alpha() const { __builtin_trap() /* STUB: not implemented */; }
+  result_type beta() const { __builtin_trap() /* STUB: not implemented */; }
 
   friend bool operator==(const beta_distribution& a,
-                         const beta_distribution& b) {
-    return a.param_ == b.param_;
-  }
+                         const beta_distribution& b) { __builtin_trap() /* STUB: not implemented */; }
   friend bool operator!=(const beta_distribution& a,
-                         const beta_distribution& b) {
-    return a.param_ != b.param_;
-  }
+                         const beta_distribution& b) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   template <typename URBG>
@@ -249,15 +243,7 @@ class beta_distribution {
 
   template <typename URBG>
   result_type DegenerateCase(URBG& g,  // NOLINT(runtime/references)
-                             const param_type& p) {
-    if (p.method_ == param_type::DEGENERATE_SMALL && p.alpha_ == p.beta_) {
-      // Returns 0 or 1 with equal probability.
-      random_internal::FastUniformBits<uint8_t> fast_u8;
-      return static_cast<result_type>((fast_u8(g) & 0x10) !=
-                                      0);  // pick any single bit.
-    }
-    return p.x_;
-  }
+                             const param_type& p) { __builtin_trap() /* STUB: not implemented */; }
 
   param_type param_;
   random_internal::FastUniformBits<uint64_t> fast_u64_;
@@ -268,9 +254,7 @@ class beta_distribution {
 // PPC needs a more stringent boundary for long double.
 template <>
 constexpr long double
-beta_distribution<long double>::param_type::ThresholdPadding() {
-  return 10;
-}
+beta_distribution<long double>::param_type::ThresholdPadding() { return {}; }
 #endif
 
 template <typename RealType>
@@ -278,150 +262,30 @@ template <typename URBG>
 typename beta_distribution<RealType>::result_type
 beta_distribution<RealType>::AlgorithmJoehnk(
     URBG& g,  // NOLINT(runtime/references)
-    const param_type& p) {
-  using random_internal::GeneratePositiveTag;
-  using random_internal::GenerateRealFromBits;
-  using real_type =
-      std::conditional_t<std::is_same_v<RealType, float>, float, double>;
-
-  // Based on Joehnk, M. D. Erzeugung von betaverteilten und gammaverteilten
-  // Zufallszahlen. Metrika 8.1 (1964): 5-15.
-  // This method is described in Knuth, Vol 2 (Third Edition), pp 134.
-
-  result_type u, v, x, y, z;
-  for (;;) {
-    u = GenerateRealFromBits<real_type, GeneratePositiveTag, false>(
-        fast_u64_(g));
-    v = GenerateRealFromBits<real_type, GeneratePositiveTag, false>(
-        fast_u64_(g));
-
-    // Direct method. std::pow is slow for float, so rely on the optimizer to
-    // remove the std::pow() path for that case.
-    if (!std::is_same_v<float, result_type>) {
-      x = std::pow(u, p.a_);
-      y = std::pow(v, p.b_);
-      z = x + y;
-      if (z > 1) {
-        // Reject if and only if `x + y > 1.0`
-        continue;
-      }
-      if (z > 0) {
-        // When both alpha and beta are small, x and y are both close to 0, so
-        // divide by (x+y) directly may result in nan.
-        return x / z;
-      }
-    }
-
-    // Log transform.
-    // x = log( pow(u, p.a_) ), y = log( pow(v, p.b_) )
-    // since u, v <= 1.0,  x, y < 0.
-    x = std::log(u) * p.a_;
-    y = std::log(v) * p.b_;
-    if (!std::isfinite(x) || !std::isfinite(y)) {
-      continue;
-    }
-    // z = log( pow(u, a) + pow(v, b) )
-    z = x > y ? (x + std::log(1 + std::exp(y - x)))
-              : (y + std::log(1 + std::exp(x - y)));
-    // Reject iff log(x+y) > 0.
-    if (z > 0) {
-      continue;
-    }
-    return std::exp(x - z);
-  }
-}
+    const param_type& p) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename RealType>
 template <typename URBG>
 typename beta_distribution<RealType>::result_type
 beta_distribution<RealType>::AlgorithmCheng(
     URBG& g,  // NOLINT(runtime/references)
-    const param_type& p) {
-  using random_internal::GeneratePositiveTag;
-  using random_internal::GenerateRealFromBits;
-  using real_type =
-      std::conditional_t<std::is_same_v<RealType, float>, float, double>;
-
-  // Based on Cheng, Russell CH. Generating beta variates with nonintegral
-  // shape parameters. Communications of the ACM 21.4 (1978): 317-322.
-  // (https://dl.acm.org/citation.cfm?id=359482).
-  static constexpr result_type kLogFour =
-      result_type(1.3862943611198906188344642429163531361);  // log(4)
-  static constexpr result_type kS =
-      result_type(2.6094379124341003746007593332261876);  // 1+log(5)
-
-  const bool use_algorithm_ba = (p.method_ == param_type::CHENG_BA);
-  result_type u1, u2, v, w, z, r, s, t, bw_inv, lhs;
-  for (;;) {
-    u1 = GenerateRealFromBits<real_type, GeneratePositiveTag, false>(
-        fast_u64_(g));
-    u2 = GenerateRealFromBits<real_type, GeneratePositiveTag, false>(
-        fast_u64_(g));
-    v = p.y_ * std::log(u1 / (1 - u1));
-    w = p.a_ * std::exp(v);
-    bw_inv = result_type(1) / (p.b_ + w);
-    r = p.gamma_ * v - kLogFour;
-    s = p.a_ + r - w;
-    z = u1 * u1 * u2;
-    if (!use_algorithm_ba && s + kS >= 5 * z) {
-      break;
-    }
-    t = std::log(z);
-    if (!use_algorithm_ba && s >= t) {
-      break;
-    }
-    lhs = p.x_ * (p.log_x_ + std::log(bw_inv)) + r;
-    if (lhs >= t) {
-      break;
-    }
-  }
-  return p.inverted_ ? (1 - w * bw_inv) : w * bw_inv;
-}
+    const param_type& p) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename RealType>
 template <typename URBG>
 typename beta_distribution<RealType>::result_type
 beta_distribution<RealType>::operator()(URBG& g,  // NOLINT(runtime/references)
-                                        const param_type& p) {
-  switch (p.method_) {
-    case param_type::JOEHNK:
-      return AlgorithmJoehnk(g, p);
-    case param_type::CHENG_BA:
-      ABSL_FALLTHROUGH_INTENDED;
-    case param_type::CHENG_BB:
-      return AlgorithmCheng(g, p);
-    default:
-      return DegenerateCase(g, p);
-  }
-}
+                                        const param_type& p) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename CharT, typename Traits, typename RealType>
 std::basic_ostream<CharT, Traits>& operator<<(
     std::basic_ostream<CharT, Traits>& os,  // NOLINT(runtime/references)
-    const beta_distribution<RealType>& x) {
-  auto saver = random_internal::make_ostream_state_saver(os);
-  os.precision(random_internal::stream_precision_helper<RealType>::kPrecision);
-  os << x.alpha() << os.fill() << x.beta();
-  return os;
-}
+    const beta_distribution<RealType>& x) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename CharT, typename Traits, typename RealType>
 std::basic_istream<CharT, Traits>& operator>>(
     std::basic_istream<CharT, Traits>& is,  // NOLINT(runtime/references)
-    beta_distribution<RealType>& x) {       // NOLINT(runtime/references)
-  using result_type = typename beta_distribution<RealType>::result_type;
-  using param_type = typename beta_distribution<RealType>::param_type;
-  result_type alpha, beta;
-
-  auto saver = random_internal::make_istream_state_saver(is);
-  alpha = random_internal::read_floating_point<result_type>(is);
-  if (is.fail()) return is;
-  beta = random_internal::read_floating_point<result_type>(is);
-  if (!is.fail()) {
-    x.param(param_type(alpha, beta));
-  }
-  return is;
-}
+    beta_distribution<RealType>& x) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

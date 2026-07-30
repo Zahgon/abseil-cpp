@@ -601,9 +601,7 @@ class ABSL_ATTRIBUTE_OWNER flat_hash_map
 template <typename K, typename V, typename H, typename E, typename A,
           typename Predicate>
 typename flat_hash_map<K, V, H, E, A>::size_type erase_if(
-    flat_hash_map<K, V, H, E, A>& c, Predicate pred) {
-  return container_internal::EraseIf(pred, &c);
-}
+    flat_hash_map<K, V, H, E, A>& c, Predicate pred) { __builtin_trap() /* STUB: not implemented */; }
 
 // swap(flat_hash_map<>, flat_hash_map<>)
 //
@@ -616,9 +614,7 @@ typename flat_hash_map<K, V, H, E, A>::size_type erase_if(
 // `std::swap` will be preferred by compiler.
 template <typename K, typename V, typename H, typename E, typename A>
 void swap(flat_hash_map<K, V, H, E, A>& x,
-          flat_hash_map<K, V, H, E, A>& y) noexcept(noexcept(x.swap(y))) {
-  x.swap(y);
-}
+          flat_hash_map<K, V, H, E, A>& y) noexcept(noexcept(x.swap(y))) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace container_internal {
 
@@ -631,24 +627,15 @@ namespace container_internal {
 template <typename K, typename V, typename H, typename E, typename A,
           typename Function>
 std::decay_t<Function> c_for_each_fast(const flat_hash_map<K, V, H, E, A>& c,
-                                       Function&& f) {
-  container_internal::ForEach(f, &c);
-  return f;
-}
+                                       Function&& f) { __builtin_trap() /* STUB: not implemented */; }
 template <typename K, typename V, typename H, typename E, typename A,
           typename Function>
 std::decay_t<Function> c_for_each_fast(flat_hash_map<K, V, H, E, A>& c,
-                                       Function&& f) {
-  container_internal::ForEach(f, &c);
-  return f;
-}
+                                       Function&& f) { __builtin_trap() /* STUB: not implemented */; }
 template <typename K, typename V, typename H, typename E, typename A,
           typename Function>
 std::decay_t<Function> c_for_each_fast(flat_hash_map<K, V, H, E, A>&& c,
-                                       Function&& f) {
-  container_internal::ForEach(f, &c);
-  return f;
-}
+                                       Function&& f) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace container_internal
 
@@ -667,43 +654,30 @@ struct FlatHashMapPolicy {
   using DefaultAlloc = std::allocator<std::pair<const K, V>>;
 
   template <class Allocator, class... Args>
-  static void construct(Allocator* alloc, slot_type* slot, Args&&... args) {
-    slot_policy::construct(alloc, slot, std::forward<Args>(args)...);
-  }
+  static void construct(Allocator* alloc, slot_type* slot, Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
   // Returns std::true_type in case destroy is trivial.
   template <class Allocator>
-  static auto destroy(Allocator* alloc, slot_type* slot) {
-    return slot_policy::destroy(alloc, slot);
-  }
+  static auto destroy(Allocator* alloc, slot_type* slot) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class Allocator>
   static auto transfer(Allocator* alloc, slot_type* new_slot,
-                       slot_type* old_slot) {
-    return slot_policy::transfer(alloc, new_slot, old_slot);
-  }
+                       slot_type* old_slot) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class F, class... Args>
   static decltype(absl::container_internal::DecomposePair(
       std::declval<F>(), std::declval<Args>()...))
-  apply(F&& f, Args&&... args) {
-    return absl::container_internal::DecomposePair(std::forward<F>(f),
-                                                   std::forward<Args>(args)...);
-  }
+  apply(F&& f, Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class Hash, bool kIsDefault>
-  static constexpr HashSlotFn get_hash_slot_fn() {
-    return memory_internal::IsLayoutCompatible<K, V>::value
-               ? &TypeErasedApplyToSlotFn<Hash, K, kIsDefault>
-               : nullptr;
-  }
+  static constexpr HashSlotFn get_hash_slot_fn() { return {}; }
 
-  static size_t space_used(const slot_type*) { return 0; }
+  static size_t space_used(const slot_type*) { __builtin_trap() /* STUB: not implemented */; }
 
-  static std::pair<const K, V>& element(slot_type* slot) { return slot->value; }
+  static std::pair<const K, V>& element(slot_type* slot) { __builtin_trap() /* STUB: not implemented */; }
 
-  static V& value(std::pair<const K, V>* kv) { return kv->second; }
-  static const V& value(const std::pair<const K, V>* kv) { return kv->second; }
+  static V& value(std::pair<const K, V>* kv) { __builtin_trap() /* STUB: not implemented */; }
+  static const V& value(const std::pair<const K, V>* kv) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 }  // namespace container_internal

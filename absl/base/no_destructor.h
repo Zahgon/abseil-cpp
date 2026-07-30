@@ -124,9 +124,9 @@ class NoDestructor {
   // Forwards copy and move construction for T. Enables usage like this:
   //   static NoDestructor<std::array<string, 3>> x{{{"1", "2", "3"}}};
   //   static NoDestructor<std::vector<int>> x{{1, 2, 3}};
-  explicit constexpr NoDestructor(const T& x) : impl_(x) {}
+  explicit constexpr NoDestructor(const T& x) : impl_(x) { return {}; }
   explicit constexpr NoDestructor(T&& x)
-      : impl_(std::move(x)) {}
+      : impl_(std::move(x)) { }
 
   // No copying.
   NoDestructor(const NoDestructor&) = delete;
@@ -134,21 +134,21 @@ class NoDestructor {
 
   // Pretend to be a smart pointer to T with deep constness.
   // Never returns a null pointer.
-  T& operator*() { return *get(); }
+  T& operator*() { __builtin_trap() /* STUB: not implemented */; }
   T* absl_nonnull operator->() { return get(); }
   T* absl_nonnull get() { return impl_.get(); }
-  const T& operator*() const { return *get(); }
-  const T* absl_nonnull operator->() const { return get(); }
-  const T* absl_nonnull get() const { return impl_.get(); }
+  const T& operator*() const { __builtin_trap() /* STUB: not implemented */; }
+  const T* absl_nonnull operator->() const { __builtin_trap() /* STUB: not implemented */; }
+  const T* absl_nonnull get() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   class DirectImpl {
    public:
     template <typename... Args>
     explicit constexpr DirectImpl(Args&&... args)
-        : value_(std::forward<Args>(args)...) {}
-    const T* absl_nonnull get() const { return &value_; }
-    T* absl_nonnull get() { return &value_; }
+        : value_(std::forward<Args>(args)...) { }
+    const T* absl_nonnull get() const { __builtin_trap() /* STUB: not implemented */; }
+    T* absl_nonnull get() { __builtin_trap() /* STUB: not implemented */; }
 
    private:
     T value_;
@@ -157,15 +157,9 @@ class NoDestructor {
   class PlacementImpl {
    public:
     template <typename... Args>
-    explicit PlacementImpl(Args&&... args) {
-      new (&space_) T(std::forward<Args>(args)...);
-    }
-    const T* absl_nonnull get() const {
-      return std::launder(reinterpret_cast<const T*>(&space_));
-    }
-    T* absl_nonnull get() {
-      return std::launder(reinterpret_cast<T*>(&space_));
-    }
+    explicit PlacementImpl(Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
+    const T* absl_nonnull get() const { __builtin_trap() /* STUB: not implemented */; }
+    T* absl_nonnull get() { __builtin_trap() /* STUB: not implemented */; }
 
    private:
     alignas(T) unsigned char space_[sizeof(T)];

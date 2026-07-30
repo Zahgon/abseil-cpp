@@ -75,7 +75,7 @@ TEST(SourceLocationTest, CopyAssignmentWorks) {
   EXPECT_THAT(location.file_name(), EndsWith("source_location_test.cc"));
 }
 
-SourceLocation Echo(const SourceLocation& location) { return location; }
+SourceLocation Echo(const SourceLocation& location) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(SourceLocationTest, ExpectedUsageWorks) {
   SourceLocation location = Echo(absl::SourceLocation::current());
@@ -94,9 +94,7 @@ TEST(SourceLocationTest, CurrentWorks) {
 }
 
 SourceLocation FuncWithDefaultParam(
-    SourceLocation loc = SourceLocation::current()) {
-  return loc;
-}
+    SourceLocation loc = SourceLocation::current()) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(SourceLocationTest, CurrentWorksAsDefaultParam) {
   SourceLocation location = FuncWithDefaultParam();
@@ -109,21 +107,13 @@ TEST(SourceLocationTest, CurrentWorksAsDefaultParam) {
 #endif
 
 template <typename T>
-bool TryPassLineAndFile(decltype(T::current(0, ""))*) {
-  return true;
-}
+bool TryPassLineAndFile(decltype(T::current(0, ""))*) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T>
-bool TryPassLineAndFile(decltype(T::current({}, 0, ""))*) {
-  return true;
-}
+bool TryPassLineAndFile(decltype(T::current({}, 0, ""))*) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T>
-bool TryPassLineAndFile(decltype(T::current(typename T::Tag{}, 0, ""))*) {
-  return true;
-}
+bool TryPassLineAndFile(decltype(T::current(typename T::Tag{}, 0, ""))*) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T>
-bool TryPassLineAndFile(...) {
-  return false;
-}
+bool TryPassLineAndFile(...) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(SourceLocationTest, CantPassLineAndFile) {
 #ifdef ABSL_HAVE_STD_SOURCE_LOCATION

@@ -107,18 +107,12 @@ void ABSL_INTERNAL_C_SYMBOL(AbslInternalPerThreadSemPoke)(
 }  // extern "C"
 
 void absl::synchronization_internal::PerThreadSem::Init(
-    absl::base_internal::ThreadIdentity* identity) {
-  ABSL_INTERNAL_C_SYMBOL(AbslInternalPerThreadSemInit)(identity);
-}
+    absl::base_internal::ThreadIdentity* identity) { __builtin_trap() /* STUB: not implemented */; }
 
 void absl::synchronization_internal::PerThreadSem::Post(
-    absl::base_internal::ThreadIdentity* identity) {
-  ABSL_INTERNAL_C_SYMBOL(AbslInternalPerThreadSemPost)(identity);
-}
+    absl::base_internal::ThreadIdentity* identity) { __builtin_trap() /* STUB: not implemented */; }
 
 bool absl::synchronization_internal::PerThreadSem::Wait(
-    absl::synchronization_internal::KernelTimeout t) {
-  return ABSL_INTERNAL_C_SYMBOL(AbslInternalPerThreadSemWait)(t);
-}
+    absl::synchronization_internal::KernelTimeout t) { __builtin_trap() /* STUB: not implemented */; }
 
 #endif  // ABSL_SYNCHRONIZATION_INTERNAL_PER_THREAD_SEM_H_

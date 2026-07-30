@@ -37,13 +37,13 @@ using ::testing::Return;
 // been called, via the instance_count variable.
 class DestructorVerifier {
  public:
-  DestructorVerifier() { ++instance_count_; }
+  DestructorVerifier() { __builtin_trap() /* STUB: not implemented */; }
   DestructorVerifier(const DestructorVerifier&) = delete;
   DestructorVerifier& operator=(const DestructorVerifier&) = delete;
-  ~DestructorVerifier() { --instance_count_; }
+  ~DestructorVerifier() { __builtin_trap() /* STUB: not implemented */; }
 
   // The number of instances of this class currently active.
-  static int instance_count() { return instance_count_; }
+  static int instance_count() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   // The number of instances of this class currently active.
@@ -88,17 +88,9 @@ struct InitializationVerifier {
   static constexpr int kDefaultScalar = 0x43;
   static constexpr int kDefaultArray = 0x4B;
 
-  static void* operator new(size_t n) {
-    void* ret = ::operator new(n);
-    memset(ret, kDefaultScalar, n);
-    return ret;
-  }
+  static void* operator new(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
-  static void* operator new[](size_t n) {
-    void* ret = ::operator new[](n);
-    memset(ret, kDefaultArray, n);
-    return ret;
-  }
+  static void* operator new[](size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
   int a;
   int b;
@@ -131,15 +123,9 @@ TEST(Initialization, MakeUniqueForOverwriteArray) {
 #endif
 
 struct ArrayWatch {
-  void* operator new[](size_t n) {
-    allocs().push_back(n);
-    return ::operator new[](n);
-  }
-  void operator delete[](void* p) { return ::operator delete[](p); }
-  static std::vector<size_t>& allocs() {
-    static auto& v = *new std::vector<size_t>;
-    return v;
-  }
+  void* operator new[](size_t n) { __builtin_trap() /* STUB: not implemented */; }
+  void operator delete[](void* p) { __builtin_trap() /* STUB: not implemented */; }
+  static std::vector<size_t>& allocs() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(MakeUniqueForOverwriteTest, Array) {
@@ -166,11 +152,9 @@ TEST(RawPtrTest, SmartPointer) {
 
 class IntPointerNonConstDeref {
  public:
-  explicit IntPointerNonConstDeref(int* p) : p_(p) {}
-  friend bool operator!=(const IntPointerNonConstDeref& a, std::nullptr_t) {
-    return a.p_ != nullptr;
-  }
-  int& operator*() { return *p_; }
+  explicit IntPointerNonConstDeref(int* p) : p_(p) { __builtin_trap() /* STUB: not implemented */; }
+  friend bool operator!=(const IntPointerNonConstDeref& a, std::nullptr_t) { __builtin_trap() /* STUB: not implemented */; }
+  int& operator*() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   std::unique_ptr<int> p_;

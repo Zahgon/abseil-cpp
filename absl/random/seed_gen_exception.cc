@@ -25,20 +25,11 @@ static constexpr const char kExceptionMessage[] =
 
 SeedGenException::~SeedGenException() = default;
 
-const char* SeedGenException::what() const noexcept {
-  return kExceptionMessage;
-}
+const char* SeedGenException::what() const noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 namespace random_internal {
 
-void ThrowSeedGenException() {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw absl::SeedGenException();
-#else
-  ABSL_RAW_LOG(FATAL, "%s", kExceptionMessage);
-  std::terminate();
-#endif
-}
+void ThrowSeedGenException() { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace random_internal
 ABSL_NAMESPACE_END

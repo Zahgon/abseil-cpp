@@ -260,15 +260,7 @@ TEST(Status, TestComparePayloadsAfterErase) {
   EXPECT_EQ(payload_status, empty_status);
 }
 
-PayloadsVec AllVisitedPayloads(const absl::Status& s) {
-  PayloadsVec result;
-
-  s.ForEachPayload([&](absl::string_view type_url, const absl::Cord& payload) {
-    result.push_back(std::make_pair(std::string(type_url), payload));
-  });
-
-  return result;
-}
+PayloadsVec AllVisitedPayloads(const absl::Status& s) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Status, TestForEachPayload) {
   absl::Status bad_status(absl::StatusCode::kInternal, "fail");
@@ -391,11 +383,7 @@ TEST(Status, OstreamEqStringify) {
   EXPECT_EQ(stream.str(), absl::StrCat(status));
 }
 
-absl::Status EraseAndReturn(const absl::Status& base) {
-  absl::Status copy = base;
-  EXPECT_TRUE(copy.ErasePayload(kUrl1));
-  return copy;
-}
+absl::Status EraseAndReturn(const absl::Status& base) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Status, CopyOnWriteForErasePayload) {
   {
@@ -598,17 +586,7 @@ TEST(StatusErrno, ErrnoToStatus) {
 
 void CheckSourceLocation(
     const absl::Status& status, std::vector<int> lines = {},
-    absl::SourceLocation loc = absl::SourceLocation::current()) {
-  ASSERT_EQ(status.GetSourceLocations().size(), lines.size())
-      << "Size check failed at " << loc.line();
-  for (size_t i = 0; i < lines.size(); ++i) {
-    EXPECT_EQ(absl::string_view(status.GetSourceLocations()[i].file_name()),
-              absl::string_view(loc.file_name()))
-        << "File name check failed at " << loc.line();
-    EXPECT_EQ(status.GetSourceLocations()[i].line(), lines[i])
-        << "Line check failed at " << loc.line();
-  }
-}
+    absl::SourceLocation loc = absl::SourceLocation::current()) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Status, ConstructorCheckSourceLocation) {
   {
@@ -916,7 +894,7 @@ TEST(Status, WithSourceLocationCopy) {
   EXPECT_EQ(original, status);
 }
 
-absl::Status&& IsRvalueStatus(absl::Status&& s) { return std::move(s); }
+absl::Status&& IsRvalueStatus(absl::Status&& s) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Status, WithSourceLocationMove) {
   absl::Status original(absl::StatusCode::kInternal, "message",

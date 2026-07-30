@@ -325,11 +325,11 @@ ABSL_INTERNAL_END_EXTERN_C
 
 ABSL_INTERNAL_STATIC_INLINE void ABSL_INTERNAL_C_SYMBOL(
     AbslInternalAnnotateIgnoreReadsBegin)()
-    ABSL_INTERNAL_IGNORE_READS_BEGIN_ATTRIBUTE {}
+    ABSL_INTERNAL_IGNORE_READS_BEGIN_ATTRIBUTE { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_INTERNAL_STATIC_INLINE void ABSL_INTERNAL_C_SYMBOL(
     AbslInternalAnnotateIgnoreReadsEnd)()
-    ABSL_INTERNAL_IGNORE_READS_END_ATTRIBUTE {}
+    ABSL_INTERNAL_IGNORE_READS_END_ATTRIBUTE { __builtin_trap() /* STUB: not implemented */; }
 
 #else
 
@@ -453,14 +453,10 @@ namespace absl {
 #ifdef ABSL_HAVE_HWADDRESS_SANITIZER
 // Under HWASAN changes the tag of the pointer.
 template <typename T>
-T* HwasanTagPointer(T* ptr, uintptr_t tag) {
-  return reinterpret_cast<T*>(__hwasan_tag_pointer(ptr, tag));
-}
+T* HwasanTagPointer(T* ptr, uintptr_t tag) { __builtin_trap() /* STUB: not implemented */; }
 #else
 template <typename T>
-T* HwasanTagPointer(T* ptr, uintptr_t) {
-  return ptr;
-}
+T* HwasanTagPointer(T* ptr, uintptr_t) { __builtin_trap() /* STUB: not implemented */; }
 #endif
 }  // namespace absl
 #endif

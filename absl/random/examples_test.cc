@@ -21,7 +21,7 @@
 #include "absl/random/random.h"
 
 template <typename T>
-void Use(T) {}
+void Use(T) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Examples, Basic) {
   absl::BitGen gen;

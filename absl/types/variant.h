@@ -39,34 +39,24 @@ using bad_variant_access ABSL_REFACTOR_INLINE
 
 template <size_t I, typename... Args>
 [[deprecated]] constexpr auto get(Args&&... args)
-    -> decltype(std::get<I>(std::forward<Args>(args)...)) {
-  return std::get<I>(std::forward<Args>(args)...);
-}
+    -> decltype(std::get<I>(std::forward<Args>(args)...)) { return {}; }
 
 template <typename T, typename... Args>
 [[deprecated]] constexpr decltype(std::get<T>(std::declval<Args>()...)) get(
-    Args&&... args) {
-  return std::get<T>(std::forward<Args>(args)...);
-}
+    Args&&... args) { return {}; }
 
 template <size_t I, typename... Args>
 [[deprecated]] constexpr decltype(std::get_if<I>(std::declval<Args>()...))
-get_if(Args&&... args) {
-  return std::get_if<I>(std::forward<Args>(args)...);
-}
+get_if(Args&&... args) { return {}; }
 
 template <typename T, typename... Args>
 [[deprecated]] constexpr decltype(std::get_if<T>(std::declval<Args>()...))
-get_if(Args&&... args) {
-  return std::get_if<T>(std::forward<Args>(args)...);
-}
+get_if(Args&&... args) { return {}; }
 
 template <typename T, typename... Args>
 [[deprecated]] constexpr decltype(std::holds_alternative<T>(
     std::declval<Args>()...))
-holds_alternative(Args&&... args) {
-  return std::holds_alternative<T>(std::forward<Args>(args)...);
-}
+holds_alternative(Args&&... args) { return {}; }
 
 using monostate ABSL_REFACTOR_INLINE
     = std::monostate;
@@ -96,9 +86,7 @@ inline constexpr size_t variant_size_v ABSL_REFACTOR_INLINE
 
 template <typename... Args>
 [[deprecated]] constexpr decltype(std::visit(std::declval<Args>()...)) visit(
-    Args&&... args) {
-  return std::visit(std::forward<Args>(args)...);
-}
+    Args&&... args) { return {}; }
 
 namespace variant_internal {
 // Helper visitor for converting a variant<Ts...>` into another type (mostly
@@ -106,9 +94,7 @@ namespace variant_internal {
 template <typename To>
 struct ConversionVisitor {
   template <typename T>
-  To operator()(T&& v) const {
-    return To(std::forward<T>(v));
-  }
+  To operator()(T&& v) const { __builtin_trap() /* STUB: not implemented */; }
 };
 }  // namespace variant_internal
 
@@ -128,10 +114,7 @@ struct ConversionVisitor {
 //              InternalReq(req));
 //   }
 template <typename To, typename Variant>
-To ConvertVariantTo(Variant&& variant) {
-  return std::visit(variant_internal::ConversionVisitor<To>{},
-                    std::forward<Variant>(variant));
-}
+To ConvertVariantTo(Variant&& variant) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

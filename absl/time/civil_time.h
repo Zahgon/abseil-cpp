@@ -380,9 +380,7 @@ using Weekday = time_internal::cctz::weekday;
 //   absl::CivilDay a(2015, 8, 13);
 //   absl::Weekday wd = absl::GetWeekday(a);  // wd == absl::Weekday::thursday
 //
-inline Weekday GetWeekday(CivilSecond cs) {
-  return time_internal::cctz::get_weekday(cs);
-}
+inline Weekday GetWeekday(CivilSecond cs) { __builtin_trap() /* STUB: not implemented */; }
 
 // NextWeekday()
 // PrevWeekday()
@@ -414,12 +412,8 @@ inline Weekday GetWeekday(CivilSecond cs) {
 //   // Gets the previous Thursday if d is not already Thursday
 //   absl::CivilDay thurs2 = absl::PrevWeekday(d + 1, absl::Weekday::thursday);
 //
-inline CivilDay NextWeekday(CivilDay cd, Weekday wd) {
-  return CivilDay(time_internal::cctz::next_weekday(cd, wd));
-}
-inline CivilDay PrevWeekday(CivilDay cd, Weekday wd) {
-  return CivilDay(time_internal::cctz::prev_weekday(cd, wd));
-}
+inline CivilDay NextWeekday(CivilDay cd, Weekday wd) { __builtin_trap() /* STUB: not implemented */; }
+inline CivilDay PrevWeekday(CivilDay cd, Weekday wd) { __builtin_trap() /* STUB: not implemented */; }
 
 // GetYearDay()
 //
@@ -432,9 +426,7 @@ inline CivilDay PrevWeekday(CivilDay cd, Weekday wd) {
 //   absl::CivilDay b(2015, 12, 31);
 //   int yd_dec_31 = absl::GetYearDay(b);  // yd_dec_31 = 365
 //
-inline int GetYearDay(CivilSecond cs) {
-  return time_internal::cctz::get_yearday(cs);
-}
+inline int GetYearDay(CivilSecond cs) { __builtin_trap() /* STUB: not implemented */; }
 
 // FormatCivilTime()
 //
@@ -464,29 +456,17 @@ std::string FormatCivilTime(CivilYear c);
 
 // Support for StrFormat(), StrCat(), etc
 template <typename Sink>
-void AbslStringify(Sink& sink, CivilSecond c) {
-  sink.Append(FormatCivilTime(c));
-}
+void AbslStringify(Sink& sink, CivilSecond c) { __builtin_trap() /* STUB: not implemented */; }
 template <typename Sink>
-void AbslStringify(Sink& sink, CivilMinute c) {
-  sink.Append(FormatCivilTime(c));
-}
+void AbslStringify(Sink& sink, CivilMinute c) { __builtin_trap() /* STUB: not implemented */; }
 template <typename Sink>
-void AbslStringify(Sink& sink, CivilHour c) {
-  sink.Append(FormatCivilTime(c));
-}
+void AbslStringify(Sink& sink, CivilHour c) { __builtin_trap() /* STUB: not implemented */; }
 template <typename Sink>
-void AbslStringify(Sink& sink, CivilDay c) {
-  sink.Append(FormatCivilTime(c));
-}
+void AbslStringify(Sink& sink, CivilDay c) { __builtin_trap() /* STUB: not implemented */; }
 template <typename Sink>
-void AbslStringify(Sink& sink, CivilMonth c) {
-  sink.Append(FormatCivilTime(c));
-}
+void AbslStringify(Sink& sink, CivilMonth c) { __builtin_trap() /* STUB: not implemented */; }
 template <typename Sink>
-void AbslStringify(Sink& sink, CivilYear c) {
-  sink.Append(FormatCivilTime(c));
-}
+void AbslStringify(Sink& sink, CivilYear c) { __builtin_trap() /* STUB: not implemented */; }
 
 // absl::ParseCivilTime()
 //

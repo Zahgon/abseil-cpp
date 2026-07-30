@@ -66,12 +66,7 @@ using ::testing::Types;
 // These tests validate that the formatting matches that performed by a
 // `std::ostream` and also that the result is one of a list of expected formats.
 
-std::ostringstream ComparisonStream() {
-  std::ostringstream str;
-  str.setf(std::ios_base::showbase | std::ios_base::boolalpha |
-           std::ios_base::internal);
-  return str;
-}
+std::ostringstream ComparisonStream() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(LogFormatTest, NoMessage) {
   absl::ScopedMockLog test_sink(absl::MockLogDefault::kDisallowUnexpected);
@@ -1009,16 +1004,7 @@ TEST(LogFormatTest, WideCharArray) {
 #define ABSL_LOG_INTERNAL_UTF8_LITERAL u8"Holá €1 你好 שָׁלוֹם 👍🏻🇺🇸👩‍❤️‍💋‍👨 中"
 // clang-format on
 
-absl::string_view GetUtf8TestString() {
-  // `u8""` forces UTF-8 encoding; MSVC will default to e.g. CP1252 (and warn)
-  // without it. However, the resulting character type differs between pre-C++20
-  // (`char`) and C++20 (`char8_t`). So we reinterpret_cast to `char*` and wrap
-  // it in a `string_view`.
-  static const absl::string_view kUtf8TestString(
-      reinterpret_cast<const char*>(ABSL_LOG_INTERNAL_UTF8_LITERAL),
-      sizeof(ABSL_LOG_INTERNAL_UTF8_LITERAL) - 1);
-  return kUtf8TestString;
-}
+absl::string_view GetUtf8TestString() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
 class WideStringLogFormatTest : public testing::Test {};
@@ -1185,9 +1171,7 @@ TEST(WideStringLogFormatTest, MixedNarrowAndWideStrings) {
 }
 
 class CustomClass {};
-std::ostream& operator<<(std::ostream& os, const CustomClass&) {
-  return os << "CustomClass{}";
-}
+std::ostream& operator<<(std::ostream& os, const CustomClass&) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(LogFormatTest, Custom) {
   absl::ScopedMockLog test_sink(absl::MockLogDefault::kDisallowUnexpected);
@@ -1212,9 +1196,7 @@ class CustomClassNonCopyable {
   CustomClassNonCopyable(const CustomClassNonCopyable&) = delete;
   CustomClassNonCopyable& operator=(const CustomClassNonCopyable&) = delete;
 };
-std::ostream& operator<<(std::ostream& os, const CustomClassNonCopyable&) {
-  return os << "CustomClassNonCopyable{}";
-}
+std::ostream& operator<<(std::ostream& os, const CustomClassNonCopyable&) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(LogFormatTest, CustomNonCopyable) {
   absl::ScopedMockLog test_sink(absl::MockLogDefault::kDisallowUnexpected);
@@ -1236,9 +1218,7 @@ TEST(LogFormatTest, CustomNonCopyable) {
 
 struct Point {
   template <typename Sink>
-  friend void AbslStringify(Sink& sink, const Point& p) {
-    absl::Format(&sink, "(%d, %d)", p.x, p.y);
-  }
+  friend void AbslStringify(Sink& sink, const Point& p) { __builtin_trap() /* STUB: not implemented */; }
 
   int x = 10;
   int y = 20;
@@ -1263,18 +1243,14 @@ TEST(LogFormatTest, AbslStringifyExample) {
 struct PointWithAbslStringifiyAndOstream {
   template <typename Sink>
   friend void AbslStringify(Sink& sink,
-                            const PointWithAbslStringifiyAndOstream& p) {
-    absl::Format(&sink, "(%d, %d)", p.x, p.y);
-  }
+                            const PointWithAbslStringifiyAndOstream& p) { __builtin_trap() /* STUB: not implemented */; }
 
   int x = 10;
   int y = 20;
 };
 
 ABSL_ATTRIBUTE_UNUSED std::ostream& operator<<(
-    std::ostream& os, const PointWithAbslStringifiyAndOstream&) {
-  return os << "Default to AbslStringify()";
-}
+    std::ostream& os, const PointWithAbslStringifiyAndOstream&) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(LogFormatTest, CustomWithAbslStringifyAndOstream) {
   absl::ScopedMockLog test_sink(absl::MockLogDefault::kDisallowUnexpected);
@@ -1294,7 +1270,7 @@ TEST(LogFormatTest, CustomWithAbslStringifyAndOstream) {
 
 struct PointStreamsNothing {
   template <typename Sink>
-  friend void AbslStringify(Sink&, const PointStreamsNothing&) {}
+  friend void AbslStringify(Sink&, const PointStreamsNothing&) { __builtin_trap() /* STUB: not implemented */; }
 
   int x = 10;
   int y = 20;
@@ -1318,10 +1294,7 @@ TEST(LogFormatTest, AbslStringifyStreamsNothing) {
 
 struct PointMultipleAppend {
   template <typename Sink>
-  friend void AbslStringify(Sink& sink, const PointMultipleAppend& p) {
-    sink.Append("(");
-    sink.Append(absl::StrCat(p.x, ", ", p.y, ")"));
-  }
+  friend void AbslStringify(Sink& sink, const PointMultipleAppend& p) { __builtin_trap() /* STUB: not implemented */; }
 
   int x = 10;
   int y = 20;
@@ -1948,9 +1921,7 @@ TEST(ManipulatorLogFormatTest, SetFill) {
 }
 
 class FromCustomClass {};
-std::ostream& operator<<(std::ostream& os, const FromCustomClass&) {
-  return os << "FromCustomClass{}" << std::hex;
-}
+std::ostream& operator<<(std::ostream& os, const FromCustomClass&) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ManipulatorLogFormatTest, FromCustom) {
   absl::ScopedMockLog test_sink(absl::MockLogDefault::kDisallowUnexpected);
@@ -1973,7 +1944,7 @@ TEST(ManipulatorLogFormatTest, FromCustom) {
 }
 
 class StreamsNothing {};
-std::ostream& operator<<(std::ostream& os, const StreamsNothing&) { return os; }
+std::ostream& operator<<(std::ostream& os, const StreamsNothing&) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ManipulatorLogFormatTest, CustomClassStreamsNothing) {
   absl::ScopedMockLog test_sink(absl::MockLogDefault::kDisallowUnexpected);
@@ -1995,9 +1966,7 @@ TEST(ManipulatorLogFormatTest, CustomClassStreamsNothing) {
 
 struct PointPercentV {
   template <typename Sink>
-  friend void AbslStringify(Sink& sink, const PointPercentV& p) {
-    absl::Format(&sink, "(%v, %v)", p.x, p.y);
-  }
+  friend void AbslStringify(Sink& sink, const PointPercentV& p) { __builtin_trap() /* STUB: not implemented */; }
 
   int x = 10;
   int y = 20;
@@ -2069,9 +2038,7 @@ TEST(StructuredLoggingOverflowTest, TruncatesWideStrings) {
 struct StringLike {
   absl::string_view data;
 };
-std::ostream& operator<<(std::ostream& os, StringLike str) {
-  return os << str.data;
-}
+std::ostream& operator<<(std::ostream& os, StringLike str) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StructuredLoggingOverflowTest, TruncatesInsertionOperators) {
   absl::ScopedMockLog test_sink(absl::MockLogDefault::kDisallowUnexpected);
@@ -2099,27 +2066,7 @@ TEST(StructuredLoggingOverflowTest, TruncatesInsertionOperators) {
 
 // Returns the size of the largest string that will fit in a `LOG` message
 // buffer with no prefix.
-size_t MaxLogFieldLengthNoPrefix() {
-  class StringLengthExtractorSink : public absl::LogSink {
-   public:
-    void Send(const absl::LogEntry& entry) override {
-      CHECK(!size_.has_value());
-      CHECK_EQ(entry.text_message().find_first_not_of('x'),
-               absl::string_view::npos);
-      size_.emplace(entry.text_message().size());
-    }
-    size_t size() const {
-      CHECK(size_.has_value());
-      return *size_;
-    }
-
-   private:
-    std::optional<size_t> size_;
-  } extractor_sink;
-  LOG(INFO).NoPrefix().ToSinkOnly(&extractor_sink)
-      << std::string(2 * absl::log_internal::kLogMessageBufferSize, 'x');
-  return extractor_sink.size();
-}
+size_t MaxLogFieldLengthNoPrefix() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StructuredLoggingOverflowTest, TruncatesStringsCleanly) {
   const size_t longest_fit = MaxLogFieldLengthNoPrefix();

@@ -521,9 +521,7 @@ class ABSL_ATTRIBUTE_OWNER btree_map
 //
 // Swaps the contents of two `absl::btree_map` containers.
 template <typename K, typename V, typename C, typename A>
-void swap(btree_map<K, V, C, A> &x, btree_map<K, V, C, A> &y) {
-  return x.swap(y);
-}
+void swap(btree_map<K, V, C, A> &x, btree_map<K, V, C, A> &y) { __builtin_trap() /* STUB: not implemented */; }
 
 // absl::erase_if(absl::btree_map<>, Pred)
 //
@@ -531,9 +529,7 @@ void swap(btree_map<K, V, C, A> &x, btree_map<K, V, C, A> &y) {
 // Returns the number of erased elements.
 template <typename K, typename V, typename C, typename A, typename Pred>
 typename btree_map<K, V, C, A>::size_type erase_if(
-    btree_map<K, V, C, A> &map, Pred pred) {
-  return container_internal::btree_access::erase_if(map, std::move(pred));
-}
+    btree_map<K, V, C, A> &map, Pred pred) { __builtin_trap() /* STUB: not implemented */; }
 
 // absl::btree_multimap
 //
@@ -863,9 +859,7 @@ class ABSL_ATTRIBUTE_OWNER btree_multimap
 //
 // Swaps the contents of two `absl::btree_multimap` containers.
 template <typename K, typename V, typename C, typename A>
-void swap(btree_multimap<K, V, C, A> &x, btree_multimap<K, V, C, A> &y) {
-  return x.swap(y);
-}
+void swap(btree_multimap<K, V, C, A> &x, btree_multimap<K, V, C, A> &y) { __builtin_trap() /* STUB: not implemented */; }
 
 // absl::erase_if(absl::btree_multimap<>, Pred)
 //
@@ -873,9 +867,7 @@ void swap(btree_multimap<K, V, C, A> &x, btree_multimap<K, V, C, A> &y) {
 // Returns the number of erased elements.
 template <typename K, typename V, typename C, typename A, typename Pred>
 typename btree_multimap<K, V, C, A>::size_type erase_if(
-    btree_multimap<K, V, C, A> &map, Pred pred) {
-  return container_internal::btree_access::erase_if(map, std::move(pred));
-}
+    btree_multimap<K, V, C, A> &map, Pred pred) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace container_internal {
 
@@ -920,17 +912,13 @@ struct map_params_impl
 
   template <typename V>
   static auto key(const V &value ABSL_ATTRIBUTE_LIFETIME_BOUND)
-      -> decltype((value.first)) {
-    return value.first;
-  }
-  static const Key &key(const slot_type *s) { return slot_policy::key(s); }
-  static const Key &key(slot_type *s) { return slot_policy::key(s); }
+      -> decltype((value.first)) { __builtin_trap() /* STUB: not implemented */; }
+  static const Key &key(const slot_type *s) { __builtin_trap() /* STUB: not implemented */; }
+  static const Key &key(slot_type *s) { __builtin_trap() /* STUB: not implemented */; }
   // For use in node handle.
   static auto mutable_key(slot_type *s)
-      -> decltype(slot_policy::mutable_key(s)) {
-    return slot_policy::mutable_key(s);
-  }
-  static mapped_type &value(value_type *value) { return value->second; }
+      -> decltype(slot_policy::mutable_key(s)) { __builtin_trap() /* STUB: not implemented */; }
+  static mapped_type &value(value_type *value) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 }  // namespace container_internal

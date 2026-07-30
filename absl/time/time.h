@@ -182,13 +182,13 @@ using EnableIfFloat = std::enable_if_t<std::is_floating_point_v<T>, int>;
 class Duration {
  public:
   // Value semantics.
-  constexpr Duration() : rep_hi_(0), rep_lo_(0) {}  // zero-length duration
+  constexpr Duration() : rep_hi_(0), rep_lo_(0) { }  // zero-length duration
 
   // Copyable.
 #if !defined(__clang__) && defined(_MSC_VER) && _MSC_VER < 1930
   // Explicitly defining the constexpr copy constructor avoids an MSVC bug.
   constexpr Duration(const Duration& d)
-      : rep_hi_(d.rep_hi_), rep_lo_(d.rep_lo_) {}
+      : rep_hi_(d.rep_hi_), rep_lo_(d.rep_lo_) { }
 #else
   constexpr Duration(const Duration& d) = default;
 #endif
@@ -211,40 +211,26 @@ class Duration {
   // returned as either the resolution or zero.  In particular, `d / 2.0`
   // can produce `d` when it is the resolution and "even".
   template <typename T, time_internal::EnableIfIntegral<T> = 0>
-  Duration& operator*=(T r) {
-    int64_t x = r;
-    return *this *= x;
-  }
+  Duration& operator*=(T r) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T, time_internal::EnableIfIntegral<T> = 0>
-  Duration& operator/=(T r) {
-    int64_t x = r;
-    return *this /= x;
-  }
+  Duration& operator/=(T r) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T, time_internal::EnableIfFloat<T> = 0>
-  Duration& operator*=(T r) {
-    double x = r;
-    return *this *= x;
-  }
+  Duration& operator*=(T r) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T, time_internal::EnableIfFloat<T> = 0>
-  Duration& operator/=(T r) {
-    double x = r;
-    return *this /= x;
-  }
+  Duration& operator/=(T r) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename H>
-  friend H AbslHashValue(H h, Duration d) {
-    return H::combine(std::move(h), d.rep_hi_.Get(), d.rep_lo_);
-  }
+  friend H AbslHashValue(H h, Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   friend constexpr int64_t time_internal::GetRepHi(Duration d);
   friend constexpr uint32_t time_internal::GetRepLo(Duration d);
   friend constexpr Duration time_internal::MakeDuration(int64_t hi,
                                                         uint32_t lo);
-  constexpr Duration(int64_t hi, uint32_t lo) : rep_hi_(hi), rep_lo_(lo) {}
+  constexpr Duration(int64_t hi, uint32_t lo) : rep_hi_(hi), rep_lo_(lo) { }
 
   // We store `rep_hi_` 4-byte rather than 8-byte aligned to avoid 4 bytes of
   // tail padding.
@@ -271,36 +257,9 @@ class Duration {
       *this = value;
     }
 
-    constexpr int64_t Get() const {
-      const uint64_t unsigned_value =
-          (static_cast<uint64_t>(hi_) << 32) | static_cast<uint64_t>(lo_);
-      // `static_cast<int64_t>(unsigned_value)` is implementation-defined
-      // before c++20. On all supported platforms the behaviour is that mandated
-      // by c++20, i.e. "If the destination type is signed, [...] the result is
-      // the unique value of the destination type equal to the source value
-      // modulo 2^n, where n is the number of bits used to represent the
-      // destination type."
-      static_assert(
-          (static_cast<int64_t>((std::numeric_limits<uint64_t>::max)()) ==
-           int64_t{-1}) &&
-              (static_cast<int64_t>(static_cast<uint64_t>(
-                                        (std::numeric_limits<int64_t>::max)()) +
-                                    1) ==
-               (std::numeric_limits<int64_t>::min)()),
-          "static_cast<int64_t>(uint64_t) does not have c++20 semantics");
-      return static_cast<int64_t>(unsigned_value);
-    }
+    constexpr int64_t Get() const { return {}; }
 
-    constexpr HiRep& operator=(const int64_t value) {
-      // "If the destination type is unsigned, the resulting value is the
-      // smallest unsigned value equal to the source value modulo 2^n
-      // where `n` is the number of bits used to represent the destination
-      // type".
-      const auto unsigned_value = static_cast<uint64_t>(value);
-      hi_ = static_cast<uint32_t>(unsigned_value >> 32);
-      lo_ = static_cast<uint32_t>(unsigned_value);
-      return *this;
-    }
+    constexpr HiRep& operator=(const int64_t value) { return {}; }
 
    private:
     // Notes:
@@ -333,34 +292,22 @@ ABSL_ATTRIBUTE_CONST_FUNCTION constexpr std::strong_ordering operator<=>(
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator<(Duration lhs,
                                                        Duration rhs);
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator>(Duration lhs,
-                                                       Duration rhs) {
-  return rhs < lhs;
-}
+                                                       Duration rhs) { return {}; }
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator>=(Duration lhs,
-                                                        Duration rhs) {
-  return !(lhs < rhs);
-}
+                                                        Duration rhs) { return {}; }
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator<=(Duration lhs,
-                                                        Duration rhs) {
-  return !(rhs < lhs);
-}
+                                                        Duration rhs) { return {}; }
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator==(Duration lhs,
                                                         Duration rhs);
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator!=(Duration lhs,
-                                                        Duration rhs) {
-  return !(lhs == rhs);
-}
+                                                        Duration rhs) { return {}; }
 
 // Additive Operators
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration operator-(Duration d);
 ABSL_ATTRIBUTE_CONST_FUNCTION inline Duration operator+(Duration lhs,
-                                                        Duration rhs) {
-  return lhs += rhs;
-}
+                                                        Duration rhs) { __builtin_trap() /* STUB: not implemented */; }
 ABSL_ATTRIBUTE_CONST_FUNCTION inline Duration operator-(Duration lhs,
-                                                        Duration rhs) {
-  return lhs -= rhs;
-}
+                                                        Duration rhs) { __builtin_trap() /* STUB: not implemented */; }
 
 // IDivDuration()
 //
@@ -409,41 +356,26 @@ ABSL_ATTRIBUTE_CONST_FUNCTION double FDivDuration(Duration num, Duration den);
 // Multiplicative Operators
 // Integer operands must be representable as int64_t.
 template <typename T>
-ABSL_ATTRIBUTE_CONST_FUNCTION Duration operator*(Duration lhs, T rhs) {
-  return lhs *= rhs;
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION Duration operator*(Duration lhs, T rhs) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T>
-ABSL_ATTRIBUTE_CONST_FUNCTION Duration operator*(T lhs, Duration rhs) {
-  return rhs *= lhs;
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION Duration operator*(T lhs, Duration rhs) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T>
-ABSL_ATTRIBUTE_CONST_FUNCTION Duration operator/(Duration lhs, T rhs) {
-  return lhs /= rhs;
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION Duration operator/(Duration lhs, T rhs) { __builtin_trap() /* STUB: not implemented */; }
 ABSL_ATTRIBUTE_CONST_FUNCTION inline int64_t operator/(Duration lhs,
-                                                       Duration rhs) {
-  return IDivDuration(lhs, rhs,
-                      &lhs);  // trunc towards zero
-}
+                                                       Duration rhs) { __builtin_trap() /* STUB: not implemented */; }
 ABSL_ATTRIBUTE_CONST_FUNCTION inline Duration operator%(Duration lhs,
-                                                        Duration rhs) {
-  return lhs %= rhs;
-}
+                                                        Duration rhs) { __builtin_trap() /* STUB: not implemented */; }
 
 // ZeroDuration()
 //
 // Returns a zero-length duration. This function behaves just like the default
 // constructor, but the name helps make the semantics clear at call sites.
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration ZeroDuration() {
-  return Duration();
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration ZeroDuration() { return {}; }
 
 // AbsDuration()
 //
 // Returns the absolute value of a duration.
-ABSL_ATTRIBUTE_CONST_FUNCTION inline Duration AbsDuration(Duration d) {
-  return (d < ZeroDuration()) ? -d : d;
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION inline Duration AbsDuration(Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
 // Trunc()
 //
@@ -535,29 +467,17 @@ ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration InfiniteDuration();
 //   absl::Duration a = absl::Seconds(60);
 //   absl::Duration b = absl::Minutes(1);  // b == a
 template <typename T, time_internal::EnableIfIntegral<T> = 0>
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Nanoseconds(T n) {
-  return time_internal::FromInt64(n, std::nano{});
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Nanoseconds(T n) { return {}; }
 template <typename T, time_internal::EnableIfIntegral<T> = 0>
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Microseconds(T n) {
-  return time_internal::FromInt64(n, std::micro{});
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Microseconds(T n) { return {}; }
 template <typename T, time_internal::EnableIfIntegral<T> = 0>
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Milliseconds(T n) {
-  return time_internal::FromInt64(n, std::milli{});
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Milliseconds(T n) { return {}; }
 template <typename T, time_internal::EnableIfIntegral<T> = 0>
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Seconds(T n) {
-  return time_internal::FromInt64(n, std::ratio<1>{});
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Seconds(T n) { return {}; }
 template <typename T, time_internal::EnableIfIntegral<T> = 0>
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Minutes(T n) {
-  return time_internal::FromInt64(n, std::ratio<60>{});
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Minutes(T n) { return {}; }
 template <typename T, time_internal::EnableIfIntegral<T> = 0>
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Hours(T n) {
-  return time_internal::FromInt64(n, std::ratio<3600>{});
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Hours(T n) { return {}; }
 
 // Factory overloads for constructing `Duration` values from a floating-point
 // number of the unit indicated by the factory function's name. These functions
@@ -569,40 +489,17 @@ ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration Hours(T n) {
 //   auto a = absl::Seconds(1.5);        // OK
 //   auto b = absl::Milliseconds(1500);  // BETTER
 template <typename T, time_internal::EnableIfFloat<T> = 0>
-ABSL_ATTRIBUTE_CONST_FUNCTION Duration Nanoseconds(T n) {
-  return n * Nanoseconds(1);
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION Duration Nanoseconds(T n) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T, time_internal::EnableIfFloat<T> = 0>
-ABSL_ATTRIBUTE_CONST_FUNCTION Duration Microseconds(T n) {
-  return n * Microseconds(1);
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION Duration Microseconds(T n) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T, time_internal::EnableIfFloat<T> = 0>
-ABSL_ATTRIBUTE_CONST_FUNCTION Duration Milliseconds(T n) {
-  return n * Milliseconds(1);
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION Duration Milliseconds(T n) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T, time_internal::EnableIfFloat<T> = 0>
-ABSL_ATTRIBUTE_CONST_FUNCTION Duration Seconds(T n) {
-  if (n >= 0) {  // Note: `NaN >= 0` is false.
-    if (n >= static_cast<T>((std::numeric_limits<int64_t>::max)())) {
-      return InfiniteDuration();
-    }
-    return time_internal::MakePosDoubleDuration(n);
-  } else {
-    if (std::isnan(n)) return -InfiniteDuration();
-    if (n <= static_cast<T>((std::numeric_limits<int64_t>::min)())) {
-      return -InfiniteDuration();
-    }
-    return -time_internal::MakePosDoubleDuration(-n);
-  }
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION Duration Seconds(T n) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T, time_internal::EnableIfFloat<T> = 0>
-ABSL_ATTRIBUTE_CONST_FUNCTION Duration Minutes(T n) {
-  return n * Minutes(1);
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION Duration Minutes(T n) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T, time_internal::EnableIfFloat<T> = 0>
-ABSL_ATTRIBUTE_CONST_FUNCTION Duration Hours(T n) {
-  return n * Hours(1);
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION Duration Hours(T n) { __builtin_trap() /* STUB: not implemented */; }
 
 // ToInt64Nanoseconds()
 // ToInt64Microseconds()
@@ -705,15 +602,11 @@ ABSL_ATTRIBUTE_CONST_FUNCTION std::chrono::hours ToChronoHours(Duration d);
 ABSL_ATTRIBUTE_CONST_FUNCTION std::string FormatDuration(Duration d);
 
 // Output stream operator.
-inline std::ostream& operator<<(std::ostream& os, Duration d) {
-  return os << FormatDuration(d);
-}
+inline std::ostream& operator<<(std::ostream& os, Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
 // Support for StrFormat(), StrCat() etc.
 template <typename Sink>
-void AbslStringify(Sink& sink, Duration d) {
-  sink.Append(FormatDuration(d));
-}
+void AbslStringify(Sink& sink, Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
 // ParseDuration()
 //
@@ -806,14 +699,8 @@ class Time {
   Time& operator=(const Time& t) = default;
 
   // Assignment operators.
-  Time& operator+=(Duration d) {
-    rep_ += d;
-    return *this;
-  }
-  Time& operator-=(Duration d) {
-    rep_ -= d;
-    return *this;
-  }
+  Time& operator+=(Duration d) { __builtin_trap() /* STUB: not implemented */; }
+  Time& operator-=(Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
   // Time::Breakdown
   //
@@ -1241,11 +1128,9 @@ class TimeZone {
   }
 
  private:
-  friend bool operator==(TimeZone a, TimeZone b) { return a.cz_ == b.cz_; }
-  friend bool operator!=(TimeZone a, TimeZone b) { return a.cz_ != b.cz_; }
-  friend std::ostream& operator<<(std::ostream& os, TimeZone tz) {
-    return os << tz.name();
-  }
+  friend bool operator==(TimeZone a, TimeZone b) { __builtin_trap() /* STUB: not implemented */; }
+  friend bool operator!=(TimeZone a, TimeZone b) { __builtin_trap() /* STUB: not implemented */; }
+  friend std::ostream& operator<<(std::ostream& os, TimeZone tz) { __builtin_trap() /* STUB: not implemented */; }
 
   time_internal::cctz::time_zone cz_;
 };
@@ -1255,33 +1140,19 @@ class TimeZone {
 // Loads the named zone. May perform I/O on the initial load of the named
 // zone. If the name is invalid, or some other kind of error occurs, returns
 // `false` and `*tz` is set to the UTC time zone.
-inline bool LoadTimeZone(absl::string_view name, TimeZone* tz) {
-  if (name == "localtime") {
-    *tz = TimeZone(time_internal::cctz::local_time_zone());
-    return true;
-  }
-  time_internal::cctz::time_zone cz;
-  const bool b = time_internal::cctz::load_time_zone(std::string(name), &cz);
-  *tz = TimeZone(cz);
-  return b;
-}
+inline bool LoadTimeZone(absl::string_view name, TimeZone* tz) { __builtin_trap() /* STUB: not implemented */; }
 
 // FixedTimeZone()
 //
 // Returns a TimeZone that is a fixed offset (seconds east) from UTC.
 // Note: If the absolute value of the offset is greater than 24 hours
 // you'll get UTC (i.e., no offset) instead.
-inline TimeZone FixedTimeZone(int seconds) {
-  return TimeZone(
-      time_internal::cctz::fixed_time_zone(std::chrono::seconds(seconds)));
-}
+inline TimeZone FixedTimeZone(int seconds) { __builtin_trap() /* STUB: not implemented */; }
 
 // UTCTimeZone()
 //
 // Convenience method returning the UTC time zone.
-inline TimeZone UTCTimeZone() {
-  return TimeZone(time_internal::cctz::utc_time_zone());
-}
+inline TimeZone UTCTimeZone() { __builtin_trap() /* STUB: not implemented */; }
 
 // LocalTimeZone()
 //
@@ -1289,9 +1160,7 @@ inline TimeZone UTCTimeZone() {
 // no configured local zone.  Warning: Be wary of using LocalTimeZone(),
 // and particularly so in a server process, as the zone configured for the
 // local machine should be irrelevant.  Prefer an explicit zone name.
-inline TimeZone LocalTimeZone() {
-  return TimeZone(time_internal::cctz::local_time_zone());
-}
+inline TimeZone LocalTimeZone() { __builtin_trap() /* STUB: not implemented */; }
 
 // ToCivilSecond()
 // ToCivilMinute()
@@ -1308,26 +1177,14 @@ inline TimeZone LocalTimeZone() {
 //   absl::TimeZone tz = ...;
 //   const auto cd = absl::ToCivilDay(t, tz);
 ABSL_ATTRIBUTE_PURE_FUNCTION inline CivilSecond ToCivilSecond(Time t,
-                                                              TimeZone tz) {
-  return tz.At(t).cs;  // already a CivilSecond
-}
+                                                              TimeZone tz) { __builtin_trap() /* STUB: not implemented */; }
 ABSL_ATTRIBUTE_PURE_FUNCTION inline CivilMinute ToCivilMinute(Time t,
-                                                              TimeZone tz) {
-  return CivilMinute(tz.At(t).cs);
-}
-ABSL_ATTRIBUTE_PURE_FUNCTION inline CivilHour ToCivilHour(Time t, TimeZone tz) {
-  return CivilHour(tz.At(t).cs);
-}
-ABSL_ATTRIBUTE_PURE_FUNCTION inline CivilDay ToCivilDay(Time t, TimeZone tz) {
-  return CivilDay(tz.At(t).cs);
-}
+                                                              TimeZone tz) { __builtin_trap() /* STUB: not implemented */; }
+ABSL_ATTRIBUTE_PURE_FUNCTION inline CivilHour ToCivilHour(Time t, TimeZone tz) { __builtin_trap() /* STUB: not implemented */; }
+ABSL_ATTRIBUTE_PURE_FUNCTION inline CivilDay ToCivilDay(Time t, TimeZone tz) { __builtin_trap() /* STUB: not implemented */; }
 ABSL_ATTRIBUTE_PURE_FUNCTION inline CivilMonth ToCivilMonth(Time t,
-                                                            TimeZone tz) {
-  return CivilMonth(tz.At(t).cs);
-}
-ABSL_ATTRIBUTE_PURE_FUNCTION inline CivilYear ToCivilYear(Time t, TimeZone tz) {
-  return CivilYear(tz.At(t).cs);
-}
+                                                            TimeZone tz) { __builtin_trap() /* STUB: not implemented */; }
+ABSL_ATTRIBUTE_PURE_FUNCTION inline CivilYear ToCivilYear(Time t, TimeZone tz) { __builtin_trap() /* STUB: not implemented */; }
 
 // FromCivil()
 //
@@ -1342,11 +1199,7 @@ ABSL_ATTRIBUTE_PURE_FUNCTION inline CivilYear ToCivilYear(Time t, TimeZone tz) {
 //
 // Note: Accepts civil times of any alignment.
 ABSL_ATTRIBUTE_PURE_FUNCTION inline Time FromCivil(CivilSecond ct,
-                                                   TimeZone tz) {
-  const auto ti = tz.At(ct);
-  if (ti.kind == TimeZone::TimeInfo::SKIPPED) return ti.trans;
-  return ti.pre;
-}
+                                                   TimeZone tz) { __builtin_trap() /* STUB: not implemented */; }
 
 // TimeConversion
 //
@@ -1413,11 +1266,7 @@ ABSL_INTERNAL_RESTORE_DEPRECATED_DECLARATION_WARNING
 // times. If you care about that see `absl::TimeZone::At(absl::CivilSecond)`.
 ABSL_DEPRECATED("Use `absl::FromCivil(CivilSecond, TimeZone)`.")
 inline Time FromDateTime(int64_t year, int mon, int day, int hour, int min,
-                         int sec, TimeZone tz) {
-  ABSL_INTERNAL_DISABLE_DEPRECATED_DECLARATION_WARNING
-  return ConvertDateTime(year, mon, day, hour, min, sec, tz).pre;
-  ABSL_INTERNAL_RESTORE_DEPRECATED_DECLARATION_WARNING
-}
+                         int sec, TimeZone tz) { __builtin_trap() /* STUB: not implemented */; }
 
 // FromTM()
 //
@@ -1507,15 +1356,11 @@ ABSL_ATTRIBUTE_PURE_FUNCTION std::string FormatTime(Time t, TimeZone tz);
 ABSL_ATTRIBUTE_PURE_FUNCTION std::string FormatTime(Time t);
 
 // Output stream operator.
-inline std::ostream& operator<<(std::ostream& os, Time t) {
-  return os << FormatTime(t);
-}
+inline std::ostream& operator<<(std::ostream& os, Time t) { __builtin_trap() /* STUB: not implemented */; }
 
 // Support for StrFormat(), StrCat() etc.
 template <typename Sink>
-void AbslStringify(Sink& sink, Time t) {
-  sink.Append(FormatTime(t));
-}
+void AbslStringify(Sink& sink, Time t) { __builtin_trap() /* STUB: not implemented */; }
 
 // ParseTime()
 //
@@ -1589,330 +1434,137 @@ namespace time_internal {
 // REQUIRES: hi,lo is a valid representation of a Duration as specified
 // in time/duration.cc.
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration MakeDuration(int64_t hi,
-                                                              uint32_t lo = 0) {
-  return Duration(hi, lo);
-}
+                                                              uint32_t lo = 0) { return {}; }
 
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration MakeDuration(int64_t hi,
-                                                              int64_t lo) {
-  return MakeDuration(hi, static_cast<uint32_t>(lo));
-}
+                                                              int64_t lo) { return {}; }
 
 // Make a Duration value from a floating-point number, as long as that number
 // is in the range [ 0 .. numeric_limits<int64_t>::max ), that is, as long as
 // it's positive and can be converted to int64_t without risk of UB.
-ABSL_ATTRIBUTE_CONST_FUNCTION inline Duration MakePosDoubleDuration(double n) {
-  const int64_t int_secs = static_cast<int64_t>(n);
-  const uint32_t ticks = static_cast<uint32_t>(
-      std::round((n - static_cast<double>(int_secs)) * kTicksPerSecond));
-  return ticks < kTicksPerSecond
-             ? MakeDuration(int_secs, ticks)
-             : MakeDuration(int_secs + 1, ticks - kTicksPerSecond);
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION inline Duration MakePosDoubleDuration(double n) { __builtin_trap() /* STUB: not implemented */; }
 
 // Creates a normalized Duration from an almost-normalized (sec,ticks)
 // pair. sec may be positive or negative.  ticks must be in the range
 // -kTicksPerSecond < *ticks < kTicksPerSecond.  If ticks is negative it
 // will be normalized to a positive value in the resulting Duration.
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration MakeNormalizedDuration(
-    int64_t sec, int64_t ticks) {
-  return (ticks < 0) ? MakeDuration(sec - 1, ticks + kTicksPerSecond)
-                     : MakeDuration(sec, ticks);
-}
+    int64_t sec, int64_t ticks) { return {}; }
 
 // Provide access to the Duration representation.
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t GetRepHi(Duration d) {
-  return d.rep_hi_.Get();
-}
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr uint32_t GetRepLo(Duration d) {
-  return d.rep_lo_;
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t GetRepHi(Duration d) { return {}; }
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr uint32_t GetRepLo(Duration d) { return {}; }
 
 // Returns true iff d is positive or negative infinity.
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool IsInfiniteDuration(Duration d) {
-  return GetRepLo(d) == ~uint32_t{0};
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool IsInfiniteDuration(Duration d) { return {}; }
 
 // Returns an infinite Duration with the opposite sign.
 // REQUIRES: IsInfiniteDuration(d)
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration OppositeInfinity(Duration d) {
-  return GetRepHi(d) < 0
-             ? MakeDuration((std::numeric_limits<int64_t>::max)(), ~uint32_t{0})
-             : MakeDuration((std::numeric_limits<int64_t>::min)(),
-                            ~uint32_t{0});
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration OppositeInfinity(Duration d) { return {}; }
 
 // Returns (-n)-1 (equivalently -(n+1)) without avoidable overflow.
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t NegateAndSubtractOne(
-    int64_t n) {
-  // Note: Good compilers will optimize this expression to ~n when using
-  // a two's-complement representation (which is required for int64_t).
-  return (n < 0) ? -(n + 1) : (-n) - 1;
-}
+    int64_t n) { return {}; }
 
 // Map between a Time and a Duration since the Unix epoch.  Note that these
 // functions depend on the above mentioned choice of the Unix epoch for the
 // Time representation (and both need to be Time friends).  Without this
 // knowledge, we would need to add-in/subtract-out UnixEpoch() respectively.
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixDuration(Duration d) {
-  return Time(d);
-}
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration ToUnixDuration(Time t) {
-  return t.rep_;
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixDuration(Duration d) { return {}; }
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration ToUnixDuration(Time t) { return {}; }
 
 template <std::intmax_t N>
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration FromInt64(int64_t v,
-                                                           std::ratio<1, N>) {
-  static_assert(0 < N && N <= 1000 * 1000 * 1000, "Unsupported ratio");
-  // Subsecond ratios cannot overflow.
-  return MakeNormalizedDuration(
-      v / N, v % N * kTicksPerNanosecond * 1000 * 1000 * 1000 / N);
-}
+                                                           std::ratio<1, N>) { return {}; }
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration FromInt64(int64_t v,
-                                                           std::ratio<60>) {
-  return (v <= (std::numeric_limits<int64_t>::max)() / 60 &&
-          v >= (std::numeric_limits<int64_t>::min)() / 60)
-             ? MakeDuration(v * 60)
-         : v > 0 ? InfiniteDuration()
-                 : -InfiniteDuration();
-}
+                                                           std::ratio<60>) { return {}; }
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration FromInt64(int64_t v,
-                                                           std::ratio<3600>) {
-  return (v <= (std::numeric_limits<int64_t>::max)() / 3600 &&
-          v >= (std::numeric_limits<int64_t>::min)() / 3600)
-             ? MakeDuration(v * 3600)
-         : v > 0 ? InfiniteDuration()
-                 : -InfiniteDuration();
-}
+                                                           std::ratio<3600>) { return {}; }
 
 // IsValidRep64<T>(0) is true if the expression `int64_t{std::declval<T>()}` is
 // valid. That is, if a T can be assigned to an int64_t without narrowing.
 template <typename T>
-constexpr auto IsValidRep64(int) -> decltype(int64_t{std::declval<T>()} == 0) {
-  return true;
-}
+constexpr auto IsValidRep64(int) -> decltype(int64_t{std::declval<T>()} == 0) { return {}; }
 template <typename T>
-constexpr auto IsValidRep64(char) -> bool {
-  return false;
-}
+constexpr auto IsValidRep64(char) -> bool { return {}; }
 
 // Converts a std::chrono::duration to an absl::Duration.
 template <typename Rep, typename Period>
 ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
-    const std::chrono::duration<Rep, Period>& d) {
-  static_assert(IsValidRep64<Rep>(0), "duration::rep is invalid");
-  return FromInt64(int64_t{d.count()}, Period{});
-}
+    const std::chrono::duration<Rep, Period>& d) { return {}; }
 
 template <typename Ratio>
-ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToInt64(Duration d, Ratio) {
-  // Note: This may be used on MSVC, which may have a system_clock period of
-  // std::ratio<1, 10 * 1000 * 1000>
-  return ToInt64Seconds(d * Ratio::den / Ratio::num);
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION int64_t ToInt64(Duration d, Ratio) { __builtin_trap() /* STUB: not implemented */; }
 // Fastpath implementations for the 6 common duration units.
-ABSL_ATTRIBUTE_CONST_FUNCTION inline int64_t ToInt64(Duration d, std::nano) {
-  return ToInt64Nanoseconds(d);
-}
-ABSL_ATTRIBUTE_CONST_FUNCTION inline int64_t ToInt64(Duration d, std::micro) {
-  return ToInt64Microseconds(d);
-}
-ABSL_ATTRIBUTE_CONST_FUNCTION inline int64_t ToInt64(Duration d, std::milli) {
-  return ToInt64Milliseconds(d);
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION inline int64_t ToInt64(Duration d, std::nano) { __builtin_trap() /* STUB: not implemented */; }
+ABSL_ATTRIBUTE_CONST_FUNCTION inline int64_t ToInt64(Duration d, std::micro) { __builtin_trap() /* STUB: not implemented */; }
+ABSL_ATTRIBUTE_CONST_FUNCTION inline int64_t ToInt64(Duration d, std::milli) { __builtin_trap() /* STUB: not implemented */; }
 ABSL_ATTRIBUTE_CONST_FUNCTION inline int64_t ToInt64(Duration d,
-                                                     std::ratio<1>) {
-  return ToInt64Seconds(d);
-}
+                                                     std::ratio<1>) { __builtin_trap() /* STUB: not implemented */; }
 ABSL_ATTRIBUTE_CONST_FUNCTION inline int64_t ToInt64(Duration d,
-                                                     std::ratio<60>) {
-  return ToInt64Minutes(d);
-}
+                                                     std::ratio<60>) { __builtin_trap() /* STUB: not implemented */; }
 ABSL_ATTRIBUTE_CONST_FUNCTION inline int64_t ToInt64(Duration d,
-                                                     std::ratio<3600>) {
-  return ToInt64Hours(d);
-}
+                                                     std::ratio<3600>) { __builtin_trap() /* STUB: not implemented */; }
 
 // Converts an absl::Duration to a chrono duration of type T.
 template <typename T>
-ABSL_ATTRIBUTE_CONST_FUNCTION T ToChronoDuration(Duration d) {
-  using Rep = typename T::rep;
-  using Period = typename T::period;
-  static_assert(IsValidRep64<Rep>(0), "duration::rep is invalid");
-  if (time_internal::IsInfiniteDuration(d))
-    return d < ZeroDuration() ? (T::min)() : (T::max)();
-  const auto v = ToInt64(d, Period{});
-  if (v > (std::numeric_limits<Rep>::max)()) return (T::max)();
-  if (v < (std::numeric_limits<Rep>::min)()) return (T::min)();
-  return T{v};
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION T ToChronoDuration(Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace time_internal
 
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator<(Duration lhs,
-                                                       Duration rhs) {
-  return time_internal::GetRepHi(lhs) != time_internal::GetRepHi(rhs)
-             ? time_internal::GetRepHi(lhs) < time_internal::GetRepHi(rhs)
-         : time_internal::GetRepHi(lhs) == (std::numeric_limits<int64_t>::min)()
-             ? time_internal::GetRepLo(lhs) + 1 <
-                   time_internal::GetRepLo(rhs) + 1
-             : time_internal::GetRepLo(lhs) < time_internal::GetRepLo(rhs);
-}
+                                                       Duration rhs) { return {}; }
 
 #ifdef ABSL_INTERNAL_TIME_HAS_THREE_WAY_COMPARISON
 
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr std::strong_ordering operator<=>(
-    Duration lhs, Duration rhs) {
-  const int64_t lhs_hi = time_internal::GetRepHi(lhs);
-  const int64_t rhs_hi = time_internal::GetRepHi(rhs);
-  if (auto c = lhs_hi <=> rhs_hi; c != std::strong_ordering::equal) {
-    return c;
-  }
-  const uint32_t lhs_lo = time_internal::GetRepLo(lhs);
-  const uint32_t rhs_lo = time_internal::GetRepLo(rhs);
-  return (lhs_hi == (std::numeric_limits<int64_t>::min)())
-             ? (lhs_lo + 1) <=> (rhs_lo + 1)
-             : lhs_lo <=> rhs_lo;
-}
+    Duration lhs, Duration rhs) { return {}; }
 
 #endif  // ABSL_INTERNAL_TIME_HAS_THREE_WAY_COMPARISON
 
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr bool operator==(Duration lhs,
-                                                        Duration rhs) {
-  return time_internal::GetRepHi(lhs) == time_internal::GetRepHi(rhs) &&
-         time_internal::GetRepLo(lhs) == time_internal::GetRepLo(rhs);
-}
+                                                        Duration rhs) { return {}; }
 
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration operator-(Duration d) {
-  // This is a little interesting because of the special cases.
-  //
-  // If rep_lo_ is zero, we have it easy; it's safe to negate rep_hi_, we're
-  // dealing with an integral number of seconds, and the only special case is
-  // the maximum negative finite duration, which can't be negated.
-  //
-  // Infinities stay infinite, and just change direction.
-  //
-  // Finally we're in the case where rep_lo_ is non-zero, and we can borrow
-  // a second's worth of ticks and avoid overflow (as negating int64_t-min + 1
-  // is safe).
-  return time_internal::GetRepLo(d) == 0
-             ? time_internal::GetRepHi(d) ==
-                       (std::numeric_limits<int64_t>::min)()
-                   ? InfiniteDuration()
-                   : time_internal::MakeDuration(-time_internal::GetRepHi(d))
-         : time_internal::IsInfiniteDuration(d)
-             ? time_internal::OppositeInfinity(d)
-             : time_internal::MakeDuration(
-                   time_internal::NegateAndSubtractOne(
-                       time_internal::GetRepHi(d)),
-                   time_internal::kTicksPerSecond - time_internal::GetRepLo(d));
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration operator-(Duration d) { return {}; }
 
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration InfiniteDuration() {
-  return time_internal::MakeDuration((std::numeric_limits<int64_t>::max)(),
-                                     ~uint32_t{0});
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Duration InfiniteDuration() { return {}; }
 
 ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
-    const std::chrono::nanoseconds& d) {
-  return time_internal::FromChrono(d);
-}
+    const std::chrono::nanoseconds& d) { return {}; }
 ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
-    const std::chrono::microseconds& d) {
-  return time_internal::FromChrono(d);
-}
+    const std::chrono::microseconds& d) { return {}; }
 ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
-    const std::chrono::milliseconds& d) {
-  return time_internal::FromChrono(d);
-}
+    const std::chrono::milliseconds& d) { return {}; }
 ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
-    const std::chrono::seconds& d) {
-  return time_internal::FromChrono(d);
-}
+    const std::chrono::seconds& d) { return {}; }
 ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
-    const std::chrono::minutes& d) {
-  return time_internal::FromChrono(d);
-}
+    const std::chrono::minutes& d) { return {}; }
 ABSL_ATTRIBUTE_PURE_FUNCTION constexpr Duration FromChrono(
-    const std::chrono::hours& d) {
-  return time_internal::FromChrono(d);
-}
+    const std::chrono::hours& d) { return {}; }
 
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixNanos(int64_t ns) {
-  return time_internal::FromUnixDuration(Nanoseconds(ns));
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixNanos(int64_t ns) { return {}; }
 
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixMicros(int64_t us) {
-  return time_internal::FromUnixDuration(Microseconds(us));
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixMicros(int64_t us) { return {}; }
 
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixMillis(int64_t ms) {
-  return time_internal::FromUnixDuration(Milliseconds(ms));
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixMillis(int64_t ms) { return {}; }
 
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixSeconds(int64_t s) {
-  return time_internal::FromUnixDuration(Seconds(s));
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromUnixSeconds(int64_t s) { return {}; }
 
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromTimeT(time_t t) {
-  return time_internal::FromUnixDuration(Seconds(t));
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr Time FromTimeT(time_t t) { return {}; }
 
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t ToInt64Nanoseconds(Duration d) {
-  if (time_internal::GetRepHi(d) >= 0 &&
-      time_internal::GetRepHi(d) >> 33 == 0) {
-    return (time_internal::GetRepHi(d) * 1000 * 1000 * 1000) +
-           (time_internal::GetRepLo(d) / time_internal::kTicksPerNanosecond);
-  } else {
-    return d / Nanoseconds(1);
-  }
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t ToInt64Nanoseconds(Duration d) { return {}; }
 
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t ToInt64Microseconds(
-    Duration d) {
-  if (time_internal::GetRepHi(d) >= 0 &&
-      time_internal::GetRepHi(d) >> 43 == 0) {
-    return (time_internal::GetRepHi(d) * 1000 * 1000) +
-           (time_internal::GetRepLo(d) /
-            (time_internal::kTicksPerNanosecond * 1000));
-  } else {
-    return d / Microseconds(1);
-  }
-}
+    Duration d) { return {}; }
 
 ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t ToInt64Milliseconds(
-    Duration d) {
-  if (time_internal::GetRepHi(d) >= 0 &&
-      time_internal::GetRepHi(d) >> 53 == 0) {
-    return (time_internal::GetRepHi(d) * 1000) +
-           (time_internal::GetRepLo(d) /
-            (time_internal::kTicksPerNanosecond * 1000 * 1000));
-  } else {
-    return d / Milliseconds(1);
-  }
-}
+    Duration d) { return {}; }
 
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t ToInt64Seconds(Duration d) {
-  int64_t hi = time_internal::GetRepHi(d);
-  if (time_internal::IsInfiniteDuration(d)) return hi;
-  if (hi < 0 && time_internal::GetRepLo(d) != 0) ++hi;
-  return hi;
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t ToInt64Seconds(Duration d) { return {}; }
 
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t ToInt64Minutes(Duration d) {
-  int64_t hi = time_internal::GetRepHi(d);
-  if (time_internal::IsInfiniteDuration(d)) return hi;
-  if (hi < 0 && time_internal::GetRepLo(d) != 0) ++hi;
-  return hi / 60;
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t ToInt64Minutes(Duration d) { return {}; }
 
-ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t ToInt64Hours(Duration d) {
-  int64_t hi = time_internal::GetRepHi(d);
-  if (time_internal::IsInfiniteDuration(d)) return hi;
-  if (hi < 0 && time_internal::GetRepLo(d) != 0) ++hi;
-  return hi / (60 * 60);
-}
+ABSL_ATTRIBUTE_CONST_FUNCTION constexpr int64_t ToInt64Hours(Duration d) { return {}; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

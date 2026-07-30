@@ -25,49 +25,23 @@
 
 namespace {
 
-void BM_Clock_Now_AbslTime(benchmark::State& state) {
-  while (state.KeepRunning()) {
-    benchmark::DoNotOptimize(absl::Now());
-  }
-}
+void BM_Clock_Now_AbslTime(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_Clock_Now_AbslTime);
 
-void BM_Clock_Now_GetCurrentTimeNanos(benchmark::State& state) {
-  while (state.KeepRunning()) {
-    benchmark::DoNotOptimize(absl::GetCurrentTimeNanos());
-  }
-}
+void BM_Clock_Now_GetCurrentTimeNanos(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_Clock_Now_GetCurrentTimeNanos);
 
-void BM_Clock_Now_AbslTime_ToUnixNanos(benchmark::State& state) {
-  while (state.KeepRunning()) {
-    benchmark::DoNotOptimize(absl::ToUnixNanos(absl::Now()));
-  }
-}
+void BM_Clock_Now_AbslTime_ToUnixNanos(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_Clock_Now_AbslTime_ToUnixNanos);
 
-void BM_Clock_Now_CycleClock(benchmark::State& state) {
-  while (state.KeepRunning()) {
-    benchmark::DoNotOptimize(absl::base_internal::CycleClock::Now());
-  }
-}
+void BM_Clock_Now_CycleClock(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_Clock_Now_CycleClock);
 
 #if !defined(_WIN32)
-static void BM_Clock_Now_gettimeofday(benchmark::State& state) {
-  struct timeval tv;
-  while (state.KeepRunning()) {
-    benchmark::DoNotOptimize(gettimeofday(&tv, nullptr));
-  }
-}
+static void BM_Clock_Now_gettimeofday(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_Clock_Now_gettimeofday);
 
-static void BM_Clock_Now_clock_gettime(benchmark::State& state) {
-  struct timespec ts;
-  while (state.KeepRunning()) {
-    benchmark::DoNotOptimize(clock_gettime(CLOCK_REALTIME, &ts));
-  }
-}
+static void BM_Clock_Now_clock_gettime(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_Clock_Now_clock_gettime);
 #endif  // _WIN32
 

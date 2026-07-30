@@ -28,7 +28,7 @@ namespace not_absl {
 
 class Dummy {
  public:
-  Dummy() {}
+  Dummy() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   Dummy(const Dummy&) = delete;
@@ -173,15 +173,7 @@ TEST(LogHygieneTest, ExpressionEvaluationInStreamedMessage) {
 // -----------------------------------------------------------
 
 class UnbracedSwitchCompileTest {
-  static void Log() {
-    switch (0) {
-      case 0:
-        LOG(INFO);
-        break;
-      default:
-        break;
-    }
-  }
+  static void Log() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 }  // namespace

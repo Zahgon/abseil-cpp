@@ -22,38 +22,18 @@
 
 namespace {
 
-bool IsHardened() {
-  bool hardened = false;
-  ABSL_HARDENING_ASSERT([&hardened]() {
-      hardened = true;
-      return true;
-    }()
-  );
-  return hardened;
-}
+bool IsHardened() { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsHardenedSlow() {
-  bool hardened = false;
-  ABSL_HARDENING_ASSERT_SLOW([&hardened]() {
-      hardened = true;
-      return true;
-    }()
-  );
-  return hardened;
-}
+bool IsHardenedSlow() { __builtin_trap() /* STUB: not implemented */; }
 
 class HardeningTest : public testing::Test {
  public:
-  ~HardeningTest() override {
-    absl::base_internal::SetAbslHardeningEnabled(true);
-  }
+  ~HardeningTest() override { __builtin_trap() /* STUB: not implemented */; }
 };
 
 class HardeningDeathTest : public testing::Test {
  public:
-  ~HardeningDeathTest() override {
-    absl::base_internal::SetAbslHardeningEnabled(true);
-  }
+  ~HardeningDeathTest() override { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST_F(HardeningTest, HardeningAssertSlow) {

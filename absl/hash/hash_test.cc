@@ -75,9 +75,7 @@ class HashValueIntTest : public testing::Test {
 TYPED_TEST_SUITE_P(HashValueIntTest);
 
 template <typename T>
-SpyHashState SpyHash(const T& value) {
-  return SpyHashState::combine(SpyHashState(), value);
-}
+SpyHashState SpyHash(const T& value) { __builtin_trap() /* STUB: not implemented */; }
 
 TYPED_TEST_P(HashValueIntTest, BasicUsage) {
   EXPECT_TRUE((is_hashable<TypeParam>::value));
@@ -323,21 +321,17 @@ TEST(HashValueTest, CombineContiguousWorks) {
 
 struct DummyDeleter {
   template <typename T>
-  void operator() (T*) {}
+  void operator() (T*) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 struct SmartPointerEq {
   template <typename T, typename U>
-  bool operator()(const T& t, const U& u) const {
-    return GetPtr(t) == GetPtr(u);
-  }
+  bool operator()(const T& t, const U& u) const { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
-  static auto GetPtr(const T& t) -> decltype(&*t) {
-    return t ? &*t : nullptr;
-  }
+  static auto GetPtr(const T& t) -> decltype(&*t) { __builtin_trap() /* STUB: not implemented */; }
 
-  static std::nullptr_t GetPtr(std::nullptr_t) { return nullptr; }
+  static std::nullptr_t GetPtr(std::nullptr_t) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(HashValueTest, SmartPointers) {
@@ -382,26 +376,12 @@ TEST(HashValueTest, FunctionPointer) {
 
 struct WrapInTuple {
   template <typename T>
-  std::tuple<int, T, size_t> operator()(const T& t) const {
-    return std::make_tuple(7, t, 0xdeadbeef);
-  }
+  std::tuple<int, T, size_t> operator()(const T& t) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
-absl::Cord FlatCord(absl::string_view sv) {
-  absl::Cord c(sv);
-  c.Flatten();
-  return c;
-}
+absl::Cord FlatCord(absl::string_view sv) { __builtin_trap() /* STUB: not implemented */; }
 
-absl::Cord FragmentedCord(absl::string_view sv) {
-  if (sv.size() < 2) {
-    return absl::Cord(sv);
-  }
-  size_t halfway = sv.size() / 2;
-  std::vector<absl::string_view> parts = {sv.substr(0, halfway),
-                                          sv.substr(halfway)};
-  return absl::MakeFragmentedCord(parts);
-}
+absl::Cord FragmentedCord(absl::string_view sv) { __builtin_trap() /* STUB: not implemented */; }
 
 #ifdef ABSL_HAVE_INTRINSIC_INT128
 TEST(HashValueTest, TestIntrinsicInt128) {
@@ -633,17 +613,11 @@ TEST(HashValueTest, StdBitset) {
 struct Private {
   int i;
   template <typename H>
-  friend H AbslHashValue(H h, Private p) {
-    return H::combine(std::move(h), std::abs(p.i));
-  }
+  friend H AbslHashValue(H h, Private p) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend bool operator==(Private a, Private b) {
-    return std::abs(a.i) == std::abs(b.i);
-  }
+  friend bool operator==(Private a, Private b) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend std::ostream& operator<<(std::ostream& o, Private p) {
-    return o << p.i;
-  }
+  friend std::ostream& operator<<(std::ostream& o, Private p) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // Test helper for combine_piecewise_buffer.  It holds a string_view to the
@@ -653,38 +627,17 @@ class PiecewiseHashTester {
  public:
   // Create a hash view of a buffer to be hashed contiguously.
   explicit PiecewiseHashTester(absl::string_view buf)
-      : buf_(buf), piecewise_(false), split_locations_() {}
+      : buf_(buf), piecewise_(false), split_locations_() { __builtin_trap() /* STUB: not implemented */; }
 
   // Create a hash view of a buffer to be hashed piecewise, with breaks at the
   // given locations.
   PiecewiseHashTester(absl::string_view buf, std::set<size_t> split_locations)
       : buf_(buf),
         piecewise_(true),
-        split_locations_(std::move(split_locations)) {}
+        split_locations_(std::move(split_locations)) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename H>
-  friend H AbslHashValue(H h, const PiecewiseHashTester& p) {
-    if (!p.piecewise_) {
-      return H::combine_contiguous(std::move(h), p.buf_.data(), p.buf_.size());
-    }
-    absl::hash_internal::PiecewiseCombiner combiner;
-    if (p.split_locations_.empty()) {
-      h = combiner.add_buffer(std::move(h), p.buf_.data(), p.buf_.size());
-      return combiner.finalize(std::move(h));
-    }
-    size_t begin = 0;
-    for (size_t next : p.split_locations_) {
-      absl::string_view chunk = p.buf_.substr(begin, next - begin);
-      h = combiner.add_buffer(std::move(h), chunk.data(), chunk.size());
-      begin = next;
-    }
-    absl::string_view last_chunk = p.buf_.substr(begin);
-    if (!last_chunk.empty()) {
-      h = combiner.add_buffer(std::move(h), last_chunk.data(),
-                              last_chunk.size());
-    }
-    return combiner.finalize(std::move(h));
-  }
+  friend H AbslHashValue(H h, const PiecewiseHashTester& p) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   absl::string_view buf_;
@@ -696,13 +649,7 @@ class PiecewiseHashTester {
 // by "bar"
 struct DummyFooBar {
   template <typename H>
-  friend H AbslHashValue(H h, const DummyFooBar&) {
-    const char* foo = "foo";
-    const char* bar = "bar";
-    h = H::combine_contiguous(std::move(h), foo, 3);
-    h = H::combine_contiguous(std::move(h), bar, 3);
-    return h;
-  }
+  friend H AbslHashValue(H h, const DummyFooBar&) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(HashValueTest, CombinePiecewiseBuffer) {
@@ -855,36 +802,24 @@ TEST(IsHashableTest, PoisonHash) {
 // they are named by what their AbslHashValue overload does.
 struct NoOp {
   template <typename HashCode>
-  friend HashCode AbslHashValue(HashCode h, NoOp n) {
-    return h;
-  }
+  friend HashCode AbslHashValue(HashCode h, NoOp n) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 struct EmptyCombine {
   template <typename HashCode>
-  friend HashCode AbslHashValue(HashCode h, EmptyCombine e) {
-    return HashCode::combine(std::move(h));
-  }
+  friend HashCode AbslHashValue(HashCode h, EmptyCombine e) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename Int>
 struct CombineIterative {
   template <typename HashCode>
-  friend HashCode AbslHashValue(HashCode h, CombineIterative c) {
-    for (int i = 0; i < 5; ++i) {
-      h = HashCode::combine(std::move(h), Int(i));
-    }
-    return h;
-  }
+  friend HashCode AbslHashValue(HashCode h, CombineIterative c) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename Int>
 struct CombineVariadic {
   template <typename HashCode>
-  friend HashCode AbslHashValue(HashCode h, CombineVariadic c) {
-    return HashCode::combine(std::move(h), Int(0), Int(1), Int(2), Int(3),
-                             Int(4));
-  }
+  friend HashCode AbslHashValue(HashCode h, CombineVariadic c) { __builtin_trap() /* STUB: not implemented */; }
 };
 enum class InvokeTag {
   kUniquelyRepresented,
@@ -910,7 +845,7 @@ struct MinTag<a> : InvokeTagConstant<a> {};
 
 template <InvokeTag... Tags>
 struct CustomHashType {
-  explicit CustomHashType(size_t val) : value(val) {}
+  explicit CustomHashType(size_t val) : value(val) { __builtin_trap() /* STUB: not implemented */; }
   size_t value;
 };
 
@@ -922,11 +857,7 @@ struct EnableIfContained
 template <
     typename H, InvokeTag... Tags,
     typename = typename EnableIfContained<InvokeTag::kHashValue, Tags...>::type>
-H AbslHashValue(H state, CustomHashType<Tags...> t) {
-  static_assert(MinTag<Tags...>::value == InvokeTag::kHashValue, "");
-  return H::combine(std::move(state),
-                    t.value + static_cast<int>(InvokeTag::kHashValue));
-}
+H AbslHashValue(H state, CustomHashType<Tags...> t) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace
 
@@ -948,10 +879,7 @@ template <InvokeTag... Tags>
 struct hash<CustomHashType<Tags...>> {
   template <InvokeTag... TagsIn, typename = typename EnableIfContained<
                                      InvokeTag::kLegacyHash, TagsIn...>::type>
-  size_t operator()(CustomHashType<TagsIn...> t) const {
-    static_assert(MinTag<Tags...>::value == InvokeTag::kLegacyHash, "");
-    return t.value + static_cast<int>(InvokeTag::kLegacyHash);
-  }
+  size_t operator()(CustomHashType<TagsIn...> t) const { __builtin_trap() /* STUB: not implemented */; }
 };
 }  // namespace ABSL_INTERNAL_LEGACY_HASH_NAMESPACE
 #endif  // ABSL_HASH_INTERNAL_SUPPORT_LEGACY_HASH_
@@ -961,41 +889,19 @@ template <InvokeTag... Tags>  // NOLINT
 struct hash<CustomHashType<Tags...>> {
   template <InvokeTag... TagsIn, typename = typename EnableIfContained<
                                      InvokeTag::kStdHash, TagsIn...>::type>
-  size_t operator()(CustomHashType<TagsIn...> t) const {
-    static_assert(MinTag<Tags...>::value == InvokeTag::kStdHash, "");
-    return t.value + static_cast<int>(InvokeTag::kStdHash);
-  }
+  size_t operator()(CustomHashType<TagsIn...> t) const { __builtin_trap() /* STUB: not implemented */; }
 };
 }  // namespace std
 
 namespace {
 
 template <typename... T>
-void TestCustomHashType(InvokeTagConstant<InvokeTag::kNone>, T...) {
-  using type = CustomHashType<T::value...>;
-  SCOPED_TRACE(testing::PrintToString(std::vector<InvokeTag>{T::value...}));
-  EXPECT_TRUE(is_hashable<type>());
-  EXPECT_TRUE(is_hashable<const type>());
-  EXPECT_TRUE(is_hashable<const type&>());
+void TestCustomHashType(InvokeTagConstant<InvokeTag::kNone>, T...) { __builtin_trap() /* STUB: not implemented */; }
 
-  const size_t offset = static_cast<int>(std::min({T::value...}));
-  EXPECT_EQ(SpyHash(type(7)), SpyHash(size_t{7 + offset}));
-}
-
-void TestCustomHashType(InvokeTagConstant<InvokeTag::kNone>) {
-  // is_hashable is false if we don't support any of the hooks.
-  using type = CustomHashType<>;
-  EXPECT_FALSE(is_hashable<type>());
-  EXPECT_FALSE(is_hashable<const type>());
-  EXPECT_FALSE(is_hashable<const type&>());
-}
+void TestCustomHashType(InvokeTagConstant<InvokeTag::kNone>) { __builtin_trap() /* STUB: not implemented */; }
 
 template <InvokeTag Tag, typename... T>
-void TestCustomHashType(InvokeTagConstant<Tag> tag, T... t) {
-  constexpr auto next = static_cast<InvokeTag>(static_cast<int>(Tag) + 1);
-  TestCustomHashType(InvokeTagConstant<next>(), tag, t...);
-  TestCustomHashType(InvokeTagConstant<next>(), t...);
-}
+void TestCustomHashType(InvokeTagConstant<Tag> tag, T... t) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(HashTest, CustomHashType) {
   TestCustomHashType(InvokeTagConstant<InvokeTag{}>());
@@ -1034,9 +940,7 @@ struct StructWithPadding {
   int i;
 
   template <typename H>
-  friend H AbslHashValue(H hash_state, const StructWithPadding& s) {
-    return H::combine(std::move(hash_state), s.c, s.i);
-  }
+  friend H AbslHashValue(H hash_state, const StructWithPadding& s) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 static_assert(sizeof(StructWithPadding) > sizeof(char) + sizeof(int),
@@ -1052,12 +956,7 @@ struct ArraySlice {
   T* end;
 
   template <typename H>
-  friend H AbslHashValue(H hash_state, const ArraySlice& slice) {
-    for (auto t = slice.begin; t != slice.end; ++t) {
-      hash_state = H::combine(std::move(hash_state), *t);
-    }
-    return hash_state;
-  }
+  friend H AbslHashValue(H hash_state, const ArraySlice& slice) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(HashTest, HashNonUniquelyRepresentedType) {
@@ -1097,12 +996,10 @@ TEST(HashTest, StandardHashContainerUsage) {
 }
 
 struct ConvertibleFromNoOp {
-  ConvertibleFromNoOp(NoOp) {}  // NOLINT(runtime/explicit)
+  ConvertibleFromNoOp(NoOp) { __builtin_trap() /* STUB: not implemented */; }  // NOLINT(runtime/explicit)
 
   template <typename H>
-  friend H AbslHashValue(H hash_state, ConvertibleFromNoOp) {
-    return H::combine(std::move(hash_state), 1);
-  }
+  friend H AbslHashValue(H hash_state, ConvertibleFromNoOp) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(HashTest, HeterogeneousCall) {
@@ -1124,10 +1021,7 @@ struct IntAndString {
   std::string s;
 
   template <typename H>
-  friend H AbslHashValue(H hash_state, IntAndString int_and_string) {
-    return H::combine(std::move(hash_state), int_and_string.s,
-                      int_and_string.i);
-  }
+  friend H AbslHashValue(H hash_state, IntAndString int_and_string) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(HashTest, SmallValueOn64ByteBoundary) {
@@ -1154,7 +1048,7 @@ TEST(HashTest, TypeErased) {
 }
 
 struct ValueWithBoolConversion {
-  operator bool() const { return false; }
+  operator bool() const { __builtin_trap() /* STUB: not implemented */; }
   int i;
 };
 
@@ -1162,9 +1056,7 @@ struct ValueWithBoolConversion {
 namespace std {
 template <>
 struct hash<ValueWithBoolConversion> {
-  size_t operator()(ValueWithBoolConversion v) {
-    return static_cast<size_t>(v.i);
-  }
+  size_t operator()(ValueWithBoolConversion v) { __builtin_trap() /* STUB: not implemented */; }
 };
 }  // namespace std
 
@@ -1208,13 +1100,9 @@ TEST(HashOf, MatchesHashOfTupleForMultipleArguments) {
 }
 
 template <typename T>
-std::true_type HashOfExplicitParameter(decltype(absl::HashOf<T>(0))) {
-  return {};
-}
+std::true_type HashOfExplicitParameter(decltype(absl::HashOf<T>(0))) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T>
-std::false_type HashOfExplicitParameter(size_t) {
-  return {};
-}
+std::false_type HashOfExplicitParameter(size_t) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(HashOf, CantPassExplicitTemplateParameters) {
   EXPECT_FALSE(HashOfExplicitParameter<int>(0));
@@ -1225,11 +1113,7 @@ struct TypeErasedHashStateUser {
   std::string b;
 
   template <typename H>
-  friend H AbslHashValue(H state, const TypeErasedHashStateUser& value) {
-    absl::HashState type_erased_state = absl::HashState::Create(&state);
-    absl::HashState::combine(std::move(type_erased_state), value.a, value.b);
-    return state;
-  }
+  friend H AbslHashValue(H state, const TypeErasedHashStateUser& value) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(HashOf, MatchesTypeErasedHashState) {
@@ -1243,9 +1127,7 @@ struct AutoReturnTypeUser {
   std::string b;
 
   template <typename H>
-  friend auto AbslHashValue(H state, const AutoReturnTypeUser& value) {
-    return H::combine(std::move(state), value.a, value.b);
-  }
+  friend auto AbslHashValue(H state, const AutoReturnTypeUser& value) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(HashOf, AutoReturnTypeUser) {

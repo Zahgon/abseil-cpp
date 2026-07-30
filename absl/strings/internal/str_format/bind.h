@@ -40,8 +40,8 @@ namespace str_format_internal {
 
 class BoundConversion : public FormatConversionSpecImpl {
  public:
-  const FormatArgImpl* arg() const { return arg_; }
-  void set_arg(const FormatArgImpl* a) { arg_ = a; }
+  const FormatArgImpl* arg() const { __builtin_trap() /* STUB: not implemented */; }
+  void set_arg(const FormatArgImpl* a) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   const FormatArgImpl* arg_;
@@ -53,26 +53,18 @@ class UntypedFormatSpecImpl {
   UntypedFormatSpecImpl() = delete;
 
   explicit UntypedFormatSpecImpl(string_view s)
-      : data_(s.data()), size_(s.size()) {}
+      : data_(s.data()), size_(s.size()) { __builtin_trap() /* STUB: not implemented */; }
   explicit UntypedFormatSpecImpl(
       const str_format_internal::ParsedFormatBase* pc)
-      : data_(pc), size_(~size_t{}) {}
+      : data_(pc), size_(~size_t{}) { __builtin_trap() /* STUB: not implemented */; }
 
-  bool has_parsed_conversion() const { return size_ == ~size_t{}; }
+  bool has_parsed_conversion() const { __builtin_trap() /* STUB: not implemented */; }
 
-  string_view str() const {
-    assert(!has_parsed_conversion());
-    return string_view(static_cast<const char*>(data_), size_);
-  }
-  const str_format_internal::ParsedFormatBase* parsed_conversion() const {
-    assert(has_parsed_conversion());
-    return static_cast<const str_format_internal::ParsedFormatBase*>(data_);
-  }
+  string_view str() const { __builtin_trap() /* STUB: not implemented */; }
+  const str_format_internal::ParsedFormatBase* parsed_conversion() const { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
-  static const UntypedFormatSpecImpl& Extract(const T& s) {
-    return s.spec_;
-  }
+  static const UntypedFormatSpecImpl& Extract(const T& s) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   const void* data_;
@@ -94,7 +86,7 @@ class FormatSpecTemplate
 
   template <bool res>
   struct ErrorMaker {
-    constexpr bool operator()(int) const { return res; }
+    constexpr bool operator()(int) const { return {}; }
   };
 
   template <int i, int j>
@@ -116,11 +108,7 @@ class FormatSpecTemplate
   }
 
   template <FormatConversionCharSet... C, size_t... I>
-  static bool CheckMatches(std::index_sequence<I...>) {
-    bool res[] = {true, CheckMatch<Args, C, I + 1>()...};
-    (void)res;
-    return true;
-  }
+  static bool CheckMatches(std::index_sequence<I...>) { __builtin_trap() /* STUB: not implemented */; }
 
  public:
 #ifdef ABSL_INTERNAL_ENABLE_FORMAT_CHECKER
@@ -148,46 +136,38 @@ class FormatSpecTemplate
   FormatSpecTemplate(string_view s)  // NOLINT
       __attribute__((enable_if(str_format_internal::EnsureConstexpr(s),
                                "constexpr trap")))
-      : Base("to avoid noise in the compiler error") {
-    static_assert(sizeof(T*) == 0,
-                  "Format specified does not match the arguments passed.");
-  }
+      : Base("to avoid noise in the compiler error") { }
 
   // Good format overload.
   FormatSpecTemplate(const char* s)  // NOLINT
       __attribute__((enable_if(ValidFormatImpl<Args...>(s), "bad format trap")))
-      : Base(s) {}
+      : Base(s) { __builtin_trap() /* STUB: not implemented */; }
 
   FormatSpecTemplate(string_view s)  // NOLINT
       __attribute__((enable_if(ValidFormatImpl<Args...>(s), "bad format trap")))
-      : Base(s) {}
+      : Base(s) { __builtin_trap() /* STUB: not implemented */; }
 
 #else  // ABSL_INTERNAL_ENABLE_FORMAT_CHECKER
 
-  FormatSpecTemplate(const char* s) : Base(s) {}  // NOLINT
-  FormatSpecTemplate(string_view s) : Base(s) {}  // NOLINT
+  FormatSpecTemplate(const char* s) : Base(s) { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
+  FormatSpecTemplate(string_view s) : Base(s) { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
 
 #endif  // ABSL_INTERNAL_ENABLE_FORMAT_CHECKER
 
   template <FormatConversionCharSet... C>
   FormatSpecTemplate(const ExtendedParsedFormat<C...>& pc)  // NOLINT
-      : Base(&pc) {
-    CheckArity<sizeof...(C), sizeof...(Args)>();
-    CheckMatches<C...>(std::make_index_sequence<sizeof...(C)>{});
-  }
+      : Base(&pc) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 class Streamable {
  public:
   Streamable(const UntypedFormatSpecImpl& format,
              absl::Span<const FormatArgImpl> args)
-      : format_(format), args_(args.begin(), args.end()) {}
+      : format_(format), args_(args.begin(), args.end()) { __builtin_trap() /* STUB: not implemented */; }
 
   std::ostream& Print(std::ostream& os) const;
 
-  friend std::ostream& operator<<(std::ostream& os, const Streamable& l) {
-    return l.Print(os);
-  }
+  friend std::ostream& operator<<(std::ostream& os, const Streamable& l) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   const UntypedFormatSpecImpl& format_;
@@ -219,7 +199,7 @@ int SnprintF(char* output, size_t size, UntypedFormatSpecImpl format,
 template <typename T>
 class StreamedWrapper {
  public:
-  explicit StreamedWrapper(const T& v) : v_(v) {}
+  explicit StreamedWrapper(const T& v) : v_(v) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   template <typename S>

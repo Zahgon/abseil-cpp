@@ -580,177 +580,36 @@ constexpr size_t chunked_queue<T, BLo, BHi, Allocator>::kBlockSizeMax;
 
 template <typename T, size_t BLo, size_t BHi, typename Allocator>
 inline void swap(chunked_queue<T, BLo, BHi, Allocator>& a,
-                 chunked_queue<T, BLo, BHi, Allocator>& b) noexcept {
-  a.swap(b);
-}
+                 chunked_queue<T, BLo, BHi, Allocator>& b) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, size_t BLo, size_t BHi, typename Allocator>
 chunked_queue<T, BLo, BHi, Allocator>&
 chunked_queue<T, BLo, BHi, Allocator>::operator=(
-    chunked_queue&& other) noexcept {
-  if (this == &other) {
-    return *this;
-  }
-  DestroyAndDeallocateAll();
-
-  if constexpr (AllocatorTraits::propagate_on_container_move_assignment::
-                    value) {
-    // Take over the storage of "other", along with its allocator.
-    head_ = other.head_;
-    tail_ = other.tail_;
-    alloc_and_size_ = std::move(other.alloc_and_size_);
-    other.head_ = {};
-    other.tail_ = {};
-    other.alloc_and_size_.size = 0;
-  } else if (get_allocator() == other.get_allocator()) {
-    // Take over the storage of "other", with which we share an allocator.
-    head_ = other.head_;
-    tail_ = other.tail_;
-    alloc_and_size_.size = other.alloc_and_size_.size;
-    other.head_ = {};
-    other.tail_ = {};
-    other.alloc_and_size_.size = 0;
-  } else {
-    // We cannot take over of the storage from "other", since it has a different
-    // allocator; we're stuck move-assigning elements individually.
-    for (auto& elem : other) {
-      push_back(std::move(elem));
-    }
-  }
-  return *this;
-}
+    chunked_queue&& other) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, size_t BLo, size_t BHi, typename Allocator>
-inline chunked_queue<T, BLo, BHi, Allocator>::~chunked_queue() {
-  Block* b = head_.block;
-  while (b) {
-    Block* next = b->next();
-    Destroy(block_begin(b), block_end(b));
-    Block::Delete(b, &alloc_and_size_.allocator());
-    b = next;
-  }
-}
+inline chunked_queue<T, BLo, BHi, Allocator>::~chunked_queue() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, size_t BLo, size_t BHi, typename Allocator>
-void chunked_queue<T, BLo, BHi, Allocator>::resize(size_t new_size) {
-  while (new_size > size()) {
-    if (tail_.ptr == tail_.limit) {
-      AddTailBlock();
-    }
-    size_t to_add = (std::min)(new_size - size(),
-                               static_cast<size_t>(tail_.limit - tail_.ptr));
-    T* start = tail_.ptr;
-    T* limit = start + to_add;
-    Construct(start, limit);
-    tail_.ptr = limit;
-    alloc_and_size_.size += to_add;
-  }
-  if (size() == new_size) {
-    return;
-  }
-  ABSL_ASSERT(new_size < size());
-  auto new_end = begin();
-  new_end.IncrBy(new_size);
-  ABSL_ASSERT(new_end != end());
-  EraseAllFrom(new_end);
-}
+void chunked_queue<T, BLo, BHi, Allocator>::resize(size_t new_size) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, size_t BLo, size_t BHi, typename Allocator>
-inline void chunked_queue<T, BLo, BHi, Allocator>::AddTailBlock() {
-  ABSL_ASSERT(tail_.ptr == tail_.limit);
-  auto* b = Block::New(NewBlockSize(), &alloc_and_size_.allocator());
-  if (!head_.block) {
-    ABSL_ASSERT(!tail_.block);
-    head_ = iterator(b);
-  } else {
-    ABSL_ASSERT(tail_.block);
-    tail_.block->set_next(b);
-  }
-  tail_ = iterator(b);
-}
+inline void chunked_queue<T, BLo, BHi, Allocator>::AddTailBlock() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, size_t BLo, size_t BHi, typename Allocator>
-inline T* chunked_queue<T, BLo, BHi, Allocator>::AllocateBack() {
-  if (tail_.ptr == tail_.limit) {
-    AddTailBlock();
-  }
-  return tail_.ptr;
-}
+inline T* chunked_queue<T, BLo, BHi, Allocator>::AllocateBack() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, size_t BLo, size_t BHi, typename Allocator>
-inline void chunked_queue<T, BLo, BHi, Allocator>::EraseAllFrom(iterator i) {
-  if (!i.block) {
-    return;
-  }
-  ABSL_ASSERT(i.ptr);
-  ABSL_ASSERT(i.limit);
-  alloc_and_size_.size -= Destroy(i.ptr, block_end(i.block));
-  Block* b = i.block->next();
-  while (b) {
-    Block* next = b->next();
-    alloc_and_size_.size -= Destroy(b->start(), block_end(b));
-    Block::Delete(b, &alloc_and_size_.allocator());
-    b = next;
-  }
-  tail_ = i;
-  tail_.block->set_next(nullptr);
-}
+inline void chunked_queue<T, BLo, BHi, Allocator>::EraseAllFrom(iterator i) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, size_t BLo, size_t BHi, typename Allocator>
-inline void chunked_queue<T, BLo, BHi, Allocator>::DestroyAndDeallocateAll() {
-  Block* b = head_.block;
-  while (b) {
-    Block* next = b->next();
-    Destroy(block_begin(b), block_end(b));
-    Block::Delete(b, &alloc_and_size_.allocator());
-    b = next;
-  }
-  head_ = iterator();
-  tail_ = iterator();
-  alloc_and_size_.size = 0;
-}
+inline void chunked_queue<T, BLo, BHi, Allocator>::DestroyAndDeallocateAll() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, size_t BLo, size_t BHi, typename Allocator>
-inline void chunked_queue<T, BLo, BHi, Allocator>::pop_front() {
-  absl::base_internal::HardeningAssertNonEmpty(*this);
-  ABSL_ASSERT(head_.block);
-  AllocatorTraits::destroy(alloc_and_size_.allocator(), head_.ptr);
-  ++head_.ptr;
-  --alloc_and_size_.size;
-  if (empty()) {
-    // Reset head and tail to the start of the (only) block.
-    ABSL_ASSERT(head_.block == tail_.block);
-    head_.ptr = tail_.ptr = head_.block->start();
-    return;
-  }
-  if (head_.ptr == head_.limit) {
-    Block* n = head_.block->next();
-    Block::Delete(head_.block, &alloc_and_size_.allocator());
-    head_ = iterator(n);
-  }
-}
+inline void chunked_queue<T, BLo, BHi, Allocator>::pop_front() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, size_t BLo, size_t BHi, typename Allocator>
-void chunked_queue<T, BLo, BHi, Allocator>::clear() {
-  // NOTE: As an optimization we leave one block allocated.
-  Block* b = head_.block;
-  if (!b) {
-    ABSL_ASSERT(empty());
-    return;
-  }
-  while (b) {
-    Block* next = b->next();
-    Destroy(block_begin(b), block_end(b));
-    if (head_.block != b) {
-      Block::Delete(b, &alloc_and_size_.allocator());
-    }
-    b = next;
-  }
-  b = head_.block;
-  b->set_next(nullptr);
-  head_ = tail_ = iterator(b);
-  alloc_and_size_.size = 0;
-}
+void chunked_queue<T, BLo, BHi, Allocator>::clear() { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

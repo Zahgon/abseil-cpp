@@ -95,24 +95,12 @@ crc32c_t ExtendCrc32cInternal(crc32c_t initial_crc,
 //
 // This operation has a runtime cost of O(`buf_to_add.size()`)
 inline crc32c_t ExtendCrc32c(crc32c_t initial_crc,
-                             absl::string_view buf_to_add) {
-  // Approximately 75% of calls have size <= 64.
-  if (buf_to_add.size() <= 64) {
-    uint32_t crc = static_cast<uint32_t>(initial_crc);
-    if (crc_internal::ExtendCrc32cInline(&crc, buf_to_add.data(),
-                                         buf_to_add.size())) {
-      return crc32c_t{crc};
-    }
-  }
-  return crc_internal::ExtendCrc32cInternal(initial_crc, buf_to_add);
-}
+                             absl::string_view buf_to_add) { __builtin_trap() /* STUB: not implemented */; }
 
 // ComputeCrc32c()
 //
 // Returns the CRC32C value of the provided string.
-inline crc32c_t ComputeCrc32c(absl::string_view buf) {
-  return ExtendCrc32c(crc32c_t{0}, buf);
-}
+inline crc32c_t ComputeCrc32c(absl::string_view buf) { __builtin_trap() /* STUB: not implemented */; }
 
 // ExtendCrc32cByZeroes()
 //
@@ -182,9 +170,7 @@ crc32c_t RemoveCrc32cSuffix(crc32c_t full_string_crc, crc32c_t suffix_crc,
 // operator<<
 //
 // Streams the CRC32C value `crc` to the stream `os`.
-inline std::ostream& operator<<(std::ostream& os, crc32c_t crc) {
-  return os << absl::StreamFormat("%08x", static_cast<uint32_t>(crc));
-}
+inline std::ostream& operator<<(std::ostream& os, crc32c_t crc) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

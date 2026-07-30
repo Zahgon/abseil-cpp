@@ -31,42 +31,7 @@ namespace {
 using ::absl::random_internal::ExplicitSeedSeq;
 
 template <typename Sseq>
-bool ConformsToInterface() {
-  // Check that the SeedSequence can be default-constructed.
-  {
-    Sseq default_constructed_seq;
-  }
-  // Check that the SeedSequence can be constructed with two iterators.
-  {
-    uint32_t init_array[] = {1, 3, 5, 7, 9};
-    Sseq iterator_constructed_seq(init_array, &init_array[5]);
-  }
-  // Check that the SeedSequence can be std::initializer_list-constructed.
-  {
-    Sseq list_constructed_seq = {1, 3, 5, 7, 9, 11, 13};
-  }
-  // Check that param() and size() return state provided to constructor.
-  {
-    uint32_t init_array[] = {1, 2, 3, 4, 5};
-    Sseq seq(init_array, &init_array[ABSL_ARRAYSIZE(init_array)]);
-    EXPECT_EQ(seq.size(), ABSL_ARRAYSIZE(init_array));
-
-    uint32_t state_array[ABSL_ARRAYSIZE(init_array)];
-    seq.param(state_array);
-
-    for (int i = 0; i < ABSL_ARRAYSIZE(state_array); i++) {
-      EXPECT_EQ(state_array[i], i + 1);
-    }
-  }
-  // Check for presence of generate() method.
-  {
-    Sseq seq;
-    uint32_t seeds[5];
-
-    seq.generate(seeds, &seeds[ABSL_ARRAYSIZE(seeds)]);
-  }
-  return true;
-}
+bool ConformsToInterface() { __builtin_trap() /* STUB: not implemented */; }
 }  // namespace
 
 TEST(SeedSequences, CheckInterfaces) {

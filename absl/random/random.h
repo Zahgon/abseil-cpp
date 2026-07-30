@@ -96,45 +96,7 @@ ABSL_NAMESPACE_BEGIN
 //
 // This type is thread-compatible, but not thread-safe.
 class BitGen : private random_internal::NonsecureURBGBase<
-                   random_internal::randen_engine<uint64_t>> {
-  using Base = random_internal::NonsecureURBGBase<
-      random_internal::randen_engine<uint64_t>>;
-
- public:
-  using result_type = typename Base::result_type;
-
-  // BitGen()
-  // BitGen(SeedSequence seed_seq)
-  //
-  // Copy disallowed.
-  // Move allowed.
-  using Base::Base;
-  using Base::operator=;
-
-  // BitGen::min()
-  //
-  // Returns the smallest possible value from this bit generator.
-  using Base::min;
-
-  // BitGen::max()
-  //
-  // Returns the largest possible value from this bit generator.
-  using Base::max;
-
-  // BitGen::discard(num)
-  //
-  // Advances the internal state of this bit generator by `num` times, and
-  // discards the intermediate results.
-  using Base::discard;
-
-  // BitGen::operator()()
-  //
-  // Invoke the URBG, returning a generated value.
-  using Base::operator();
-
-  using Base::operator==;
-  using Base::operator!=;
-};
+                   random_internal::randen_engine<uint64_t>> { __builtin_trap() /* STUB: not implemented */; };
 
 // -----------------------------------------------------------------------------
 // absl::InsecureBitGen

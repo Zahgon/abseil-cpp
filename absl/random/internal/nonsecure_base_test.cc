@@ -37,7 +37,7 @@ using ExampleNonsecureURBG =
     absl::random_internal::NonsecureURBGBase<std::mt19937>;
 
 template <typename T>
-void Use(const T&) {}
+void Use(const T&) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace
 

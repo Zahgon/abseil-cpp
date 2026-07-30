@@ -491,9 +491,7 @@ class ABSL_ATTRIBUTE_OWNER node_hash_set
 // Returns the number of erased elements.
 template <typename T, typename H, typename E, typename A, typename Predicate>
 typename node_hash_set<T, H, E, A>::size_type erase_if(
-    node_hash_set<T, H, E, A>& c, Predicate pred) {
-  return container_internal::EraseIf(pred, &c);
-}
+    node_hash_set<T, H, E, A>& c, Predicate pred) { __builtin_trap() /* STUB: not implemented */; }
 
 // swap(node_hash_set<>, node_hash_set<>)
 //
@@ -506,9 +504,7 @@ typename node_hash_set<T, H, E, A>::size_type erase_if(
 // `std::swap` will be preferred by compiler.
 template <typename T, typename H, typename E, typename A>
 void swap(node_hash_set<T, H, E, A>& x,
-          node_hash_set<T, H, E, A>& y) noexcept(noexcept(x.swap(y))) {
-  return x.swap(y);
-}
+          node_hash_set<T, H, E, A>& y) noexcept(noexcept(x.swap(y))) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace container_internal {
 
@@ -520,22 +516,13 @@ namespace container_internal {
 // Erasure and/or insertion of elements in the function is not allowed.
 template <typename T, typename H, typename E, typename A, typename Function>
 std::decay_t<Function> c_for_each_fast(const node_hash_set<T, H, E, A>& c,
-                                       Function&& f) {
-  container_internal::ForEach(f, &c);
-  return f;
-}
+                                       Function&& f) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T, typename H, typename E, typename A, typename Function>
 std::decay_t<Function> c_for_each_fast(node_hash_set<T, H, E, A>& c,
-                                       Function&& f) {
-  container_internal::ForEach(f, &c);
-  return f;
-}
+                                       Function&& f) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T, typename H, typename E, typename A, typename Function>
 std::decay_t<Function> c_for_each_fast(node_hash_set<T, H, E, A>&& c,
-                                       Function&& f) {
-  container_internal::ForEach(f, &c);
-  return f;
-}
+                                       Function&& f) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace container_internal
 
@@ -553,39 +540,20 @@ struct NodeHashSetPolicy
   using DefaultAlloc = std::allocator<T>;
 
   template <class Allocator, class... Args>
-  static T* new_element(Allocator* alloc, Args&&... args) {
-    using ValueAlloc =
-        typename std::allocator_traits<Allocator>::template rebind_alloc<T>;
-    ValueAlloc value_alloc(*alloc);
-    T* res = std::allocator_traits<ValueAlloc>::allocate(value_alloc, 1);
-    std::allocator_traits<ValueAlloc>::construct(value_alloc, res,
-                                                 std::forward<Args>(args)...);
-    return res;
-  }
+  static T* new_element(Allocator* alloc, Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class Allocator>
-  static void delete_element(Allocator* alloc, T* elem) {
-    using ValueAlloc =
-        typename std::allocator_traits<Allocator>::template rebind_alloc<T>;
-    ValueAlloc value_alloc(*alloc);
-    std::allocator_traits<ValueAlloc>::destroy(value_alloc, elem);
-    std::allocator_traits<ValueAlloc>::deallocate(value_alloc, elem, 1);
-  }
+  static void delete_element(Allocator* alloc, T* elem) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class F, class... Args>
   static decltype(absl::container_internal::DecomposeValue(
       std::declval<F>(), std::declval<Args>()...))
-  apply(F&& f, Args&&... args) {
-    return absl::container_internal::DecomposeValue(
-        std::forward<F>(f), std::forward<Args>(args)...);
-  }
+  apply(F&& f, Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
-  static size_t element_space_used(const T*) { return sizeof(T); }
+  static size_t element_space_used(const T*) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class Hash, bool kIsDefault>
-  static constexpr HashSlotFn get_hash_slot_fn() {
-    return &TypeErasedDerefAndApplyToSlotFn<Hash, T, kIsDefault>;
-  }
+  static constexpr HashSlotFn get_hash_slot_fn() { return {}; }
 };
 }  // namespace container_internal
 

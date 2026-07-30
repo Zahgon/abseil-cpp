@@ -40,19 +40,14 @@ using std::string_view;
 // Like `s.substr(pos, n)`, but clips `pos` to an upper bound of `s.size()`.
 // Provided because std::string_view::substr throws if `pos > size()`
 inline string_view ClippedSubstr(string_view s ABSL_ATTRIBUTE_LIFETIME_BOUND,
-                                 size_t pos, size_t n = string_view::npos) {
-  pos = (std::min)(pos, static_cast<size_t>(s.size()));
-  return s.substr(pos, n);
-}
+                                 size_t pos, size_t n = string_view::npos) { __builtin_trap() /* STUB: not implemented */; }
 
 // NullSafeStringView()
 //
 // Creates an `absl::string_view` from a pointer `p` even if it's null-valued.
 // This function should be used where an `absl::string_view` can be created from
 // a possibly-null pointer.
-constexpr string_view NullSafeStringView(const char* absl_nullable p) {
-  return p ? string_view(p) : string_view();
-}
+constexpr string_view NullSafeStringView(const char* absl_nullable p) { return {}; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

@@ -55,37 +55,7 @@ ABSL_NAMESPACE_BEGIN
 //   MyTestClock test_clock(SATURDAY);
 //   IsWeekend(test_clock);
 //
-class Clock {
- public:
-  // Returns a reference to the global realtime clock.
-  // The returned clock is thread-safe.
-  static Clock& GetRealClock();
-
-  virtual ~Clock();
-
-  // Returns the current time.
-  virtual absl::Time TimeNow() = 0;
-
-  // Sleeps for the specified duration.
-  virtual void Sleep(absl::Duration d) = 0;
-
-  // Sleeps until the specified time.
-  virtual void SleepUntil(absl::Time wakeup_time) = 0;
-
-  // Returns when cond is true or the deadline has passed.  Returns true iff
-  // cond holds when returning.
-  //
-  // Requires *mu to be held at least in shared mode.  It will be held when
-  // evaluating cond, and upon return, but it may be released and reacquired
-  // in the meantime.
-  //
-  // This method is similar to mu->AwaitWithDeadline() except that the
-  // latter only works with real-time deadlines.  This call works properly
-  // with simulated time if invoked on a simulated clock.
-  virtual bool AwaitWithDeadline(absl::Mutex* absl_nonnull mu,
-                                 const absl::Condition& cond,
-                                 absl::Time deadline) = 0;
-};
+class Clock { __builtin_trap() /* STUB: not implemented */; };
 
 ABSL_NAMESPACE_END
 }  // namespace absl

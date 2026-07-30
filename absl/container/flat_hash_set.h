@@ -502,9 +502,7 @@ class ABSL_ATTRIBUTE_OWNER flat_hash_set
 // Returns the number of erased elements.
 template <typename T, typename H, typename E, typename A, typename Predicate>
 typename flat_hash_set<T, H, E, A>::size_type erase_if(
-    flat_hash_set<T, H, E, A>& c, Predicate pred) {
-  return container_internal::EraseIf(pred, &c);
-}
+    flat_hash_set<T, H, E, A>& c, Predicate pred) { __builtin_trap() /* STUB: not implemented */; }
 
 // swap(flat_hash_set<>, flat_hash_set<>)
 //
@@ -517,9 +515,7 @@ typename flat_hash_set<T, H, E, A>::size_type erase_if(
 // `std::swap` will be preferred by compiler.
 template <typename T, typename H, typename E, typename A>
 void swap(flat_hash_set<T, H, E, A>& x,
-          flat_hash_set<T, H, E, A>& y) noexcept(noexcept(x.swap(y))) {
-  return x.swap(y);
-}
+          flat_hash_set<T, H, E, A>& y) noexcept(noexcept(x.swap(y))) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace container_internal {
 
@@ -531,22 +527,13 @@ namespace container_internal {
 // Erasure and/or insertion of elements in the function is not allowed.
 template <typename T, typename H, typename E, typename A, typename Function>
 std::decay_t<Function> c_for_each_fast(const flat_hash_set<T, H, E, A>& c,
-                                       Function&& f) {
-  container_internal::ForEach(f, &c);
-  return f;
-}
+                                       Function&& f) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T, typename H, typename E, typename A, typename Function>
 std::decay_t<Function> c_for_each_fast(flat_hash_set<T, H, E, A>& c,
-                                       Function&& f) {
-  container_internal::ForEach(f, &c);
-  return f;
-}
+                                       Function&& f) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T, typename H, typename E, typename A, typename Function>
 std::decay_t<Function> c_for_each_fast(flat_hash_set<T, H, E, A>&& c,
-                                       Function&& f) {
-  container_internal::ForEach(f, &c);
-  return f;
-}
+                                       Function&& f) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace container_internal
 
@@ -564,34 +551,23 @@ struct FlatHashSetPolicy {
   using DefaultAlloc = std::allocator<T>;
 
   template <class Allocator, class... Args>
-  static void construct(Allocator* alloc, slot_type* slot, Args&&... args) {
-    std::allocator_traits<Allocator>::construct(*alloc, slot,
-                                                std::forward<Args>(args)...);
-  }
+  static void construct(Allocator* alloc, slot_type* slot, Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
   // Return std::true_type in case destroy is trivial.
   template <class Allocator>
-  static auto destroy(Allocator* alloc, slot_type* slot) {
-    std::allocator_traits<Allocator>::destroy(*alloc, slot);
-    return IsDestructionTrivial<Allocator, slot_type>();
-  }
+  static auto destroy(Allocator* alloc, slot_type* slot) { __builtin_trap() /* STUB: not implemented */; }
 
-  static T& element(slot_type* slot) { return *slot; }
+  static T& element(slot_type* slot) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class F, class... Args>
   static decltype(absl::container_internal::DecomposeValue(
       std::declval<F>(), std::declval<Args>()...))
-  apply(F&& f, Args&&... args) {
-    return absl::container_internal::DecomposeValue(
-        std::forward<F>(f), std::forward<Args>(args)...);
-  }
+  apply(F&& f, Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
-  static size_t space_used(const T*) { return 0; }
+  static size_t space_used(const T*) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class Hash, bool kIsDefault>
-  static constexpr HashSlotFn get_hash_slot_fn() {
-    return &TypeErasedApplyToSlotFn<Hash, T, kIsDefault>;
-  }
+  static constexpr HashSlotFn get_hash_slot_fn() { return {}; }
 };
 }  // namespace container_internal
 

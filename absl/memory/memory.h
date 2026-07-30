@@ -69,11 +69,7 @@ ABSL_NAMESPACE_BEGIN
 // arrays, functions or void, and it must not be used to capture pointers
 // obtained from array-new expressions (even though that would compile!).
 template <typename T>
-std::unique_ptr<T> WrapUnique(T* ptr) {
-  static_assert(!std::is_array_v<T>, "array types are unsupported");
-  static_assert(std::is_object_v<T>, "non-object types are unsupported");
-  return std::unique_ptr<T>(ptr);
-}
+std::unique_ptr<T> WrapUnique(T* ptr) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // Function Template: make_unique<T>()
@@ -128,9 +124,7 @@ struct MakeUniqueResult<T[N]> {
 // `absl::make_unique_for_overwrite` overload for non-array types.
 template <typename T>
 typename memory_internal::MakeUniqueResult<T>::scalar
-make_unique_for_overwrite() {
-  return std::unique_ptr<T>(new T);
-}
+make_unique_for_overwrite() { __builtin_trap() /* STUB: not implemented */; }
 
 // `absl::make_unique_for_overwrite` overload for an array T[] of unknown
 // bounds. The array allocation needs to use the `new T[size]` form and cannot
@@ -138,9 +132,7 @@ make_unique_for_overwrite() {
 // destructing these array elements.
 template <typename T>
 typename memory_internal::MakeUniqueResult<T>::array make_unique_for_overwrite(
-    size_t n) {
-  return std::unique_ptr<T>(new typename std::remove_extent_t<T>[n]);
-}
+    size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
 // `absl::make_unique_for_overwrite` overload for an array T[N] of known bounds.
 // This construction will be rejected.
@@ -158,11 +150,8 @@ make_unique_for_overwrite(Args&&... /* args */) = delete;
 // useful within templates that need to handle a complement of raw pointers,
 // `std::nullptr_t`, and smart pointers.
 template <typename T>
-auto RawPtr(T&& ptr) -> decltype(std::addressof(*ptr)) {
-  // ptr is a forwarding reference to support Ts with non-const operators.
-  return (ptr != nullptr) ? std::addressof(*ptr) : nullptr;
-}
-inline std::nullptr_t RawPtr(std::nullptr_t) { return nullptr; }
+auto RawPtr(T&& ptr) -> decltype(std::addressof(*ptr)) { __builtin_trap() /* STUB: not implemented */; }
+inline std::nullptr_t RawPtr(std::nullptr_t) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // Function Template: ShareUniquePtr()
@@ -188,9 +177,7 @@ inline std::nullptr_t RawPtr(std::nullptr_t) { return nullptr; }
 // Implements the resolution of [LWG 2415](http://wg21.link/lwg2415), by which a
 // null shared pointer does not attempt to call the deleter.
 template <typename T, typename D>
-std::shared_ptr<T> ShareUniquePtr(std::unique_ptr<T, D>&& ptr) {
-  return ptr ? std::shared_ptr<T>(std::move(ptr)) : std::shared_ptr<T>();
-}
+std::shared_ptr<T> ShareUniquePtr(std::unique_ptr<T, D>&& ptr) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // Function Template: WeakenPtr()
@@ -208,9 +195,7 @@ std::shared_ptr<T> ShareUniquePtr(std::unique_ptr<T, D>&& ptr) {
 //    CHECK(wp.lock() == nullptr);
 //
 template <typename T>
-std::weak_ptr<T> WeakenPtr(const std::shared_ptr<T>& ptr) {
-  return std::weak_ptr<T>(ptr);
-}
+std::weak_ptr<T> WeakenPtr(const std::shared_ptr<T>& ptr) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // Class Template: pointer_traits
@@ -294,40 +279,11 @@ struct default_allocator_is_nothrow : std::false_type {};
 namespace memory_internal {
 template <typename Allocator, typename Iterator, typename... Args>
 void ConstructRange(Allocator& alloc, Iterator first, Iterator last,
-                    const Args&... args) {
-  for (Iterator cur = first; cur != last; ++cur) {
-    ABSL_INTERNAL_TRY {
-      std::allocator_traits<Allocator>::construct(alloc, std::addressof(*cur),
-                                                  args...);
-    }
-    ABSL_INTERNAL_CATCH_ANY {
-      while (cur != first) {
-        --cur;
-        std::allocator_traits<Allocator>::destroy(alloc, std::addressof(*cur));
-      }
-      ABSL_INTERNAL_RETHROW;
-    }
-  }
-}
+                    const Args&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Allocator, typename Iterator, typename InputIterator>
 void CopyRange(Allocator& alloc, Iterator destination, InputIterator first,
-               InputIterator last) {
-  for (Iterator cur = destination; first != last;
-       static_cast<void>(++cur), static_cast<void>(++first)) {
-    ABSL_INTERNAL_TRY {
-      std::allocator_traits<Allocator>::construct(alloc, std::addressof(*cur),
-                                                  *first);
-    }
-    ABSL_INTERNAL_CATCH_ANY {
-      while (cur != destination) {
-        --cur;
-        std::allocator_traits<Allocator>::destroy(alloc, std::addressof(*cur));
-      }
-      ABSL_INTERNAL_RETHROW;
-    }
-  }
-}
+               InputIterator last) { __builtin_trap() /* STUB: not implemented */; }
 }  // namespace memory_internal
 ABSL_NAMESPACE_END
 }  // namespace absl

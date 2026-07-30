@@ -74,8 +74,6 @@ ABSL_DLL void ABSL_INTERNAL_C_SYMBOL(AbslInternalSleepFor)(
     absl::Duration duration);
 }  // extern "C"
 
-inline void absl::SleepFor(absl::Duration duration) {
-  ABSL_INTERNAL_C_SYMBOL(AbslInternalSleepFor)(duration);
-}
+inline void absl::SleepFor(absl::Duration duration) { __builtin_trap() /* STUB: not implemented */; }
 
 #endif  // ABSL_TIME_CLOCK_H_

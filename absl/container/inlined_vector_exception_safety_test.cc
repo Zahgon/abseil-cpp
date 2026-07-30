@@ -69,7 +69,7 @@ template <typename TheVecT, size_t... TheSizes>
 class TestParams {
  public:
   using VecT = TheVecT;
-  constexpr static size_t GetSizeAt(size_t i) { return kSizes[1 + i]; }
+  constexpr static size_t GetSizeAt(size_t i) { return {}; }
 
  private:
   constexpr static size_t kSizes[1 + sizeof...(TheSizes)] = {1, TheSizes...};
@@ -121,19 +121,7 @@ struct TwoSizeTest : ::testing::Test {};
 TYPED_TEST_SUITE(TwoSizeTest, TwoSizeTestParams);
 
 template <typename VecT>
-bool InlinedVectorInvariants(VecT* vec) {
-  if (*vec != *vec) return false;
-  if (vec->size() > vec->capacity()) return false;
-  if (vec->size() > vec->max_size()) return false;
-  if (vec->capacity() > vec->max_size()) return false;
-  if (vec->data() != std::addressof(vec->at(0))) return false;
-  if (vec->data() != vec->begin()) return false;
-  if (*vec->data() != *vec->begin()) return false;
-  if (vec->begin() > vec->end()) return false;
-  if ((vec->end() - vec->begin()) != vec->size()) return false;
-  if (std::distance(vec->begin(), vec->end()) != vec->size()) return false;
-  return true;
-}
+bool InlinedVectorInvariants(VecT* vec) { __builtin_trap() /* STUB: not implemented */; }
 
 // Function that always returns false is correct, but refactoring is required
 // for clarity. It's needed to express that, as a contract, certain operations
@@ -141,9 +129,7 @@ bool InlinedVectorInvariants(VecT* vec) {
 // thrown and thus the test should fail.
 // TODO(johnsoncj): Add `testing::NoThrowGuarantee` to the framework
 template <typename VecT>
-bool NoThrowGuarantee(VecT* /* vec */) {
-  return false;
-}
+bool NoThrowGuarantee(VecT* /* vec */) { __builtin_trap() /* STUB: not implemented */; }
 
 TYPED_TEST(NoSizeTest, DefaultConstructor) {
   using VecT = typename TypeParam::VecT;

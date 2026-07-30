@@ -27,35 +27,6 @@
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-namespace flags_internal {
-
-static absl::Mutex& ProgramNameMutex() {
-  static absl::NoDestructor<absl::Mutex> mutex;
-  return *mutex;
-}
-ABSL_CONST_INIT static std::string* program_name ABSL_GUARDED_BY(
-    ProgramNameMutex()) ABSL_PT_GUARDED_BY(ProgramNameMutex()) = nullptr;
-
-std::string ProgramInvocationName() {
-  absl::MutexLock l(ProgramNameMutex());
-  return program_name ? *program_name : "UNKNOWN";
-}
-
-std::string ShortProgramInvocationName() {
-  absl::MutexLock l(ProgramNameMutex());
-  return program_name ? std::string(flags_internal::Basename(*program_name))
-                      : "UNKNOWN";
-}
-
-void SetProgramInvocationName(absl::string_view prog_name_str) {
-  absl::MutexLock l(ProgramNameMutex());
-  if (!program_name) {
-    program_name = new std::string(prog_name_str);
-  } else {
-    program_name->assign(prog_name_str.data(), prog_name_str.size());
-  }
-}
-
-}  // namespace flags_internal
+namespace flags_internal { __builtin_trap() /* STUB: not implemented */; }  // namespace flags_internal
 ABSL_NAMESPACE_END
 }  // namespace absl

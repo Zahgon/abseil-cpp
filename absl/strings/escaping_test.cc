@@ -579,64 +579,7 @@ static struct {
 };
 
 template <typename StringType>
-void TestEscapeAndUnescape() {
-  // Check the short strings; this tests the math (and boundaries)
-  for (const auto& tc : base64_tests) {
-    // Test plain base64.
-    StringType encoded("this junk should be ignored");
-    absl::Base64Escape(tc.plaintext, &encoded);
-    EXPECT_EQ(encoded, tc.cyphertext);
-    EXPECT_EQ(absl::Base64Escape(tc.plaintext), tc.cyphertext);
-
-    StringType decoded("this junk should be ignored");
-    EXPECT_TRUE(absl::Base64Unescape(encoded, &decoded));
-    EXPECT_EQ(decoded, tc.plaintext);
-
-    StringType websafe_with_padding(tc.cyphertext);
-    for (unsigned int c = 0; c < websafe_with_padding.size(); ++c) {
-      if ('+' == websafe_with_padding[c]) websafe_with_padding[c] = '-';
-      if ('/' == websafe_with_padding[c]) websafe_with_padding[c] = '_';
-      // Intentionally keeping padding aka '='.
-    }
-
-    // Test plain websafe (aka without padding).
-    StringType websafe(websafe_with_padding);
-    for (unsigned int c = 0; c < websafe.size(); ++c) {
-      if ('=' == websafe[c]) {
-        websafe.resize(c);
-        break;
-      }
-    }
-    encoded = "this junk should be ignored";
-    absl::WebSafeBase64Escape(tc.plaintext, &encoded);
-    EXPECT_EQ(encoded, websafe);
-    EXPECT_EQ(absl::WebSafeBase64Escape(tc.plaintext), websafe);
-
-    decoded = "this junk should be ignored";
-    EXPECT_TRUE(absl::WebSafeBase64Unescape(websafe, &decoded));
-    EXPECT_EQ(decoded, tc.plaintext);
-  }
-
-  // Now try the long strings, this tests the streaming
-  for (const auto& tc : absl::strings_internal::base64_strings()) {
-    StringType buffer;
-    absl::WebSafeBase64Escape(tc.plaintext, &buffer);
-    EXPECT_EQ(tc.cyphertext, buffer);
-    EXPECT_EQ(absl::WebSafeBase64Escape(tc.plaintext), tc.cyphertext);
-  }
-
-  // Verify the behavior when decoding bad data
-  {
-    absl::string_view data_set[] = {"ab-/", absl::string_view("\0bcd", 4),
-                                    absl::string_view("abc.\0", 5)};
-    for (absl::string_view bad_data : data_set) {
-      StringType buf;
-      EXPECT_FALSE(absl::Base64Unescape(bad_data, &buf));
-      EXPECT_FALSE(absl::WebSafeBase64Unescape(bad_data, &buf));
-      EXPECT_TRUE(buf.empty());
-    }
-  }
-}
+void TestEscapeAndUnescape() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Base64, EscapeAndUnescape) {
   TestEscapeAndUnescape<std::string>();

@@ -439,9 +439,7 @@ class ABSL_ATTRIBUTE_OWNER btree_set
 //
 // Swaps the contents of two `absl::btree_set` containers.
 template <typename K, typename C, typename A>
-void swap(btree_set<K, C, A> &x, btree_set<K, C, A> &y) {
-  return x.swap(y);
-}
+void swap(btree_set<K, C, A> &x, btree_set<K, C, A> &y) { __builtin_trap() /* STUB: not implemented */; }
 
 // absl::erase_if(absl::btree_set<>, Pred)
 //
@@ -449,9 +447,7 @@ void swap(btree_set<K, C, A> &x, btree_set<K, C, A> &y) {
 // Returns the number of erased elements.
 template <typename K, typename C, typename A, typename Pred>
 typename btree_set<K, C, A>::size_type erase_if(btree_set<K, C, A> &set,
-                                                Pred pred) {
-  return container_internal::btree_access::erase_if(set, std::move(pred));
-}
+                                                Pred pred) { __builtin_trap() /* STUB: not implemented */; }
 
 // absl::btree_multiset<>
 //
@@ -776,9 +772,7 @@ class ABSL_ATTRIBUTE_OWNER btree_multiset
 //
 // Swaps the contents of two `absl::btree_multiset` containers.
 template <typename K, typename C, typename A>
-void swap(btree_multiset<K, C, A> &x, btree_multiset<K, C, A> &y) {
-  return x.swap(y);
-}
+void swap(btree_multiset<K, C, A> &x, btree_multiset<K, C, A> &y) { __builtin_trap() /* STUB: not implemented */; }
 
 // absl::erase_if(absl::btree_multiset<>, Pred)
 //
@@ -786,9 +780,7 @@ void swap(btree_multiset<K, C, A> &x, btree_multiset<K, C, A> &y) {
 // Returns the number of erased elements.
 template <typename K, typename C, typename A, typename Pred>
 typename btree_multiset<K, C, A>::size_type erase_if(
-   btree_multiset<K, C, A> & set, Pred pred) {
-  return container_internal::btree_access::erase_if(set, std::move(pred));
-}
+   btree_multiset<K, C, A> & set, Pred pred) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace container_internal {
 
@@ -800,29 +792,20 @@ struct set_slot_policy {
   using value_type = Key;
   using mutable_value_type = Key;
 
-  static value_type &element(slot_type *slot) { return *slot; }
-  static const value_type &element(const slot_type *slot) { return *slot; }
+  static value_type &element(slot_type *slot) { __builtin_trap() /* STUB: not implemented */; }
+  static const value_type &element(const slot_type *slot) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename Alloc, class... Args>
-  static void construct(Alloc *alloc, slot_type *slot, Args &&...args) {
-    std::allocator_traits<Alloc>::construct(*alloc, slot,
-                                            std::forward<Args>(args)...);
-  }
+  static void construct(Alloc *alloc, slot_type *slot, Args &&...args) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename Alloc>
-  static void construct(Alloc *alloc, slot_type *slot, slot_type *other) {
-    std::allocator_traits<Alloc>::construct(*alloc, slot, std::move(*other));
-  }
+  static void construct(Alloc *alloc, slot_type *slot, slot_type *other) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename Alloc>
-  static void construct(Alloc *alloc, slot_type *slot, const slot_type *other) {
-    std::allocator_traits<Alloc>::construct(*alloc, slot, *other);
-  }
+  static void construct(Alloc *alloc, slot_type *slot, const slot_type *other) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename Alloc>
-  static void destroy(Alloc *alloc, slot_type *slot) {
-    std::allocator_traits<Alloc>::destroy(*alloc, slot);
-  }
+  static void destroy(Alloc *alloc, slot_type *slot) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // A parameters structure for holding the type parameters for a btree_set.
@@ -857,11 +840,9 @@ struct set_params_impl
           set_params_impl>);
 
   template <typename V>
-  static const V &key(const V &value) {
-    return value;
-  }
-  static const Key &key(const slot_type *slot) { return *slot; }
-  static const Key &key(slot_type *slot) { return *slot; }
+  static const V &key(const V &value) { __builtin_trap() /* STUB: not implemented */; }
+  static const Key &key(const slot_type *slot) { __builtin_trap() /* STUB: not implemented */; }
+  static const Key &key(slot_type *slot) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 }  // namespace container_internal

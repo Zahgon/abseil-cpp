@@ -87,88 +87,7 @@ struct WideToUtf8TestCase {
   ShiftState expected_state = {false, 0};
 };
 
-std::vector<WideToUtf8TestCase> GetWideToUtf8TestCases() {
-  constexpr size_t kError = static_cast<size_t>(-1);
-  std::vector<WideToUtf8TestCase> cases = {
-      {"ASCII_A", L'A', "A", 1},
-      {"NullChar", L'\0', std::string("\0", 1), 1},
-      {"ASCII_Max_7F", L'\x7F', "\x7F", 1},
-
-      {"TwoByte_Min_80", L'\u0080', "\xC2\x80", 2},
-      {"PoundSign_A3", L'\u00A3', "\xC2\xA3", 2},
-      {"TwoByte_Max_7FF", L'\u07FF', "\xDF\xBF", 2},
-
-      {"ThreeByte_Min_800", L'\u0800', "\xE0\xA0\x80", 3},
-      {"EuroSign_20AC", L'\u20AC', "\xE2\x82\xAC", 3},
-      {"BMP_MaxBeforeSurrogates_D7FF", L'\uD7FF', "\xED\x9F\xBF", 3},
-      {"BMP_FFFF", L'\uFFFF', "\xEF\xBF\xBF", 3},
-
-      {"IsolatedHighSurr_D800", L'\xD800', "\xF0\x90", 2, {}, {true, 0}},
-      {"IsolatedHighSurr_DBFF", L'\xDBFF', "\xF4\x8F", 2, {}, {true, 3}},
-
-      {"HighSurr_D800_after_HighD800",
-       L'\xD800',
-       "\xF0\x90",
-       2,
-       {true, 0},
-       {true, 0}},
-      {"HighSurr_DBFF_after_HighDBFF",
-       L'\xDBFF',
-       "\xF4\x8F",
-       2,
-       {true, 3},
-       {true, 3}},
-
-      {"LowSurr_DC00_after_HighD800", L'\xDC00', "\x80\x80", 2, {true, 0}, {}},
-      {"LowSurr_DFFD_after_HighDBFF", L'\xDFFD', "\xBF\xBD", 2, {true, 3}, {}},
-      {"LowSurr_DC00_with_InitialState_saw_high_bits_1",
-       L'\xDC00',
-       "\x90\x80",
-       2,
-       {true, 1},
-       {}},
-
-      // Final state = initial on error.
-      {"Error_IsolatedLowSurr_DC00_NoPriorHigh", L'\xDC00', "", kError, {}, {}},
-      {"Error_IsolatedLowSurr_DFFF_NoPriorHigh", L'\xDFFF', "", kError, {}, {}},
-
-#if (defined(WCHAR_MAX) && WCHAR_MAX > 0xFFFF)
-      {"DirectSupplementaryChars_U10000", static_cast<wchar_t>(0x10000),
-       "\xF0\x90\x80\x80", 4},
-      {"DirectSupplementaryChars_U10FFFD", static_cast<wchar_t>(0x10FFFD),
-       "\xF4\x8F\xBF\xBD", 4},
-#endif
-  };
-
-  wchar_t minus_one = static_cast<wchar_t>(-1);
-  if constexpr (sizeof(wchar_t) == 2) {
-    cases.push_back({"WChar_MinusOne_as_FFFF", minus_one, "\xEF\xBF\xBF", 3});
-  } else {
-    cases.push_back(
-        {"Error_WChar_MinusOne_as_FFFFFFFF", minus_one, "", kError, {}, {}});
-  }
-
-  if constexpr (sizeof(wchar_t) >= 4) {
-#ifdef WCHAR_MAX
-    if (static_cast<uintmax_t>(WCHAR_MAX) >= 0x110000UL) {
-      cases.push_back({"Error_OutOfRange_110000",
-                       static_cast<wchar_t>(0x110000UL),
-                       "",
-                       kError,
-                       {},
-                       {}});
-    }
-#else
-    cases.push_back({"Error_OutOfRange_110000_fallback",
-                     static_cast<wchar_t>(0x110000UL),
-                     "",
-                     kError,
-                     {},
-                     {}});
-#endif
-  }
-  return cases;
-}
+std::vector<WideToUtf8TestCase> GetWideToUtf8TestCases() { __builtin_trap() /* STUB: not implemented */; }
 
 class WideToUtf8ParamTest : public TestWithParam<WideToUtf8TestCase> {};
 
@@ -224,22 +143,7 @@ INSTANTIATE_TEST_SUITE_P(WideCharToUtf8Conversion, WideToUtf8ParamTest,
 #define UTF8_STRING_LITERAL u8"Holá €1 你好 שָׁלוֹם 👍🏻🇺🇸👩‍❤️‍💋‍👨 中"
 // clang-format on
 
-absl::string_view GetUtf8TestString() {
-  // `u8""` forces UTF-8 encoding; MSVC will default to e.g. CP1252 (and warn)
-  // without it. However, the resulting character type differs between pre-C++20
-  // (`char`) and C++20 (`char8_t`). So deduce the right character type for all
-  // C++ versions, init it with UTF-8, then `memcpy()` to get the result as a
-  // `char*`
-  static absl::string_view kUtf8TestString = [] {
-    using ConstChar8T = std::remove_reference_t<decltype(*u8"a")>;
-    constexpr ConstChar8T kOutputUtf8[] = UTF8_STRING_LITERAL;
-    static char output[sizeof kOutputUtf8];
-    std::memcpy(output, kOutputUtf8, sizeof kOutputUtf8);
-    return output;
-  }();
-
-  return kUtf8TestString;
-}
+absl::string_view GetUtf8TestString() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(WideToUtf8, FullString) {
   std::string buffer(kMaxEncodedUTF8Size * sizeof(WIDE_STRING_LITERAL), '\0');

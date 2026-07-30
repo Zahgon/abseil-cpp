@@ -27,15 +27,11 @@ namespace {
 using Tag = absl::cleanup_internal::Tag;
 
 template <typename Type1, typename Type2>
-constexpr bool IsSame() {
-  return (std::is_same_v<Type1, Type2>);
-}
+constexpr bool IsSame() { return {}; }
 
 struct IdentityFactory {
   template <typename Callback>
-  static Callback AsCallback(Callback callback) {
-    return Callback(std::move(callback));
-  }
+  static Callback AsCallback(Callback callback) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // `FunctorClass` is a type used for testing `absl::Cleanup`. It is intended to
@@ -45,10 +41,10 @@ class FunctorClass {
   using Callback = std::function<void()>;
 
  public:
-  explicit FunctorClass(Callback callback) : callback_(std::move(callback)) {}
+  explicit FunctorClass(Callback callback) : callback_(std::move(callback)) { __builtin_trap() /* STUB: not implemented */; }
 
   FunctorClass(FunctorClass&& other)
-      : callback_(std::exchange(other.callback_, Callback())) {}
+      : callback_(std::exchange(other.callback_, Callback())) { __builtin_trap() /* STUB: not implemented */; }
 
   FunctorClass(const FunctorClass&) = delete;
 
@@ -58,11 +54,7 @@ class FunctorClass {
 
   void operator()() const& = delete;
 
-  void operator()() && {
-    ASSERT_TRUE(callback_);
-    callback_();
-    callback_ = nullptr;
-  }
+  void operator()() && { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   Callback callback_;
@@ -70,16 +62,12 @@ class FunctorClass {
 
 struct FunctorClassFactory {
   template <typename Callback>
-  static FunctorClass AsCallback(Callback callback) {
-    return FunctorClass(std::move(callback));
-  }
+  static FunctorClass AsCallback(Callback callback) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 struct StdFunctionFactory {
   template <typename Callback>
-  static std::function<void()> AsCallback(Callback callback) {
-    return std::function<void()>(std::move(callback));
-  }
+  static std::function<void()> AsCallback(Callback callback) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 using CleanupTestParams =
@@ -89,7 +77,7 @@ struct CleanupTest : public ::testing::Test {};
 TYPED_TEST_SUITE(CleanupTest, CleanupTestParams);
 
 bool fn_ptr_called = false;
-void FnPtrFunction() { fn_ptr_called = true; }
+void FnPtrFunction() { __builtin_trap() /* STUB: not implemented */; }
 
 TYPED_TEST(CleanupTest, FactoryProducesCorrectType) {
   {
@@ -265,9 +253,9 @@ TYPED_TEST(CleanupTest, Move) {
 int DestructionCount = 0;
 
 struct DestructionCounter {
-  void operator()() {}
+  void operator()() { __builtin_trap() /* STUB: not implemented */; }
 
-  ~DestructionCounter() { ++DestructionCount; }
+  ~DestructionCounter() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TYPED_TEST(CleanupTest, DestructorDestroys) {

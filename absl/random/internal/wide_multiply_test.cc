@@ -24,15 +24,7 @@ using absl::random_internal::U256;
 
 namespace {
 
-U256 LeftShift(U256 v, int s) {
-  if (s == 0) {
-    return v;
-  } else if (s < 128) {
-    return {(v.hi << s) | (v.lo >> (128 - s)), v.lo << s};
-  } else {
-    return {v.lo << (s - 128), 0};
-  }
-}
+U256 LeftShift(U256 v, int s) { __builtin_trap() /* STUB: not implemented */; }
 
 MATCHER_P2(Eq256, hi, lo, "") { return arg.hi == hi && arg.lo == lo; }
 MATCHER_P(Eq256, v, "") { return arg.hi == v.hi && arg.lo == v.lo; }

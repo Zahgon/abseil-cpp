@@ -31,211 +31,79 @@ using ::benchmark::DoNotOptimize;
 
 using Int128 = int64_t[2];
 
-constexpr size_t MyAlign(size_t n, size_t m) { return (n + m - 1) & ~(m - 1); }
+constexpr size_t MyAlign(size_t n, size_t m) { return {}; }
 
 // This benchmark provides the upper bound on performance for BM_OffsetConstant.
 template <size_t Offset, class... Ts>
-void BM_OffsetConstantHeadroom(benchmark::State& state) {
-  for (auto _ : state) {
-    DoNotOptimize(Offset);
-  }
-}
+void BM_OffsetConstantHeadroom(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <size_t Offset, class... Ts>
-void BM_OffsetConstantStatic(benchmark::State& state) {
-  using L = typename Layout<Ts...>::template WithStaticSizes<3, 5, 7>;
-  ABSL_RAW_CHECK(L::Partial().template Offset<3>() == Offset, "Invalid offset");
-  for (auto _ : state) {
-    DoNotOptimize(L::Partial().template Offset<3>());
-  }
-}
+void BM_OffsetConstantStatic(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <size_t Offset, class... Ts>
-void BM_OffsetConstant(benchmark::State& state) {
-  using L = Layout<Ts...>;
-  ABSL_RAW_CHECK(L::Partial(3, 5, 7).template Offset<3>() == Offset,
-                 "Invalid offset");
-  for (auto _ : state) {
-    DoNotOptimize(L::Partial(3, 5, 7).template Offset<3>());
-  }
-}
+void BM_OffsetConstant(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <size_t Offset, class... Ts>
-void BM_OffsetConstantIndirect(benchmark::State& state) {
-  using L = Layout<Ts...>;
-  auto p = L::Partial(3, 5, 7);
-  ABSL_RAW_CHECK(p.template Offset<3>() == Offset, "Invalid offset");
-  for (auto _ : state) {
-    DoNotOptimize(p);
-    DoNotOptimize(p.template Offset<3>());
-  }
-}
+void BM_OffsetConstantIndirect(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class... Ts>
 size_t PartialOffset(size_t k);
 
 template <>
-size_t PartialOffset<int8_t, int16_t, int32_t, Int128>(size_t k) {
-  constexpr size_t o = MyAlign(MyAlign(3 * 1, 2) + 5 * 2, 4);
-  return MyAlign(o + k * 4, 8);
-}
+size_t PartialOffset<int8_t, int16_t, int32_t, Int128>(size_t k) { __builtin_trap() /* STUB: not implemented */; }
 
 template <>
-size_t PartialOffset<Int128, int32_t, int16_t, int8_t>(size_t k) {
-  // No alignment is necessary.
-  return 3 * 16 + 5 * 4 + k * 2;
-}
+size_t PartialOffset<Int128, int32_t, int16_t, int8_t>(size_t k) { __builtin_trap() /* STUB: not implemented */; }
 
 // This benchmark provides the upper bound on performance for BM_OffsetVariable.
 template <size_t Offset, class... Ts>
-void BM_OffsetPartialHeadroom(benchmark::State& state) {
-  size_t k = 7;
-  ABSL_RAW_CHECK(PartialOffset<Ts...>(k) == Offset, "Invalid offset");
-  for (auto _ : state) {
-    DoNotOptimize(k);
-    DoNotOptimize(PartialOffset<Ts...>(k));
-  }
-}
+void BM_OffsetPartialHeadroom(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <size_t Offset, class... Ts>
-void BM_OffsetPartialStatic(benchmark::State& state) {
-  using L = typename Layout<Ts...>::template WithStaticSizes<3, 5>;
-  size_t k = 7;
-  ABSL_RAW_CHECK(L::Partial(k).template Offset<3>() == Offset,
-                 "Invalid offset");
-  for (auto _ : state) {
-    DoNotOptimize(k);
-    DoNotOptimize(L::Partial(k).template Offset<3>());
-  }
-}
+void BM_OffsetPartialStatic(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <size_t Offset, class... Ts>
-void BM_OffsetPartial(benchmark::State& state) {
-  using L = Layout<Ts...>;
-  size_t k = 7;
-  ABSL_RAW_CHECK(L::Partial(3, 5, k).template Offset<3>() == Offset,
-                 "Invalid offset");
-  for (auto _ : state) {
-    DoNotOptimize(k);
-    DoNotOptimize(L::Partial(3, 5, k).template Offset<3>());
-  }
-}
+void BM_OffsetPartial(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class... Ts>
 size_t VariableOffset(size_t n, size_t m, size_t k);
 
 template <>
 size_t VariableOffset<int8_t, int16_t, int32_t, Int128>(size_t n, size_t m,
-                                                        size_t k) {
-  return MyAlign(MyAlign(MyAlign(n * 1, 2) + m * 2, 4) + k * 4, 8);
-}
+                                                        size_t k) { __builtin_trap() /* STUB: not implemented */; }
 
 template <>
 size_t VariableOffset<Int128, int32_t, int16_t, int8_t>(size_t n, size_t m,
-                                                        size_t k) {
-  // No alignment is necessary.
-  return n * 16 + m * 4 + k * 2;
-}
+                                                        size_t k) { __builtin_trap() /* STUB: not implemented */; }
 
 // This benchmark provides the upper bound on performance for BM_OffsetVariable.
 template <size_t Offset, class... Ts>
-void BM_OffsetVariableHeadroom(benchmark::State& state) {
-  size_t n = 3;
-  size_t m = 5;
-  size_t k = 7;
-  ABSL_RAW_CHECK(VariableOffset<Ts...>(n, m, k) == Offset, "Invalid offset");
-  for (auto _ : state) {
-    DoNotOptimize(n);
-    DoNotOptimize(m);
-    DoNotOptimize(k);
-    DoNotOptimize(VariableOffset<Ts...>(n, m, k));
-  }
-}
+void BM_OffsetVariableHeadroom(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <size_t Offset, class... Ts>
-void BM_OffsetVariable(benchmark::State& state) {
-  using L = Layout<Ts...>;
-  size_t n = 3;
-  size_t m = 5;
-  size_t k = 7;
-  ABSL_RAW_CHECK(L::Partial(n, m, k).template Offset<3>() == Offset,
-                 "Invalid offset");
-  for (auto _ : state) {
-    DoNotOptimize(n);
-    DoNotOptimize(m);
-    DoNotOptimize(k);
-    DoNotOptimize(L::Partial(n, m, k).template Offset<3>());
-  }
-}
+void BM_OffsetVariable(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class... Ts>
 size_t AllocSize(size_t x);
 
 template <>
-size_t AllocSize<int8_t, int16_t, int32_t, Int128>(size_t x) {
-  constexpr size_t o =
-      Layout<int8_t, int16_t, int32_t, Int128>::Partial(3, 5, 7)
-          .template Offset<Int128>();
-  return o + sizeof(Int128) * x;
-}
+size_t AllocSize<int8_t, int16_t, int32_t, Int128>(size_t x) { __builtin_trap() /* STUB: not implemented */; }
 
 template <>
-size_t AllocSize<Int128, int32_t, int16_t, int8_t>(size_t x) {
-  constexpr size_t o =
-      Layout<Int128, int32_t, int16_t, int8_t>::Partial(3, 5, 7)
-          .template Offset<int8_t>();
-  return o + sizeof(int8_t) * x;
-}
+size_t AllocSize<Int128, int32_t, int16_t, int8_t>(size_t x) { __builtin_trap() /* STUB: not implemented */; }
 
 // This benchmark provides the upper bound on performance for BM_AllocSize
 template <size_t Size, class... Ts>
-void BM_AllocSizeHeadroom(benchmark::State& state) {
-  size_t x = 9;
-  ABSL_RAW_CHECK(AllocSize<Ts...>(x) == Size, "Invalid size");
-  for (auto _ : state) {
-    DoNotOptimize(x);
-    DoNotOptimize(AllocSize<Ts...>(x));
-  }
-}
+void BM_AllocSizeHeadroom(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <size_t Size, class... Ts>
-void BM_AllocSizeStatic(benchmark::State& state) {
-  using L = typename Layout<Ts...>::template WithStaticSizes<3, 5, 7>;
-  size_t x = 9;
-  ABSL_RAW_CHECK(L(x).AllocSize() == Size, "Invalid offset");
-  for (auto _ : state) {
-    DoNotOptimize(x);
-    DoNotOptimize(L(x).AllocSize());
-  }
-}
+void BM_AllocSizeStatic(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <size_t Size, class... Ts>
-void BM_AllocSize(benchmark::State& state) {
-  using L = Layout<Ts...>;
-  size_t n = 3;
-  size_t m = 5;
-  size_t k = 7;
-  size_t x = 9;
-  ABSL_RAW_CHECK(L(n, m, k, x).AllocSize() == Size, "Invalid offset");
-  for (auto _ : state) {
-    DoNotOptimize(n);
-    DoNotOptimize(m);
-    DoNotOptimize(k);
-    DoNotOptimize(x);
-    DoNotOptimize(L(n, m, k, x).AllocSize());
-  }
-}
+void BM_AllocSize(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <size_t Size, class... Ts>
-void BM_AllocSizeIndirect(benchmark::State& state) {
-  using L = Layout<Ts...>;
-  auto l = L(3, 5, 7, 9);
-  ABSL_RAW_CHECK(l.AllocSize() == Size, "Invalid offset");
-  for (auto _ : state) {
-    DoNotOptimize(l);
-    DoNotOptimize(l.AllocSize());
-  }
-}
+void BM_AllocSizeIndirect(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 // Run all benchmarks in two modes:
 //

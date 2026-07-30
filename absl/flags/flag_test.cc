@@ -51,42 +51,28 @@ namespace {
 
 namespace flags = absl::flags_internal;
 
-std::string TestHelpMsg() { return "dynamic help"; }
+std::string TestHelpMsg() { __builtin_trap() /* STUB: not implemented */; }
 #if defined(_MSC_VER) && !defined(__clang__)
-std::string TestLiteralHelpMsg() { return "literal help"; }
+std::string TestLiteralHelpMsg() { __builtin_trap() /* STUB: not implemented */; }
 #endif
 template <typename T>
-void TestMakeDflt(void* dst) {
-  new (dst) T{};
-}
-void TestCallback() {}
+void TestMakeDflt(void* dst) { __builtin_trap() /* STUB: not implemented */; }
+void TestCallback() { __builtin_trap() /* STUB: not implemented */; }
 
 struct UDT {
   UDT() = default;
   UDT(const UDT&) = default;
   UDT& operator=(const UDT&) = default;
 };
-bool AbslParseFlag(absl::string_view, UDT*, std::string*) { return true; }
-std::string AbslUnparseFlag(const UDT&) { return ""; }
+bool AbslParseFlag(absl::string_view, UDT*, std::string*) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(const UDT&) { __builtin_trap() /* STUB: not implemented */; }
 
 class FlagTest : public testing::Test {
  protected:
-  static void SetUpTestSuite() {
-    // Install a function to normalize filenames before this test is run.
-    absl::FlagsUsageConfig default_config;
-    default_config.normalize_filename = &FlagTest::NormalizeFileName;
-    absl::SetFlagsUsageConfig(default_config);
-  }
+  static void SetUpTestSuite() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
-  static std::string NormalizeFileName(absl::string_view fname) {
-#ifdef _WIN32
-    std::string normalized(fname);
-    std::replace(normalized.begin(), normalized.end(), '\\', '/');
-    fname = normalized;
-#endif
-    return std::string(fname);
-  }
+  static std::string NormalizeFileName(absl::string_view fname) { __builtin_trap() /* STUB: not implemented */; }
   absl::FlagSaver flag_saver_;
 };
 
@@ -174,20 +160,7 @@ DEFINE_CONSTRUCTED_FLAG(int128, 13, kGenFunc);
 DEFINE_CONSTRUCTED_FLAG(uint128, 14, kGenFunc);
 
 template <typename T>
-bool TestConstructionFor(const absl::Flag<T>& f1, absl::Flag<T>& f2) {
-  EXPECT_EQ(absl::GetFlagReflectionHandle(f1).Name(), "f1");
-  EXPECT_EQ(absl::GetFlagReflectionHandle(f1).Help(), "literal help");
-  EXPECT_EQ(absl::GetFlagReflectionHandle(f1).Filename(), "file");
-
-  flags::FlagRegistrar<T, false>(ABSL_FLAG_IMPL_FLAG_PTR(f2), nullptr)
-      .OnUpdate(TestCallback);
-
-  EXPECT_EQ(absl::GetFlagReflectionHandle(f2).Name(), "f2");
-  EXPECT_EQ(absl::GetFlagReflectionHandle(f2).Help(), "dynamic help");
-  EXPECT_EQ(absl::GetFlagReflectionHandle(f2).Filename(), "file");
-
-  return true;
-}
+bool TestConstructionFor(const absl::Flag<T>& f1, absl::Flag<T>& f2) { __builtin_trap() /* STUB: not implemented */; }
 
 #define TEST_CONSTRUCTED_FLAG(T) TestConstructionFor(f1##T, f2##T);
 
@@ -273,9 +246,7 @@ TEST_F(FlagTest, TestFlagDeclaration) {
 // static initializers.
 struct VerifyConsteval {
   friend consteval flags::FlagRegistrarEmpty operator+(
-      flags::FlagRegistrarEmpty, VerifyConsteval) {
-    return {};
-  }
+      flags::FlagRegistrarEmpty, VerifyConsteval) { return {}; }
 };
 
 ABSL_FLAG(int, test_registrar_const_init, 0, "") + VerifyConsteval();
@@ -518,28 +489,19 @@ struct NonTriviallyCopyableAggregate {
   NonTriviallyCopyableAggregate() = default;
   // NOLINTNEXTLINE
   NonTriviallyCopyableAggregate(const NonTriviallyCopyableAggregate& rhs)
-      : value(rhs.value) {}
+      : value(rhs.value) { __builtin_trap() /* STUB: not implemented */; }
   // NOLINTNEXTLINE
   NonTriviallyCopyableAggregate& operator=(
-      const NonTriviallyCopyableAggregate& rhs) {
-    value = rhs.value;
-    return *this;
-  }
+      const NonTriviallyCopyableAggregate& rhs) { __builtin_trap() /* STUB: not implemented */; }
 
   int value;
 };
 bool AbslParseFlag(absl::string_view src, NonTriviallyCopyableAggregate* f,
-                   std::string* e) {
-  return absl::ParseFlag(src, &f->value, e);
-}
-std::string AbslUnparseFlag(const NonTriviallyCopyableAggregate& ntc) {
-  return absl::StrCat(ntc.value);
-}
+                   std::string* e) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(const NonTriviallyCopyableAggregate& ntc) { __builtin_trap() /* STUB: not implemented */; }
 
 bool operator==(const NonTriviallyCopyableAggregate& ntc1,
-                const NonTriviallyCopyableAggregate& ntc2) {
-  return ntc1.value == ntc2.value;
-}
+                const NonTriviallyCopyableAggregate& ntc2) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace
 

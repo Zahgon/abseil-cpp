@@ -64,20 +64,12 @@ MATCHER_P(DataIs, data,
 
 template <typename T>
 auto SpanIs(T data, size_t size)
-    -> decltype(testing::AllOf(DataIs(data), testing::SizeIs(size))) {
-  return testing::AllOf(DataIs(data), testing::SizeIs(size));
-}
+    -> decltype(testing::AllOf(DataIs(data), testing::SizeIs(size))) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Container>
-auto SpanIs(const Container& c) -> decltype(SpanIs(c.data(), c.size())) {
-  return SpanIs(c.data(), c.size());
-}
+auto SpanIs(const Container& c) -> decltype(SpanIs(c.data(), c.size())) { __builtin_trap() /* STUB: not implemented */; }
 
-std::vector<int> MakeRamp(int len, int offset = 0) {
-  std::vector<int> v(len);
-  std::iota(v.begin(), v.end(), offset);
-  return v;
-}
+std::vector<int> MakeRamp(int len, int offset = 0) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(IntSpan, EmptyCtors) {
   absl::Span<int> s;
@@ -103,7 +95,7 @@ TEST(IntSpan, ArrayCtor) {
 }
 
 template <typename T>
-void TakesGenericSpan(absl::Span<T>) {}
+void TakesGenericSpan(absl::Span<T>) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(IntSpan, ContainerCtor) {
   std::vector<int> empty;
@@ -133,8 +125,8 @@ TEST(IntSpan, ContainerCtor) {
 // A struct supplying shallow data() const.
 struct ContainerWithShallowConstData {
   std::vector<int> storage;
-  int* data() const { return const_cast<int*>(storage.data()); }
-  int size() const { return storage.size(); }
+  int* data() const { __builtin_trap() /* STUB: not implemented */; }
+  int size() const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(IntSpan, ShallowConstness) {
@@ -174,14 +166,14 @@ TEST(IntSpan, FromConstPointer) {
 }
 
 struct TypeWithMisleadingData {
-  int& data() { return i; }
-  int size() { return 1; }
+  int& data() { __builtin_trap() /* STUB: not implemented */; }
+  int size() { __builtin_trap() /* STUB: not implemented */; }
   int i;
 };
 
 struct TypeWithMisleadingSize {
-  int* data() { return &i; }
-  const char* size() { return "1"; }
+  int* data() { __builtin_trap() /* STUB: not implemented */; }
+  const char* size() { __builtin_trap() /* STUB: not implemented */; }
   int i;
 };
 
@@ -193,8 +185,8 @@ TEST(IntSpan, EvilTypes) {
 }
 
 struct Base {
-  int* data() { return &i; }
-  int size() { return 1; }
+  int* data() { __builtin_trap() /* STUB: not implemented */; }
+  int size() { __builtin_trap() /* STUB: not implemented */; }
   int i;
 };
 struct Derived : Base {};
@@ -206,9 +198,7 @@ TEST(IntSpan, SpanOfDerived) {
       (std::is_constructible_v<absl::Span<Base>, std::vector<Derived>>));
 }
 
-void TestInitializerList(absl::Span<const int> s, const std::vector<int>& v) {
-  EXPECT_TRUE(std::equal(s.begin(), s.end(), v.begin(), v.end()));
-}
+void TestInitializerList(absl::Span<const int> s, const std::vector<int>& v) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ConstIntSpan, InitializerListConversion) {
   TestInitializerList({}, {});
@@ -428,9 +418,7 @@ TEST(IntSpan, MakeSpanArray) {
 
 // Compile-asserts that the argument has the expected decayed type.
 template <typename Expected, typename T>
-void CheckType(const T& /* value */) {
-  testing::StaticAssertTypeEq<Expected, T>();
-}
+void CheckType(const T& /* value */) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(IntSpan, MakeSpanTypes) {
   std::vector<int> vec;
@@ -557,7 +545,7 @@ class IntSpanOrderComparisonTest : public testing::Test {
         before_(vec_before_),
         after_(vec_after_),
         cbefore_(vec_before_),
-        cafter_(vec_after_) {}
+        cafter_(vec_after_) { __builtin_trap() /* STUB: not implemented */; }
 
  protected:
   int arr_before_[3], arr_after_[3];
@@ -805,8 +793,8 @@ struct ConstexprTester {};
   } while (0)
 
 struct ContainerWithConstexprMethods {
-  constexpr int size() const { return 1; }
-  constexpr const int* data() const { return &i; }
+  constexpr int size() const { return {}; }
+  constexpr const int* data() const { return {}; }
   const int i;
 };
 

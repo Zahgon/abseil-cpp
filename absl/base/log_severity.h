@@ -79,10 +79,7 @@ enum class LogSeverity : int {
 //
 // Returns an iterable of all standard `absl::LogSeverity` values, ordered from
 // least to most severe.
-constexpr std::array<absl::LogSeverity, 4> LogSeverities() {
-  return {{absl::LogSeverity::kInfo, absl::LogSeverity::kWarning,
-           absl::LogSeverity::kError, absl::LogSeverity::kFatal}};
-}
+constexpr std::array<absl::LogSeverity, 4> LogSeverities() { return {}; }
 
 // `absl::kLogDebugFatal` equals `absl::LogSeverity::kFatal` in debug builds
 // (i.e. when `NDEBUG` is not defined) and `absl::LogSeverity::kError`
@@ -98,29 +95,14 @@ static constexpr absl::LogSeverity kLogDebugFatal = absl::LogSeverity::kFatal;
 //
 // Returns the all-caps string representation (e.g. "INFO") of the specified
 // severity level if it is one of the standard levels and "UNKNOWN" otherwise.
-constexpr const char* LogSeverityName(absl::LogSeverity s) {
-  switch (s) {
-    case absl::LogSeverity::kInfo: return "INFO";
-    case absl::LogSeverity::kWarning: return "WARNING";
-    case absl::LogSeverity::kError: return "ERROR";
-    case absl::LogSeverity::kFatal: return "FATAL";
-  }
-  return "UNKNOWN";
-}
+constexpr const char* LogSeverityName(absl::LogSeverity s) { return {}; }
 
 // NormalizeLogSeverity()
 //
 // Values less than `kInfo` normalize to `kInfo`; values greater than `kFatal`
 // normalize to `kError` (**NOT** `kFatal`).
-constexpr absl::LogSeverity NormalizeLogSeverity(absl::LogSeverity s) {
-  absl::LogSeverity n = s;
-  if (n < absl::LogSeverity::kInfo) n = absl::LogSeverity::kInfo;
-  if (n > absl::LogSeverity::kFatal) n = absl::LogSeverity::kError;
-  return n;
-}
-constexpr absl::LogSeverity NormalizeLogSeverity(int s) {
-  return absl::NormalizeLogSeverity(static_cast<absl::LogSeverity>(s));
-}
+constexpr absl::LogSeverity NormalizeLogSeverity(absl::LogSeverity s) { return {}; }
+constexpr absl::LogSeverity NormalizeLogSeverity(int s) { return {}; }
 
 // operator<<
 //

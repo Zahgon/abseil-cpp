@@ -165,120 +165,24 @@ namespace hash_internal {
 struct PrintVisitor {
   size_t index;
   template <typename T>
-  std::string operator()(const T* value) const {
-    return absl::StrCat("#", index, "(", testing::PrintToString(*value), ")");
-  }
+  std::string operator()(const T* value) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename Eq>
 struct EqVisitor {
   Eq eq;
   template <typename T, typename U>
-  bool operator()(const T* t, const U* u) const {
-    return eq(*t, *u);
-  }
+  bool operator()(const T* t, const U* u) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 struct ExpandVisitor {
   template <typename T>
-  SpyHashState operator()(const T* value) const {
-    return SpyHashState::combine(SpyHashState(), *value);
-  }
+  SpyHashState operator()(const T* value) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename Container, typename Eq>
 testing::AssertionResult VerifyTypeImplementsAbslHashCorrectly(
-    const Container& values, Eq equals) {
-  using V = typename Container::value_type;
-
-  struct Info {
-    const V& value;
-    size_t index;
-    std::string ToString() const {
-      return std::visit(PrintVisitor{index}, value);
-    }
-    SpyHashState expand() const { return std::visit(ExpandVisitor{}, value); }
-  };
-
-  using EqClass = std::vector<Info>;
-  std::vector<EqClass> classes;
-
-  // Gather the values in equivalence classes.
-  size_t i = 0;
-  for (const auto& value : values) {
-    EqClass* c = nullptr;
-    for (auto& eqclass : classes) {
-      if (std::visit(EqVisitor<Eq>{equals}, value, eqclass[0].value)) {
-        c = &eqclass;
-        break;
-      }
-    }
-    if (c == nullptr) {
-      classes.emplace_back();
-      c = &classes.back();
-    }
-    c->push_back({value, i});
-    ++i;
-
-    // Verify potential errors captured by SpyHashState.
-    if (auto error = c->back().expand().error()) {
-      return testing::AssertionFailure() << *error;
-    }
-  }
-
-  if (classes.size() < 2) {
-    return testing::AssertionFailure()
-           << "At least two equivalence classes are expected.";
-  }
-
-  // We assume that equality is correctly implemented.
-  // Now we verify that AbslHashValue is also correctly implemented.
-
-  for (const auto& c : classes) {
-    // All elements of the equivalence class must have the same hash
-    // expansion.
-    const SpyHashState expected = c[0].expand();
-    for (const Info& v : c) {
-      if (v.expand() != v.expand()) {
-        return testing::AssertionFailure()
-               << "Hash expansion for " << v.ToString()
-               << " is non-deterministic.";
-      }
-      if (v.expand() != expected) {
-        return testing::AssertionFailure()
-               << "Values " << c[0].ToString() << " and " << v.ToString()
-               << " evaluate as equal but have unequal hash expansions ("
-               << expected << " vs. " << v.expand() << ").";
-      }
-    }
-
-    // Elements from other classes must have different hash expansion.
-    for (const auto& c2 : classes) {
-      if (&c == &c2) continue;
-      const SpyHashState c2_hash = c2[0].expand();
-      switch (SpyHashState::Compare(expected, c2_hash)) {
-        case SpyHashState::CompareResult::kEqual:
-          return testing::AssertionFailure()
-                 << "Values " << c[0].ToString() << " and " << c2[0].ToString()
-                 << " evaluate as unequal but have an equal hash expansion:"
-                 << c2_hash << ".";
-        case SpyHashState::CompareResult::kBSuffixA:
-          return testing::AssertionFailure()
-                 << "Hash expansion of " << c2[0].ToString() << ";" << c2_hash
-                 << " is a suffix of the hash expansion of " << c[0].ToString()
-                 << ";" << expected << ".";
-        case SpyHashState::CompareResult::kASuffixB:
-          return testing::AssertionFailure()
-                 << "Hash expansion of " << c[0].ToString() << ";"
-                 << expected << " is a suffix of the hash expansion of "
-                 << c2[0].ToString() << ";" << c2_hash << ".";
-        case SpyHashState::CompareResult::kUnequal:
-          break;
-      }
-    }
-  }
-  return testing::AssertionSuccess();
-}
+    const Container& values, Eq equals) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename... T>
 struct TypeSet {
@@ -309,11 +213,7 @@ struct ContainerAsVector {
   using V = std::variant<const typename Container::value_type*>;
   using Out = std::vector<V>;
 
-  static Out Do(const Container& values) {
-    Out out;
-    for (const auto& v : values) out.push_back(&v);
-    return out;
-  }
+  static Out Do(const Container& values) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename... T>
@@ -322,59 +222,38 @@ struct ContainerAsVector<std::tuple<T...>> {
   using Out = std::vector<V>;
 
   template <size_t... I>
-  static Out DoImpl(const std::tuple<T...>& tuple, std::index_sequence<I...>) {
-    return Out{&std::get<I>(tuple)...};
-  }
+  static Out DoImpl(const std::tuple<T...>& tuple, std::index_sequence<I...>) { __builtin_trap() /* STUB: not implemented */; }
 
-  static Out Do(const std::tuple<T...>& values) {
-    return DoImpl(values, std::index_sequence_for<T...>());
-  }
+  static Out Do(const std::tuple<T...>& values) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <>
 struct ContainerAsVector<std::tuple<>> {
-  static std::vector<VariantForTypes<int>> Do(std::tuple<>) { return {}; }
+  static std::vector<VariantForTypes<int>> Do(std::tuple<>) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 struct DefaultEquals {
   template <typename T, typename U>
-  bool operator()(const T& t, const U& u) const {
-    return t == u;
-  }
+  bool operator()(const T& t, const U& u) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 }  // namespace hash_internal
 
 template <int&..., typename Container>
 testing::AssertionResult VerifyTypeImplementsAbslHashCorrectly(
-    const Container& values) {
-  return hash_internal::VerifyTypeImplementsAbslHashCorrectly(
-      hash_internal::ContainerAsVector<Container>::Do(values),
-      hash_internal::DefaultEquals{});
-}
+    const Container& values) { __builtin_trap() /* STUB: not implemented */; }
 
 template <int&..., typename Container, typename Eq>
 testing::AssertionResult VerifyTypeImplementsAbslHashCorrectly(
-    const Container& values, Eq equals) {
-  return hash_internal::VerifyTypeImplementsAbslHashCorrectly(
-      hash_internal::ContainerAsVector<Container>::Do(values), equals);
-}
+    const Container& values, Eq equals) { __builtin_trap() /* STUB: not implemented */; }
 
 template <int&..., typename T>
 testing::AssertionResult VerifyTypeImplementsAbslHashCorrectly(
-    std::initializer_list<T> values) {
-  return hash_internal::VerifyTypeImplementsAbslHashCorrectly(
-      hash_internal::ContainerAsVector<std::initializer_list<T>>::Do(values),
-      hash_internal::DefaultEquals{});
-}
+    std::initializer_list<T> values) { __builtin_trap() /* STUB: not implemented */; }
 
 template <int&..., typename T, typename Eq>
 testing::AssertionResult VerifyTypeImplementsAbslHashCorrectly(
-    std::initializer_list<T> values, Eq equals) {
-  return hash_internal::VerifyTypeImplementsAbslHashCorrectly(
-      hash_internal::ContainerAsVector<std::initializer_list<T>>::Do(values),
-      equals);
-}
+    std::initializer_list<T> values, Eq equals) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

@@ -28,21 +28,16 @@
 namespace {
 
 struct Blob {
-  Blob() : val(42) {}
-  Blob(int x, int y) : val(x + y) {}
-  Blob(std::initializer_list<int> xs) {
-    val = 0;
-    for (auto& x : xs) val += x;
-  }
+  Blob() : val(42) { __builtin_trap() /* STUB: not implemented */; }
+  Blob(int x, int y) : val(x + y) { __builtin_trap() /* STUB: not implemented */; }
+  Blob(std::initializer_list<int> xs) { __builtin_trap() /* STUB: not implemented */; }
 
   Blob(const Blob& /*b*/) = delete;
-  Blob(Blob&& b) noexcept : val(b.val) {
-    b.moved_out = true;
-  }  // moving is fine
+  Blob(Blob&& b) noexcept : val(b.val) { __builtin_trap() /* STUB: not implemented */; }  // moving is fine
 
   // no crash: NoDestructor indeed does not destruct (the moved-out Blob
   // temporaries do get destroyed though)
-  ~Blob() { ABSL_INTERNAL_CHECK(moved_out, "~Blob"); }
+  ~Blob() { __builtin_trap() /* STUB: not implemented */; }
 
   int val;
   bool moved_out = false;
@@ -128,47 +123,23 @@ TEST(NoDestructorTest, SfinaeRegressionAbstractArg) {
 
 // ========================================================================= //
 
-std::string* Str0() {
-  static absl::NoDestructor<std::string> x;
-  return x.get();
-}
+std::string* Str0() { __builtin_trap() /* STUB: not implemented */; }
 
 extern const std::string& Str2();
 
-const char* Str1() {
-  static absl::NoDestructor<std::string> x(Str2() + "_Str1");
-  return x->c_str();
-}
+const char* Str1() { __builtin_trap() /* STUB: not implemented */; }
 
-const std::string& Str2() {
-  static absl::NoDestructor<std::string> x("Str2");
-  return *x;
-}
+const std::string& Str2() { __builtin_trap() /* STUB: not implemented */; }
 
-const std::string& Str2Copy() {
-  // Exercise copy construction
-  static absl::NoDestructor<std::string> x(Str2());
-  return *x;
-}
+const std::string& Str2Copy() { __builtin_trap() /* STUB: not implemented */; }
 
 typedef std::array<std::string, 3> MyArray;
-const MyArray& Array() {
-  static absl::NoDestructor<MyArray> x{{{"foo", "bar", "baz"}}};
-  // This only works in clang, not in gcc:
-  // static absl::NoDestructor<MyArray> x({{"foo", "bar", "baz"}});
-  return *x;
-}
+const MyArray& Array() { __builtin_trap() /* STUB: not implemented */; }
 
 typedef std::vector<int> MyVector;
-const MyVector& Vector() {
-  static absl::NoDestructor<MyVector> x{{1, 2, 3}};
-  return *x;
-}
+const MyVector& Vector() { __builtin_trap() /* STUB: not implemented */; }
 
-const int& Int() {
-  static absl::NoDestructor<int> x;
-  return *x;
-}
+const int& Int() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(NoDestructorTest, StaticPattern) {
   EXPECT_TRUE(

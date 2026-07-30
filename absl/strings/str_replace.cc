@@ -27,47 +27,7 @@
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-namespace strings_internal {
-
-using FixedMapping =
-    std::initializer_list<std::pair<absl::string_view, absl::string_view>>;
-
-// Applies the ViableSubstitutions in subs_ptr to the absl::string_view s, and
-// stores the result in *result_ptr. Returns the number of substitutions that
-// occurred.
-int ApplySubstitutions(
-    absl::string_view s,
-    std::vector<strings_internal::ViableSubstitution>* absl_nonnull subs_ptr,
-    std::string* absl_nonnull result_ptr) {
-  auto& subs = *subs_ptr;
-  int substitutions = 0;
-  size_t pos = 0;
-  while (!subs.empty()) {
-    auto& sub = subs.back();
-    if (sub.offset >= pos) {
-      if (pos <= s.size()) {
-        StrAppend(result_ptr, s.substr(pos, sub.offset - pos), sub.replacement);
-      }
-      pos = sub.offset + sub.old.size();
-      substitutions += 1;
-    }
-    sub.offset = s.find(sub.old, pos);
-    if (sub.offset == s.npos) {
-      subs.pop_back();
-    } else {
-      // Insertion sort to ensure the last ViableSubstitution continues to be
-      // before all the others.
-      size_t index = subs.size();
-      while (--index && subs[index - 1].OccursBefore(subs[index])) {
-        std::swap(subs[index], subs[index - 1]);
-      }
-    }
-  }
-  result_ptr->append(s.data() + pos, s.size() - pos);
-  return substitutions;
-}
-
-}  // namespace strings_internal
+namespace strings_internal { __builtin_trap() /* STUB: not implemented */; }  // namespace strings_internal
 
 // We can implement this in terms of the generic StrReplaceAll, but
 // we must specify the template overload because C++ cannot deduce the type
@@ -78,14 +38,10 @@ int ApplySubstitutions(
 // aren't inlined.
 
 std::string StrReplaceAll(absl::string_view s,
-                          strings_internal::FixedMapping replacements) {
-  return StrReplaceAll<strings_internal::FixedMapping>(s, replacements);
-}
+                          strings_internal::FixedMapping replacements) { __builtin_trap() /* STUB: not implemented */; }
 
 int StrReplaceAll(strings_internal::FixedMapping replacements,
-                  std::string* absl_nonnull target) {
-  return StrReplaceAll<strings_internal::FixedMapping>(replacements, target);
-}
+                  std::string* absl_nonnull target) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

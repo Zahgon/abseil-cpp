@@ -2657,100 +2657,31 @@ class raw_hash_set {
 
   raw_hash_set(raw_hash_set&& that, const allocator_type& a)
       : settings_(CommonFields::CreateDefault<SooEnabled()>(), that.hash_ref(),
-                  that.eq_ref(), a) {
-    if (CharAlloc(a) == that.char_alloc_ref()) {
-      swap_common(that);
-      annotate_for_bug_detection_on_move(that);
-    } else {
-      move_elements_allocs_unequal(std::move(that));
-    }
-  }
+                  that.eq_ref(), a) { __builtin_trap() /* STUB: not implemented */; }
 
-  raw_hash_set& operator=(const raw_hash_set& that) {
-    that.AssertNotDebugCapacity();
-    if (ABSL_PREDICT_FALSE(this == &that)) return *this;
-    constexpr bool propagate_alloc =
-        AllocTraits::propagate_on_container_copy_assignment::value;
-    // TODO(ezb): maybe avoid allocating a new backing array if this->capacity()
-    // is an exact match for that.size(). If this->capacity() is too big, then
-    // it would make iteration very slow to reuse the allocation. Maybe we can
-    // do the same heuristic as clear() and reuse if it's small enough.
-    allocator_type alloc(propagate_alloc ? that.char_alloc_ref()
-                                         : char_alloc_ref());
-    raw_hash_set tmp(that, alloc);
-    // NOLINTNEXTLINE: not returning *this for performance.
-    return assign_impl<propagate_alloc>(std::move(tmp));
-  }
+  raw_hash_set& operator=(const raw_hash_set& that) { __builtin_trap() /* STUB: not implemented */; }
 
   raw_hash_set& operator=(raw_hash_set&& that) noexcept(
       AllocTraits::is_always_equal::value &&
       std::is_nothrow_move_assignable_v<hasher> &&
-      std::is_nothrow_move_assignable_v<key_equal>) {
-    // TODO(sbenza): We should only use the operations from the noexcept clause
-    // to make sure we actually adhere to that contract.
-    // NOLINTNEXTLINE: not returning *this for performance.
-    return move_assign(
-        std::move(that),
-        typename AllocTraits::propagate_on_container_move_assignment());
-  }
+      std::is_nothrow_move_assignable_v<key_equal>) { __builtin_trap() /* STUB: not implemented */; }
 
-  ~raw_hash_set() {
-    destructor_impl();
-    if constexpr (SwisstableGenerationsOrDebugEnabled()) {
-      common().set_capacity(HashtableCapacity::CreateDestroyed());
-    }
-  }
+  ~raw_hash_set() { __builtin_trap() /* STUB: not implemented */; }
 
-  iterator begin() ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    if (ABSL_PREDICT_FALSE(empty())) return end();
-    if (is_small()) return single_iterator();
-    iterator it = {control(), slot_array(capacity()),
-                   common().generation_ptr()};
-    it.skip_empty_or_deleted();
-    ABSL_SWISSTABLE_ASSERT(IsFull(*it.control()));
-    return it;
-  }
-  iterator end() ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    AssertNotDebugCapacity();
-    return iterator(common().generation_ptr());
-  }
+  iterator begin() ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  iterator end() ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
-  const_iterator begin() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return const_cast<raw_hash_set*>(this)->begin();
-  }
-  const_iterator end() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return const_cast<raw_hash_set*>(this)->end();
-  }
-  const_iterator cbegin() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return begin();
-  }
-  const_iterator cend() const ABSL_ATTRIBUTE_LIFETIME_BOUND { return end(); }
+  const_iterator begin() const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  const_iterator end() const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  const_iterator cbegin() const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  const_iterator cend() const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
-  bool empty() const { return !size(); }
-  size_t size() const {
-    AssertNotDebugCapacity();
-    const size_t size = common().size();
-    [[maybe_unused]] const size_t kMaxValidSize = MaxValidSize();
-    ABSL_ASSUME(size <= kMaxValidSize);
-    return size;
-  }
-  size_t capacity() const {
-    const size_t cap = common().capacity();
-    // Compiler complains when using functions in ASSUME so use local variables.
-    [[maybe_unused]] const bool kIsValid = IsValidCapacity(cap);
-    [[maybe_unused]] const size_t kDefaultCapacity = DefaultCapacity();
-    [[maybe_unused]] const size_t kMaxValidCapacity = MaxValidCapacity();
-    ABSL_ASSUME(kIsValid || cap == 0);
-    ABSL_ASSUME(cap >= kDefaultCapacity);
-    ABSL_ASSUME(cap <= kMaxValidCapacity);
-    return cap;
-  }
-  size_t max_size() const { return MaxValidSize(); }
+  bool empty() const { __builtin_trap() /* STUB: not implemented */; }
+  size_t size() const { __builtin_trap() /* STUB: not implemented */; }
+  size_t capacity() const { __builtin_trap() /* STUB: not implemented */; }
+  size_t max_size() const { __builtin_trap() /* STUB: not implemented */; }
 
-  ABSL_ATTRIBUTE_REINITIALIZES void clear() {
-    Clear<SooEnabled()>(common(), GetPolicyFunctions(), get_destroy_slot_fn(),
-                        &char_alloc_ref());
-  }
+  ABSL_ATTRIBUTE_REINITIALIZES void clear() { __builtin_trap() /* STUB: not implemented */; }
 
   // This overload kicks in when the argument is an rvalue of insertable and
   // decomposable type other than init_type.
@@ -2762,9 +2693,7 @@ class raw_hash_set {
                                        IsNotBitField<T>::value &&
                                        !IsLifetimeBoundAssignmentFrom<T>::value,
                                    int>()>
-  std::pair<iterator, bool> insert(T&& value) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return emplace(std::forward<T>(value));
-  }
+  std::pair<iterator, bool> insert(T&& value) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   template <class T, int&...,
             std::enable_if_t<IsDecomposableAndInsertable<T>::value &&
@@ -2773,9 +2702,7 @@ class raw_hash_set {
                              int> = 0>
   std::pair<iterator, bool> insert(
       T&& value ABSL_INTERNAL_ATTRIBUTE_CAPTURED_BY_THIS)
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return this->template insert<T, 0>(std::forward<T>(value));
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // This overload kicks in when the argument is a bitfield or an lvalue of
   // insertable and decomposable type.
@@ -2793,18 +2720,14 @@ class raw_hash_set {
                              !IsLifetimeBoundAssignmentFrom<const T&>::value,
                          int>()>
   std::pair<iterator, bool> insert(const T& value)
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return emplace(value);
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
   template <class T, int&...,
             std::enable_if_t<IsDecomposableAndInsertable<const T&>::value &&
                                  IsLifetimeBoundAssignmentFrom<const T&>::value,
                              int> = 0>
   std::pair<iterator, bool> insert(
       const T& value ABSL_INTERNAL_ATTRIBUTE_CAPTURED_BY_THIS)
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return this->template insert<T, 0>(value);
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // This overload kicks in when the argument is an rvalue of init_type. Its
   // purpose is to handle brace-init-list arguments.
@@ -2824,9 +2747,7 @@ class raw_hash_set {
       init_type&& value ABSL_INTERNAL_ATTRIBUTE_CAPTURED_BY_THIS)
       ABSL_ATTRIBUTE_LIFETIME_BOUND
     requires(IsLifetimeBoundAssignmentFrom<init_type>::value)
-  {
-    return emplace(std::move(value));
-  }
+  { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
   template <class T,
@@ -2834,9 +2755,7 @@ class raw_hash_set {
                                        IsNotBitField<T>::value &&
                                        !IsLifetimeBoundAssignmentFrom<T>::value,
                                    int>()>
-  iterator insert(const_iterator, T&& value) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return insert(std::forward<T>(value)).first;
-  }
+  iterator insert(const_iterator, T&& value) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
   template <class T, int&...,
             std::enable_if_t<IsDecomposableAndInsertable<T>::value &&
                                  IsNotBitField<T>::value &&
@@ -2844,57 +2763,29 @@ class raw_hash_set {
                              int> = 0>
   iterator insert(const_iterator hint,
                   T&& value ABSL_INTERNAL_ATTRIBUTE_CAPTURED_BY_THIS)
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return this->template insert<T, 0>(hint, std::forward<T>(value));
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   template <class T, std::enable_if_t<
                          IsDecomposableAndInsertable<const T&>::value, int> = 0>
   iterator insert(const_iterator,
-                  const T& value) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return insert(value).first;
-  }
+                  const T& value) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   iterator insert(const_iterator,
-                  init_type&& value) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return insert(std::move(value)).first;
-  }
+                  init_type&& value) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   template <class InputIt>
-  void insert(InputIt first, InputIt last) {
-    insert_range(first, last);
-  }
+  void insert(InputIt first, InputIt last) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class T, RequiresNotInit<T> = 0,
             std::enable_if_t<Insertable<const T&>::value, int> = 0>
-  void insert(std::initializer_list<T> ilist) {
-    insert_range(ilist.begin(), ilist.end());
-  }
+  void insert(std::initializer_list<T> ilist) { __builtin_trap() /* STUB: not implemented */; }
 
-  void insert(std::initializer_list<init_type> ilist) {
-    insert_range(ilist.begin(), ilist.end());
-  }
+  void insert(std::initializer_list<init_type> ilist) { __builtin_trap() /* STUB: not implemented */; }
 
-  insert_return_type insert(node_type&& node) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    if (!node) return {end(), false, node_type()};
-    const auto& elem = PolicyTraits::element(CommonAccess::GetSlot(node));
-    auto res = PolicyTraits::apply(
-        InsertSlot<false>{*this, std::move(*CommonAccess::GetSlot(node))},
-        elem);
-    if (res.second) {
-      CommonAccess::Reset(&node);
-      return {res.first, true, node_type()};
-    } else {
-      return {res.first, false, std::move(node)};
-    }
-  }
+  insert_return_type insert(node_type&& node) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   iterator insert(const_iterator,
-                  node_type&& node) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    auto res = insert(std::move(node));
-    node = std::move(res.node);
-    return res.position;
-  }
+                  node_type&& node) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // This overload kicks in if we can deduce the key from args. This enables us
   // to avoid constructing value_type if an entry with the same key already
@@ -2908,10 +2799,7 @@ class raw_hash_set {
   template <class... Args,
             std::enable_if_t<IsDecomposable<Args...>::value, int> = 0>
   std::pair<iterator, bool> emplace(Args&&... args)
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return PolicyTraits::apply(EmplaceDecomposable{*this},
-                               std::forward<Args>(args)...);
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // This overload kicks in if we cannot deduce the key from args. It constructs
   // value_type unconditionally and then either moves it into the table or
@@ -2919,20 +2807,11 @@ class raw_hash_set {
   template <class... Args,
             std::enable_if_t<!IsDecomposable<Args...>::value, int> = 0>
   std::pair<iterator, bool> emplace(Args&&... args)
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    alignas(slot_type) unsigned char raw[sizeof(slot_type)];
-    slot_type* slot = to_slot(&raw);
-
-    construct(slot, std::forward<Args>(args)...);
-    const auto& elem = PolicyTraits::element(slot);
-    return PolicyTraits::apply(InsertSlot<true>{*this, std::move(*slot)}, elem);
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   template <class... Args>
   iterator emplace_hint(const_iterator,
-                        Args&&... args) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return emplace(std::forward<Args>(args)...).first;
-  }
+                        Args&&... args) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Extension API: support for lazy emplace.
   //
@@ -2967,14 +2846,10 @@ class raw_hash_set {
 
    public:
     template <class... Args>
-    void operator()(Args&&... args) const {
-      ABSL_SWISSTABLE_ASSERT(*slot_);
-      PolicyTraits::construct(alloc_, *slot_, std::forward<Args>(args)...);
-      *slot_ = nullptr;
-    }
+    void operator()(Args&&... args) const { __builtin_trap() /* STUB: not implemented */; }
 
    private:
-    constructor(allocator_type* a, slot_type** slot) : alloc_(a), slot_(slot) {}
+    constructor(allocator_type* a, slot_type** slot) : alloc_(a), slot_(slot) { __builtin_trap() /* STUB: not implemented */; }
 
     allocator_type* alloc_;
     slot_type** slot_;
@@ -2982,16 +2857,7 @@ class raw_hash_set {
 
   template <class K = key_type, class F>
   iterator lazy_emplace(const key_arg<K>& key,
-                        F&& f) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    auto res = find_or_prepare_insert(key);
-    if (res.second) {
-      slot_type* slot = res.first;
-      allocator_type alloc(char_alloc_ref());
-      std::forward<F>(f)(constructor(&alloc, &slot));
-      ABSL_SWISSTABLE_ASSERT(!slot);
-    }
-    return non_iterable_iterator_at_slot(res.first);
-  }
+                        F&& f) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Extension API: support for heterogeneous keys.
   //
@@ -3003,56 +2869,21 @@ class raw_hash_set {
   //   // Uses "abc" directly without copying it into std::string.
   //   s.erase("abc");
   template <class K = key_type>
-  size_type erase(const key_arg<K>& key) {
-    auto it = find(key);
-    if (it == end()) return 0;
-    erase(it);
-    return 1;
-  }
+  size_type erase(const key_arg<K>& key) { __builtin_trap() /* STUB: not implemented */; }
 
   // Erases the element pointed to by `it`. Unlike `std::unordered_set::erase`,
   // this method returns void to reduce algorithmic complexity to O(1). The
   // iterator is invalidated so any increment should be done before calling
   // erase (e.g. `erase(it++)`).
-  void erase(const_iterator cit) { erase(cit.inner_); }
+  void erase(const_iterator cit) { __builtin_trap() /* STUB: not implemented */; }
 
   // This overload is necessary because otherwise erase<K>(const K&) would be
   // a better match if non-const iterator is passed as an argument.
-  void erase(iterator it) {
-    ABSL_SWISSTABLE_ASSERT(capacity() > 0);
-    AssertNotDebugCapacity();
-    it.assert_is_full("erase()");
-    destroy(it.slot());
-    erase_meta_only(it);
-  }
+  void erase(iterator it) { __builtin_trap() /* STUB: not implemented */; }
 
   // TODO(b/515666499): Type erase entire function or begin/end case.
   iterator erase(const_iterator first,
-                 const_iterator last) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    AssertNotDebugCapacity();
-    // We check for empty and for is_small because clear_backing_array requires
-    // that capacity() > MaxSmallCapacity() as a precondition.
-    if (empty()) return end();
-    if (first == last) return last.inner_;
-    if (is_small()) {
-      destroy(single_slot());
-      erase_meta_only_small();
-      return end();
-    }
-    if (first == begin() && last == end()) {
-      // TODO(ezb): we access control bytes in destroy_slots so it could make
-      // sense to combine destroy_slots and clear_backing_array to avoid cache
-      // misses when the table is large. Note that we also do this in clear().
-      destroy_slots();
-      clear_backing_array(/*reuse=*/true);
-      common().set_reserved_growth(common().reservation_size());
-      return end();
-    }
-    while (first != last) {
-      erase(first++);
-    }
-    return last.inner_;
-  }
+                 const_iterator last) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Moves elements from `src` into `this`.
   // If the element already exists in `this`, it is left unmodified in `src`.
@@ -3060,77 +2891,28 @@ class raw_hash_set {
       typename... Params2,
       typename = std::enable_if_t<std::is_same_v<
           Alloc, typename raw_hash_set<Policy, Params2...>::allocator_type>>>
-  void merge(raw_hash_set<Policy, Params2...>& src) {  // NOLINT
-    AssertNotDebugCapacity();
-    src.AssertNotDebugCapacity();
-    assert(this != &src);
-    // Returns whether insertion took place.
-    const auto insert_slot = [this](slot_type* src_slot) {
-      return PolicyTraits::apply(InsertSlot<false>{*this, std::move(*src_slot)},
-                                 PolicyTraits::element(src_slot))
-          .second;
-    };
-
-    if (src.is_small()) {
-      if (src.empty()) return;
-      if (insert_slot(src.single_slot()))
-        src.erase_meta_only_small();
-      return;
-    }
-    for (auto it = src.begin(), e = src.end(); it != e;) {
-      auto next = std::next(it);
-      if (insert_slot(it.slot())) src.erase_meta_only_large(it);
-      it = next;
-    }
-  }
+  void merge(raw_hash_set<Policy, Params2...>& src) { __builtin_trap() /* STUB: not implemented */; }
 
   template <
       typename... Params2,
       typename = std::enable_if_t<std::is_same_v<
           Alloc, typename raw_hash_set<Policy, Params2...>::allocator_type>>>
-  void merge(raw_hash_set<Policy, Params2...>&& src) {  // NOLINT
-    merge(src);
-  }
+  void merge(raw_hash_set<Policy, Params2...>&& src) { __builtin_trap() /* STUB: not implemented */; }
 
-  node_type extract(const_iterator position) {
-    AssertNotDebugCapacity();
-    position.inner_.assert_is_full("extract()");
-    allocator_type alloc(char_alloc_ref());
-    auto node = CommonAccess::Transfer<node_type>(alloc, position.slot());
-    erase_meta_only(position);
-    return node;
-  }
+  node_type extract(const_iterator position) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class K = key_type,
             std::enable_if_t<!std::is_same_v<K, iterator>, int> = 0>
-  node_type extract(const key_arg<K>& key) {
-    auto it = find(key);
-    return it == end() ? node_type() : extract(const_iterator{it});
-  }
+  node_type extract(const key_arg<K>& key) { __builtin_trap() /* STUB: not implemented */; }
 
   void swap(raw_hash_set& that) noexcept(
       AllocTraits::is_always_equal::value &&
       std::is_nothrow_swappable_v<hasher> &&
-      std::is_nothrow_swappable_v<key_equal>) {
-    AssertNotDebugCapacity();
-    that.AssertNotDebugCapacity();
-    using std::swap;
-    swap_common(that);
-    swap(hash_ref(), that.hash_ref());
-    swap(eq_ref(), that.eq_ref());
-    SwapAlloc(char_alloc_ref(), that.char_alloc_ref(),
-              typename AllocTraits::propagate_on_container_swap{});
-  }
+      std::is_nothrow_swappable_v<key_equal>) { __builtin_trap() /* STUB: not implemented */; }
 
-  void rehash(size_t n) {
-    Rehash(common(), GetPolicyFunctions(), (std::min)(n, MaxValidCapacity()));
-  }
+  void rehash(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
-  void reserve(size_t n) {
-    if (ABSL_PREDICT_TRUE(n > DefaultCapacity())) {
-      ReserveTableToFitNewSize(common(), GetPolicyFunctions(), n);
-    }
-  }
+  void reserve(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
   // Extension API: support for heterogeneous keys.
   //
@@ -3142,9 +2924,7 @@ class raw_hash_set {
   //   // Uses "abc" directly without copying it into std::string.
   //   s.count("abc");
   template <class K = key_type>
-  size_t count(const key_arg<K>& key) const {
-    return find(key) == end() ? 0 : 1;
-  }
+  size_t count(const key_arg<K>& key) const { __builtin_trap() /* STUB: not implemented */; }
 
   // Issues CPU prefetch instructions for the memory needed to find or insert
   // a key.  Like all lookup functions, this support heterogeneous keys.
@@ -3152,121 +2932,54 @@ class raw_hash_set {
   // NOTE: This is a very low level operation and should not be used without
   // specific benchmarks indicating its importance.
   template <class K = key_type>
-  void prefetch([[maybe_unused]] const key_arg<K>& key) const {
-    if (capacity() == DefaultCapacity()) return;
-    // Avoid probing if we won't be able to prefetch the addresses received.
-#ifdef ABSL_HAVE_PREFETCH
-    prefetch_heap_block();
-    if (is_small()) return;
-    auto seq = probe(common(), hash_of(key));
-    PrefetchToLocalCache(control() + seq.offset());
-    PrefetchToLocalCache(slot_array(capacity()) + seq.offset());
-#endif  // ABSL_HAVE_PREFETCH
-  }
+  void prefetch([[maybe_unused]] const key_arg<K>& key) const { __builtin_trap() /* STUB: not implemented */; }
 
   template <class K = key_type>
   ABSL_DEPRECATE_AND_INLINE()
   iterator find(const key_arg<K>& key,
-                size_t) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return find(key);
-  }
+                size_t) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
   // The API of find() has one extension: the type of the key argument doesn't
   // have to be key_type. This is so called heterogeneous key support.
   template <class K = key_type>
-  iterator find(const key_arg<K>& key) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    AssertOnFind(key);
-    if (is_small()) return find_small(key);
-    prefetch_heap_block();
-    return find_large(key);
-  }
+  iterator find(const key_arg<K>& key) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   template <class K = key_type>
   ABSL_DEPRECATE_AND_INLINE()
   const_iterator find(const key_arg<K>& key,
-                      size_t) const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return find(key);
-  }
+                      size_t) const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
   template <class K = key_type>
   const_iterator find(const key_arg<K>& key) const
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return const_cast<raw_hash_set*>(this)->find(key);
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   template <class K = key_type>
-  bool contains(const key_arg<K>& key) const {
-    // Here neither the iterator returned by `find()` nor `end()` can be invalid
-    // outside of potential thread-safety issues.
-    // `find()`'s return value is constructed, used, and then destructed
-    // all in this context.
-    return !find(key).unchecked_equals(end());
-  }
+  bool contains(const key_arg<K>& key) const { __builtin_trap() /* STUB: not implemented */; }
 
   template <class K = key_type>
   std::pair<iterator, iterator> equal_range(const key_arg<K>& key)
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    auto it = find(key);
-    if (it != end()) return {it, std::next(it)};
-    return {it, it};
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
   template <class K = key_type>
   std::pair<const_iterator, const_iterator> equal_range(
-      const key_arg<K>& key) const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    auto it = find(key);
-    if (it != end()) return {it, std::next(it)};
-    return {it, it};
-  }
+      const key_arg<K>& key) const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
-  size_t bucket_count() const { return capacity(); }
-  float load_factor() const {
-    return capacity() ? static_cast<double>(size()) / capacity() : 0.0;
-  }
-  float max_load_factor() const { return 1.0f; }
-  void max_load_factor(float) {
-    // Does nothing.
-  }
+  size_t bucket_count() const { __builtin_trap() /* STUB: not implemented */; }
+  float load_factor() const { __builtin_trap() /* STUB: not implemented */; }
+  float max_load_factor() const { __builtin_trap() /* STUB: not implemented */; }
+  void max_load_factor(float) { __builtin_trap() /* STUB: not implemented */; }
 
-  hasher hash_function() const { return hash_ref(); }
-  key_equal key_eq() const { return eq_ref(); }
-  allocator_type get_allocator() const {
-    return allocator_type(char_alloc_ref());
-  }
+  hasher hash_function() const { __builtin_trap() /* STUB: not implemented */; }
+  key_equal key_eq() const { __builtin_trap() /* STUB: not implemented */; }
+  allocator_type get_allocator() const { __builtin_trap() /* STUB: not implemented */; }
 
-  friend bool operator==(const raw_hash_set& a, const raw_hash_set& b) {
-    if (a.size() != b.size()) return false;
-    const raw_hash_set* outer = &a;
-    const raw_hash_set* inner = &b;
-    if (outer->capacity() > inner->capacity()) std::swap(outer, inner);
-    for (const value_type& elem : *outer) {
-      auto it = PolicyTraits::apply(FindElement{*inner}, elem);
-      if (it == inner->end()) return false;
-      // Note: we used key_equal to check for key equality in FindElement, but
-      // we may need to do an additional comparison using
-      // value_type::operator==. E.g. the keys could be equal and the
-      // mapped_types could be unequal in a map or even in a set, key_equal
-      // could ignore some fields that aren't ignored by operator==.
-      static constexpr bool kKeyEqIsValueEq =
-          std::is_same_v<key_type, value_type> &&
-          std::is_same_v<key_equal, hash_default_eq<key_type>>;
-      if (!kKeyEqIsValueEq && !(*it == elem)) return false;
-    }
-    return true;
-  }
+  friend bool operator==(const raw_hash_set& a, const raw_hash_set& b) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend bool operator!=(const raw_hash_set& a, const raw_hash_set& b) {
-    return !(a == b);
-  }
+  friend bool operator!=(const raw_hash_set& a, const raw_hash_set& b) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename H>
   friend std::enable_if_t<H::template is_hashable<value_type>::value, H>
-  AbslHashValue(H h, const raw_hash_set& s) {
-    return H::combine(H::combine_unordered(std::move(h), s.begin(), s.end()),
-                      hash_internal::WeaklyMixedInteger{s.size()});
-  }
+  AbslHashValue(H h, const raw_hash_set& s) { __builtin_trap() /* STUB: not implemented */; }
 
   friend void swap(raw_hash_set& a,
-                   raw_hash_set& b) noexcept(noexcept(a.swap(b))) {
-    a.swap(b);
-  }
+                   raw_hash_set& b) noexcept(noexcept(a.swap(b))) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   template <class Container, typename Enabler>
@@ -3277,94 +2990,37 @@ class raw_hash_set {
 
   struct FindElement {
     template <class K, class... Args>
-    const_iterator operator()(const K& key, Args&&...) const {
-      return s.find(key);
-    }
+    const_iterator operator()(const K& key, Args&&...) const { __builtin_trap() /* STUB: not implemented */; }
     const raw_hash_set& s;
   };
 
   struct EmplaceDecomposable {
     template <class K, class... Args>
-    std::pair<iterator, bool> operator()(const K& key, Args&&... args) const {
-      auto res = s.find_or_prepare_insert(key);
-      if (res.second) {
-        s.emplace_at(res.first, std::forward<Args>(args)...);
-      }
-      return {s.non_iterable_iterator_at_slot(res.first), res.second};
-    }
+    std::pair<iterator, bool> operator()(const K& key, Args&&... args) const { __builtin_trap() /* STUB: not implemented */; }
     raw_hash_set& s;
   };
 
   template <bool do_destroy>
   struct InsertSlot {
     template <class K, class... Args>
-    std::pair<iterator, bool> operator()(const K& key, Args&&...) && {
-      auto res = s.find_or_prepare_insert(key);
-      if (res.second) {
-        s.transfer(res.first, &slot);
-      } else if (do_destroy) {
-        s.destroy(&slot);
-      }
-      return {s.non_iterable_iterator_at_slot(res.first), res.second};
-    }
+    std::pair<iterator, bool> operator()(const K& key, Args&&...) && { __builtin_trap() /* STUB: not implemented */; }
     raw_hash_set& s;
     // Constructed slot. Either moved into place or destroyed.
     slot_type&& slot;
   };
 
   template <typename... Args>
-  void construct(slot_type* slot, Args&&... args) {
-    common().RunWithReentrancyGuard([&] {
-      allocator_type alloc(char_alloc_ref());
-      PolicyTraits::construct(&alloc, slot, std::forward<Args>(args)...);
-    });
-  }
-  void destroy(slot_type* slot) {
-    common().RunWithReentrancyGuard([&] {
-      allocator_type alloc(char_alloc_ref());
-      PolicyTraits::destroy(&alloc, slot);
-    });
-  }
-  void transfer(slot_type* to, slot_type* from) {
-    common().RunWithReentrancyGuard([&] {
-      allocator_type alloc(char_alloc_ref());
-      PolicyTraits::transfer(&alloc, to, from);
-    });
-  }
+  void construct(slot_type* slot, Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
+  void destroy(slot_type* slot) { __builtin_trap() /* STUB: not implemented */; }
+  void transfer(slot_type* to, slot_type* from) { __builtin_trap() /* STUB: not implemented */; }
 
   // TODO(b/289225379): consider having a helper class that has the impls for
   // SOO functionality.
   template <class K = key_type>
-  ABSL_ATTRIBUTE_ALWAYS_INLINE iterator find_small(const key_arg<K>& key) {
-    ABSL_SWISSTABLE_ASSERT(is_small());
-    return empty() || !equal_to(key, single_slot()) ? end() : single_iterator();
-  }
+  ABSL_ATTRIBUTE_ALWAYS_INLINE iterator find_small(const key_arg<K>& key) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class K = key_type>
-  iterator find_large(const key_arg<K>& key) {
-    ABSL_SWISSTABLE_ASSERT(!is_small());
-    const size_t cap = common().capacity();
-    ABSL_ASSUME(cap > kMaxSmallCapacity);
-    const size_t hash = hash_of(key);
-    auto seq = probe(ProbeCapacity{cap}, hash);
-    const h2_t h2 = H2(hash);
-    ctrl_t* ctrl = control();
-    slot_type* slot_array = to_slot(common().slot_array(cap));
-    while (true) {
-#ifndef ABSL_HAVE_MEMORY_SANITIZER
-      absl::PrefetchToLocalCache(slot_array + seq.offset());
-#endif
-      Group g{ctrl + seq.offset()};
-      for (uint32_t i : g.Match(h2)) {
-        const size_t offset = seq.offset(i);
-        if (ABSL_PREDICT_TRUE(equal_to(key, slot_array + offset)))
-          return iterator_at_ptr(ctrl + offset, slot_array + offset);
-      }
-      if (ABSL_PREDICT_TRUE(g.MaskEmpty())) return end();
-      seq.next();
-      ABSL_SWISSTABLE_ASSERT(seq.index() <= cap && "full table!");
-    }
-  }
+  iterator find_large(const key_arg<K>& key) { __builtin_trap() /* STUB: not implemented */; }
 
   // Returns true if the table needs to be sampled. This keeps track of whether
   // sampling has already been evaluated and ensures that it can only return
@@ -3372,364 +3028,87 @@ class raw_hash_set {
   //
   // This should be called on insertion into an empty SOO table and in copy
   // construction when the size can fit in SOO capacity.
-  bool should_sample_soo() {
-    ABSL_SWISSTABLE_ASSERT(is_soo());
-    if constexpr (!ShouldSampleHashtablezInfoForAlloc<CharAlloc>()) {
-      return false;
-    }
-    if (common().soo_has_tried_sampling()) {
-      // Already evaluated sampling on this SOO table; do not re-evaluate
-      // sampling each time it transitions from empty to full SOO state.
-      return false;
-    }
-    // TODO: b/396049910 -- consider managing this flag on the 1->0 size
-    // transition of SOO tables rather than the 0->1 transition.
-    common().set_soo_has_tried_sampling();
-    return ABSL_PREDICT_FALSE(ShouldSampleNextTable());
-  }
+  bool should_sample_soo() { __builtin_trap() /* STUB: not implemented */; }
 
-  void clear_backing_array(bool reuse) {
-    ABSL_SWISSTABLE_ASSERT(capacity() > kMaxSmallCapacity);
-    ClearBackingArray(common(), GetPolicyFunctions(), &char_alloc_ref(), reuse);
-  }
+  void clear_backing_array(bool reuse) { __builtin_trap() /* STUB: not implemented */; }
 
-  void destroy_slots() {
-    ABSL_SWISSTABLE_ASSERT(!is_small());
-    if (PolicyTraits::template destroy_is_trivial<Alloc>()) return;
-    DestroySlots(common(), sizeof(slot_type), get_destroy_slot_fn());
-  }
+  void destroy_slots() { __builtin_trap() /* STUB: not implemented */; }
 
-  void dealloc() {
-    ABSL_SWISSTABLE_ASSERT(capacity() > DefaultCapacity());
-    DeallocBackingArray(common(), sizeof(slot_type), alignof(slot_type),
-                        get_dealloc_backing_array_fn(), &char_alloc_ref());
-  }
+  void dealloc() { __builtin_trap() /* STUB: not implemented */; }
 
-  void destructor_impl() {
-    if (SwisstableGenerationsEnabled() &&
-        maybe_invalid_capacity().IsMovedFrom()) {
-      return;
-    }
-    if constexpr (SooEnabled()) {
-      if (is_small() &&
-          (PolicyTraits::template destroy_is_trivial<Alloc>() || empty())) {
-        return;
-      }
-      DestructSoo(common(), sizeof(slot_type), alignof(slot_type),
-                  get_destroy_slot_fn(), get_dealloc_backing_array_fn(),
-                  &char_alloc_ref());
-    } else {
-      if (capacity() == 0) return;
-      DestructNonSoo(common(), sizeof(slot_type), alignof(slot_type),
-                     get_destroy_slot_fn(), get_dealloc_backing_array_fn(),
-                     &char_alloc_ref());
-    }
-  }
+  void destructor_impl() { __builtin_trap() /* STUB: not implemented */; }
 
   // Erases, but does not destroy, the value pointed to by `it`.
   //
   // This merely updates the pertinent control byte. This can be used in
   // conjunction with Policy::transfer to move the object to another place.
-  void erase_meta_only(const_iterator it) {
-    if (is_small()) {
-      erase_meta_only_small();
-      return;
-    }
-    erase_meta_only_large(it);
-  }
-  void erase_meta_only_small() {
-    EraseMetaOnlySmall(common(), SooEnabled(), sizeof(slot_type));
-  }
-  void erase_meta_only_large(const_iterator it) {
-    EraseMetaOnlyLarge(common(),
-                       // `it` can be non-iterable iterator, so we can't use
-                       // it.control().
-                       static_cast<size_t>(it.slot() - slot_array(capacity())),
-                       sizeof(slot_type));
-  }
+  void erase_meta_only(const_iterator it) { __builtin_trap() /* STUB: not implemented */; }
+  void erase_meta_only_small() { __builtin_trap() /* STUB: not implemented */; }
+  void erase_meta_only_large(const_iterator it) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class K>
   ABSL_ATTRIBUTE_ALWAYS_INLINE bool equal_to(const K& key,
-                                             slot_type* slot) const {
-    return PolicyTraits::apply(EqualElement<K, key_equal>{key, eq_ref()},
-                               PolicyTraits::element(slot));
-  }
+                                             slot_type* slot) const { __builtin_trap() /* STUB: not implemented */; }
   template <class K>
-  ABSL_ATTRIBUTE_ALWAYS_INLINE size_t hash_of(const K& key) const {
-    return HashElement<hasher, kIsDefaultHash>{hash_ref(),
-                                               common().seed().seed()}(key);
-  }
-  ABSL_ATTRIBUTE_ALWAYS_INLINE size_t hash_of(slot_type* slot) const {
-    return PolicyTraits::apply(
-        HashElement<hasher, kIsDefaultHash>{hash_ref(), common().seed().seed()},
-        PolicyTraits::element(slot));
-  }
+  ABSL_ATTRIBUTE_ALWAYS_INLINE size_t hash_of(const K& key) const { __builtin_trap() /* STUB: not implemented */; }
+  ABSL_ATTRIBUTE_ALWAYS_INLINE size_t hash_of(slot_type* slot) const { __builtin_trap() /* STUB: not implemented */; }
 
   // Casting directly from e.g. char* to slot_type* can cause compilation errors
   // on objective-C. This function converts to void* first, avoiding the issue.
-  static ABSL_ATTRIBUTE_ALWAYS_INLINE slot_type* to_slot(void* buf) {
-    return static_cast<slot_type*>(buf);
-  }
+  static ABSL_ATTRIBUTE_ALWAYS_INLINE slot_type* to_slot(void* buf) { __builtin_trap() /* STUB: not implemented */; }
 
   // Requires that lhs does not have a full SOO slot.
   static void move_common(bool rhs_is_full_soo, CharAlloc& rhs_alloc,
-                          CommonFields& lhs, CommonFields&& rhs) {
-    if (PolicyTraits::transfer_uses_memcpy() || !rhs_is_full_soo) {
-      lhs = std::move(rhs);
-    } else {
-      lhs.move_non_heap_or_soo_fields(rhs);
-      rhs.RunWithReentrancyGuard([&] {
-        lhs.RunWithReentrancyGuard([&] {
-          PolicyTraits::transfer(&rhs_alloc, to_slot(lhs.soo_data()),
-                                 to_slot(rhs.soo_data()));
-        });
-      });
-    }
-  }
+                          CommonFields& lhs, CommonFields&& rhs) { __builtin_trap() /* STUB: not implemented */; }
 
   // Swaps common fields making sure to avoid memcpy'ing a full SOO slot if we
   // aren't allowed to do so.
-  void swap_common(raw_hash_set& that) {
-    using std::swap;
-    if (PolicyTraits::transfer_uses_memcpy()) {
-      swap(common(), that.common());
-      return;
-    }
-    CommonFields tmp = CommonFields(uninitialized_tag_t{});
-    const bool that_is_full_soo = that.is_full_soo();
-    move_common(that_is_full_soo, that.char_alloc_ref(), tmp,
-                std::move(that.common()));
-    move_common(is_full_soo(), char_alloc_ref(), that.common(),
-                std::move(common()));
-    move_common(that_is_full_soo, that.char_alloc_ref(), common(),
-                std::move(tmp));
-  }
+  void swap_common(raw_hash_set& that) { __builtin_trap() /* STUB: not implemented */; }
 
-  void annotate_for_bug_detection_on_move([[maybe_unused]] raw_hash_set& that) {
-    // We only enable moved-from validation when generations are enabled (rather
-    // than using NDEBUG) to avoid issues in which NDEBUG is enabled in some
-    // translation units but not in others.
-    if (SwisstableGenerationsEnabled()) {
-      that.common().set_capacity(this == &that
-                                     ? HashtableCapacity::CreateSelfMovedFrom()
-                                     : HashtableCapacity::CreateMovedFrom());
-    }
-    if (!SwisstableGenerationsEnabled() ||
-        !maybe_invalid_capacity().IsValid() ||
-        capacity() == DefaultCapacity()) {
-      return;
-    }
-    common().increment_generation();
-    if (!empty() && common().should_rehash_for_bug_detection_on_move()) {
-      ResizeAllocatedTableWithSeedChange(common(), GetPolicyFunctions(),
-                                         capacity());
-    }
-  }
+  void annotate_for_bug_detection_on_move([[maybe_unused]] raw_hash_set& that) { __builtin_trap() /* STUB: not implemented */; }
 
   template <bool propagate_alloc>
-  raw_hash_set& assign_impl(raw_hash_set&& that) {
-    // We don't bother checking for this/that aliasing. We just need to avoid
-    // breaking the invariants in that case.
-    destructor_impl();
-    move_common(that.is_full_soo(), that.char_alloc_ref(), common(),
-                std::move(that.common()));
-    hash_ref() = that.hash_ref();
-    eq_ref() = that.eq_ref();
-    CopyAlloc(char_alloc_ref(), that.char_alloc_ref(),
-              std::bool_constant<propagate_alloc>());
-    that.common() = CommonFields::CreateDefault<SooEnabled()>();
-    annotate_for_bug_detection_on_move(that);
-    return *this;
-  }
+  raw_hash_set& assign_impl(raw_hash_set&& that) { __builtin_trap() /* STUB: not implemented */; }
 
-  raw_hash_set& move_elements_allocs_unequal(raw_hash_set&& that) {
-    const size_t size = that.size();
-    if (size == 0) return *this;
-    reserve(size);
-    for (iterator it = that.begin(); it != that.end(); ++it) {
-      insert(std::move(PolicyTraits::element(it.slot())));
-      that.destroy(it.slot());
-    }
-    if (!that.is_soo()) that.dealloc();
-    that.common() = CommonFields::CreateDefault<SooEnabled()>();
-    annotate_for_bug_detection_on_move(that);
-    return *this;
-  }
+  raw_hash_set& move_elements_allocs_unequal(raw_hash_set&& that) { __builtin_trap() /* STUB: not implemented */; }
 
   raw_hash_set& move_assign(raw_hash_set&& that,
-                            std::true_type /*propagate_alloc*/) {
-    return assign_impl<true>(std::move(that));
-  }
+                            std::true_type /*propagate_alloc*/) { __builtin_trap() /* STUB: not implemented */; }
   raw_hash_set& move_assign(raw_hash_set&& that,
-                            std::false_type /*propagate_alloc*/) {
-    if (char_alloc_ref() == that.char_alloc_ref()) {
-      return assign_impl<false>(std::move(that));
-    }
-    // Aliasing can't happen here because allocs would compare equal above.
-    assert(this != &that);
-    destructor_impl();
-    // We can't take over that's memory so we need to move each element.
-    // While moving elements, this should have that's hash/eq so copy hash/eq
-    // before moving elements.
-    hash_ref() = that.hash_ref();
-    eq_ref() = that.eq_ref();
-    return move_elements_allocs_unequal(std::move(that));
-  }
+                            std::false_type /*propagate_alloc*/) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class K>
   ABSL_ATTRIBUTE_ALWAYS_INLINE std::pair<slot_type*, bool>
-  find_or_prepare_insert_soo(const K& key) {
-    ABSL_SWISSTABLE_ASSERT(is_soo());
-    bool force_sampling;
-    slot_type* slot = single_slot();
-    if (empty()) {
-      if (!should_sample_soo()) {
-        common().set_full_soo();
-        return {slot, true};
-      }
-      force_sampling = true;
-    } else if (equal_to(key, slot)) {
-      return {slot, false};
-    } else {
-      force_sampling = false;
-    }
-    ABSL_SWISSTABLE_ASSERT(capacity() == 1);
-    constexpr bool kUseMemcpy =
-        PolicyTraits::transfer_uses_memcpy() && SooEnabled();
-    slot = to_slot(
-        GrowSooTableToNextCapacityAndPrepareInsert<
-            kUseMemcpy ? OptimalMemcpySizeForSooSlotTransfer(sizeof(slot_type))
-                       : 0,
-            kUseMemcpy>(common(), GetPolicyFunctions(),
-                        HashKey<hasher, K, kIsDefaultHash>{hash_ref(), key},
-                        force_sampling));
-    return {slot, true};
-  }
+  find_or_prepare_insert_soo(const K& key) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class K>
   ABSL_ATTRIBUTE_ALWAYS_INLINE std::pair<slot_type*, bool>
-  find_or_prepare_insert_small(const K& key) {
-    ABSL_SWISSTABLE_ASSERT(is_small());
-    if constexpr (SooEnabled()) {
-      return find_or_prepare_insert_soo(key);
-    }
-    if (!empty()) {
-      if (equal_to(key, single_slot())) {
-        return {single_slot(), false};
-      }
-    }
-    return {to_slot(PrepareInsertSmallNonSoo(
-                common(), GetPolicyFunctions(),
-                HashKey<hasher, K, kIsDefaultHash>{hash_ref(), key})),
-            true};
-  }
+  find_or_prepare_insert_small(const K& key) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class K>
-  std::pair<slot_type*, bool> find_or_prepare_insert_large(const K& key) {
-    ABSL_SWISSTABLE_ASSERT(!is_soo());
-    prefetch_heap_block();
-    const size_t cap = capacity();
-    ABSL_ASSUME(cap > kMaxSmallCapacity);
-    const size_t hash = hash_of(key);
-    auto seq = probe(ProbeCapacity{cap}, hash);
-    const h2_t h2 = H2(hash);
-    const ctrl_t* ctrl = control();
-    slot_type* slot_array = to_slot(common().slot_array(cap));
-    while (true) {
-#ifndef ABSL_HAVE_MEMORY_SANITIZER
-      absl::PrefetchToLocalCache(slot_array + seq.offset());
-#endif
-      Group g{ctrl + seq.offset()};
-      for (uint32_t i : g.Match(h2)) {
-        slot_type* slot = slot_array + seq.offset(i);
-        if (ABSL_PREDICT_TRUE(equal_to(key, slot))) {
-          return {slot, false};
-        }
-      }
-      auto mask_empty = g.MaskEmpty();
-      if (ABSL_PREDICT_TRUE(mask_empty)) {
-        size_t target_group_offset = seq.offset();
-        void* slot =
-            SwisstableGenerationsEnabled()
-                ? PrepareInsertLargeGenerationsEnabled(
-                      common(), GetPolicyFunctions(), hash, mask_empty,
-                      FindInfo{target_group_offset, seq.index()},
-                      HashKey<hasher, K, kIsDefaultHash>{hash_ref(), key})
-                : PrepareInsertLarge(
-                      common(), GetPolicyFunctions(), hash, mask_empty,
-                      FindInfo{target_group_offset, seq.index()});
-        return {to_slot(slot), true};
-      }
-      seq.next();
-      ABSL_SWISSTABLE_ASSERT(seq.index() <= capacity() && "full table!");
-    }
-  }
+  std::pair<slot_type*, bool> find_or_prepare_insert_large(const K& key) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class InputIt>
-  void insert_range(InputIt first, InputIt last) {
-    for (; first != last; ++first) emplace(*first);
-  }
+  void insert_range(InputIt first, InputIt last) { __builtin_trap() /* STUB: not implemented */; }
 
  protected:
   // Asserts for correctness that we run on find/find_or_prepare_insert.
   template <class K>
-  void AssertOnFind([[maybe_unused]] const K& key) {
-    AssertHashEqConsistent(key);
-    AssertNotDebugCapacity();
-  }
+  void AssertOnFind([[maybe_unused]] const K& key) { __builtin_trap() /* STUB: not implemented */; }
 
   // Asserts that the capacity is not a sentinel invalid value.
-  void AssertNotDebugCapacity() const { common().AssertNotDebugCapacity(); }
+  void AssertNotDebugCapacity() const { __builtin_trap() /* STUB: not implemented */; }
 
   // Asserts that hash and equal functors provided by the user are consistent,
   // meaning that `eq(k1, k2)` implies `hash(k1)==hash(k2)`.
   template <class K>
-  void AssertHashEqConsistent(const K& key) {
-#ifdef NDEBUG
-    return;
-#endif
-    // If the hash/eq functors are known to be consistent, then skip validation.
-    if (std::is_same_v<hasher, absl::container_internal::StringHash> &&
-        std::is_same_v<key_equal, absl::container_internal::StringEq>) {
-      return;
-    }
-    if (std::is_scalar_v<key_type> &&
-        std::is_same_v<hasher, absl::Hash<key_type>> &&
-        std::is_same_v<key_equal, std::equal_to<key_type>>) {
-      return;
-    }
-    if (empty()) return;
-
-    const size_t hash_of_arg = hash_of(key);
-    const auto assert_consistent = [&](const ctrl_t*, void* slot) {
-      const bool is_key_equal = equal_to(key, to_slot(slot));
-      if (!is_key_equal) return;
-
-      [[maybe_unused]] const bool is_hash_equal =
-          hash_of_arg == hash_of(to_slot(slot));
-      assert((!is_key_equal || is_hash_equal) &&
-             "eq(k1, k2) must imply that hash(k1) == hash(k2). "
-             "hash/eq functors are inconsistent.");
-    };
-
-    if (is_small()) {
-      assert_consistent(/*unused*/ nullptr, single_slot());
-      return;
-    }
-    // We only do validation for small tables so that it's constant time.
-    if (capacity() > 16) return;
-    IterateOverFullSlots(common(), sizeof(slot_type), assert_consistent);
-  }
+  void AssertHashEqConsistent(const K& key) { __builtin_trap() /* STUB: not implemented */; }
 
   // Attempts to find `key` in the table; if it isn't found, returns an iterator
   // where the value can be inserted into, with the control byte already set to
   // `key`'s H2. Returns a bool indicating whether an insertion can take place.
   template <class K>
-  std::pair<slot_type*, bool> find_or_prepare_insert(const K& key) {
-    AssertOnFind(key);
-    return is_small() ? find_or_prepare_insert_small(key)
-                      : find_or_prepare_insert_large(key);
-  }
+  std::pair<slot_type*, bool> find_or_prepare_insert(const K& key) { __builtin_trap() /* STUB: not implemented */; }
 
   // Constructs the value in the space pointed by the iterator. This only works
   // after an unsuccessful find_or_prepare_insert() and before any other
@@ -3740,141 +3119,60 @@ class raw_hash_set {
   // find_or_prepare_insert(k) was true.
   // POSTCONDITION: *m.iterator_at(i) == value_type(forward<Args>(args)...).
   template <class... Args>
-  void emplace_at(slot_type* slot, Args&&... args) {
-    construct(slot, std::forward<Args>(args)...);
-
-    // When is_small, find calls find_small and if size is 0, then it will
-    // return an end iterator. This can happen in the raw_hash_set copy ctor.
-    assert((is_small() ||
-            PolicyTraits::apply(FindElement{*this}, PolicyTraits::element(slot))
-                    .slot() == slot) &&
-           "constructed value does not match the lookup key");
-  }
+  void emplace_at(slot_type* slot, Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
   // Special iterator that can be returned by insert/emplace functions.
   // It is non-iterable, meaning that std::next(it) always points to end().
   iterator non_iterable_iterator_at_slot(slot_type* slot)
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return {InsertIteratorControl(), slot, common().generation_ptr()};
-  }
-  iterator iterator_at(size_t i) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return {control() + i, slot_array() + i, common().generation_ptr()};
-  }
-  const_iterator iterator_at(size_t i) const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return const_cast<raw_hash_set*>(this)->iterator_at(i);
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  iterator iterator_at(size_t i) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  const_iterator iterator_at(size_t i) const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
   iterator iterator_at_ptr(ctrl_t* ctrl, void* slot)
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return {ctrl, to_slot(slot), common().generation_ptr()};
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
-  reference unchecked_deref(iterator it) { return it.unchecked_deref(); }
+  reference unchecked_deref(iterator it) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   friend struct RawHashSetTestOnlyAccess;
 
-  GrowthInfoAccessor growth_info() const { return common().growth_info(); }
+  GrowthInfoAccessor growth_info() const { __builtin_trap() /* STUB: not implemented */; }
 
   // Prefetch the heap-allocated memory region to resolve potential TLB and
   // cache misses. This is intended to overlap with execution of calculating the
   // hash for a key.
-  void prefetch_heap_block() const {
-    ABSL_SWISSTABLE_ASSERT(!is_soo());
-#if ABSL_HAVE_BUILTIN(__builtin_prefetch) || defined(__GNUC__)
-    __builtin_prefetch(control(), 0, 1);
-#endif
-  }
+  void prefetch_heap_block() const { __builtin_trap() /* STUB: not implemented */; }
 
-  CommonFields& common() { return settings_.template get<0>(); }
-  const CommonFields& common() const { return settings_.template get<0>(); }
+  CommonFields& common() { __builtin_trap() /* STUB: not implemented */; }
+  const CommonFields& common() const { __builtin_trap() /* STUB: not implemented */; }
 
   // For use when the capacity is potentially invalid we return
   // HashtableCapacity directly.
-  HashtableCapacity maybe_invalid_capacity() const {
-    return common().maybe_invalid_capacity();
-  }
-  ctrl_t* control() const {
-    ABSL_SWISSTABLE_ASSERT(!is_soo());
-    return common().control();
-  }
-  slot_type* slot_array(size_t capacity) const {
-    ABSL_SWISSTABLE_ASSERT(!is_soo());
-    return static_cast<slot_type*>(common().slot_array(capacity));
-  }
-  slot_type* soo_slot() {
-    ABSL_SWISSTABLE_ASSERT(is_soo());
-    ABSL_SWISSTABLE_IGNORE_UNINITIALIZED_RETURN(
-        static_cast<slot_type*>(common().soo_data()));
-  }
-  const slot_type* soo_slot() const {
-    ABSL_SWISSTABLE_IGNORE_UNINITIALIZED_RETURN(
-        const_cast<raw_hash_set*>(this)->soo_slot());
-  }
-  slot_type* single_slot() {
-    ABSL_SWISSTABLE_ASSERT(is_small());
-    return SooEnabled()
-               ? soo_slot()
-               : to_slot(common().slot_array(/*capacity=*/1));
-  }
-  const slot_type* single_slot() const {
-    return const_cast<raw_hash_set*>(this)->single_slot();
-  }
-  void decrement_small_size() {
-    ABSL_SWISSTABLE_ASSERT(is_small());
-    SooEnabled() ? common().set_empty_soo() : common().decrement_size();
-    if (!SooEnabled()) {
-      SanitizerPoisonObject(single_slot());
-    }
-  }
-  iterator single_iterator() {
-    return {SooControl(), single_slot(), common().generation_ptr()};
-  }
-  const_iterator single_iterator() const {
-    return const_cast<raw_hash_set*>(this)->single_iterator();
-  }
-  HashtablezInfoHandle infoz() {
-    ABSL_SWISSTABLE_ASSERT(!is_soo());
-    return common().infoz();
-  }
+  HashtableCapacity maybe_invalid_capacity() const { __builtin_trap() /* STUB: not implemented */; }
+  ctrl_t* control() const { __builtin_trap() /* STUB: not implemented */; }
+  slot_type* slot_array(size_t capacity) const { __builtin_trap() /* STUB: not implemented */; }
+  slot_type* soo_slot() { __builtin_trap() /* STUB: not implemented */; }
+  const slot_type* soo_slot() const { __builtin_trap() /* STUB: not implemented */; }
+  slot_type* single_slot() { __builtin_trap() /* STUB: not implemented */; }
+  const slot_type* single_slot() const { __builtin_trap() /* STUB: not implemented */; }
+  void decrement_small_size() { __builtin_trap() /* STUB: not implemented */; }
+  iterator single_iterator() { __builtin_trap() /* STUB: not implemented */; }
+  const_iterator single_iterator() const { __builtin_trap() /* STUB: not implemented */; }
+  HashtablezInfoHandle infoz() { __builtin_trap() /* STUB: not implemented */; }
 
-  hasher& hash_ref() { return settings_.template get<1>(); }
-  const hasher& hash_ref() const { return settings_.template get<1>(); }
-  key_equal& eq_ref() { return settings_.template get<2>(); }
-  const key_equal& eq_ref() const { return settings_.template get<2>(); }
-  CharAlloc& char_alloc_ref() { return settings_.template get<3>(); }
-  const CharAlloc& char_alloc_ref() const {
-    return settings_.template get<3>();
-  }
+  hasher& hash_ref() { __builtin_trap() /* STUB: not implemented */; }
+  const hasher& hash_ref() const { __builtin_trap() /* STUB: not implemented */; }
+  key_equal& eq_ref() { __builtin_trap() /* STUB: not implemented */; }
+  const key_equal& eq_ref() const { __builtin_trap() /* STUB: not implemented */; }
+  CharAlloc& char_alloc_ref() { __builtin_trap() /* STUB: not implemented */; }
+  const CharAlloc& char_alloc_ref() const { __builtin_trap() /* STUB: not implemented */; }
 
-  static void* get_char_alloc_ref_fn(CommonFields& common) {
-    auto* h = reinterpret_cast<raw_hash_set*>(&common);
-    return &h->char_alloc_ref();
-  }
-  static void* get_hash_ref_fn(CommonFields& common) {
-    auto* h = reinterpret_cast<raw_hash_set*>(&common);
-    // TODO(b/397453582): Remove support for const hasher.
-    return const_cast<std::remove_const_t<hasher>*>(&h->hash_ref());
-  }
+  static void* get_char_alloc_ref_fn(CommonFields& common) { __builtin_trap() /* STUB: not implemented */; }
+  static void* get_hash_ref_fn(CommonFields& common) { __builtin_trap() /* STUB: not implemented */; }
   static void transfer_n_slots_fn(void* set, void* dst, void* src,
-                                  size_t count) {
-    auto* src_slot = to_slot(src);
-    auto* dst_slot = to_slot(dst);
+                                  size_t count) { __builtin_trap() /* STUB: not implemented */; }
 
-    auto* h = static_cast<raw_hash_set*>(set);
-    for (; count > 0; --count, ++src_slot, ++dst_slot) {
-      h->transfer(dst_slot, src_slot);
-    }
-  }
-
-  static void destroy_slot_fn_impl(void* set, void* slot) {
-    auto* h = static_cast<raw_hash_set*>(set);
-    h->destroy(to_slot(slot));
-  }
-  static constexpr DestroySlotFn get_destroy_slot_fn() {
-    return PolicyTraits::template destroy_is_trivial<Alloc>()
-               ? nullptr
-               : &raw_hash_set::destroy_slot_fn_impl;
-  }
+  static void destroy_slot_fn_impl(void* set, void* slot) { __builtin_trap() /* STUB: not implemented */; }
+  static constexpr DestroySlotFn get_destroy_slot_fn() { return {}; }
 
   // TODO(b/382423690): Try to type erase entire function or at least type erase
   // by GetKey + Hash for memcpyable types.
@@ -3883,92 +3181,11 @@ class raw_hash_set {
       CommonFields& common, const ctrl_t* old_ctrl, void* old_slots,
       void* probed_storage,
       void (*encode_probed_element)(void* probed_storage, h2_t h2,
-                                    size_t source_offset, size_t h1)) {
-    const size_t new_capacity = common.capacity();
-    ABSL_ASSUME(new_capacity > kMaxSmallCapacity);
-    const size_t old_capacity = PreviousCapacity(new_capacity);
-    ABSL_ASSUME(old_capacity + 1 >= Group::kWidth);
-    ABSL_ASSUME((old_capacity + 1) % Group::kWidth == 0);
+                                    size_t source_offset, size_t h1)) { __builtin_trap() /* STUB: not implemented */; }
 
-    auto* set = reinterpret_cast<raw_hash_set*>(&common);
-    slot_type* old_slots_ptr = to_slot(old_slots);
-    ctrl_t* new_ctrl = common.control();
-    slot_type* new_slots = set->slot_array(new_capacity);
+  static constexpr DeallocBackingArrayFn get_dealloc_backing_array_fn() { return {}; }
 
-    for (size_t group_index = 0; group_index < old_capacity;
-         group_index += Group::kWidth) {
-      GroupFullEmptyOrDeleted old_g(old_ctrl + group_index);
-      std::memset(new_ctrl + group_index, static_cast<int8_t>(ctrl_t::kEmpty),
-                  Group::kWidth);
-      std::memset(new_ctrl + group_index + old_capacity + 1,
-                  static_cast<int8_t>(ctrl_t::kEmpty), Group::kWidth);
-      // TODO(b/382423690): try to type erase everything outside of the loop.
-      // We will share a lot of code in expense of one function call per group.
-      for (auto in_fixed_group_index : old_g.MaskFull()) {
-        size_t old_index = group_index + in_fixed_group_index;
-        slot_type* old_slot = old_slots_ptr + old_index;
-        // TODO(b/382423690): try to avoid entire hash calculation since we need
-        // only one new bit of h1.
-        size_t hash = set->hash_of(old_slot);
-        size_t h1 = H1(hash);
-        h2_t h2 = H2(hash);
-        size_t new_index = TryFindNewIndexWithoutProbing(
-            h1, old_index, old_capacity, new_ctrl, new_capacity);
-        // Note that encode_probed_element is allowed to use old_ctrl buffer
-        // till and included the old_index.
-        if (ABSL_PREDICT_FALSE(new_index == kProbedElementIndexSentinel)) {
-          encode_probed_element(probed_storage, h2, old_index, h1);
-          continue;
-        }
-        ABSL_SWISSTABLE_ASSERT((new_index & old_capacity) <= old_index);
-        ABSL_SWISSTABLE_ASSERT(IsEmpty(new_ctrl[new_index]));
-        new_ctrl[new_index] = static_cast<ctrl_t>(h2);
-        auto* new_slot = new_slots + new_index;
-        SanitizerUnpoisonMemoryRegion(new_slot, sizeof(slot_type));
-        set->transfer(new_slot, old_slot);
-        SanitizerPoisonMemoryRegion(old_slot, sizeof(slot_type));
-      }
-    }
-  }
-
-  static constexpr DeallocBackingArrayFn get_dealloc_backing_array_fn() {
-    return &DeallocateBackingArray<BackingArrayAlignment(alignof(slot_type)),
-                                   CharAlloc>;
-  }
-
-  static const PolicyFunctions& GetPolicyFunctions() {
-    static_assert(sizeof(slot_type) <= (std::numeric_limits<uint32_t>::max)(),
-                  "Slot size is too large. Use std::unique_ptr for value type "
-                  "or use absl::node_hash_{map,set}.");
-    static_assert(alignof(slot_type) <=
-                  size_t{(std::numeric_limits<uint16_t>::max)()});
-    static_assert(sizeof(key_type) <=
-                  size_t{(std::numeric_limits<uint32_t>::max)()});
-    static_assert(sizeof(value_type) <=
-                  size_t{(std::numeric_limits<uint32_t>::max)()});
-    static constexpr size_t kBackingArrayAlignment =
-        BackingArrayAlignment(alignof(slot_type));
-    static constexpr PolicyFunctions value = {
-        static_cast<uint32_t>(sizeof(key_type)),
-        static_cast<uint32_t>(sizeof(value_type)),
-        static_cast<uint32_t>(sizeof(slot_type)),
-        static_cast<uint16_t>(alignof(slot_type)), SooEnabled(),
-        ShouldSampleHashtablezInfoForAlloc<CharAlloc>(),
-        // TODO(b/328722020): try to type erase
-        // for standard layout and alignof(Hash) <= alignof(CommonFields).
-        std::is_empty_v<hasher> ? &GetRefForEmptyClass
-                                : &raw_hash_set::get_hash_ref_fn,
-        PolicyTraits::template get_hash_slot_fn<hasher, kIsDefaultHash>(),
-        PolicyTraits::transfer_uses_memcpy()
-            ? TransferNRelocatable<sizeof(slot_type)>
-            : &raw_hash_set::transfer_n_slots_fn,
-        std::is_empty_v<Alloc> ? &GetRefForEmptyClass
-                               : &raw_hash_set::get_char_alloc_ref_fn,
-        &AllocateBackingArray<kBackingArrayAlignment, CharAlloc>,
-        get_dealloc_backing_array_fn(),
-        &raw_hash_set::transfer_unprobed_elements_to_next_capacity_fn};
-    return value;
-  }
+  static const PolicyFunctions& GetPolicyFunctions() { __builtin_trap() /* STUB: not implemented */; }
 
   // Bundle together CommonFields plus other objects which might be empty.
   // CompressedTuple will ensure that sizeof is not affected by any of the empty
@@ -3982,80 +3199,22 @@ class raw_hash_set {
 // Friend access for free functions in raw_hash_set.h.
 struct HashtableFreeFunctionsAccess {
   template <class Predicate, typename Set>
-  static typename Set::size_type EraseIf(Predicate& pred, Set* c) {
-    if (c->empty()) {
-      return 0;
-    }
-    if (c->is_small()) {
-      auto it = c->single_iterator();
-      if (!pred(*it)) {
-        ABSL_SWISSTABLE_ASSERT(c->size() == 1 &&
-                               "hash table was modified unexpectedly");
-        return 0;
-      }
-      c->destroy(it.slot());
-      c->erase_meta_only_small();
-      return 1;
-    }
-    [[maybe_unused]] const size_t original_size_for_assert = c->size();
-    size_t num_deleted = 0;
-    using SlotType = typename Set::slot_type;
-    IterateOverFullSlots(
-        c->common(), sizeof(SlotType),
-        [&](const ctrl_t* ctrl, void* slot_void) {
-          auto* slot = static_cast<SlotType*>(slot_void);
-          if (pred(Set::PolicyTraits::element(slot))) {
-            c->destroy(slot);
-            EraseMetaOnlyLarge(c->common(),
-                               static_cast<size_t>(ctrl - c->control()),
-                               sizeof(*slot));
-            ++num_deleted;
-          }
-        });
-    // NOTE: IterateOverFullSlots allow removal of the current element, so we
-    // verify the size additionally here.
-    ABSL_SWISSTABLE_ASSERT(original_size_for_assert - num_deleted ==
-                               c->size() &&
-                           "hash table was modified unexpectedly");
-    return num_deleted;
-  }
+  static typename Set::size_type EraseIf(Predicate& pred, Set* c) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class Callback, typename Set>
-  static void ForEach(Callback& cb, Set* c) {
-    if (c->empty()) {
-      return;
-    }
-    if (c->is_small()) {
-      cb(*c->single_iterator());
-      return;
-    }
-    using SlotType = typename Set::slot_type;
-    using ElementTypeWithConstness = decltype(*c->begin());
-    IterateOverFullSlots(
-        c->common(), sizeof(SlotType), [&cb](const ctrl_t*, void* slot) {
-          ElementTypeWithConstness& element =
-              Set::PolicyTraits::element(static_cast<SlotType*>(slot));
-          cb(element);
-        });
-  }
+  static void ForEach(Callback& cb, Set* c) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // Erases all elements that satisfy the predicate `pred` from the container `c`.
 template <typename P, typename... Params, typename Predicate>
 typename raw_hash_set<P, Params...>::size_type EraseIf(
-    Predicate& pred, raw_hash_set<P, Params...>* c) {
-  return HashtableFreeFunctionsAccess::EraseIf(pred, c);
-}
+    Predicate& pred, raw_hash_set<P, Params...>* c) { __builtin_trap() /* STUB: not implemented */; }
 
 // Calls `cb` for all elements in the container `c`.
 template <typename P, typename... Params, typename Callback>
-void ForEach(Callback& cb, raw_hash_set<P, Params...>* c) {
-  return HashtableFreeFunctionsAccess::ForEach(cb, c);
-}
+void ForEach(Callback& cb, raw_hash_set<P, Params...>* c) { __builtin_trap() /* STUB: not implemented */; }
 template <typename P, typename... Params, typename Callback>
-void ForEach(Callback& cb, const raw_hash_set<P, Params...>* c) {
-  return HashtableFreeFunctionsAccess::ForEach(cb, c);
-}
+void ForEach(Callback& cb, const raw_hash_set<P, Params...>* c) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace hashtable_debug_internal {
 template <typename Set>
@@ -4066,42 +3225,9 @@ struct HashtableDebugAccess<Set, std::void_t<typename Set::raw_hash_set>> {
   constexpr static bool kIsDefaultHash = Set::kIsDefaultHash;
 
   static size_t GetNumProbes(const Set& set,
-                             const typename Set::key_type& key) {
-    if (set.is_small()) return 0;
-    size_t num_probes = 0;
-    const size_t hash = set.hash_of(key);
-    auto seq = probe(set.common(), hash);
-    const h2_t h2 = H2(hash);
-    const ctrl_t* ctrl = set.control();
-    while (true) {
-      container_internal::Group g{ctrl + seq.offset()};
-      for (uint32_t i : g.Match(h2)) {
-        if (set.equal_to(key, set.slot_array(set.capacity()) + seq.offset(i)))
-          return num_probes;
-        ++num_probes;
-      }
-      if (g.MaskEmpty()) return num_probes;
-      seq.next();
-      ++num_probes;
-    }
-  }
+                             const typename Set::key_type& key) { __builtin_trap() /* STUB: not implemented */; }
 
-  static size_t AllocatedByteSize(const Set& c) {
-    size_t capacity = c.capacity();
-    if (capacity == 0) return 0;
-    size_t m =
-        c.is_soo() ? 0 : c.common().alloc_size(sizeof(Slot), alignof(Slot));
-
-    size_t per_slot = Traits::space_used(static_cast<const Slot*>(nullptr));
-    if (per_slot != ~size_t{}) {
-      m += per_slot * c.size();
-    } else {
-      for (auto it = c.begin(); it != c.end(); ++it) {
-        m += Traits::space_used(it.slot());
-      }
-    }
-    return m;
-  }
+  static size_t AllocatedByteSize(const Set& c) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 }  // namespace hashtable_debug_internal

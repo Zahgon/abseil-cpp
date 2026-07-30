@@ -44,10 +44,7 @@ enum CrcEngine {
 template <size_t max_size>
 class CrcMemcpyTest : public testing::Test {
  protected:
-  CrcMemcpyTest() {
-    source_ = std::make_unique<char[]>(kSize);
-    destination_ = std::make_unique<char[]>(kSize);
-  }
+  CrcMemcpyTest() { __builtin_trap() /* STUB: not implemented */; }
   static constexpr size_t kAlignment = 16;
   static constexpr size_t kMaxCopySize = max_size;
   static constexpr size_t kSize = kAlignment + kMaxCopySize;
@@ -69,22 +66,10 @@ template <typename ParamsT>
 class EngineParamTestTemplate : public CrcSmallTest,
                                 public ::testing::WithParamInterface<ParamsT> {
  protected:
-  EngineParamTestTemplate() {
-    if (GetParam().crc_engine_selector == FALLBACK) {
-      engine_ = std::make_unique<absl::crc_internal::FallbackCrcMemcpyEngine>();
-    } else if (GetParam().crc_engine_selector == NONTEMPORAL) {
-      engine_ =
-          std::make_unique<absl::crc_internal::CrcNonTemporalMemcpyEngine>();
-    } else {
-      engine_ = absl::crc_internal::CrcMemcpy::GetTestEngine(
-          GetParam().vector_lanes, GetParam().integer_lanes);
-    }
-  }
+  EngineParamTestTemplate() { __builtin_trap() /* STUB: not implemented */; }
 
   // Convenience method.
-  ParamsT GetParam() const {
-    return ::testing::WithParamInterface<ParamsT>::GetParam();
-  }
+  ParamsT GetParam() const { __builtin_trap() /* STUB: not implemented */; }
 
   std::unique_ptr<absl::crc_internal::CrcMemcpyEngine> engine_;
 };

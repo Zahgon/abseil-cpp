@@ -41,16 +41,7 @@
     !defined(ABSL_HAVE_THREAD_SANITIZER)
 extern "C" int __clock_gettime(clockid_t c, struct timespec* ts);
 
-extern "C" int clock_gettime(clockid_t c, struct timespec* ts) {
-  if (c == CLOCK_MONOTONIC &&
-      !absl::synchronization_internal::KernelTimeout::SupportsSteadyClock()) {
-    thread_local absl::BitGen gen;  // NOLINT
-    ts->tv_sec = absl::Uniform(gen, 0, 1'000'000'000);
-    ts->tv_nsec = absl::Uniform(gen, 0, 1'000'000'000);
-    return 0;
-  }
-  return __clock_gettime(c, ts);
-}
+extern "C" int clock_gettime(clockid_t c, struct timespec* ts) { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
 namespace {
@@ -65,14 +56,12 @@ class WaiterTest : public ::testing::Test {
  public:
   // Waiter implementations assume that a ThreadIdentity has already been
   // created.
-  WaiterTest() {
-    absl::synchronization_internal::GetOrCreateCurrentThreadIdentity();
-  }
+  WaiterTest() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TYPED_TEST_SUITE_P(WaiterTest);
 
-absl::Duration WithTolerance(absl::Duration d) { return d * 0.95; }
+absl::Duration WithTolerance(absl::Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
 TYPED_TEST_P(WaiterTest, WaitNoTimeout) {
   absl::synchronization_internal::ThreadPool tp(1);

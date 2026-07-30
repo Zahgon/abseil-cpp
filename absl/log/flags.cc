@@ -34,37 +34,7 @@
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-namespace log_internal {
-namespace {
-
-void SyncLoggingFlags() {
-  absl::SetFlag(&FLAGS_minloglevel, static_cast<int>(absl::MinLogLevel()));
-  absl::SetFlag(&FLAGS_log_prefix, absl::ShouldPrependLogPrefix());
-}
-
-bool RegisterSyncLoggingFlags() {
-  log_internal::SetLoggingGlobalsListener(&SyncLoggingFlags);
-  return true;
-}
-
-ABSL_ATTRIBUTE_UNUSED const bool unused = RegisterSyncLoggingFlags();
-
-template <typename T>
-T GetFromEnv(const char* varname, T dflt) {
-  const char* val = ::getenv(varname);
-  if (val != nullptr) {
-    std::string err;
-    ABSL_INTERNAL_CHECK(absl::ParseFlag(val, &dflt, &err), err.c_str());
-  }
-  return dflt;
-}
-
-constexpr absl::LogSeverityAtLeast StderrThresholdDefault() {
-  return absl::LogSeverityAtLeast::kError;
-}
-
-}  // namespace
-}  // namespace log_internal
+namespace log_internal { __builtin_trap() /* STUB: not implemented */; }  // namespace log_internal
 ABSL_NAMESPACE_END
 }  // namespace absl
 

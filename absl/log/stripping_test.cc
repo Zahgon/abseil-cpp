@@ -70,11 +70,7 @@ using ::testing::NotNull;
 
 using absl::log_internal::kAbslMinLogLevel;
 
-std::string Base64UnescapeOrDie(absl::string_view data) {
-  std::string decoded;
-  CHECK(absl::Base64Unescape(data, &decoded));
-  return decoded;
-}
+std::string Base64UnescapeOrDie(absl::string_view data) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // A Googletest matcher which searches the running binary for a given string
@@ -97,56 +93,13 @@ std::string Base64UnescapeOrDie(absl::string_view data) {
 
 class FileHasSubstrMatcher final : public ::testing::MatcherInterface<FILE*> {
  public:
-  explicit FileHasSubstrMatcher(absl::string_view needle) : needle_(needle) {}
+  explicit FileHasSubstrMatcher(absl::string_view needle) : needle_(needle) { __builtin_trap() /* STUB: not implemented */; }
 
   bool MatchAndExplain(
-      FILE* fp, ::testing::MatchResultListener* listener) const override {
-    std::string buf(
-        std::max<std::string::size_type>(needle_.size() * 2, 163840000), '\0');
-    size_t buf_start_offset = 0;  // The file offset of the byte at `buf[0]`.
-    size_t buf_data_size = 0;     // The number of bytes of `buf` which contain
-                                  // data.
+      FILE* fp, ::testing::MatchResultListener* listener) const override { __builtin_trap() /* STUB: not implemented */; }
+  void DescribeTo(std::ostream* os) const override { __builtin_trap() /* STUB: not implemented */; }
 
-    ::fseek(fp, 0, SEEK_SET);
-    while (true) {
-      // Fill the buffer to capacity or EOF:
-      while (buf_data_size < buf.size()) {
-        const size_t ret = fread(&buf[buf_data_size], sizeof(char),
-                                 buf.size() - buf_data_size, fp);
-        if (ret == 0) break;
-        buf_data_size += ret;
-      }
-      if (ferror(fp)) {
-        *listener << "error reading file";
-        return false;
-      }
-      const absl::string_view haystack(&buf[0], buf_data_size);
-      const auto off = haystack.find(needle_);
-      if (off != haystack.npos) {
-        *listener << "string found at offset " << buf_start_offset + off;
-        return true;
-      }
-      if (feof(fp)) {
-        *listener << "string not found";
-        return false;
-      }
-      // Copy the end of `buf` to the beginning so we catch matches that span
-      // buffer boundaries.  `buf` and `buf_data_size` are always large enough
-      // that these ranges don't overlap.
-      memcpy(&buf[0], &buf[buf_data_size - needle_.size()], needle_.size());
-      buf_start_offset += buf_data_size - needle_.size();
-      buf_data_size = needle_.size();
-    }
-  }
-  void DescribeTo(std::ostream* os) const override {
-    *os << "contains the string \"" << needle_ << "\" (base64(\""
-        << Base64UnescapeOrDie(needle_) << "\"))";
-  }
-
-  void DescribeNegationTo(std::ostream* os) const override {
-    *os << "does not ";
-    DescribeTo(os);
-  }
+  void DescribeNegationTo(std::ostream* os) const override { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   std::string needle_;
@@ -154,99 +107,13 @@ class FileHasSubstrMatcher final : public ::testing::MatcherInterface<FILE*> {
 
 class StrippingTest : public ::testing::Test {
  protected:
-  void SetUp() override {
-#ifndef NDEBUG
-    // Non-optimized builds don't necessarily eliminate dead code at all, so we
-    // don't attempt to validate stripping against such builds.
-    GTEST_SKIP() << "StrippingTests skipped since this build is not optimized";
-#elif defined(__EMSCRIPTEN__)
-    // These tests require a way to examine the running binary and look for
-    // strings; there's no portable way to do that.
-    GTEST_SKIP()
-        << "StrippingTests skipped since this platform is not optimized";
-#endif
-  }
+  void SetUp() override { __builtin_trap() /* STUB: not implemented */; }
 
   // Opens this program's executable file.  Returns `nullptr` and writes to
   // `stderr` on failure.
-  std::unique_ptr<FILE, std::function<void(FILE*)>> OpenTestExecutable() {
-#if defined(__linux__)
-    std::unique_ptr<FILE, std::function<void(FILE*)>> fp(
-        fopen("/proc/self/exe", "rb"), [](FILE* fp) { fclose(fp); });
-    if (!fp) {
-      const std::string err = absl::base_internal::StrError(errno);
-      absl::FPrintF(stderr, "Failed to open /proc/self/exe: %s\n", err);
-    }
-    return fp;
-#elif defined(__Fuchsia__)
-    // TODO(b/242579714): We need to restore the test coverage on this platform.
-    std::unique_ptr<FILE, std::function<void(FILE*)>> fp(
-        fopen(absl::StrCat("/pkg/bin/",
-                           absl::flags_internal::ShortProgramInvocationName())
-                  .c_str(),
-              "rb"),
-        [](FILE* fp) { fclose(fp); });
-    if (!fp) {
-      const std::string err = absl::base_internal::StrError(errno);
-      absl::FPrintF(stderr, "Failed to open /pkg/bin/<binary name>: %s\n", err);
-    }
-    return fp;
-#elif defined(__APPLE__)
-    uint32_t size = 0;
-    int ret = _NSGetExecutablePath(nullptr, &size);
-    if (ret != -1) {
-      absl::FPrintF(stderr,
-                    "Failed to get executable path: "
-                    "_NSGetExecutablePath(nullptr) returned %d\n",
-                    ret);
-      return nullptr;
-    }
-    std::string path(size, '\0');
-    ret = _NSGetExecutablePath(&path[0], &size);
-    if (ret != 0) {
-      absl::FPrintF(
-          stderr,
-          "Failed to get executable path: _NSGetExecutablePath(buffer) "
-          "returned %d\n",
-          ret);
-      return nullptr;
-    }
-    std::unique_ptr<FILE, std::function<void(FILE*)>> fp(
-        fopen(path.c_str(), "rb"), [](FILE* fp) { fclose(fp); });
-    if (!fp) {
-      const std::string err = absl::base_internal::StrError(errno);
-      absl::FPrintF(stderr, "Failed to open executable at %s: %s\n", path, err);
-    }
-    return fp;
-#elif defined(_WIN32)
-    std::basic_string<TCHAR> path(4096, _T('\0'));
-    while (true) {
-      const uint32_t ret = ::GetModuleFileName(nullptr, &path[0],
-                                               static_cast<DWORD>(path.size()));
-      if (ret == 0) {
-        absl::FPrintF(
-            stderr,
-            "Failed to get executable path: GetModuleFileName(buffer) "
-            "returned 0\n");
-        return nullptr;
-      }
-      if (ret < path.size()) break;
-      path.resize(path.size() * 2, _T('\0'));
-    }
-    std::unique_ptr<FILE, std::function<void(FILE*)>> fp(
-        _tfopen(path.c_str(), _T("rb")), [](FILE* fp) { fclose(fp); });
-    if (!fp) absl::FPrintF(stderr, "Failed to open executable\n");
-    return fp;
-#else
-    absl::FPrintF(stderr,
-                  "OpenTestExecutable() unimplemented on this platform\n");
-    return nullptr;
-#endif
-  }
+  std::unique_ptr<FILE, std::function<void(FILE*)>> OpenTestExecutable() { __builtin_trap() /* STUB: not implemented */; }
 
-  ::testing::Matcher<FILE*> FileHasSubstr(absl::string_view needle) {
-    return MakeMatcher(new FileHasSubstrMatcher(needle));
-  }
+  ::testing::Matcher<FILE*> FileHasSubstr(absl::string_view needle) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // This tests whether out methodology for testing stripping works on this

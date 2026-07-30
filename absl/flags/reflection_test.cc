@@ -40,7 +40,7 @@ class ReflectionTest : public testing::Test {
 #endif
     flag_saver_ = std::make_unique<absl::FlagSaver>();
   }
-  void TearDown() override { flag_saver_.reset(); }
+  void TearDown() override { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   std::unique_ptr<absl::FlagSaver> flag_saver_;
@@ -89,31 +89,16 @@ TEST_F(ReflectionTest, TestGetAllFlags) {
 // --------------------------------------------------------------------
 
 struct CustomUDT {
-  CustomUDT() : a(1), b(1) {}
-  CustomUDT(int a_, int b_) : a(a_), b(b_) {}
+  CustomUDT() : a(1), b(1) { __builtin_trap() /* STUB: not implemented */; }
+  CustomUDT(int a_, int b_) : a(a_), b(b_) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend bool operator==(const CustomUDT& f1, const CustomUDT& f2) {
-    return f1.a == f2.a && f1.b == f2.b;
-  }
+  friend bool operator==(const CustomUDT& f1, const CustomUDT& f2) { __builtin_trap() /* STUB: not implemented */; }
 
   int a;
   int b;
 };
-bool AbslParseFlag(absl::string_view in, CustomUDT* f, std::string*) {
-  std::vector<absl::string_view> parts =
-      absl::StrSplit(in, ':', absl::SkipWhitespace());
-
-  if (parts.size() != 2) return false;
-
-  if (!absl::SimpleAtoi(parts[0], &f->a)) return false;
-
-  if (!absl::SimpleAtoi(parts[1], &f->b)) return false;
-
-  return true;
-}
-std::string AbslUnparseFlag(const CustomUDT& f) {
-  return absl::StrCat(f.a, ":", f.b);
-}
+bool AbslParseFlag(absl::string_view in, CustomUDT* f, std::string*) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(const CustomUDT& f) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace
 

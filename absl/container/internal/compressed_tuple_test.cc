@@ -35,17 +35,15 @@ enum class CallType { kMutableRef, kConstRef, kMutableMove, kConstMove };
 
 template <int>
 struct Empty {
-  constexpr CallType value() & { return CallType::kMutableRef; }
-  constexpr CallType value() const& { return CallType::kConstRef; }
-  constexpr CallType value() && { return CallType::kMutableMove; }
-  constexpr CallType value() const&& { return CallType::kConstMove; }
+  constexpr CallType value() & { return {}; }
+  constexpr CallType value() const& { return {}; }
+  constexpr CallType value() && { return {}; }
+  constexpr CallType value() const&& { return {}; }
 };
 
 // Unconditionally return an lvalue reference to `t`.
 template <typename T>
-constexpr T& AsLValue(T&& t) {
-  return t;
-}
+constexpr T& AsLValue(T&& t) { return {}; }
 
 template <typename T>
 struct NotEmpty {

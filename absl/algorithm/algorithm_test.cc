@@ -24,10 +24,10 @@ namespace {
 
 class LinearSearchTest : public testing::Test {
  protected:
-  LinearSearchTest() : container_{1, 2, 3} {}
+  LinearSearchTest() : container_{1, 2, 3} { __builtin_trap() /* STUB: not implemented */; }
 
-  static bool Is3(int n) { return n == 3; }
-  static bool Is4(int n) { return n == 4; }
+  static bool Is3(int n) { __builtin_trap() /* STUB: not implemented */; }
+  static bool Is4(int n) { __builtin_trap() /* STUB: not implemented */; }
 
   std::vector<int> container_;
 };

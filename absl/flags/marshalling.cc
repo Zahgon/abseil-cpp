@@ -226,51 +226,9 @@ std::string AbslUnparseFlag(const std::vector<std::string>& v) {
 }  // namespace flags_internal
 
 bool AbslParseFlag(absl::string_view text, absl::LogSeverity* dst,
-                   std::string* err) {
-  text = absl::StripAsciiWhitespace(text);
-  if (text.empty()) {
-    *err = "no value provided";
-    return false;
-  }
-  if (absl::EqualsIgnoreCase(text, "dfatal")) {
-    *dst = absl::kLogDebugFatal;
-    return true;
-  }
-  if (absl::EqualsIgnoreCase(text, "klogdebugfatal")) {
-    *dst = absl::kLogDebugFatal;
-    return true;
-  }
-  if (text.front() == 'k' || text.front() == 'K') text.remove_prefix(1);
-  if (absl::EqualsIgnoreCase(text, "info")) {
-    *dst = absl::LogSeverity::kInfo;
-    return true;
-  }
-  if (absl::EqualsIgnoreCase(text, "warning")) {
-    *dst = absl::LogSeverity::kWarning;
-    return true;
-  }
-  if (absl::EqualsIgnoreCase(text, "error")) {
-    *dst = absl::LogSeverity::kError;
-    return true;
-  }
-  if (absl::EqualsIgnoreCase(text, "fatal")) {
-    *dst = absl::LogSeverity::kFatal;
-    return true;
-  }
-  std::underlying_type_t<absl::LogSeverity> numeric_value;
-  if (absl::ParseFlag(text, &numeric_value, err)) {
-    *dst = static_cast<absl::LogSeverity>(numeric_value);
-    return true;
-  }
-  *err =
-      "only integers, absl::LogSeverity enumerators, and DFATAL are accepted";
-  return false;
-}
+                   std::string* err) { __builtin_trap() /* STUB: not implemented */; }
 
-std::string AbslUnparseFlag(absl::LogSeverity v) {
-  if (v == absl::NormalizeLogSeverity(v)) return absl::LogSeverityName(v);
-  return absl::UnparseFlag(static_cast<int>(v));
-}
+std::string AbslUnparseFlag(absl::LogSeverity v) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

@@ -39,19 +39,9 @@ ABSL_FLAG(absl::Time, test_time_flag, absl::InfinitePast(),
 
 namespace {
 
-bool SetFlagValue(absl::string_view flag_name, absl::string_view value) {
-  auto* flag = absl::FindCommandLineFlag(flag_name);
-  if (!flag) return false;
-  std::string err;
-  return flag->ParseFrom(value, &err);
-}
+bool SetFlagValue(absl::string_view flag_name, absl::string_view value) { __builtin_trap() /* STUB: not implemented */; }
 
-bool GetFlagValue(absl::string_view flag_name, std::string& value) {
-  auto* flag = absl::FindCommandLineFlag(flag_name);
-  if (!flag) return false;
-  value = flag->CurrentValue();
-  return true;
-}
+bool GetFlagValue(absl::string_view flag_name, std::string& value) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(CivilTime, FlagSupport) {
   // Tests the default setting of the flags.

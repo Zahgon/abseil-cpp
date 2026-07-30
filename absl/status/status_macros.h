@@ -174,22 +174,10 @@
        ABSL_INTERNAL_STATUS_MACROS_IMPL_ASSIGN_OR_RETURN_2_))              \
   (return_keyword, __VA_ARGS__)
 
-constexpr bool HasPotentialConditionalOperator(const char* lhs, int size) {
-  for (int i = 0; i < size; ++i) {
-    if (lhs[i] == '?') {
-      return true;
-    }
-  }
-  return false;
-}
+constexpr bool HasPotentialConditionalOperator(const char* lhs, int size) { return {}; }
 
 template <std::size_t N>
-constexpr bool IsEnclosedByParentheses(const char (&lhs)[N]) {
-  if (N < 2) {
-    return false;
-  }
-  return lhs[0] == '(' && lhs[N - 2] == ')';
-}
+constexpr bool IsEnclosedByParentheses(const char (&lhs)[N]) { return {}; }
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN

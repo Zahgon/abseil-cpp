@@ -31,19 +31,7 @@ struct TestParam {
 
 class NonTemporalMemcpyTest : public testing::TestWithParam<TestParam> {
  protected:
-  void SetUp() override {
-    // Make buf_size multiple of 16 bytes.
-    size_t buf_size = ((std::max(GetParam().src_offset, GetParam().dst_offset) +
-                        GetParam().copy_size) +
-                       15) /
-                      16 * 16;
-    a_.resize(buf_size);
-    b_.resize(buf_size);
-    for (size_t i = 0; i < buf_size; i++) {
-      a_[i] = static_cast<uint8_t>(i % 256);
-      b_[i] = ~a_[i];
-    }
-  }
+  void SetUp() override { __builtin_trap() /* STUB: not implemented */; }
 
   std::vector<uint8_t> a_, b_;
 };

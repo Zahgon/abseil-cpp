@@ -796,16 +796,7 @@ struct AbslInternal_YouForgotToExplicitlyInitializeAField {
 #if !defined(SWIG)
   constexpr
 #endif
-  operator T() const /* NOLINT */ {
-    const void *volatile deliberately_volatile_ptr = nullptr;
-    // Infinite loop to prevent constexpr compilation
-    for (;;) {
-      // This assignment ensures the 'this' pointer is not optimized away, so
-      // that linking always fails.
-      deliberately_volatile_ptr = this;  // Deliberately not constexpr
-      (void)deliberately_volatile_ptr;
-    }
-  }
+  operator T() const /* NOLINT */ { __builtin_trap() /* STUB: not implemented */; }
   // This is deliberately left undefined to prevent linking
   static AbslInternal_YouForgotToExplicitlyInitializeAField v;
 };

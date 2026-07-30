@@ -519,29 +519,11 @@ class ABSL_ATTRIBUTE_WARN_UNUSED FixedArray {
 
 template <typename T, size_t N, typename A>
 void FixedArray<T, N, A>::NonEmptyInlinedStorage::AnnotateConstruct(
-    typename FixedArray<T, N, A>::size_type n) {
-#ifdef ABSL_HAVE_ADDRESS_SANITIZER
-  if (!n) return;
-  ABSL_ANNOTATE_CONTIGUOUS_CONTAINER(data(), RedzoneEnd(), RedzoneEnd(),
-                                     data() + n);
-  ABSL_ANNOTATE_CONTIGUOUS_CONTAINER(RedzoneBegin(), data(), data(),
-                                     RedzoneBegin());
-#endif  // ABSL_HAVE_ADDRESS_SANITIZER
-  static_cast<void>(n);  // Mark used when not in asan mode
-}
+    typename FixedArray<T, N, A>::size_type n) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, size_t N, typename A>
 void FixedArray<T, N, A>::NonEmptyInlinedStorage::AnnotateDestruct(
-    typename FixedArray<T, N, A>::size_type n) {
-#ifdef ABSL_HAVE_ADDRESS_SANITIZER
-  if (!n) return;
-  ABSL_ANNOTATE_CONTIGUOUS_CONTAINER(data(), RedzoneEnd(), data() + n,
-                                     RedzoneEnd());
-  ABSL_ANNOTATE_CONTIGUOUS_CONTAINER(RedzoneBegin(), data(), RedzoneBegin(),
-                                     data());
-#endif  // ABSL_HAVE_ADDRESS_SANITIZER
-  static_cast<void>(n);  // Mark used when not in asan mode
-}
+    typename FixedArray<T, N, A>::size_type n) { __builtin_trap() /* STUB: not implemented */; }
 ABSL_NAMESPACE_END
 }  // namespace absl
 

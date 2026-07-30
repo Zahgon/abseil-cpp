@@ -85,19 +85,7 @@ TEST(Internal, BlockSizedDelete) {
 }
 
 template <size_t elem_size>
-void BlockSizeRounding() {
-  struct Elem {
-    char data[elem_size];
-  };
-  typedef ChunkedQueueBlock<Elem> Block;
-  for (size_t n = 1; n < 100; ++n) {
-    SCOPED_TRACE(n);
-    std::allocator<Elem> allocator;
-    Block* b = Block::New(n, &allocator);
-    EXPECT_GE(b->size(), n);
-    Block::Delete(b, &allocator);
-  }
-}
+void BlockSizeRounding() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Internal, BlockSizeRounding1) { BlockSizeRounding<1>(); }
 TEST(Internal, BlockSizeRounding17) { BlockSizeRounding<17>(); }
@@ -445,31 +433,19 @@ struct LimitedAllocator {
   int max_allocs;
 
   explicit LimitedAllocator(int* count, int max)
-      : alloc_count(count), max_allocs(max) {}
+      : alloc_count(count), max_allocs(max) { __builtin_trap() /* STUB: not implemented */; }
   template <class U>
   LimitedAllocator(const LimitedAllocator<U>& other)
-      : alloc_count(other.alloc_count), max_allocs(other.max_allocs) {}
+      : alloc_count(other.alloc_count), max_allocs(other.max_allocs) { __builtin_trap() /* STUB: not implemented */; }
 
-  T* allocate(size_t n) {
-    if (*alloc_count >= max_allocs) {
-      absl::ThrowStdBadAlloc();
-    }
-    ++*alloc_count;
-    return std::allocator<T>().allocate(n);
-  }
+  T* allocate(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
-  void deallocate(T* p, size_t n) {
-    std::allocator<T>().deallocate(p, n);
-  }
+  void deallocate(T* p, size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class U>
-  bool operator==(const LimitedAllocator<U>& other) const {
-    return alloc_count == other.alloc_count;
-  }
+  bool operator==(const LimitedAllocator<U>& other) const { __builtin_trap() /* STUB: not implemented */; }
   template <class U>
-  bool operator!=(const LimitedAllocator<U>& other) const {
-    return !(*this == other);
-  }
+  bool operator!=(const LimitedAllocator<U>& other) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(ChunkedQueue, ResizeOverflowSafe) {
@@ -667,9 +643,9 @@ struct MyType {
   static int constructor_calls;
   static int destructor_calls;
 
-  explicit MyType(int x) : val(x) { constructor_calls++; }
-  MyType(const MyType& t) : val(t.val) { constructor_calls++; }
-  ~MyType() { destructor_calls++; }
+  explicit MyType(int x) : val(x) { __builtin_trap() /* STUB: not implemented */; }
+  MyType(const MyType& t) : val(t.val) { __builtin_trap() /* STUB: not implemented */; }
+  ~MyType() { __builtin_trap() /* STUB: not implemented */; }
 
   int val;
 };
@@ -822,25 +798,16 @@ struct ThrowingCtor {
   int value;
 
   explicit ThrowingCtor(int v, bool should_throw, int* c_count, int* d_count)
-      : ctor_count(c_count), dtor_count(d_count), value(v) {
-    if (should_throw) {
-      throw 0;
-    }
-    ++*ctor_count;
-  }
+      : ctor_count(c_count), dtor_count(d_count), value(v) { __builtin_trap() /* STUB: not implemented */; }
   ThrowingCtor(const ThrowingCtor& other)
       : ctor_count(other.ctor_count),
         dtor_count(other.dtor_count),
-        value(other.value) {
-    ++*ctor_count;
-  }
+        value(other.value) { __builtin_trap() /* STUB: not implemented */; }
   ThrowingCtor(ThrowingCtor&& other) noexcept
       : ctor_count(other.ctor_count),
         dtor_count(other.dtor_count),
-        value(other.value) {
-    ++*ctor_count;
-  }
-  ~ThrowingCtor() { ++*dtor_count; }
+        value(other.value) { __builtin_trap() /* STUB: not implemented */; }
+  ~ThrowingCtor() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(ChunkedQueue, StrongExceptionSafetyEmplaceBack) {

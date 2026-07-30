@@ -58,12 +58,8 @@ using ::testing::IsTrue;
 auto* test_env ABSL_ATTRIBUTE_UNUSED = ::testing::AddGlobalTestEnvironment(
     new absl::log_internal::LogTestEnvironment);
 
-void WriteToStream(absl::string_view data, std::ostream* os) {
-  *os << "WriteToStream: " << data;
-}
-void WriteToStreamRef(absl::string_view data, std::ostream& os) {
-  os << "WriteToStreamRef: " << data;
-}
+void WriteToStream(absl::string_view data, std::ostream* os) { __builtin_trap() /* STUB: not implemented */; }
+void WriteToStreamRef(absl::string_view data, std::ostream& os) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(LogStreamerTest, LogInfoStreamer) {
   absl::ScopedMockLog test_sink(absl::MockLogDefault::kDisallowUnexpected);

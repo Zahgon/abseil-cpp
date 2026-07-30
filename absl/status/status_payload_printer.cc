@@ -18,19 +18,6 @@
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-namespace status_internal {
-
-ABSL_INTERNAL_ATOMIC_HOOK_ATTRIBUTES
-static absl::base_internal::AtomicHook<StatusPayloadPrinter> storage;
-
-void SetStatusPayloadPrinter(StatusPayloadPrinter printer) {
-  storage.Store(printer);
-}
-
-StatusPayloadPrinter GetStatusPayloadPrinter() {
-  return storage.Load();
-}
-
-}  // namespace status_internal
+namespace status_internal { __builtin_trap() /* STUB: not implemented */; }  // namespace status_internal
 ABSL_NAMESPACE_END
 }  // namespace absl

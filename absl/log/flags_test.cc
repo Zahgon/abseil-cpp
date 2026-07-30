@@ -39,9 +39,7 @@ using ::testing::Not;
 auto* test_env ABSL_ATTRIBUTE_UNUSED = ::testing::AddGlobalTestEnvironment(
     new absl::log_internal::LogTestEnvironment);
 
-constexpr static absl::LogSeverityAtLeast DefaultStderrThreshold() {
-  return absl::LogSeverityAtLeast::kError;
-}
+constexpr static absl::LogSeverityAtLeast DefaultStderrThreshold() { return {}; }
 
 class LogFlagsTest : public ::testing::Test {
  protected:

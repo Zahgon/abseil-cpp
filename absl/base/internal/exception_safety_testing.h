@@ -46,25 +46,13 @@ namespace testing {
 enum class TypeSpec;
 enum class AllocSpec;
 
-constexpr TypeSpec operator|(TypeSpec a, TypeSpec b) {
-  using T = std::underlying_type_t<TypeSpec>;
-  return static_cast<TypeSpec>(static_cast<T>(a) | static_cast<T>(b));
-}
+constexpr TypeSpec operator|(TypeSpec a, TypeSpec b) { return {}; }
 
-constexpr TypeSpec operator&(TypeSpec a, TypeSpec b) {
-  using T = std::underlying_type_t<TypeSpec>;
-  return static_cast<TypeSpec>(static_cast<T>(a) & static_cast<T>(b));
-}
+constexpr TypeSpec operator&(TypeSpec a, TypeSpec b) { return {}; }
 
-constexpr AllocSpec operator|(AllocSpec a, AllocSpec b) {
-  using T = std::underlying_type_t<AllocSpec>;
-  return static_cast<AllocSpec>(static_cast<T>(a) | static_cast<T>(b));
-}
+constexpr AllocSpec operator|(AllocSpec a, AllocSpec b) { return {}; }
 
-constexpr AllocSpec operator&(AllocSpec a, AllocSpec b) {
-  using T = std::underlying_type_t<AllocSpec>;
-  return static_cast<AllocSpec>(static_cast<T>(a) & static_cast<T>(b));
-}
+constexpr AllocSpec operator&(AllocSpec a, AllocSpec b) { return {}; }
 
 namespace exceptions_internal {
 
@@ -78,9 +66,9 @@ struct StrongGuaranteeTagType {};
 // exceptions specifically thrown by ThrowingValue.
 class TestException {
  public:
-  explicit TestException(absl::string_view msg) : msg_(msg) {}
-  virtual ~TestException() {}
-  virtual const char* what() const noexcept { return msg_.c_str(); }
+  explicit TestException(absl::string_view msg) : msg_(msg) { __builtin_trap() /* STUB: not implemented */; }
+  virtual ~TestException() { __builtin_trap() /* STUB: not implemented */; }
+  virtual const char* what() const noexcept { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   std::string msg_;
@@ -93,7 +81,7 @@ class TestException {
 // bad_alloc exception in TestExceptionSafety.
 class TestBadAllocException : public std::bad_alloc, public TestException {
  public:
-  explicit TestBadAllocException(absl::string_view msg) : TestException(msg) {}
+  explicit TestBadAllocException(absl::string_view msg) : TestException(msg) { __builtin_trap() /* STUB: not implemented */; }
   using TestException::what;
 };
 
@@ -101,9 +89,9 @@ extern int countdown;
 
 // Allows the countdown variable to be set manually (defaulting to the initial
 // value of 0)
-inline void SetCountdown(int i = 0) { countdown = i; }
+inline void SetCountdown(int i = 0) { __builtin_trap() /* STUB: not implemented */; }
 // Sets the countdown to the terminal value -1
-inline void UnsetCountdown() { SetCountdown(-1); }
+inline void UnsetCountdown() { __builtin_trap() /* STUB: not implemented */; }
 
 void MaybeThrow(absl::string_view msg, bool throw_bad_alloc = false);
 
@@ -120,72 +108,21 @@ struct TrackedAddress {
 // ConstructorTracker will destroy everything left over in its destructor.
 class ConstructorTracker {
  public:
-  explicit ConstructorTracker(int count) : countdown_(count) {
-    assert(current_tracker_instance_ == nullptr);
-    current_tracker_instance_ = this;
-  }
+  explicit ConstructorTracker(int count) : countdown_(count) { __builtin_trap() /* STUB: not implemented */; }
 
-  ~ConstructorTracker() {
-    assert(current_tracker_instance_ == this);
-    current_tracker_instance_ = nullptr;
+  ~ConstructorTracker() { __builtin_trap() /* STUB: not implemented */; }
 
-    for (auto& it : address_map_) {
-      void* address = it.first;
-      TrackedAddress& tracked_address = it.second;
-      if (tracked_address.is_alive) {
-        ADD_FAILURE() << ErrorMessage(address, tracked_address.description,
-                                      countdown_, "Object was not destroyed.");
-      }
-    }
-  }
+  static void ObjectConstructed(void* address, std::string description) { __builtin_trap() /* STUB: not implemented */; }
 
-  static void ObjectConstructed(void* address, std::string description) {
-    if (!CurrentlyTracking()) return;
-
-    TrackedAddress& tracked_address =
-        current_tracker_instance_->address_map_[address];
-    if (tracked_address.is_alive) {
-      ADD_FAILURE() << ErrorMessage(
-          address, tracked_address.description,
-          current_tracker_instance_->countdown_,
-          "Object was re-constructed. Current object was constructed by " +
-              description);
-    }
-    tracked_address = {true, std::move(description)};
-  }
-
-  static void ObjectDestructed(void* address) {
-    if (!CurrentlyTracking()) return;
-
-    auto it = current_tracker_instance_->address_map_.find(address);
-    // Not tracked. Ignore.
-    if (it == current_tracker_instance_->address_map_.end()) return;
-
-    TrackedAddress& tracked_address = it->second;
-    if (!tracked_address.is_alive) {
-      ADD_FAILURE() << ErrorMessage(address, tracked_address.description,
-                                    current_tracker_instance_->countdown_,
-                                    "Object was re-destroyed.");
-    }
-    tracked_address.is_alive = false;
-  }
+  static void ObjectDestructed(void* address) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
-  static bool CurrentlyTracking() {
-    return current_tracker_instance_ != nullptr;
-  }
+  static bool CurrentlyTracking() { __builtin_trap() /* STUB: not implemented */; }
 
   static std::string ErrorMessage(void* address,
                                   const std::string& address_description,
                                   int countdown,
-                                  const std::string& error_description) {
-    return absl::Substitute(
-        "With coundtown at $0:\n"
-        "  $1\n"
-        "  Object originally constructed by $2\n"
-        "  Object address: $3\n",
-        countdown, error_description, address_description, address);
-  }
+                                  const std::string& error_description) { __builtin_trap() /* STUB: not implemented */; }
 
   std::unordered_map<void*, TrackedAddress> address_map_;
   int countdown_;
@@ -199,11 +136,9 @@ class TrackedObject {
   TrackedObject(TrackedObject&&) = delete;
 
  protected:
-  explicit TrackedObject(std::string description) {
-    ConstructorTracker::ObjectConstructed(this, std::move(description));
-  }
+  explicit TrackedObject(std::string description) { __builtin_trap() /* STUB: not implemented */; }
 
-  ~TrackedObject() noexcept { ConstructorTracker::ObjectDestructed(this); }
+  ~TrackedObject() noexcept { __builtin_trap() /* STUB: not implemented */; }
 };
 }  // namespace exceptions_internal
 
@@ -215,11 +150,8 @@ extern exceptions_internal::StrongGuaranteeTagType strong_guarantee;
 // instrumented to throw at a controlled time.
 class ThrowingBool {
  public:
-  ThrowingBool(bool b) noexcept : b_(b) {}  // NOLINT(runtime/explicit)
-  operator bool() const {                   // NOLINT
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return b_;
-  }
+  ThrowingBool(bool b) noexcept : b_(b) { __builtin_trap() /* STUB: not implemented */; }  // NOLINT(runtime/explicit)
+  operator bool() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   bool b_;
@@ -258,348 +190,158 @@ enum class TypeSpec {
  */
 template <TypeSpec Spec = TypeSpec::kEverythingThrows>
 class ThrowingValue : private exceptions_internal::TrackedObject {
-  static constexpr bool IsSpecified(TypeSpec spec) {
-    return static_cast<bool>(Spec & spec);
-  }
+  static constexpr bool IsSpecified(TypeSpec spec) { return {}; }
 
   static constexpr int kDefaultValue = 0;
   static constexpr int kBadValue = 938550620;
 
  public:
-  ThrowingValue() : TrackedObject(GetInstanceString(kDefaultValue)) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ = kDefaultValue;
-  }
+  ThrowingValue() : TrackedObject(GetInstanceString(kDefaultValue)) { __builtin_trap() /* STUB: not implemented */; }
 
   ThrowingValue(const ThrowingValue& other) noexcept(
       IsSpecified(TypeSpec::kNoThrowCopy))
-      : TrackedObject(GetInstanceString(other.dummy_)) {
-    if (!IsSpecified(TypeSpec::kNoThrowCopy)) {
-      exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    }
-    dummy_ = other.dummy_;
-  }
+      : TrackedObject(GetInstanceString(other.dummy_)) { __builtin_trap() /* STUB: not implemented */; }
 
   ThrowingValue(ThrowingValue&& other) noexcept(
       IsSpecified(TypeSpec::kNoThrowMove))
-      : TrackedObject(GetInstanceString(other.dummy_)) {
-    if (!IsSpecified(TypeSpec::kNoThrowMove)) {
-      exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    }
-    dummy_ = other.dummy_;
-  }
+      : TrackedObject(GetInstanceString(other.dummy_)) { __builtin_trap() /* STUB: not implemented */; }
 
-  explicit ThrowingValue(int i) : TrackedObject(GetInstanceString(i)) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ = i;
-  }
+  explicit ThrowingValue(int i) : TrackedObject(GetInstanceString(i)) { __builtin_trap() /* STUB: not implemented */; }
 
   ThrowingValue(int i, exceptions_internal::NoThrowTag) noexcept
-      : TrackedObject(GetInstanceString(i)), dummy_(i) {}
+      : TrackedObject(GetInstanceString(i)), dummy_(i) { __builtin_trap() /* STUB: not implemented */; }
 
   // absl expects nothrow destructors
   ~ThrowingValue() noexcept = default;
 
   ThrowingValue& operator=(const ThrowingValue& other) noexcept(
-      IsSpecified(TypeSpec::kNoThrowCopy)) {
-    dummy_ = kBadValue;
-    if (!IsSpecified(TypeSpec::kNoThrowCopy)) {
-      exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    }
-    dummy_ = other.dummy_;
-    return *this;
-  }
+      IsSpecified(TypeSpec::kNoThrowCopy)) { __builtin_trap() /* STUB: not implemented */; }
 
   ThrowingValue& operator=(ThrowingValue&& other) noexcept(
-      IsSpecified(TypeSpec::kNoThrowMove)) {
-    dummy_ = kBadValue;
-    if (!IsSpecified(TypeSpec::kNoThrowMove)) {
-      exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    }
-    dummy_ = other.dummy_;
-    return *this;
-  }
+      IsSpecified(TypeSpec::kNoThrowMove)) { __builtin_trap() /* STUB: not implemented */; }
 
   // Arithmetic Operators
-  ThrowingValue operator+(const ThrowingValue& other) const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(dummy_ + other.dummy_, nothrow_ctor);
-  }
+  ThrowingValue operator+(const ThrowingValue& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator+() const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(dummy_, nothrow_ctor);
-  }
+  ThrowingValue operator+() const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator-(const ThrowingValue& other) const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(dummy_ - other.dummy_, nothrow_ctor);
-  }
+  ThrowingValue operator-(const ThrowingValue& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator-() const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(-dummy_, nothrow_ctor);
-  }
+  ThrowingValue operator-() const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue& operator++() {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    ++dummy_;
-    return *this;
-  }
+  ThrowingValue& operator++() { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator++(int) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    auto out = ThrowingValue(dummy_, nothrow_ctor);
-    ++dummy_;
-    return out;
-  }
+  ThrowingValue operator++(int) { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue& operator--() {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    --dummy_;
-    return *this;
-  }
+  ThrowingValue& operator--() { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator--(int) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    auto out = ThrowingValue(dummy_, nothrow_ctor);
-    --dummy_;
-    return out;
-  }
+  ThrowingValue operator--(int) { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator*(const ThrowingValue& other) const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(dummy_ * other.dummy_, nothrow_ctor);
-  }
+  ThrowingValue operator*(const ThrowingValue& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator/(const ThrowingValue& other) const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(dummy_ / other.dummy_, nothrow_ctor);
-  }
+  ThrowingValue operator/(const ThrowingValue& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator%(const ThrowingValue& other) const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(dummy_ % other.dummy_, nothrow_ctor);
-  }
+  ThrowingValue operator%(const ThrowingValue& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator<<(int shift) const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(dummy_ << shift, nothrow_ctor);
-  }
+  ThrowingValue operator<<(int shift) const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator>>(int shift) const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(dummy_ >> shift, nothrow_ctor);
-  }
+  ThrowingValue operator>>(int shift) const { __builtin_trap() /* STUB: not implemented */; }
 
   // Comparison Operators
   // NOTE: We use `ThrowingBool` instead of `bool` because most STL
   // types/containers requires T to be convertible to bool.
   friend ThrowingBool operator==(const ThrowingValue& a,
-                                 const ThrowingValue& b) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return a.dummy_ == b.dummy_;
-  }
+                                 const ThrowingValue& b) { __builtin_trap() /* STUB: not implemented */; }
   friend ThrowingBool operator!=(const ThrowingValue& a,
-                                 const ThrowingValue& b) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return a.dummy_ != b.dummy_;
-  }
+                                 const ThrowingValue& b) { __builtin_trap() /* STUB: not implemented */; }
   friend ThrowingBool operator<(const ThrowingValue& a,
-                                const ThrowingValue& b) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return a.dummy_ < b.dummy_;
-  }
+                                const ThrowingValue& b) { __builtin_trap() /* STUB: not implemented */; }
   friend ThrowingBool operator<=(const ThrowingValue& a,
-                                 const ThrowingValue& b) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return a.dummy_ <= b.dummy_;
-  }
+                                 const ThrowingValue& b) { __builtin_trap() /* STUB: not implemented */; }
   friend ThrowingBool operator>(const ThrowingValue& a,
-                                const ThrowingValue& b) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return a.dummy_ > b.dummy_;
-  }
+                                const ThrowingValue& b) { __builtin_trap() /* STUB: not implemented */; }
   friend ThrowingBool operator>=(const ThrowingValue& a,
-                                 const ThrowingValue& b) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return a.dummy_ >= b.dummy_;
-  }
+                                 const ThrowingValue& b) { __builtin_trap() /* STUB: not implemented */; }
 
   // Logical Operators
-  ThrowingBool operator!() const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return !dummy_;
-  }
+  ThrowingBool operator!() const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingBool operator&&(const ThrowingValue& other) const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return dummy_ && other.dummy_;
-  }
+  ThrowingBool operator&&(const ThrowingValue& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingBool operator||(const ThrowingValue& other) const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return dummy_ || other.dummy_;
-  }
+  ThrowingBool operator||(const ThrowingValue& other) const { __builtin_trap() /* STUB: not implemented */; }
 
   // Bitwise Logical Operators
-  ThrowingValue operator~() const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(~dummy_, nothrow_ctor);
-  }
+  ThrowingValue operator~() const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator&(const ThrowingValue& other) const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(dummy_ & other.dummy_, nothrow_ctor);
-  }
+  ThrowingValue operator&(const ThrowingValue& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator|(const ThrowingValue& other) const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(dummy_ | other.dummy_, nothrow_ctor);
-  }
+  ThrowingValue operator|(const ThrowingValue& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue operator^(const ThrowingValue& other) const {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return ThrowingValue(dummy_ ^ other.dummy_, nothrow_ctor);
-  }
+  ThrowingValue operator^(const ThrowingValue& other) const { __builtin_trap() /* STUB: not implemented */; }
 
   // Compound Assignment operators
-  ThrowingValue& operator+=(const ThrowingValue& other) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ += other.dummy_;
-    return *this;
-  }
+  ThrowingValue& operator+=(const ThrowingValue& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue& operator-=(const ThrowingValue& other) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ -= other.dummy_;
-    return *this;
-  }
+  ThrowingValue& operator-=(const ThrowingValue& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue& operator*=(const ThrowingValue& other) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ *= other.dummy_;
-    return *this;
-  }
+  ThrowingValue& operator*=(const ThrowingValue& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue& operator/=(const ThrowingValue& other) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ /= other.dummy_;
-    return *this;
-  }
+  ThrowingValue& operator/=(const ThrowingValue& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue& operator%=(const ThrowingValue& other) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ %= other.dummy_;
-    return *this;
-  }
+  ThrowingValue& operator%=(const ThrowingValue& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue& operator&=(const ThrowingValue& other) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ &= other.dummy_;
-    return *this;
-  }
+  ThrowingValue& operator&=(const ThrowingValue& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue& operator|=(const ThrowingValue& other) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ |= other.dummy_;
-    return *this;
-  }
+  ThrowingValue& operator|=(const ThrowingValue& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue& operator^=(const ThrowingValue& other) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ ^= other.dummy_;
-    return *this;
-  }
+  ThrowingValue& operator^=(const ThrowingValue& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue& operator<<=(int shift) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ <<= shift;
-    return *this;
-  }
+  ThrowingValue& operator<<=(int shift) { __builtin_trap() /* STUB: not implemented */; }
 
-  ThrowingValue& operator>>=(int shift) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ >>= shift;
-    return *this;
-  }
+  ThrowingValue& operator>>=(int shift) { __builtin_trap() /* STUB: not implemented */; }
 
   // Pointer operators
   void operator&() const = delete;  // NOLINT(runtime/operator)
 
   // Stream operators
-  friend std::ostream& operator<<(std::ostream& os, const ThrowingValue& tv) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return os << GetInstanceString(tv.dummy_);
-  }
+  friend std::ostream& operator<<(std::ostream& os, const ThrowingValue& tv) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend std::istream& operator>>(std::istream& is, const ThrowingValue&) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return is;
-  }
+  friend std::istream& operator>>(std::istream& is, const ThrowingValue&) { __builtin_trap() /* STUB: not implemented */; }
 
   // Memory management operators
   static void* operator new(size_t s) noexcept(
-      IsSpecified(TypeSpec::kNoThrowNew)) {
-    if (!IsSpecified(TypeSpec::kNoThrowNew)) {
-      exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION, true);
-    }
-    return ::operator new(s);
-  }
+      IsSpecified(TypeSpec::kNoThrowNew)) { __builtin_trap() /* STUB: not implemented */; }
 
   static void* operator new[](size_t s) noexcept(
-      IsSpecified(TypeSpec::kNoThrowNew)) {
-    if (!IsSpecified(TypeSpec::kNoThrowNew)) {
-      exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION, true);
-    }
-    return ::operator new[](s);
-  }
+      IsSpecified(TypeSpec::kNoThrowNew)) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename... Args>
   static void* operator new(size_t s, Args&&... args) noexcept(
-      IsSpecified(TypeSpec::kNoThrowNew)) {
-    if (!IsSpecified(TypeSpec::kNoThrowNew)) {
-      exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION, true);
-    }
-    return ::operator new(s, std::forward<Args>(args)...);
-  }
+      IsSpecified(TypeSpec::kNoThrowNew)) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename... Args>
   static void* operator new[](size_t s, Args&&... args) noexcept(
-      IsSpecified(TypeSpec::kNoThrowNew)) {
-    if (!IsSpecified(TypeSpec::kNoThrowNew)) {
-      exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION, true);
-    }
-    return ::operator new[](s, std::forward<Args>(args)...);
-  }
+      IsSpecified(TypeSpec::kNoThrowNew)) { __builtin_trap() /* STUB: not implemented */; }
 
   // Abseil doesn't support throwing overloaded operator delete.  These are
   // provided so a throwing operator-new can clean up after itself.
-  void operator delete(void* p) noexcept { ::operator delete(p); }
+  void operator delete(void* p) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename... Args>
-  void operator delete(void* p, Args&&... args) noexcept {
-    ::operator delete(p, std::forward<Args>(args)...);
-  }
+  void operator delete(void* p, Args&&... args) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
-  void operator delete[](void* p) noexcept { return ::operator delete[](p); }
+  void operator delete[](void* p) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename... Args>
-  void operator delete[](void* p, Args&&... args) noexcept {
-    return ::operator delete[](p, std::forward<Args>(args)...);
-  }
+  void operator delete[](void* p, Args&&... args) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // Non-standard access to the actual contained value.  No need for this to
   // throw.
-  int& Get() noexcept { return dummy_; }
-  const int& Get() const noexcept { return dummy_; }
+  int& Get() noexcept { __builtin_trap() /* STUB: not implemented */; }
+  const int& Get() const noexcept { __builtin_trap() /* STUB: not implemented */; }
 
  private:
-  static std::string GetInstanceString(int dummy) {
-    return absl::StrCat("ThrowingValue<",
-                        exceptions_internal::GetSpecString(Spec), ">(", dummy,
-                        ")");
-  }
+  static std::string GetInstanceString(int dummy) { __builtin_trap() /* STUB: not implemented */; }
 
   int dummy_;
 };
@@ -631,9 +373,7 @@ enum class AllocSpec {
  */
 template <typename T, AllocSpec Spec = AllocSpec::kEverythingThrows>
 class ThrowingAllocator : private exceptions_internal::TrackedObject {
-  static constexpr bool IsSpecified(AllocSpec spec) {
-    return static_cast<bool>(Spec & spec);
-  }
+  static constexpr bool IsSpecified(AllocSpec spec) { return {}; }
 
  public:
   using pointer = T*;
@@ -652,50 +392,38 @@ class ThrowingAllocator : private exceptions_internal::TrackedObject {
   using propagate_on_container_swap = std::true_type;
   using is_always_equal = std::false_type;
 
-  ThrowingAllocator() : TrackedObject(GetInstanceString(next_id_)) {
-    exceptions_internal::MaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    dummy_ = std::make_shared<const int>(next_id_++);
-  }
+  ThrowingAllocator() : TrackedObject(GetInstanceString(next_id_)) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
   ThrowingAllocator(const ThrowingAllocator<U, Spec>& other) noexcept  // NOLINT
       : TrackedObject(GetInstanceString(*other.State())),
-        dummy_(other.State()) {}
+        dummy_(other.State()) { __builtin_trap() /* STUB: not implemented */; }
 
   // According to C++11 standard [17.6.3.5], Table 28, the move/copy ctors of
   // allocator shall not exit via an exception, thus they are marked noexcept.
   ThrowingAllocator(const ThrowingAllocator& other) noexcept
       : TrackedObject(GetInstanceString(*other.State())),
-        dummy_(other.State()) {}
+        dummy_(other.State()) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
   ThrowingAllocator(ThrowingAllocator<U, Spec>&& other) noexcept  // NOLINT
       : TrackedObject(GetInstanceString(*other.State())),
-        dummy_(std::move(other.State())) {}
+        dummy_(std::move(other.State())) { __builtin_trap() /* STUB: not implemented */; }
 
   ThrowingAllocator(ThrowingAllocator&& other) noexcept
       : TrackedObject(GetInstanceString(*other.State())),
-        dummy_(std::move(other.State())) {}
+        dummy_(std::move(other.State())) { __builtin_trap() /* STUB: not implemented */; }
 
   ~ThrowingAllocator() noexcept = default;
 
-  ThrowingAllocator& operator=(const ThrowingAllocator& other) noexcept {
-    dummy_ = other.State();
-    return *this;
-  }
+  ThrowingAllocator& operator=(const ThrowingAllocator& other) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
   ThrowingAllocator& operator=(
-      const ThrowingAllocator<U, Spec>& other) noexcept {
-    dummy_ = other.State();
-    return *this;
-  }
+      const ThrowingAllocator<U, Spec>& other) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
-  ThrowingAllocator& operator=(ThrowingAllocator<U, Spec>&& other) noexcept {
-    dummy_ = std::move(other.State());
-    return *this;
-  }
+  ThrowingAllocator& operator=(ThrowingAllocator<U, Spec>&& other) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
   struct rebind {
@@ -703,79 +431,43 @@ class ThrowingAllocator : private exceptions_internal::TrackedObject {
   };
 
   pointer allocate(size_type n) noexcept(
-      IsSpecified(AllocSpec::kNoThrowAllocate)) {
-    ReadStateAndMaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return static_cast<pointer>(::operator new(n * sizeof(T)));
-  }
+      IsSpecified(AllocSpec::kNoThrowAllocate)) { __builtin_trap() /* STUB: not implemented */; }
 
   pointer allocate(size_type n, const_void_pointer) noexcept(
-      IsSpecified(AllocSpec::kNoThrowAllocate)) {
-    return allocate(n);
-  }
+      IsSpecified(AllocSpec::kNoThrowAllocate)) { __builtin_trap() /* STUB: not implemented */; }
 
-  void deallocate(pointer ptr, size_type) noexcept {
-    ReadState();
-    ::operator delete(static_cast<void*>(ptr));
-  }
+  void deallocate(pointer ptr, size_type) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U, typename... Args>
   void construct(U* ptr, Args&&... args) noexcept(
-      IsSpecified(AllocSpec::kNoThrowAllocate)) {
-    ReadStateAndMaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    ::new (static_cast<void*>(ptr)) U(std::forward<Args>(args)...);
-  }
+      IsSpecified(AllocSpec::kNoThrowAllocate)) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
-  void destroy(U* p) noexcept {
-    ReadState();
-    p->~U();
-  }
+  void destroy(U* p) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
-  size_type max_size() const noexcept {
-    return (std::numeric_limits<difference_type>::max)() / sizeof(value_type);
-  }
+  size_type max_size() const noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   ThrowingAllocator select_on_container_copy_construction() noexcept(
-      IsSpecified(AllocSpec::kNoThrowAllocate)) {
-    ReadStateAndMaybeThrow(ABSL_INTERNAL_PRETTY_FUNCTION);
-    return *this;
-  }
+      IsSpecified(AllocSpec::kNoThrowAllocate)) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
-  bool operator==(const ThrowingAllocator<U, Spec>& other) const noexcept {
-    return dummy_ == other.dummy_;
-  }
+  bool operator==(const ThrowingAllocator<U, Spec>& other) const noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
-  bool operator!=(const ThrowingAllocator<U, Spec>& other) const noexcept {
-    return dummy_ != other.dummy_;
-  }
+  bool operator!=(const ThrowingAllocator<U, Spec>& other) const noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename, AllocSpec>
   friend class ThrowingAllocator;
 
  private:
-  static std::string GetInstanceString(int dummy) {
-    return absl::StrCat("ThrowingAllocator<",
-                        exceptions_internal::GetSpecString(Spec), ">(", dummy,
-                        ")");
-  }
+  static std::string GetInstanceString(int dummy) { __builtin_trap() /* STUB: not implemented */; }
 
-  const std::shared_ptr<const int>& State() const { return dummy_; }
-  std::shared_ptr<const int>& State() { return dummy_; }
+  const std::shared_ptr<const int>& State() const { __builtin_trap() /* STUB: not implemented */; }
+  std::shared_ptr<const int>& State() { __builtin_trap() /* STUB: not implemented */; }
 
-  void ReadState() {
-    // we know that this will never be true, but the compiler doesn't, so this
-    // should safely force a read of the value.
-    if (*dummy_ < 0) std::abort();
-  }
+  void ReadState() { __builtin_trap() /* STUB: not implemented */; }
 
-  void ReadStateAndMaybeThrow(absl::string_view msg) const {
-    if (!IsSpecified(AllocSpec::kNoThrowAllocate)) {
-      exceptions_internal::MaybeThrow(
-          absl::Substitute("Allocator id $0 threw from $1", *dummy_, msg));
-    }
-  }
+  void ReadStateAndMaybeThrow(absl::string_view msg) const { __builtin_trap() /* STUB: not implemented */; }
 
   static int next_id_;
   std::shared_ptr<const int> dummy_;
@@ -788,44 +480,13 @@ int ThrowingAllocator<T, Spec>::next_id_ = 0;
 // until successful, using the countdown method.  Side effects can then be
 // tested for resource leaks.
 template <typename T, typename... Args>
-void TestThrowingCtor(Args&&... args) {
-  struct Cleanup {
-    ~Cleanup() { exceptions_internal::UnsetCountdown(); }
-  } c;
-  for (int count = 0;; ++count) {
-    exceptions_internal::ConstructorTracker ct(count);
-    exceptions_internal::SetCountdown(count);
-    try {
-      T temp(std::forward<Args>(args)...);
-      static_cast<void>(temp);
-      break;
-    } catch (const exceptions_internal::TestException&) {
-    }
-  }
-}
+void TestThrowingCtor(Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 // Tests the nothrow guarantee of the provided nullary operation. If the an
 // exception is thrown, the result will be AssertionFailure(). Otherwise, it
 // will be AssertionSuccess().
 template <typename Operation>
-testing::AssertionResult TestNothrowOp(const Operation& operation) {
-  struct Cleanup {
-    Cleanup() { exceptions_internal::SetCountdown(); }
-    ~Cleanup() { exceptions_internal::UnsetCountdown(); }
-  } c;
-  try {
-    operation();
-    return testing::AssertionSuccess();
-  } catch (const exceptions_internal::TestException&) {
-    return testing::AssertionFailure()
-           << "TestException thrown during call to operation() when nothrow "
-              "guarantee was expected.";
-  } catch (...) {
-    return testing::AssertionFailure()
-           << "Unknown exception thrown during call to operation() when "
-              "nothrow guarantee was expected.";
-  }
-}
+testing::AssertionResult TestNothrowOp(const Operation& operation) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace exceptions_internal {
 
@@ -835,8 +496,8 @@ struct UninitializedT {};
 template <typename T>
 class DefaultFactory {
  public:
-  explicit DefaultFactory(const T& t) : t_(t) {}
-  std::unique_ptr<T> operator()() const { return std::make_unique<T>(t_); }
+  explicit DefaultFactory(const T& t) : t_(t) { __builtin_trap() /* STUB: not implemented */; }
+  std::unique_ptr<T> operator()() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   T t_;
@@ -896,40 +557,15 @@ class ExceptionSafetyTest {
   template <typename... Contracts>
   explicit ExceptionSafetyTest(const Factory& f, const Operation& op,
                                const Contracts&... contracts)
-      : factory_(f), operation_(op), contracts_{WrapContract(contracts)...} {}
+      : factory_(f), operation_(op), contracts_{WrapContract(contracts)...} { __builtin_trap() /* STUB: not implemented */; }
 
-  AssertionResult Test() const {
-    for (int count = 0;; ++count) {
-      exceptions_internal::ConstructorTracker ct(count);
-
-      for (const auto& contract : contracts_) {
-        auto t_ptr = factory_();
-        try {
-          SetCountdown(count);
-          operation_(t_ptr.get());
-          // Unset for the case that the operation throws no exceptions, which
-          // would leave the countdown set and break the *next* exception safety
-          // test after this one.
-          UnsetCountdown();
-          return AssertionSuccess();
-        } catch (const exceptions_internal::TestException& e) {
-          if (!contract(t_ptr.get())) {
-            return AssertionFailure() << e.what() << " failed contract check";
-          }
-        }
-      }
-    }
-  }
+  AssertionResult Test() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   template <typename ContractFn>
-  Contract WrapContract(const ContractFn& contract) {
-    return [contract](T* t_ptr) { return AssertionResult(contract(t_ptr)); };
-  }
+  Contract WrapContract(const ContractFn& contract) { __builtin_trap() /* STUB: not implemented */; }
 
-  Contract WrapContract(StrongGuaranteeTagType) {
-    return [this](T* t_ptr) { return AssertionResult(*factory_() == *t_ptr); };
-  }
+  Contract WrapContract(StrongGuaranteeTagType) { __builtin_trap() /* STUB: not implemented */; }
 
   Factory factory_;
   Operation operation_;
@@ -984,9 +620,7 @@ class ExceptionSafetyTestBuilder {
    */
   template <typename T>
   ExceptionSafetyTestBuilder<DefaultFactory<T>, Operation, Contracts...>
-  WithInitialValue(const T& t) const {
-    return WithFactory(DefaultFactory<T>(t));
-  }
+  WithInitialValue(const T& t) const { __builtin_trap() /* STUB: not implemented */; }
 
   /*
    * Returns a new ExceptionSafetyTestBuilder with the provided T factory
@@ -997,9 +631,7 @@ class ExceptionSafetyTestBuilder {
    */
   template <typename NewFactory>
   ExceptionSafetyTestBuilder<std::decay_t<NewFactory>, Operation, Contracts...>
-  WithFactory(const NewFactory& new_factory) const {
-    return {new_factory, operation_, contracts_};
-  }
+  WithFactory(const NewFactory& new_factory) const { __builtin_trap() /* STUB: not implemented */; }
 
   /*
    * Returns a new ExceptionSafetyTestBuilder with the provided testable
@@ -1008,9 +640,7 @@ class ExceptionSafetyTestBuilder {
    */
   template <typename NewOperation>
   ExceptionSafetyTestBuilder<Factory, std::decay_t<NewOperation>, Contracts...>
-  WithOperation(const NewOperation& new_operation) const {
-    return {factory_, new_operation, contracts_};
-  }
+  WithOperation(const NewOperation& new_operation) const { __builtin_trap() /* STUB: not implemented */; }
 
   /*
    * Returns a new ExceptionSafetyTestBuilder with the provided MoreContracts...
@@ -1028,12 +658,7 @@ class ExceptionSafetyTestBuilder {
   template <typename... MoreContracts>
   ExceptionSafetyTestBuilder<Factory, Operation, Contracts...,
                              std::decay_t<MoreContracts>...>
-  WithContracts(const MoreContracts&... more_contracts) const {
-    return {
-        factory_, operation_,
-        std::tuple_cat(contracts_, std::tuple<std::decay_t<MoreContracts>...>(
-                                       more_contracts...))};
-  }
+  WithContracts(const MoreContracts&... more_contracts) const { __builtin_trap() /* STUB: not implemented */; }
 
   /*
    * Returns a testing::AssertionResult that is the reduced result of the
@@ -1054,9 +679,7 @@ class ExceptionSafetyTestBuilder {
   template <
       typename NewOperation,
       typename = EnableIfTestable<sizeof...(Contracts), Factory, NewOperation>>
-  testing::AssertionResult Test(const NewOperation& new_operation) const {
-    return TestImpl(new_operation, std::index_sequence_for<Contracts...>());
-  }
+  testing::AssertionResult Test(const NewOperation& new_operation) const { __builtin_trap() /* STUB: not implemented */; }
 
   /*
    * Returns a testing::AssertionResult that is the reduced result of the
@@ -1073,9 +696,7 @@ class ExceptionSafetyTestBuilder {
   template <
       typename LazyOperation = Operation,
       typename = EnableIfTestable<sizeof...(Contracts), Factory, LazyOperation>>
-  testing::AssertionResult Test() const {
-    return Test(operation_);
-  }
+  testing::AssertionResult Test() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   template <typename, typename, typename...>
@@ -1083,19 +704,15 @@ class ExceptionSafetyTestBuilder {
 
   friend ExceptionSafetyTestBuilder<> testing::MakeExceptionSafetyTester();
 
-  ExceptionSafetyTestBuilder() {}
+  ExceptionSafetyTestBuilder() { __builtin_trap() /* STUB: not implemented */; }
 
   ExceptionSafetyTestBuilder(const Factory& f, const Operation& o,
                              const std::tuple<Contracts...>& i)
-      : factory_(f), operation_(o), contracts_(i) {}
+      : factory_(f), operation_(o), contracts_(i) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename SelectedOperation, size_t... Indices>
   testing::AssertionResult TestImpl(SelectedOperation selected_operation,
-                                    std::index_sequence<Indices...>) const {
-    return ExceptionSafetyTest<FactoryElementType<Factory>>(
-               factory_, selected_operation, std::get<Indices>(contracts_)...)
-        .Test();
-  }
+                                    std::index_sequence<Indices...>) const { __builtin_trap() /* STUB: not implemented */; }
 
   Factory factory_;
   Operation operation_;

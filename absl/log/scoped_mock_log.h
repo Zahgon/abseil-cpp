@@ -179,11 +179,11 @@ class ScopedMockLog final {
  private:
   class ForwardingSink final : public absl::LogSink {
    public:
-    explicit ForwardingSink(ScopedMockLog* sml) : sml_(sml) {}
+    explicit ForwardingSink(ScopedMockLog* sml) : sml_(sml) { __builtin_trap() /* STUB: not implemented */; }
     ForwardingSink(const ForwardingSink&) = delete;
     ForwardingSink& operator=(const ForwardingSink&) = delete;
-    void Send(const absl::LogEntry& entry) override { sml_->Send(entry); }
-    void Flush() override { sml_->Flush(); }
+    void Send(const absl::LogEntry& entry) override { __builtin_trap() /* STUB: not implemented */; }
+    void Flush() override { __builtin_trap() /* STUB: not implemented */; }
 
    private:
     ScopedMockLog* sml_;

@@ -39,66 +39,21 @@ namespace {
 // from gUnit, because we need to invoke them during global destructors, when
 // gUnit teardown would have already begun.
 void ThreadOne(absl::Mutex* mutex, absl::CondVar* condvar,
-               absl::Notification* notification, bool* state) {
-  // Test that the notification is in a valid initial state.
-  CHECK(!notification->HasBeenNotified()) << "invalid Notification";
-  CHECK(!*state) << "*state not initialized";
-
-  {
-    absl::MutexLock lock(*mutex);
-
-    notification->Notify();
-    CHECK(notification->HasBeenNotified()) << "invalid Notification";
-
-    while (*state == false) {
-      condvar->Wait(mutex);
-    }
-  }
-}
+               absl::Notification* notification, bool* state) { __builtin_trap() /* STUB: not implemented */; }
 
 void ThreadTwo(absl::Mutex* mutex, absl::CondVar* condvar,
-               absl::Notification* notification, bool* state) {
-  CHECK(!*state) << "*state not initialized";
-
-  // Wake thread one
-  notification->WaitForNotification();
-  CHECK(notification->HasBeenNotified()) << "invalid Notification";
-  {
-    absl::MutexLock lock(*mutex);
-    *state = true;
-    condvar->Signal();
-  }
-}
+               absl::Notification* notification, bool* state) { __builtin_trap() /* STUB: not implemented */; }
 
 // Launch thread 1 and thread 2, and block on their completion.
 // If any of 'mutex', 'condvar', or 'notification' is nullptr, use a locally
 // constructed instance instead.
-void RunTests(absl::Mutex* mutex, absl::CondVar* condvar) {
-  absl::Mutex default_mutex;
-  absl::CondVar default_condvar;
-  absl::Notification notification;
-  if (!mutex) {
-    mutex = &default_mutex;
-  }
-  if (!condvar) {
-    condvar = &default_condvar;
-  }
-  bool state = false;
-  std::thread thread_one(ThreadOne, mutex, condvar, &notification, &state);
-  std::thread thread_two(ThreadTwo, mutex, condvar, &notification, &state);
-  thread_one.join();
-  thread_two.join();
-}
+void RunTests(absl::Mutex* mutex, absl::CondVar* condvar) { __builtin_trap() /* STUB: not implemented */; }
 
-void TestLocals() {
-  absl::Mutex mutex;
-  absl::CondVar condvar;
-  RunTests(&mutex, &condvar);
-}
+void TestLocals() { __builtin_trap() /* STUB: not implemented */; }
 
 // Normal kConstInit usage
 ABSL_CONST_INIT absl::Mutex const_init_mutex(absl::kConstInit);
-void TestConstInitGlobal() { RunTests(&const_init_mutex, nullptr); }
+void TestConstInitGlobal() { __builtin_trap() /* STUB: not implemented */; }
 
 // Global variables during start and termination
 //
@@ -111,13 +66,13 @@ using Function = void (*)();
 
 class OnConstruction {
  public:
-  explicit OnConstruction(Function fn) { fn(); }
+  explicit OnConstruction(Function fn) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 class OnDestruction {
  public:
-  explicit OnDestruction(Function fn) : fn_(fn) {}
-  ~OnDestruction() { fn_(); }
+  explicit OnDestruction(Function fn) : fn_(fn) { __builtin_trap() /* STUB: not implemented */; }
+  ~OnDestruction() { __builtin_trap() /* STUB: not implemented */; }
  private:
   Function fn_;
 };
@@ -171,10 +126,4 @@ ABSL_CONST_INIT absl::Mutex late_const_init_mutex(absl::kConstInit);
 
 }  // namespace
 
-int main() {
-  TestLocals();
-  TestConstInitGlobal();
-  // Explicitly call exit(0) here, to make it clear that we intend for the
-  // above global object destructors to run.
-  std::exit(0);
-}
+int main() { __builtin_trap() /* STUB: not implemented */; }

@@ -243,25 +243,20 @@ class Helper {
 // This abstraction is here mostly for the gcc performance fix.
 template <typename T, typename... Args>
 ABSL_ATTRIBUTE_NONNULL(1)
-void PlacementNew(void* absl_nonnull p, Args&&... args) {
-  new (p) T(std::forward<Args>(args)...);
-}
+void PlacementNew(void* absl_nonnull p, Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
 class Reference {
  public:
   constexpr explicit Reference(T ref ABSL_ATTRIBUTE_LIFETIME_BOUND)
-      : payload_(std::addressof(ref)) {}
+      : payload_(std::addressof(ref)) { }
 
   Reference(const Reference&) = default;
   Reference& operator=(const Reference&) = default;
-  Reference& operator=(T value) {
-    payload_ = std::addressof(value);
-    return *this;
-  }
+  Reference& operator=(T value) { __builtin_trap() /* STUB: not implemented */; }
 
-  operator T() const { return static_cast<T>(*payload_); }  // NOLINT
-  T get() const { return *this; }
+  operator T() const { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
+  T get() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   std::remove_reference_t<T>* absl_nonnull payload_;
@@ -275,115 +270,43 @@ class StatusOrData {
   template <typename U>
   friend class StatusOrData;
 
-  decltype(auto) MaybeMoveData() {
-    if constexpr (std::is_reference_v<T>) {
-      return data_.get();
-    } else {
-      return std::move(data_);
-    }
-  }
+  decltype(auto) MaybeMoveData() { __builtin_trap() /* STUB: not implemented */; }
 
  public:
   StatusOrData() = delete;
 
-  StatusOrData(const StatusOrData& other) {
-    if (other.ok()) {
-      MakeValue(other.data_);
-      MakeStatus();
-    } else {
-      MakeStatus(other.status_);
-    }
-  }
+  StatusOrData(const StatusOrData& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  StatusOrData(StatusOrData&& other) noexcept {
-    if (other.ok()) {
-      MakeValue(other.MaybeMoveData());
-      MakeStatus();
-    } else {
-      MakeStatus(std::move(other.status_));
-    }
-  }
+  StatusOrData(StatusOrData&& other) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
-  explicit StatusOrData(const StatusOrData<U>& other) {
-    if (other.ok()) {
-      MakeValue(other.data_);
-      MakeStatus();
-    } else {
-      MakeStatus(other.status_);
-    }
-  }
+  explicit StatusOrData(const StatusOrData<U>& other) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
-  explicit StatusOrData(StatusOrData<U>&& other) {
-    if (other.ok()) {
-      MakeValue(other.MaybeMoveData());
-      MakeStatus();
-    } else {
-      MakeStatus(std::move(other.status_));
-    }
-  }
+  explicit StatusOrData(StatusOrData<U>&& other) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename... Args>
   explicit StatusOrData(std::in_place_t, Args&&... args)
-      : data_(std::forward<Args>(args)...) {
-    MakeStatus();
-  }
+      : data_(std::forward<Args>(args)...) { __builtin_trap() /* STUB: not implemented */; }
 
   template <
       typename U,
       std::enable_if_t<std::is_constructible_v<absl::Status, U&&>, int> = 0>
-  explicit StatusOrData(U&& v) : status_(std::forward<U>(v)) {
-    EnsureNotOk();
-  }
+  explicit StatusOrData(U&& v) : status_(std::forward<U>(v)) { __builtin_trap() /* STUB: not implemented */; }
 
-  StatusOrData& operator=(const StatusOrData& other) {
-    if (this == &other) return *this;
-    if (other.ok())
-      Assign(other.data_);
-    else
-      AssignStatus(other.status_);
-    return *this;
-  }
+  StatusOrData& operator=(const StatusOrData& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  StatusOrData& operator=(StatusOrData&& other) {
-    if (this == &other) return *this;
-    if (other.ok())
-      Assign(other.MaybeMoveData());
-    else
-      AssignStatus(std::move(other.status_));
-    return *this;
-  }
+  StatusOrData& operator=(StatusOrData&& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  ~StatusOrData() {
-    if (ok()) {
-      status_.~Status();
-      if constexpr (!std::is_trivially_destructible_v<T>) {
-        data_.~T();
-      }
-    } else {
-      status_.~Status();
-    }
-  }
+  ~StatusOrData() { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
-  void Assign(U&& value) {
-    if (ok()) {
-      data_ = std::forward<U>(value);
-    } else {
-      MakeValue(std::forward<U>(value));
-      status_ = OkStatus();
-    }
-  }
+  void Assign(U&& value) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
-  void AssignStatus(U&& v) {
-    Clear();
-    status_ = static_cast<absl::Status>(std::forward<U>(v));
-    EnsureNotOk();
-  }
+  void AssignStatus(U&& v) { __builtin_trap() /* STUB: not implemented */; }
 
-  bool ok() const { return status_.ok(); }
+  bool ok() const { __builtin_trap() /* STUB: not implemented */; }
 
  protected:
   // status_ will always be active after the constructor.
@@ -404,123 +327,59 @@ class StatusOrData {
     std::conditional_t<std::is_reference_v<T>, Reference<T>, T> data_;
   };
 
-  void Clear() {
-    if constexpr (!std::is_trivially_destructible_v<T>) {
-      if (ok()) data_.~T();
-    }
-  }
+  void Clear() { __builtin_trap() /* STUB: not implemented */; }
 
-  void EnsureOk() const {
-    if (ABSL_PREDICT_FALSE(!ok())) Helper::Crash(status_);
-  }
+  void EnsureOk() const { __builtin_trap() /* STUB: not implemented */; }
 
-  void EnsureNotOk() {
-    if (ABSL_PREDICT_FALSE(ok())) Helper::HandleInvalidStatusCtorArg(&status_);
-  }
+  void EnsureNotOk() { __builtin_trap() /* STUB: not implemented */; }
 
   // Construct the value (ie. data_) through placement new with the passed
   // argument.
   template <typename... Arg>
-  void MakeValue(Arg&&... arg) {
-    internal_statusor::PlacementNew<decltype(data_)>(&dummy_,
-                                                     std::forward<Arg>(arg)...);
-  }
+  void MakeValue(Arg&&... arg) { __builtin_trap() /* STUB: not implemented */; }
 
   // Construct the status (ie. status_) through placement new with the passed
   // argument.
   template <typename... Args>
-  void MakeStatus(Args&&... args) {
-    internal_statusor::PlacementNew<Status>(&status_,
-                                            std::forward<Args>(args)...);
-  }
+  void MakeStatus(Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
-  T ValueOrImpl(U&& default_value) const& {
-    if (ok()) {
-      return data_;
-    }
-    return std::forward<U>(default_value);
-  }
+  T ValueOrImpl(U&& default_value) const& { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
-  T ValueOrImpl(U&& default_value) && {
-    if (ok()) {
-      return std::move(data_);
-    }
-    return std::forward<U>(default_value);
-  }
+  T ValueOrImpl(U&& default_value) && { __builtin_trap() /* STUB: not implemented */; }
 };
 
 [[noreturn]] void ThrowBadStatusOrAccess(absl::Status status);
 
 template <typename T>
 struct OperatorBase {
-  auto& self() const { return static_cast<const StatusOr<T>&>(*this); }
-  auto& self() { return static_cast<StatusOr<T>&>(*this); }
+  auto& self() const { __builtin_trap() /* STUB: not implemented */; }
+  auto& self() { __builtin_trap() /* STUB: not implemented */; }
 
-  const T& operator*() const& ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    self().EnsureOk();
-    return self().data_;
-  }
-  T& operator*() & ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    self().EnsureOk();
-    return self().data_;
-  }
-  const T&& operator*() const&& ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    self().EnsureOk();
-    return std::move(self().data_);
-  }
-  T&& operator*() && ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    self().EnsureOk();
-    return std::move(self().data_);
-  }
+  const T& operator*() const& ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  T& operator*() & ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  const T&& operator*() const&& ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  T&& operator*() && ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
-  const T& value() const& ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    if (!self().ok()) internal_statusor::ThrowBadStatusOrAccess(self().status_);
-    return self().data_;
-  }
-  T& value() & ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    if (!self().ok()) internal_statusor::ThrowBadStatusOrAccess(self().status_);
-    return self().data_;
-  }
-  const T&& value() const&& ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    if (!self().ok()) {
-      internal_statusor::ThrowBadStatusOrAccess(std::move(self().status_));
-    }
-    return std::move(self().data_);
-  }
-  T&& value() && ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    if (!self().ok()) {
-      internal_statusor::ThrowBadStatusOrAccess(std::move(self().status_));
-    }
-    return std::move(self().data_);
-  }
+  const T& value() const& ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  T& value() & ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  const T&& value() const&& ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  T&& value() && ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
-  const T* absl_nonnull operator->() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return std::addressof(**this);
-  }
-  T* absl_nonnull operator->() ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return std::addressof(**this);
-  }
+  const T* absl_nonnull operator->() const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  T* absl_nonnull operator->() ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename T>
 struct OperatorBase<T&> {
-  auto& self() const { return static_cast<const StatusOr<T&>&>(*this); }
+  auto& self() const { __builtin_trap() /* STUB: not implemented */; }
 
-  T& operator*() const {
-    self().EnsureOk();
-    return self().data_;
-  }
+  T& operator*() const { __builtin_trap() /* STUB: not implemented */; }
 
-  T& value() const {
-    if (!self().ok()) internal_statusor::ThrowBadStatusOrAccess(self().status_);
-    return self().data_;
-  }
+  T& value() const { __builtin_trap() /* STUB: not implemented */; }
 
-  T* absl_nonnull operator->() const {
-    return std::addressof(**this);
-  }
+  T* absl_nonnull operator->() const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // Helper base classes to allow implicitly deleted constructors and assignment
@@ -614,40 +473,12 @@ class StringifyRandom {
   };
 
   // Returns a random `BracesType` determined once per binary load.
-  static BracesType RandomBraces() {
-    static const BracesType kRandomBraces = static_cast<BracesType>(
-        (reinterpret_cast<uintptr_t>(&kRandomBraces) >> 4) % 4);
-    return kRandomBraces;
-  }
+  static BracesType RandomBraces() { __builtin_trap() /* STUB: not implemented */; }
 
  public:
-  static absl::string_view OpenBrackets() {
-    switch (RandomBraces()) {
-      case kBareParens:
-        return "(";
-      case kSpaceParens:
-        return "( ";
-      case kBareBrackets:
-        return "[";
-      case kSpaceBrackets:
-        return "[ ";
-    }
-    return "(";
-  }
+  static absl::string_view OpenBrackets() { __builtin_trap() /* STUB: not implemented */; }
 
-  static absl::string_view CloseBrackets() {
-    switch (RandomBraces()) {
-      case kBareParens:
-        return ")";
-      case kSpaceParens:
-        return " )";
-      case kBareBrackets:
-        return "]";
-      case kSpaceBrackets:
-        return " ]";
-    }
-    return ")";
-  }
+  static absl::string_view CloseBrackets() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 }  // namespace internal_statusor

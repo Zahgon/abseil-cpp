@@ -25,9 +25,7 @@ namespace {
 struct TypeWithoutOstreamOp {};
 
 struct TypeWithOstreamOp {
-  friend std::ostream& operator<<(std::ostream& os, const TypeWithOstreamOp&) {
-    return os;
-  }
+  friend std::ostream& operator<<(std::ostream& os, const TypeWithOstreamOp&) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(HasOstreamOperatorTest, Works) {

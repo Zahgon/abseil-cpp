@@ -54,13 +54,10 @@ namespace status_internal {
 class Stream {
  public:
   explicit Stream(std::string& message)
-      : ostringstream_(&message), absl_stringify_stream_(ostringstream_) {}
+      : ostringstream_(&message), absl_stringify_stream_(ostringstream_) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
-  friend Stream& operator<<(Stream& stream, const T& t) {
-    stream.absl_stringify_stream_ << t;
-    return stream;
-  }
+  friend Stream& operator<<(Stream& stream, const T& t) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   absl::strings_internal::OStringStream ostringstream_;
@@ -718,40 +715,31 @@ std::ostream& operator<<(std::ostream& os, StatusBuilder&& builder);
 // constructing the message is not a concern in the success case.
 class ExtraMessage {
  public:
-  ExtraMessage() : ExtraMessage(std::string()) {}
+  ExtraMessage() : ExtraMessage(std::string()) { __builtin_trap() /* STUB: not implemented */; }
   explicit ExtraMessage(std::string msg)
-      : msg_(std::move(msg)), stream_(msg_) {}
+      : msg_(std::move(msg)), stream_(msg_) { __builtin_trap() /* STUB: not implemented */; }
 
   ExtraMessage(
       ExtraMessage&& other) noexcept  // strings::OStringStream is stateless
                                       // so we can simply move over the message.
-      : ExtraMessage(std::move(other.msg_)) {}
+      : ExtraMessage(std::move(other.msg_)) { __builtin_trap() /* STUB: not implemented */; }
 
   // Appends to the extra message that will be added to the original status.  By
   // default, the extra message is added to the original message as if by
   // `util::Annotate`, which includes a convenience separator between the
   // original message and the enriched one.
   template <typename T>
-  ExtraMessage& operator<<(const T& value) & {
-    stream_ << value;
-    return *this;
-  }
+  ExtraMessage& operator<<(const T& value) & { __builtin_trap() /* STUB: not implemented */; }
 
   // As above, preserving the rvalue-ness of the ExtraMessage object.
   template <typename T>
-  ExtraMessage&& operator<<(const T& value) && {
-    *this << value;
-    return std::move(*this);
-  }
+  ExtraMessage&& operator<<(const T& value) && { __builtin_trap() /* STUB: not implemented */; }
 
   // Appends to the extra message that will be added to the original status.  By
   // default, the extra message is added to the original message as if by
   // `util::Annotate`, which includes a convenience separator between the
   // original message and the enriched one.
-  StatusBuilder operator()(StatusBuilder builder) const {
-    builder << msg_;
-    return builder;
-  }
+  StatusBuilder operator()(StatusBuilder builder) const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   std::string msg_;
@@ -762,203 +750,70 @@ class ExtraMessage {
 
 inline StatusBuilder::StatusBuilder(absl::StatusCode code,
                                     absl::SourceLocation location)
-    : loc_(location), rep_(InitRep(absl::Status(code, ""))) {}
+    : loc_(location), rep_(InitRep(absl::Status(code, ""))) { __builtin_trap() /* STUB: not implemented */; }
 
-inline StatusBuilder::StatusBuilder(const StatusBuilder& sb) : loc_(sb.loc_) {
-  if (sb.rep_ != nullptr) {
-    rep_ = std::make_unique<Rep>(*sb.rep_);
-  }
-}
+inline StatusBuilder::StatusBuilder(const StatusBuilder& sb) : loc_(sb.loc_) { __builtin_trap() /* STUB: not implemented */; }
 
 inline StatusBuilder::StatusBuilder(absl::Status&& original_status,
                                     absl::SourceLocation location)
-    : loc_(location), rep_(InitRep(std::move(original_status))) {}
+    : loc_(location), rep_(InitRep(std::move(original_status))) { __builtin_trap() /* STUB: not implemented */; }
 
-inline StatusBuilder::~StatusBuilder() {
-  if (IsKnownToBeEmpty()) {
-    // Nothing to do.
-    return;
-  }
-  // We will run the destructor logic, so move it out of line.
-  // The destructor of the unique_ptr runs ~Rep() and then ::operator delete.
-  // We don't want that bloat on the caller.
-  Destroy(std::move(rep_));
-  // Tell the compiler that `rep_` was not filled again even if `this` escaped.
-  AssumeEmpty();
-}
+inline StatusBuilder::~StatusBuilder() { __builtin_trap() /* STUB: not implemented */; }
 
-inline StatusBuilder& StatusBuilder::operator=(const StatusBuilder& sb) {
-  loc_ = sb.loc_;
-  if (sb.rep_ != nullptr) {
-    rep_ = std::make_unique<Rep>(*sb.rep_);
-  } else {
-    rep_ = nullptr;
-  }
-  return *this;
-}
+inline StatusBuilder& StatusBuilder::operator=(const StatusBuilder& sb) { __builtin_trap() /* STUB: not implemented */; }
 
-inline StatusBuilder& StatusBuilder::SetPrepend() & {
-  if (rep_ == nullptr) return *this;
-  rep_->message_join_style = MessageJoinStyle::kPrepend;
-  return *this;
-}
-inline StatusBuilder&& StatusBuilder::SetPrepend() && {
-  return std::move(SetPrepend());
-}
+inline StatusBuilder& StatusBuilder::SetPrepend() & { __builtin_trap() /* STUB: not implemented */; }
+inline StatusBuilder&& StatusBuilder::SetPrepend() && { __builtin_trap() /* STUB: not implemented */; }
 
-inline StatusBuilder& StatusBuilder::SetAppend() & {
-  if (rep_ == nullptr) return *this;
-  rep_->message_join_style = MessageJoinStyle::kAppend;
-  return *this;
-}
-inline StatusBuilder&& StatusBuilder::SetAppend() && {
-  return std::move(SetAppend());
-}
+inline StatusBuilder& StatusBuilder::SetAppend() & { __builtin_trap() /* STUB: not implemented */; }
+inline StatusBuilder&& StatusBuilder::SetAppend() && { __builtin_trap() /* STUB: not implemented */; }
 
-inline StatusBuilder& StatusBuilder::SetNoLogging() & {
-  if (rep_ != nullptr) {
-    rep_->logging_mode = Rep::LoggingMode::kDisabled;
-    rep_->should_log_stack_trace = false;
-  }
-  return *this;
-}
-inline StatusBuilder&& StatusBuilder::SetNoLogging() && {
-  return std::move(SetNoLogging());
-}
+inline StatusBuilder& StatusBuilder::SetNoLogging() & { __builtin_trap() /* STUB: not implemented */; }
+inline StatusBuilder&& StatusBuilder::SetNoLogging() && { __builtin_trap() /* STUB: not implemented */; }
 
-inline StatusBuilder& StatusBuilder::Log(absl::LogSeverity level) & {
-  if (rep_ == nullptr) return *this;
-  rep_->logging_mode = Rep::LoggingMode::kLog;
-  rep_->log_severity = level;
-  return *this;
-}
-inline StatusBuilder&& StatusBuilder::Log(absl::LogSeverity level) && {
-  return std::move(Log(level));
-}
+inline StatusBuilder& StatusBuilder::Log(absl::LogSeverity level) & { __builtin_trap() /* STUB: not implemented */; }
+inline StatusBuilder&& StatusBuilder::Log(absl::LogSeverity level) && { __builtin_trap() /* STUB: not implemented */; }
 
 inline StatusBuilder& StatusBuilder::LogEveryN(absl::LogSeverity level,
-                                               int n) & {
-  if (rep_ == nullptr) return *this;
-  if (n < 1) return Log(level);
-  rep_->logging_mode = Rep::LoggingMode::kLogEveryN;
-  rep_->log_severity = level;
-  rep_->n = n;
-  return *this;
-}
+                                               int n) & { __builtin_trap() /* STUB: not implemented */; }
 inline StatusBuilder&& StatusBuilder::LogEveryN(absl::LogSeverity level,
-                                                int n) && {
-  return std::move(LogEveryN(level, n));
-}
+                                                int n) && { __builtin_trap() /* STUB: not implemented */; }
 
 inline StatusBuilder& StatusBuilder::LogEvery(absl::LogSeverity level,
-                                              absl::Duration period) & {
-  if (rep_ == nullptr) return *this;
-  if (period <= absl::ZeroDuration()) return Log(level);
-  rep_->logging_mode = Rep::LoggingMode::kLogEveryPeriod;
-  rep_->log_severity = level;
-  rep_->period = period;
-  return *this;
-}
+                                              absl::Duration period) & { __builtin_trap() /* STUB: not implemented */; }
 inline StatusBuilder&& StatusBuilder::LogEvery(absl::LogSeverity level,
-                                               absl::Duration period) && {
-  return std::move(LogEvery(level, period));
-}
+                                               absl::Duration period) && { __builtin_trap() /* STUB: not implemented */; }
 
-inline StatusBuilder& StatusBuilder::VLog(int verbose_level) & {
-  if (rep_ == nullptr) return *this;
-  rep_->logging_mode = Rep::LoggingMode::kVLog;
-  rep_->verbose_level = verbose_level;
-  return *this;
-}
-inline StatusBuilder&& StatusBuilder::VLog(int verbose_level) && {
-  return std::move(VLog(verbose_level));
-}
+inline StatusBuilder& StatusBuilder::VLog(int verbose_level) & { __builtin_trap() /* STUB: not implemented */; }
+inline StatusBuilder&& StatusBuilder::VLog(int verbose_level) && { __builtin_trap() /* STUB: not implemented */; }
 
-inline StatusBuilder& StatusBuilder::EmitStackTrace() & {
-  if (rep_ == nullptr) return *this;
-  if (rep_->logging_mode == Rep::LoggingMode::kDisabled) {
-    // Default to INFO logging, otherwise nothing would be emitted.
-    rep_->logging_mode = Rep::LoggingMode::kLog;
-    rep_->log_severity = absl::LogSeverity::kInfo;
-  }
-  rep_->should_log_stack_trace = true;
-  return *this;
-}
-inline StatusBuilder&& StatusBuilder::EmitStackTrace() && {
-  return std::move(EmitStackTrace());
-}
+inline StatusBuilder& StatusBuilder::EmitStackTrace() & { __builtin_trap() /* STUB: not implemented */; }
+inline StatusBuilder&& StatusBuilder::EmitStackTrace() && { __builtin_trap() /* STUB: not implemented */; }
 
-inline StatusBuilder& StatusBuilder::AlsoOutputToSink(absl::LogSink* sink) & {
-  if (rep_ == nullptr) return *this;
-  rep_->sink = sink;
-  rep_->also_send_to_log = true;
-  return *this;
-}
-inline StatusBuilder&& StatusBuilder::AlsoOutputToSink(absl::LogSink* sink) && {
-  return std::move(AlsoOutputToSink(sink));
-}
-inline StatusBuilder& StatusBuilder::OnlyOutputToSink(absl::LogSink* sink) & {
-  if (rep_ == nullptr) return *this;
-  rep_->sink = sink;
-  rep_->also_send_to_log = false;
-  return *this;
-}
-inline StatusBuilder&& StatusBuilder::OnlyOutputToSink(absl::LogSink* sink) && {
-  return std::move(OnlyOutputToSink(sink));
-}
+inline StatusBuilder& StatusBuilder::AlsoOutputToSink(absl::LogSink* sink) & { __builtin_trap() /* STUB: not implemented */; }
+inline StatusBuilder&& StatusBuilder::AlsoOutputToSink(absl::LogSink* sink) && { __builtin_trap() /* STUB: not implemented */; }
+inline StatusBuilder& StatusBuilder::OnlyOutputToSink(absl::LogSink* sink) & { __builtin_trap() /* STUB: not implemented */; }
+inline StatusBuilder&& StatusBuilder::OnlyOutputToSink(absl::LogSink* sink) && { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
-StatusBuilder& StatusBuilder::operator<<(const T& value) & {
-  if (rep_ == nullptr) return *this;
-  if (!rep_->stream.has_value()) {
-    rep_->InitStream();
-  }
-  *rep_->stream << value;
-  return *this;
-}
+StatusBuilder& StatusBuilder::operator<<(const T& value) & { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
-StatusBuilder&& StatusBuilder::operator<<(const T& value) && {
-  return std::move(operator<<(value));
-}
+StatusBuilder&& StatusBuilder::operator<<(const T& value) && { __builtin_trap() /* STUB: not implemented */; }
 
 inline StatusBuilder& StatusBuilder::SetPayload(absl::string_view type_url,
-                                                absl::Cord payload) & {
-  if (rep_ != nullptr) {
-    rep_->status.SetPayload(type_url, std::move(payload));
-  }
-  return *this;
-}
+                                                absl::Cord payload) & { __builtin_trap() /* STUB: not implemented */; }
 
 inline std::optional<absl::Cord> StatusBuilder::GetPayload(
-    absl::string_view type_url) const {
-  return rep_ == nullptr ? std::nullopt : rep_->status.GetPayload(type_url);
-}
+    absl::string_view type_url) const { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool StatusBuilder::ok() const {
-  return rep_ == nullptr ? true : rep_->status.ok();
-}
+inline bool StatusBuilder::ok() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline absl::StatusCode StatusBuilder::code() const {
-  return rep_ == nullptr ? absl::StatusCode::kOk : rep_->status.code();
-}
+inline absl::StatusCode StatusBuilder::code() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline StatusBuilder::operator absl::Status() && {
-  // Tell the compiler that the `ok()` path will return an `Ok` status, but do
-  // it only if the compiler can determine it at compile time.
-  // When it can't, we delegate this check into the out of line function.
-  if (IsKnownToBeEmpty()) {
-    return absl::OkStatus();
-  }
-  absl::Status result = CreateStatusAndConditionallyLog(loc_, std::move(rep_));
-  // Tell the compiler that `rep_` was not filled again even if `this` escaped.
-  AssumeEmpty();
-  return result;
-}
+inline StatusBuilder::operator absl::Status() && { __builtin_trap() /* STUB: not implemented */; }
 
-inline absl::SourceLocation StatusBuilder::source_location() const {
-  return loc_;
-}
+inline absl::SourceLocation StatusBuilder::source_location() const { __builtin_trap() /* STUB: not implemented */; }
 
 // HasPayload()
 //
@@ -968,9 +823,7 @@ inline absl::SourceLocation StatusBuilder::source_location() const {
 // presence of a payload with a specific type. Note that returning `false` does
 // not necessarily indicate the absence of a payload, but only the absence on
 // one which extends `MessageSet`.
-inline bool HasPayload(const StatusBuilder& builder) {
-  return builder.HasPayload();
-}
+inline bool HasPayload(const StatusBuilder& builder) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

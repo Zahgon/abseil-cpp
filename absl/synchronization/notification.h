@@ -119,9 +119,7 @@ class Notification {
   }
 
   static inline bool HasBeenNotifiedInternal(
-      const std::atomic<bool>* notified_yet) {
-    return notified_yet->load(std::memory_order_acquire);
-  }
+      const std::atomic<bool>* notified_yet) { __builtin_trap() /* STUB: not implemented */; }
 
   mutable Mutex mutex_;
   std::atomic<bool> notified_yet_;  // written under mutex_

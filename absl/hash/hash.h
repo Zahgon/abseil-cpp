@@ -270,10 +270,7 @@ using Hash = absl::hash_internal::Hash<T>;
 // It means that `a == b` does not necessarily imply `HashOf(a) == HashOf(b)` if
 // `a` and `b` have different types. For example, `HashOf(2) != HashOf(2.0)`.
 template <int&... ExplicitArgumentBarrier, typename... Types>
-size_t HashOf(const Types&... values) {
-  auto tuple = std::tie(values...);
-  return absl::Hash<decltype(tuple)>{}(tuple);
-}
+size_t HashOf(const Types&... values) { __builtin_trap() /* STUB: not implemented */; }
 
 // HashState
 //
@@ -330,11 +327,7 @@ class HashState : public hash_internal::HashStateBase<HashState> {
   template <typename T,
             std::enable_if_t<
                 std::is_base_of_v<hash_internal::HashStateBase<T>, T>, int> = 0>
-  static HashState Create(T* state) {
-    HashState s;
-    s.Init(state);
-    return s;
-  }
+  static HashState Create(T* state) { __builtin_trap() /* STUB: not implemented */; }
 
   HashState(const HashState&) = delete;
   HashState& operator=(const HashState&) = delete;
@@ -352,16 +345,10 @@ class HashState : public hash_internal::HashStateBase<HashState> {
   // Combines a contiguous array of `size` elements into a hash state, returning
   // the updated state.
   static HashState combine_contiguous(HashState hash_state,
-                                      const unsigned char* first, size_t size) {
-    hash_state.combine_contiguous_(hash_state.state_, first, size);
-    return hash_state;
-  }
+                                      const unsigned char* first, size_t size) { __builtin_trap() /* STUB: not implemented */; }
 
   static HashState combine_weakly_mixed_integer(
-      HashState hash_state, hash_internal::WeaklyMixedInteger value) {
-    hash_state.combine_weakly_mixed_integer_(hash_state.state_, value);
-    return hash_state;
-  }
+      HashState hash_state, hash_internal::WeaklyMixedInteger value) { __builtin_trap() /* STUB: not implemented */; }
   using HashState::HashStateBase::combine_contiguous;
 
  private:
@@ -372,45 +359,24 @@ class HashState : public hash_internal::HashStateBase<HashState> {
 
   template <typename T>
   static void CombineContiguousImpl(void* p, const unsigned char* first,
-                                    size_t size) {
-    T& state = *static_cast<T*>(p);
-    state = T::combine_contiguous(std::move(state), first, size);
-  }
+                                    size_t size) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
   static void CombineWeaklyMixedIntegerImpl(
-      void* p, hash_internal::WeaklyMixedInteger value) {
-    T& state = *static_cast<T*>(p);
-    state = T::combine_weakly_mixed_integer(std::move(state), value);
-  }
+      void* p, hash_internal::WeaklyMixedInteger value) { __builtin_trap() /* STUB: not implemented */; }
 
-  static HashState combine_raw(HashState hash_state, uint64_t value) {
-    hash_state.combine_raw_(hash_state.state_, value);
-    return hash_state;
-  }
+  static HashState combine_raw(HashState hash_state, uint64_t value) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
-  static void CombineRawImpl(void* p, uint64_t value) {
-    T& state = *static_cast<T*>(p);
-    state = hash_internal::CombineRaw()(std::move(state), value);
-  }
+  static void CombineRawImpl(void* p, uint64_t value) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
-  void Init(T* state) {
-    state_ = state;
-    combine_weakly_mixed_integer_ = &CombineWeaklyMixedIntegerImpl<T>;
-    combine_contiguous_ = &CombineContiguousImpl<T>;
-    combine_raw_ = &CombineRawImpl<T>;
-    run_combine_unordered_ = &RunCombineUnorderedImpl<T>;
-  }
+  void Init(T* state) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename HS>
   struct CombineUnorderedInvoker {
     template <typename T, typename ConsumerT>
-    void operator()(T inner_state, ConsumerT inner_cb) {
-      f(HashState::Create(&inner_state),
-        [&](HashState& inner_erased) { inner_cb(inner_erased.Real<T>()); });
-    }
+    void operator()(T inner_state, ConsumerT inner_cb) { __builtin_trap() /* STUB: not implemented */; }
 
     absl::FunctionRef<void(HS, absl::FunctionRef<void(HS&)>)> f;
   };
@@ -419,35 +385,16 @@ class HashState : public hash_internal::HashStateBase<HashState> {
   static HashState RunCombineUnorderedImpl(
       HashState state,
       absl::FunctionRef<void(HashState, absl::FunctionRef<void(HashState&)>)>
-          f) {
-    // Note that this implementation assumes that inner_state and outer_state
-    // are the same type.  This isn't true in the SpyHash case, but SpyHash
-    // types are move-convertible to each other, so this still works.
-    T& real_state = state.Real<T>();
-    real_state = T::RunCombineUnordered(
-        std::move(real_state), CombineUnorderedInvoker<HashState>{f});
-    return state;
-  }
+          f) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename CombinerT>
-  static HashState RunCombineUnordered(HashState state, CombinerT combiner) {
-    auto* run = state.run_combine_unordered_;
-    return run(std::move(state), std::ref(combiner));
-  }
+  static HashState RunCombineUnordered(HashState state, CombinerT combiner) { __builtin_trap() /* STUB: not implemented */; }
 
   // Do not erase an already erased state.
-  void Init(HashState* state) {
-    state_ = state->state_;
-    combine_weakly_mixed_integer_ = state->combine_weakly_mixed_integer_;
-    combine_contiguous_ = state->combine_contiguous_;
-    combine_raw_ = state->combine_raw_;
-    run_combine_unordered_ = state->run_combine_unordered_;
-  }
+  void Init(HashState* state) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
-  T& Real() {
-    return *static_cast<T*>(state_);
-  }
+  T& Real() { __builtin_trap() /* STUB: not implemented */; }
 
   void* state_;
   void (*combine_weakly_mixed_integer_)(

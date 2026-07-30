@@ -28,31 +28,25 @@
 #include <sanitizer/lsan_interface.h>
 
 #if ABSL_HAVE_ATTRIBUTE_WEAK
-extern "C" ABSL_ATTRIBUTE_WEAK int __lsan_is_turned_off() { return 0; }
+extern "C" ABSL_ATTRIBUTE_WEAK int __lsan_is_turned_off() { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-bool HaveLeakSanitizer() { return true; }
+bool HaveLeakSanitizer() { __builtin_trap() /* STUB: not implemented */; }
 
 #if ABSL_HAVE_ATTRIBUTE_WEAK
-bool LeakCheckerIsActive() {
-  return __lsan_is_turned_off() == 0;
-}
+bool LeakCheckerIsActive() { __builtin_trap() /* STUB: not implemented */; }
 #else
-bool LeakCheckerIsActive() { return true; }
+bool LeakCheckerIsActive() { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
-bool FindAndReportLeaks() { return __lsan_do_recoverable_leak_check() != 0; }
-void DoIgnoreLeak(const void* ptr) { __lsan_ignore_object(ptr); }
-void RegisterLivePointers(const void* ptr, size_t size) {
-  __lsan_register_root_region(ptr, size);
-}
-void UnRegisterLivePointers(const void* ptr, size_t size) {
-  __lsan_unregister_root_region(ptr, size);
-}
-LeakCheckDisabler::LeakCheckDisabler() { __lsan_disable(); }
-LeakCheckDisabler::~LeakCheckDisabler() { __lsan_enable(); }
+bool FindAndReportLeaks() { __builtin_trap() /* STUB: not implemented */; }
+void DoIgnoreLeak(const void* ptr) { __builtin_trap() /* STUB: not implemented */; }
+void RegisterLivePointers(const void* ptr, size_t size) { __builtin_trap() /* STUB: not implemented */; }
+void UnRegisterLivePointers(const void* ptr, size_t size) { __builtin_trap() /* STUB: not implemented */; }
+LeakCheckDisabler::LeakCheckDisabler() { __builtin_trap() /* STUB: not implemented */; }
+LeakCheckDisabler::~LeakCheckDisabler() { __builtin_trap() /* STUB: not implemented */; }
 ABSL_NAMESPACE_END
 }  // namespace absl
 
@@ -60,11 +54,11 @@ ABSL_NAMESPACE_END
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-bool HaveLeakSanitizer() { return false; }
-bool LeakCheckerIsActive() { return false; }
-void DoIgnoreLeak(const void*) { }
-void RegisterLivePointers(const void*, size_t) { }
-void UnRegisterLivePointers(const void*, size_t) { }
+bool HaveLeakSanitizer() { __builtin_trap() /* STUB: not implemented */; }
+bool LeakCheckerIsActive() { __builtin_trap() /* STUB: not implemented */; }
+void DoIgnoreLeak(const void*) { __builtin_trap() /* STUB: not implemented */; }
+void RegisterLivePointers(const void*, size_t) { __builtin_trap() /* STUB: not implemented */; }
+void UnRegisterLivePointers(const void*, size_t) { __builtin_trap() /* STUB: not implemented */; }
 LeakCheckDisabler::LeakCheckDisabler() = default;
 LeakCheckDisabler::~LeakCheckDisabler() = default;
 ABSL_NAMESPACE_END

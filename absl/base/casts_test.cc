@@ -23,13 +23,13 @@
 namespace {
 
 struct BaseForImplicitCast {
-  explicit BaseForImplicitCast(int value) : x(value) {}
+  explicit BaseForImplicitCast(int value) : x(value) { __builtin_trap() /* STUB: not implemented */; }
   BaseForImplicitCast(const BaseForImplicitCast& other) = delete;
   BaseForImplicitCast& operator=(const BaseForImplicitCast& other) = delete;
   int x;
 };
 struct DerivedForImplicitCast : BaseForImplicitCast {
-  explicit DerivedForImplicitCast(int value) : BaseForImplicitCast(value) {}
+  explicit DerivedForImplicitCast(int value) : BaseForImplicitCast(value) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 static_assert(std::is_same_v<decltype(absl::implicit_cast<BaseForImplicitCast&>(

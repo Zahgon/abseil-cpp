@@ -573,9 +573,7 @@ TEST(Time, RoundtripConversion) {
 }
 
 template <typename Duration>
-std::chrono::system_clock::time_point MakeChronoUnixTime(const Duration& d) {
-  return std::chrono::system_clock::from_time_t(0) + d;
-}
+std::chrono::system_clock::time_point MakeChronoUnixTime(const Duration& d) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Time, FromChrono) {
   EXPECT_EQ(absl::FromTimeT(-1),

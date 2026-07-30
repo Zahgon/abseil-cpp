@@ -48,9 +48,7 @@ enum class OutputStyle { kRegular, kBenchmark };
 // A/B comparisons with tools like `benchy`.
 absl::string_view benchmarks;
 
-OutputStyle output() {
-  return !benchmarks.empty() ? OutputStyle::kBenchmark : OutputStyle::kRegular;
-}
+OutputStyle output() { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T>
 struct Policy {
@@ -64,33 +62,22 @@ struct Policy {
 
   template <class allocator_type, class Arg>
   static void construct(allocator_type* alloc, slot_type* slot,
-                        const Arg& arg) {
-    std::allocator_traits<allocator_type>::construct(*alloc, slot, arg);
-  }
+                        const Arg& arg) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class allocator_type>
-  static void destroy(allocator_type* alloc, slot_type* slot) {
-    std::allocator_traits<allocator_type>::destroy(*alloc, slot);
-  }
+  static void destroy(allocator_type* alloc, slot_type* slot) { __builtin_trap() /* STUB: not implemented */; }
 
-  static slot_type& element(slot_type* slot) { return *slot; }
+  static slot_type& element(slot_type* slot) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class F, class... Args>
   static auto apply(F&& f, const slot_type& arg)
-      -> decltype(std::forward<F>(f)(arg, arg)) {
-    return std::forward<F>(f)(arg, arg);
-  }
+      -> decltype(std::forward<F>(f)(arg, arg)) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class Hash, bool kIsDefault>
-  static constexpr auto get_hash_slot_fn() {
-    return nullptr;
-  }
+  static constexpr auto get_hash_slot_fn() { return {}; }
 };
 
-absl::BitGen& GlobalBitGen() {
-  static absl::NoDestructor<absl::BitGen> value;
-  return *value;
-}
+absl::BitGen& GlobalBitGen() { __builtin_trap() /* STUB: not implemented */; }
 
 // Keeps a pool of allocations and randomly gives one out.
 // This introduces more randomization to the addresses given to swisstable and
@@ -102,36 +89,17 @@ class RandomizedAllocator {
 
   RandomizedAllocator() = default;
   template <typename U>
-  RandomizedAllocator(RandomizedAllocator<U>) {}  // NOLINT
+  RandomizedAllocator(RandomizedAllocator<U>) { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
 
-  static T* allocate(size_t n) {
-    auto& pointers = GetPointers(n);
-    // Fill the pool
-    while (pointers.size() < kRandomPool) {
-      pointers.push_back(std::allocator<T>{}.allocate(n));
-    }
+  static T* allocate(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
-    // Choose a random one.
-    size_t i = absl::Uniform<size_t>(GlobalBitGen(), 0, pointers.size());
-    T* result = pointers[i];
-    pointers[i] = pointers.back();
-    pointers.pop_back();
-    return result;
-  }
-
-  static void deallocate(T* p, size_t n) {
-    // Just put it back on the pool. No need to release the memory.
-    GetPointers(n).push_back(p);
-  }
+  static void deallocate(T* p, size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   // We keep at least kRandomPool allocations for each size.
   static constexpr size_t kRandomPool = 20;
 
-  static std::vector<T*>& GetPointers(size_t n) {
-    static absl::NoDestructor<absl::flat_hash_map<size_t, std::vector<T*>>> m;
-    return (*m)[n];
-  }
+  static std::vector<T*>& GetPointers(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <class T>
@@ -153,31 +121,7 @@ struct LoadSizes {
   size_t max_load;
 };
 
-LoadSizes GetMinMaxLoadSizes() {
-  static const auto sizes = [] {
-    Table<int> t;
-
-    // First, fill enough to have a good distribution.
-    constexpr size_t kMinSize = 10000;
-    while (t.size() < kMinSize) t.insert(t.size());
-
-    const auto reach_min_load_factor = [&] {
-      const double lf = t.load_factor();
-      while (lf <= t.load_factor()) t.insert(t.size());
-    };
-
-    // Then, insert until we reach min load factor.
-    reach_min_load_factor();
-    const size_t min_load_size = t.size();
-
-    // Keep going until we hit min load factor again, then go back one.
-    t.insert(t.size());
-    reach_min_load_factor();
-
-    return LoadSizes{min_load_size, t.size() - 1};
-  }();
-  return sizes;
-}
+LoadSizes GetMinMaxLoadSizes() { __builtin_trap() /* STUB: not implemented */; }
 
 struct Ratios {
   double min_load;
@@ -188,35 +132,10 @@ struct Ratios {
 // See absl/container/internal/hashtable_debug.h for details on
 // probe length calculation.
 template <class ElemFn>
-Ratios CollectMeanProbeLengths() {
-  const auto min_max_sizes = GetMinMaxLoadSizes();
-
-  ElemFn elem;
-  using Key = decltype(elem());
-  Table<Key> t;
-
-  Ratios result;
-  while (t.size() < min_max_sizes.min_load) t.insert(elem());
-  result.min_load =
-      absl::container_internal::GetHashtableDebugProbeSummary(t).mean;
-
-  while (t.size() < (min_max_sizes.min_load + min_max_sizes.max_load) / 2)
-    t.insert(elem());
-  result.avg_load =
-      absl::container_internal::GetHashtableDebugProbeSummary(t).mean;
-
-  while (t.size() < min_max_sizes.max_load) t.insert(elem());
-  result.max_load =
-      absl::container_internal::GetHashtableDebugProbeSummary(t).mean;
-
-  return result;
-}
+Ratios CollectMeanProbeLengths() { __builtin_trap() /* STUB: not implemented */; }
 
 template <int Align>
-uintptr_t PointerForAlignment() {
-  alignas(Align) static constexpr uintptr_t kInitPointer = 0;
-  return reinterpret_cast<uintptr_t>(&kInitPointer);
-}
+uintptr_t PointerForAlignment() { __builtin_trap() /* STUB: not implemented */; }
 
 // This incomplete type is used for testing hash of pointers of different
 // alignments.
@@ -227,15 +146,7 @@ template <int Align>
 struct Ptr;
 
 template <int Align>
-Ptr<Align>* MakePtr(uintptr_t v) {
-  if (sizeof(v) == 8) {
-    constexpr int kCopyBits = 16;
-    // Ensure high bits are all the same.
-    v = static_cast<uintptr_t>(static_cast<intptr_t>(v << kCopyBits) >>
-                               kCopyBits);
-  }
-  return reinterpret_cast<Ptr<Align>*>(v);
-}
+Ptr<Align>* MakePtr(uintptr_t v) { __builtin_trap() /* STUB: not implemented */; }
 
 enum class StringSize { kSmall, kMedium, kLarge, kExtraLarge };
 constexpr char kStringFormat[] = "%s/name-%07d-of-9999999.txt";
@@ -243,44 +154,24 @@ constexpr char kStringFormat[] = "%s/name-%07d-of-9999999.txt";
 template <StringSize size>
 struct String {
   std::string value;
-  static std::string Make(uint32_t v) {
-    switch (size) {
-      case StringSize::kSmall:
-        return absl::StrCat(v);
-      case StringSize::kMedium:  // < 32 bytes
-        return absl::StrFormat(kStringFormat, "/path", v);
-      case StringSize::kLarge:  // 33-64 bytes
-        return absl::StrFormat(kStringFormat, "/path/to/file", v);
-      case StringSize::kExtraLarge:  // > 64 bytes
-        return absl::StrFormat(kStringFormat,
-                               "/path/to/a/very/long/file/name/so/that/total/"
-                               "length/is/larger/than/64/bytes",
-                               v);
-      default:
-        return "";
-    }
-  }
+  static std::string Make(uint32_t v) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <class T>
 struct Sequential {
-  T operator()() const { return current++; }
+  T operator()() const { __builtin_trap() /* STUB: not implemented */; }
   mutable T current{};
 };
 
 template <int Align>
 struct Sequential<Ptr<Align>*> {
-  Ptr<Align>* operator()() const {
-    auto* result = MakePtr<Align>(current);
-    current += Align;
-    return result;
-  }
+  Ptr<Align>* operator()() const { __builtin_trap() /* STUB: not implemented */; }
   mutable uintptr_t current = PointerForAlignment<Align>();
 };
 
 template <StringSize size>
 struct Sequential<String<size>> {
-  std::string operator()() const { return String<size>::Make(current++); }
+  std::string operator()() const { __builtin_trap() /* STUB: not implemented */; }
   mutable uint32_t current = 0;
 };
 
@@ -296,167 +187,93 @@ struct Sequential<std::pair<T, U>> {
   mutable std::vector<RealU> us;
   mutable size_t ti = 0, ui = 0;
 
-  std::pair<RealT, RealU> operator()() const {
-    std::pair<RealT, RealU> value{get_t(), get_u()};
-    if (ti == 0) {
-      ti = ui + 1;
-      ui = 0;
-    } else {
-      --ti;
-      ++ui;
-    }
-    return value;
-  }
+  std::pair<RealT, RealU> operator()() const { __builtin_trap() /* STUB: not implemented */; }
 
-  RealT get_t() const {
-    while (ti >= ts.size()) ts.push_back(tseq());
-    return ts[ti];
-  }
+  RealT get_t() const { __builtin_trap() /* STUB: not implemented */; }
 
-  RealU get_u() const {
-    while (ui >= us.size()) us.push_back(useq());
-    return us[ui];
-  }
+  RealU get_u() const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <class T, int percent_skip>
 struct AlmostSequential {
   mutable Sequential<T> current;
 
-  auto operator()() const -> decltype(current()) {
-    while (absl::Uniform(GlobalBitGen(), 0.0, 1.0) <= percent_skip / 100.)
-      current();
-    return current();
-  }
+  auto operator()() const -> decltype(current()) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 struct Uniform {
   template <typename T>
-  T operator()(T) const {
-    return absl::Uniform<T>(absl::IntervalClosed, GlobalBitGen(), T{0}, ~T{0});
-  }
+  T operator()(T) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 struct Gaussian {
   template <typename T>
-  T operator()(T) const {
-    double d;
-    do {
-      d = absl::Gaussian<double>(GlobalBitGen(), 1e6, 1e4);
-    } while (d <= 0 || d > std::numeric_limits<T>::max() / 2);
-    return static_cast<T>(d);
-  }
+  T operator()(T) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 struct Zipf {
   template <typename T>
-  T operator()(T) const {
-    return absl::Zipf<T>(GlobalBitGen(), std::numeric_limits<T>::max(), 1.6);
-  }
+  T operator()(T) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <class T, class Dist>
 struct Random {
-  T operator()() const { return Dist{}(T{}); }
+  T operator()() const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <class Dist, int Align>
 struct Random<Ptr<Align>*, Dist> {
-  Ptr<Align>* operator()() const {
-    return MakePtr<Align>(Random<uintptr_t, Dist>{}() * Align);
-  }
+  Ptr<Align>* operator()() const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <class Dist, StringSize size>
 struct Random<String<size>, Dist> {
-  std::string operator()() const {
-    return String<size>::Make(Random<uint32_t, Dist>{}());
-  }
+  std::string operator()() const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <class T, class U, class Dist>
 struct Random<std::pair<T, U>, Dist> {
   auto operator()() const
-      -> decltype(std::make_pair(Random<T, Dist>{}(), Random<U, Dist>{}())) {
-    return std::make_pair(Random<T, Dist>{}(), Random<U, Dist>{}());
-  }
+      -> decltype(std::make_pair(Random<T, Dist>{}(), Random<U, Dist>{}())) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename>
 std::string Name();
 
-std::string Name(uint32_t*) { return "u32"; }
-std::string Name(uint64_t*) { return "u64"; }
+std::string Name(uint32_t*) { __builtin_trap() /* STUB: not implemented */; }
+std::string Name(uint64_t*) { __builtin_trap() /* STUB: not implemented */; }
 
 template <int Align>
-std::string Name(Ptr<Align>**) {
-  return absl::StrCat("Ptr", Align);
-}
+std::string Name(Ptr<Align>**) { __builtin_trap() /* STUB: not implemented */; }
 
 template <StringSize size>
-std::string Name(String<size>*) {
-  switch (size) {
-    case StringSize::kSmall:
-      return "StrS";
-    case StringSize::kMedium:
-      return "StrM";
-    case StringSize::kLarge:
-      return "StrL";
-    case StringSize::kExtraLarge:
-      return "StrXL";
-    default:
-      return "";
-  }
-}
+std::string Name(String<size>*) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T, class U>
-std::string Name(std::pair<T, U>*) {
-  if (output() == OutputStyle::kBenchmark)
-    return absl::StrCat("P_", Name<T>(), "_", Name<U>());
-  return absl::StrCat("P<", Name<T>(), ",", Name<U>(), ">");
-}
+std::string Name(std::pair<T, U>*) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T>
-std::string Name(Sequential<T>*) {
-  return "Sequential";
-}
+std::string Name(Sequential<T>*) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T, int P>
-std::string Name(AlmostSequential<T, P>*) {
-  return absl::StrCat("AlmostSeq_", P);
-}
+std::string Name(AlmostSequential<T, P>*) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T>
-std::string Name(Random<T, Uniform>*) {
-  return "UnifRand";
-}
+std::string Name(Random<T, Uniform>*) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T>
-std::string Name(Random<T, Gaussian>*) {
-  return "GausRand";
-}
+std::string Name(Random<T, Gaussian>*) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T>
-std::string Name(Random<T, Zipf>*) {
-  return "ZipfRand";
-}
+std::string Name(Random<T, Zipf>*) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
-std::string Name() {
-  return Name(static_cast<T*>(nullptr));
-}
+std::string Name() { __builtin_trap() /* STUB: not implemented */; }
 
 constexpr int kNameWidth = 15;
 constexpr int kDistWidth = 16;
 
-bool CanRunBenchmark(absl::string_view name) {
-  static const absl::NoDestructor<std::optional<std::regex>> filter([] {
-    return benchmarks.empty() || benchmarks == "all"
-               ? std::nullopt
-               : std::make_optional(std::regex(std::string(benchmarks)));
-  }());
-  return !filter->has_value() || std::regex_search(std::string(name), **filter);
-}
+bool CanRunBenchmark(absl::string_view name) { __builtin_trap() /* STUB: not implemented */; }
 
 struct Result {
   std::string name;
@@ -465,119 +282,11 @@ struct Result {
 };
 
 template <typename T, typename Dist>
-void RunForTypeAndDistribution(std::vector<Result>& results) {
-  std::string name = absl::StrCat(Name<T>(), "/", Name<Dist>());
-  // We have to check against all three names (min/avg/max) before we run it.
-  // If any of them is enabled, we run it.
-  if (!CanRunBenchmark(absl::StrCat(name, "/min")) &&
-      !CanRunBenchmark(absl::StrCat(name, "/avg")) &&
-      !CanRunBenchmark(absl::StrCat(name, "/max"))) {
-    return;
-  }
-  results.push_back({Name<T>(), Name<Dist>(), CollectMeanProbeLengths<Dist>()});
-}
+void RunForTypeAndDistribution(std::vector<Result>& results) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T>
-void RunForType(std::vector<Result>& results) {
-  RunForTypeAndDistribution<T, Sequential<T>>(results);
-  RunForTypeAndDistribution<T, AlmostSequential<T, 20>>(results);
-  RunForTypeAndDistribution<T, AlmostSequential<T, 50>>(results);
-  RunForTypeAndDistribution<T, Random<T, Uniform>>(results);
-#ifdef NDEBUG
-  // Disable these in non-opt mode because they take too long.
-  RunForTypeAndDistribution<T, Random<T, Gaussian>>(results);
-  RunForTypeAndDistribution<T, Random<T, Zipf>>(results);
-#endif  // NDEBUG
-}
+void RunForType(std::vector<Result>& results) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace
 
-int main(int argc, char** argv) {
-  // Parse the benchmark flags. Ignore all of them except the regex pattern.
-  for (int i = 1; i < argc; ++i) {
-    absl::string_view arg = argv[i];
-    const auto next = [&] { return argv[std::min(i + 1, argc - 1)]; };
-
-    if (absl::ConsumePrefix(&arg, "--benchmark_filter")) {
-      if (arg == "") {
-        // --benchmark_filter X
-        benchmarks = next();
-      } else if (absl::ConsumePrefix(&arg, "=")) {
-        // --benchmark_filter=X
-        benchmarks = arg;
-      }
-    }
-
-    // Any --benchmark flag turns on the mode.
-    if (absl::ConsumePrefix(&arg, "--benchmark")) {
-      if (benchmarks.empty()) benchmarks="all";
-    }
-  }
-
-  std::vector<Result> results;
-  RunForType<uint64_t>(results);
-  RunForType<Ptr<8>*>(results);
-  RunForType<Ptr<16>*>(results);
-  RunForType<Ptr<32>*>(results);
-  RunForType<Ptr<64>*>(results);
-  RunForType<std::pair<uint32_t, uint32_t>>(results);
-  RunForType<String<StringSize::kSmall>>(results);
-  RunForType<String<StringSize::kMedium>>(results);
-  RunForType<String<StringSize::kLarge>>(results);
-  RunForType<String<StringSize::kExtraLarge>>(results);
-  RunForType<std::pair<uint64_t, String<StringSize::kSmall>>>(results);
-  RunForType<std::pair<String<StringSize::kSmall>, uint64_t>>(results);
-  RunForType<std::pair<uint64_t, String<StringSize::kMedium>>>(results);
-  RunForType<std::pair<String<StringSize::kMedium>, uint64_t>>(results);
-  RunForType<std::pair<uint64_t, String<StringSize::kLarge>>>(results);
-  RunForType<std::pair<String<StringSize::kLarge>, uint64_t>>(results);
-  RunForType<std::pair<uint64_t, String<StringSize::kExtraLarge>>>(results);
-  RunForType<std::pair<String<StringSize::kExtraLarge>, uint64_t>>(results);
-
-  switch (output()) {
-    case OutputStyle::kRegular:
-      absl::PrintF("%-*s%-*s       Min       Avg       Max\n%s\n", kNameWidth,
-                   "Type", kDistWidth, "Distribution",
-                   std::string(kNameWidth + kDistWidth + 10 * 3, '-'));
-      for (const auto& result : results) {
-        absl::PrintF("%-*s%-*s  %8.4f  %8.4f  %8.4f\n", kNameWidth, result.name,
-                     kDistWidth, result.dist_name, result.ratios.min_load,
-                     result.ratios.avg_load, result.ratios.max_load);
-      }
-      break;
-    case OutputStyle::kBenchmark: {
-      absl::PrintF("{\n");
-      absl::PrintF("  \"benchmarks\": [\n");
-      absl::string_view comma;
-      for (const auto& result : results) {
-        auto print = [&](absl::string_view stat, double Ratios::*val) {
-          std::string name =
-              absl::StrCat(result.name, "/", result.dist_name, "/", stat);
-          // Check the regex again. We might had have enabled only one of the
-          // stats for the benchmark.
-          if (!CanRunBenchmark(name)) return;
-          // Report at least 1, because benchy drops results with zero.
-          double reported_value = std::max(1e9 * result.ratios.*val, 1.0);
-          absl::PrintF("    %s{\n", comma);
-          absl::PrintF("      \"cpu_time\": %f,\n", reported_value);
-          absl::PrintF("      \"real_time\": %f,\n", reported_value);
-          absl::PrintF("      \"iterations\": 1,\n");
-          absl::PrintF("      \"name\": \"%s\",\n", name);
-          absl::PrintF("      \"time_unit\": \"ns\"\n");
-          absl::PrintF("    }\n");
-          comma = ",";
-        };
-        print("min", &Ratios::min_load);
-        print("avg", &Ratios::avg_load);
-        print("max", &Ratios::max_load);
-      }
-      absl::PrintF("  ],\n");
-      absl::PrintF("  \"context\": {\n");
-      absl::PrintF("  }\n");
-      absl::PrintF("}\n");
-      break;
-    }
-  }
-
-  return 0;
-}
+int main(int argc, char** argv) { __builtin_trap() /* STUB: not implemented */; }

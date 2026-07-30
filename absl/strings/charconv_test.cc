@@ -44,25 +44,9 @@ using absl::strings_internal::Pow10;
 
 // Tests that the given string is accepted by absl::from_chars, and that it
 // converts exactly equal to the given number.
-void TestDoubleParse(absl::string_view str, double expected_number) {
-  SCOPED_TRACE(str);
-  double actual_number = 0.0;
-  absl::from_chars_result result =
-      absl::from_chars(str.data(), str.data() + str.length(), actual_number);
-  EXPECT_EQ(result.ec, std::errc());
-  EXPECT_EQ(result.ptr, str.data() + str.length());
-  EXPECT_EQ(actual_number, expected_number);
-}
+void TestDoubleParse(absl::string_view str, double expected_number) { __builtin_trap() /* STUB: not implemented */; }
 
-void TestFloatParse(absl::string_view str, float expected_number) {
-  SCOPED_TRACE(str);
-  float actual_number = 0.0;
-  absl::from_chars_result result =
-      absl::from_chars(str.data(), str.data() + str.length(), actual_number);
-  EXPECT_EQ(result.ec, std::errc());
-  EXPECT_EQ(result.ptr, str.data() + str.length());
-  EXPECT_EQ(actual_number, expected_number);
-}
+void TestFloatParse(absl::string_view str, float expected_number) { __builtin_trap() /* STUB: not implemented */; }
 
 // Tests that the given double or single precision floating point literal is
 // parsed correctly by absl::from_chars.
@@ -163,17 +147,9 @@ TEST(FromChars, NearRoundingCases) {
 #undef FROM_CHARS_TEST_FLOAT
 #endif
 
-float ToFloat(absl::string_view s) {
-  float f;
-  absl::from_chars(s.data(), s.data() + s.size(), f);
-  return f;
-}
+float ToFloat(absl::string_view s) { __builtin_trap() /* STUB: not implemented */; }
 
-double ToDouble(absl::string_view s) {
-  double d;
-  absl::from_chars(s.data(), s.data() + s.size(), d);
-  return d;
-}
+double ToDouble(absl::string_view s) { __builtin_trap() /* STUB: not implemented */; }
 
 // A duplication of the test cases in "NearRoundingCases" above, but with
 // expected values expressed with integers, using ldexp/ldexpf.  These test
@@ -275,28 +251,7 @@ TEST(FromChars, NearRoundingCasesExplicit) {
 template <typename FloatType>
 void TestHalfwayValue(const std::string& mantissa, int exponent,
                       FloatType expected_low, FloatType expected_high,
-                      FloatType expected_half) {
-  std::string low_rep = mantissa;
-  low_rep[low_rep.size() - 1] -= 1;
-  absl::StrAppend(&low_rep, std::string(1000, '9'), "e", exponent);
-
-  FloatType actual_low = 0;
-  absl::from_chars(low_rep.data(), low_rep.data() + low_rep.size(), actual_low);
-  EXPECT_EQ(expected_low, actual_low);
-
-  std::string high_rep =
-      absl::StrCat(mantissa, std::string(1000, '0'), "1e", exponent);
-  FloatType actual_high = 0;
-  absl::from_chars(high_rep.data(), high_rep.data() + high_rep.size(),
-                   actual_high);
-  EXPECT_EQ(expected_high, actual_high);
-
-  std::string halfway_rep = absl::StrCat(mantissa, "e", exponent);
-  FloatType actual_half = 0;
-  absl::from_chars(halfway_rep.data(), halfway_rep.data() + halfway_rep.size(),
-                   actual_half);
-  EXPECT_EQ(expected_half, actual_half);
-}
+                      FloatType expected_half) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(FromChars, DoubleRounding) {
   const double zero = 0.0;
@@ -586,9 +541,7 @@ TEST(FromChars, TestVersusStrtof) {
 // Tests if two floating point values have identical bit layouts.  (EXPECT_EQ
 // is not suitable for NaN testing, since NaNs are never equal.)
 template <typename Float>
-bool Identical(Float a, Float b) {
-  return 0 == memcmp(&a, &b, sizeof(Float));
-}
+bool Identical(Float a, Float b) { __builtin_trap() /* STUB: not implemented */; }
 
 // Check that NaNs are parsed correctly.  The spec requires that
 // std::from_chars on "NaN(123abc)" return the same value as std::nan("123abc").
@@ -666,9 +619,7 @@ TEST(FromChars, NaNFloats) {
 }
 
 // Returns an integer larger than step.  The values grow exponentially.
-int NextStep(int step) {
-  return step + (step >> 2) + 1;
-}
+int NextStep(int step) { __builtin_trap() /* STUB: not implemented */; }
 
 // Test a conversion on a family of input strings, checking that the calculation
 // is correct for in-bounds values, and that overflow and underflow are done
@@ -685,57 +636,7 @@ template <typename Float>
 void TestOverflowAndUnderflow(
     const std::function<std::string(int)>& input_generator,
     const std::function<Float(int)>& expected_generator, int lower_bound,
-    int upper_bound) {
-  // test legal values near lower_bound
-  int index, step;
-  for (index = lower_bound, step = 1; index < upper_bound;
-       index += step, step = NextStep(step)) {
-    std::string input = input_generator(index);
-    SCOPED_TRACE(input);
-    Float expected = expected_generator(index);
-    Float actual;
-    auto result =
-        absl::from_chars(input.data(), input.data() + input.size(), actual);
-    EXPECT_EQ(result.ec, std::errc());
-    EXPECT_EQ(expected, actual)
-        << absl::StrFormat("%a vs %a", expected, actual);
-  }
-  // test legal values near upper_bound
-  for (index = upper_bound, step = 1; index > lower_bound;
-       index -= step, step = NextStep(step)) {
-    std::string input = input_generator(index);
-    SCOPED_TRACE(input);
-    Float expected = expected_generator(index);
-    Float actual;
-    auto result =
-        absl::from_chars(input.data(), input.data() + input.size(), actual);
-    EXPECT_EQ(result.ec, std::errc());
-    EXPECT_EQ(expected, actual)
-        << absl::StrFormat("%a vs %a", expected, actual);
-  }
-  // Test underflow values below lower_bound
-  for (index = lower_bound - 1, step = 1; index > -1000000;
-       index -= step, step = NextStep(step)) {
-    std::string input = input_generator(index);
-    SCOPED_TRACE(input);
-    Float actual;
-    auto result =
-        absl::from_chars(input.data(), input.data() + input.size(), actual);
-    EXPECT_EQ(result.ec, std::errc::result_out_of_range);
-    EXPECT_LT(actual, 1.0);  // check for underflow
-  }
-  // Test overflow values above upper_bound
-  for (index = upper_bound + 1, step = 1; index < 1000000;
-       index += step, step = NextStep(step)) {
-    std::string input = input_generator(index);
-    SCOPED_TRACE(input);
-    Float actual;
-    auto result =
-        absl::from_chars(input.data(), input.data() + input.size(), actual);
-    EXPECT_EQ(result.ec, std::errc::result_out_of_range);
-    EXPECT_GT(actual, 1.0);  // check for overflow
-  }
-}
+    int upper_bound) { __builtin_trap() /* STUB: not implemented */; }
 
 // Check that overflow and underflow are caught correctly for hex doubles.
 //

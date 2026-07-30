@@ -275,38 +275,9 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
       InlinedVector&& other,
       const allocator_type&
           allocator) noexcept(absl::allocator_is_nothrow<allocator_type>::value)
-      : storage_(allocator) {
-    // Fast path: if the value type can be trivially relocated (i.e. moved from
-    // and destroyed), and we know the allocator doesn't do anything fancy, then
-    // it's safe for us to simply adopt the contents of the storage for `other`
-    // and remove its own reference to them. It's as if we had individually
-    // move-constructed each value and then destroyed the original.
-    if (absl::is_trivially_relocatable<value_type>::value &&
-        std::is_same_v<A, std::allocator<value_type>>) {
-      storage_.MemcpyFrom(other.storage_);
-      other.storage_.SetInlinedSize(0);
-      return;
-    }
+      : storage_(allocator) { __builtin_trap() /* STUB: not implemented */; }
 
-    // Fast path: if the other vector is on the heap and shared the same
-    // allocator, we can simply take over its allocation.
-    if ((storage_.GetAllocator() == other.storage_.GetAllocator()) &&
-        other.storage_.GetIsAllocated()) {
-      storage_.SetAllocation({other.storage_.GetAllocatedData(),
-                              other.storage_.GetAllocatedCapacity()});
-      storage_.SetAllocatedSize(other.storage_.GetSize());
-
-      other.storage_.SetInlinedSize(0);
-      return;
-    }
-
-    // Otherwise we must move each element individually.
-    storage_.Initialize(
-        IteratorValueAdapter<A, MoveIterator<A>>(MoveIterator<A>(other.data())),
-        other.size());
-  }
-
-  ~InlinedVector() {}
+  ~InlinedVector() { __builtin_trap() /* STUB: not implemented */; }
 
   // ---------------------------------------------------------------------------
   // InlinedVector Member Accessors
@@ -315,24 +286,17 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   // `InlinedVector::empty()`
   //
   // Returns whether the inlined vector contains no elements.
-  bool empty() const noexcept { return !size(); }
+  bool empty() const noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::size()`
   //
   // Returns the number of elements in the inlined vector.
-  size_type size() const noexcept { return storage_.GetSize(); }
+  size_type size() const noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::max_size()`
   //
   // Returns the maximum number of elements the inlined vector can hold.
-  size_type max_size() const noexcept {
-    // One bit of the size storage is used to indicate whether the inlined
-    // vector contains allocated memory. As a result, the maximum size that the
-    // inlined vector can express is the minimum of the limit of how many
-    // objects we can allocate and std::numeric_limits<size_type>::max() / 2.
-    return (std::min)(AllocatorTraits<A>::max_size(storage_.GetAllocator()),
-                      (std::numeric_limits<size_type>::max)() / 2);
-  }
+  size_type max_size() const noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::capacity()`
   //
@@ -343,10 +307,7 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   // template parameter `N`. For inlined vectors which exceed this capacity,
   // they will no longer be inlined and `capacity()` will equal the capactity of
   // the allocated memory.
-  size_type capacity() const noexcept {
-    return storage_.GetIsAllocated() ? storage_.GetAllocatedCapacity()
-                                     : storage_.GetInlinedCapacity();
-  }
+  size_type capacity() const noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::data()`
   //
@@ -354,35 +315,23 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   // can be used to access and modify the contained elements.
   //
   // NOTE: only elements within [`data()`, `data() + size()`) are valid.
-  pointer data() noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return storage_.GetIsAllocated() ? storage_.GetAllocatedData()
-                                     : storage_.GetInlinedData();
-  }
+  pointer data() noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::data()` that returns a `const_pointer` to the
   // elements of the inlined vector. This pointer can be used to access but not
   // modify the contained elements.
   //
   // NOTE: only elements within [`data()`, `data() + size()`) are valid.
-  const_pointer data() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return storage_.GetIsAllocated() ? storage_.GetAllocatedData()
-                                     : storage_.GetInlinedData();
-  }
+  const_pointer data() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::operator[](...)`
   //
   // Returns a `reference` to the `i`th element of the inlined vector.
-  reference operator[](size_type i) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    absl::base_internal::HardeningAssertLT(i, size());
-    return data()[i];
-  }
+  reference operator[](size_type i) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::operator[](...)` that returns a
   // `const_reference` to the `i`th element of the inlined vector.
-  const_reference operator[](size_type i) const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    absl::base_internal::HardeningAssertLT(i, size());
-    return data()[i];
-  }
+  const_reference operator[](size_type i) const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::at(...)`
   //
@@ -390,139 +339,95 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   //
   // NOTE: if `i` is not within the required range of `InlinedVector::at(...)`,
   // in both debug and non-debug builds, `std::out_of_range` will be thrown.
-  reference at(size_type i) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    if (ABSL_PREDICT_FALSE(i >= size())) {
-      ThrowStdOutOfRange("InlinedVector::at(size_type) failed bounds check");
-    }
-    return data()[i];
-  }
+  reference at(size_type i) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::at(...)` that returns a `const_reference` to
   // the `i`th element of the inlined vector.
   //
   // NOTE: if `i` is not within the required range of `InlinedVector::at(...)`,
   // in both debug and non-debug builds, `std::out_of_range` will be thrown.
-  const_reference at(size_type i) const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    if (ABSL_PREDICT_FALSE(i >= size())) {
-      ThrowStdOutOfRange("InlinedVector::at(size_type) failed bounds check");
-    }
-    return data()[i];
-  }
+  const_reference at(size_type i) const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::front()`
   //
   // Returns a `reference` to the first element of the inlined vector.
-  reference front() ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    absl::base_internal::HardeningAssertNonEmpty(*this);
-    return data()[0];
-  }
+  reference front() ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::front()` that returns a `const_reference` to
   // the first element of the inlined vector.
-  const_reference front() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    absl::base_internal::HardeningAssertNonEmpty(*this);
-    return data()[0];
-  }
+  const_reference front() const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::back()`
   //
   // Returns a `reference` to the last element of the inlined vector.
-  reference back() ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    absl::base_internal::HardeningAssertNonEmpty(*this);
-    return data()[size() - 1];
-  }
+  reference back() ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::back()` that returns a `const_reference` to the
   // last element of the inlined vector.
-  const_reference back() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    absl::base_internal::HardeningAssertNonEmpty(*this);
-    return data()[size() - 1];
-  }
+  const_reference back() const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::begin()`
   //
   // Returns an `iterator` to the beginning of the inlined vector.
-  iterator begin() noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { return data(); }
+  iterator begin() noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::begin()` that returns a `const_iterator` to
   // the beginning of the inlined vector.
-  const_iterator begin() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return data();
-  }
+  const_iterator begin() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::end()`
   //
   // Returns an `iterator` to the end of the inlined vector.
-  iterator end() noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return data() + size();
-  }
+  iterator end() noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::end()` that returns a `const_iterator` to the
   // end of the inlined vector.
-  const_iterator end() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return data() + size();
-  }
+  const_iterator end() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::cbegin()`
   //
   // Returns a `const_iterator` to the beginning of the inlined vector.
-  const_iterator cbegin() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return begin();
-  }
+  const_iterator cbegin() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::cend()`
   //
   // Returns a `const_iterator` to the end of the inlined vector.
-  const_iterator cend() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return end();
-  }
+  const_iterator cend() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::rbegin()`
   //
   // Returns a `reverse_iterator` from the end of the inlined vector.
-  reverse_iterator rbegin() noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return reverse_iterator(end());
-  }
+  reverse_iterator rbegin() noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::rbegin()` that returns a
   // `const_reverse_iterator` from the end of the inlined vector.
-  const_reverse_iterator rbegin() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return const_reverse_iterator(end());
-  }
+  const_reverse_iterator rbegin() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::rend()`
   //
   // Returns a `reverse_iterator` from the beginning of the inlined vector.
-  reverse_iterator rend() noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return reverse_iterator(begin());
-  }
+  reverse_iterator rend() noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::rend()` that returns a `const_reverse_iterator`
   // from the beginning of the inlined vector.
-  const_reverse_iterator rend() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return const_reverse_iterator(begin());
-  }
+  const_reverse_iterator rend() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::crbegin()`
   //
   // Returns a `const_reverse_iterator` from the end of the inlined vector.
   const_reverse_iterator crbegin() const noexcept
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return rbegin();
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::crend()`
   //
   // Returns a `const_reverse_iterator` from the beginning of the inlined
   // vector.
-  const_reverse_iterator crend() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return rend();
-  }
+  const_reverse_iterator crend() const noexcept ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::get_allocator()`
   //
   // Returns a copy of the inlined vector's allocator.
-  allocator_type get_allocator() const { return storage_.GetAllocator(); }
+  allocator_type get_allocator() const { __builtin_trap() /* STUB: not implemented */; }
 
   // ---------------------------------------------------------------------------
   // InlinedVector Member Mutators
@@ -532,51 +437,27 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   //
   // Replaces the elements of the inlined vector with copies of the elements of
   // `list`.
-  InlinedVector& operator=(std::initializer_list<value_type> list) {
-    assign(list.begin(), list.end());
-
-    return *this;
-  }
+  InlinedVector& operator=(std::initializer_list<value_type> list) { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::operator=(...)` that replaces the elements of
   // the inlined vector with copies of the elements of `other`.
-  InlinedVector& operator=(const InlinedVector& other) {
-    if (ABSL_PREDICT_TRUE(this != std::addressof(other))) {
-      const_pointer other_data = other.data();
-      assign(other_data, other_data + other.size());
-    }
-
-    return *this;
-  }
+  InlinedVector& operator=(const InlinedVector& other) { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::operator=(...)` that moves the elements of
   // `other` into the inlined vector.
   //
   // NOTE: as a result of calling this overload, `other` is left in a valid but
   // unspecified state.
-  InlinedVector& operator=(InlinedVector&& other) {
-    if (ABSL_PREDICT_TRUE(this != std::addressof(other))) {
-      MoveAssignment(MoveAssignmentPolicy{}, std::move(other));
-    }
-
-    return *this;
-  }
+  InlinedVector& operator=(InlinedVector&& other) { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::assign(...)`
   //
   // Replaces the contents of the inlined vector with `n` copies of `v`.
-  void assign(size_type n, const_reference v) {
-    if (ABSL_PREDICT_FALSE(n > max_size())) {
-      ThrowStdLengthError("InlinedVector::assign failed length check");
-    }
-    storage_.Assign(CopyValueAdapter<A>(std::addressof(v)), n);
-  }
+  void assign(size_type n, const_reference v) { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::assign(...)` that replaces the contents of the
   // inlined vector with copies of the elements of `list`.
-  void assign(std::initializer_list<value_type> list) {
-    assign(list.begin(), list.end());
-  }
+  void assign(std::initializer_list<value_type> list) { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::assign(...)` to replace the contents of the
   // inlined vector with the range [`first`, `last`).
@@ -584,13 +465,7 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   // NOTE: this overload is for iterators that are "forward" category or better.
   template <typename ForwardIterator,
             EnableIfAtLeastForwardIterator<ForwardIterator> = 0>
-  void assign(ForwardIterator first, ForwardIterator last) {
-    const size_type s = static_cast<size_type>(std::distance(first, last));
-    if (ABSL_PREDICT_FALSE(s > max_size())) {
-      ThrowStdLengthError("InlinedVector::assign failed length check");
-    }
-    storage_.Assign(IteratorValueAdapter<A, ForwardIterator>(first), s);
-  }
+  void assign(ForwardIterator first, ForwardIterator last) { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::assign(...)` to replace the contents of the
   // inlined vector with the range [`first`, `last`).
@@ -598,15 +473,7 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   // NOTE: this overload is for iterators that are "input" category.
   template <typename InputIterator,
             DisableIfAtLeastForwardIterator<InputIterator> = 0>
-  void assign(InputIterator first, InputIterator last) {
-    size_type i = 0;
-    for (; i < size() && first != last; ++i, static_cast<void>(++first)) {
-      data()[i] = *first;
-    }
-
-    erase(data() + i, data() + size());
-    std::copy(first, last, std::back_inserter(*this));
-  }
+  void assign(InputIterator first, InputIterator last) { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::resize(...)`
   //
@@ -614,80 +481,38 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   //
   // NOTE: If `n` is smaller than `size()`, extra elements are destroyed. If `n`
   // is larger than `size()`, new elements are value-initialized.
-  void resize(size_type n) {
-    if (ABSL_PREDICT_FALSE(n > max_size())) {
-      ThrowStdLengthError("InlinedVector::resize failed length check");
-    }
-    storage_.Resize(DefaultValueAdapter<A>(), n);
-  }
+  void resize(size_type n) { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::resize(...)` that resizes the inlined vector to
   // contain `n` elements.
   //
   // NOTE: if `n` is smaller than `size()`, extra elements are destroyed. If `n`
   // is larger than `size()`, new elements are copied-constructed from `v`.
-  void resize(size_type n, const_reference v) {
-    if (ABSL_PREDICT_FALSE(n > max_size())) {
-      ThrowStdLengthError("InlinedVector::resize failed length check");
-    }
-    storage_.Resize(CopyValueAdapter<A>(std::addressof(v)), n);
-  }
+  void resize(size_type n, const_reference v) { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::insert(...)`
   //
   // Inserts a copy of `v` at `pos`, returning an `iterator` to the newly
   // inserted element.
   iterator insert(const_iterator pos,
-                  const_reference v) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return emplace(pos, v);
-  }
+                  const_reference v) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::insert(...)` that inserts `v` at `pos` using
   // move semantics, returning an `iterator` to the newly inserted element.
   iterator insert(const_iterator pos,
-                  value_type&& v) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return emplace(pos, std::move(v));
-  }
+                  value_type&& v) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::insert(...)` that inserts `n` contiguous copies
   // of `v` starting at `pos`, returning an `iterator` pointing to the first of
   // the newly inserted elements.
   iterator insert(const_iterator pos, size_type n,
-                  const_reference v) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    absl::base_internal::HardeningAssertGE(pos, cbegin());
-    absl::base_internal::HardeningAssertLE(pos, cend());
-    if (ABSL_PREDICT_FALSE(n > max_size() - size())) {
-      ThrowStdLengthError("InlinedVector::insert failed length check");
-    }
-
-    if (ABSL_PREDICT_TRUE(n != 0)) {
-      value_type dealias = v;
-      // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=102329#c2
-      // It appears that GCC thinks that since `pos` is a const pointer and may
-      // point to uninitialized memory at this point, a warning should be
-      // issued. But `pos` is actually only used to compute an array index to
-      // write to.
-#if !defined(__clang__) && defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif
-      return storage_.Insert(pos, CopyValueAdapter<A>(std::addressof(dealias)),
-                             n);
-#if !defined(__clang__) && defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif
-    } else {
-      return const_cast<iterator>(pos);
-    }
-  }
+                  const_reference v) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::insert(...)` that inserts copies of the
   // elements of `list` starting at `pos`, returning an `iterator` pointing to
   // the first of the newly inserted elements.
   iterator insert(const_iterator pos, std::initializer_list<value_type> list)
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return insert(pos, list.begin(), list.end());
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::insert(...)` that inserts the range [`first`,
   // `last`) starting at `pos`, returning an `iterator` pointing to the first
@@ -697,21 +522,7 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   template <typename ForwardIterator,
             EnableIfAtLeastForwardIterator<ForwardIterator> = 0>
   iterator insert(const_iterator pos, ForwardIterator first,
-                  ForwardIterator last) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    absl::base_internal::HardeningAssertGE(pos, cbegin());
-    absl::base_internal::HardeningAssertLE(pos, cend());
-    const size_type s = static_cast<size_type>(std::distance(first, last));
-    if (ABSL_PREDICT_FALSE(s > max_size() - size())) {
-      ThrowStdLengthError("InlinedVector::insert failed length check");
-    }
-
-    if (ABSL_PREDICT_TRUE(first != last)) {
-      return storage_.Insert(
-          pos, IteratorValueAdapter<A, ForwardIterator>(first), s);
-    } else {
-      return const_cast<iterator>(pos);
-    }
-  }
+                  ForwardIterator last) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::insert(...)` that inserts the range [`first`,
   // `last`) starting at `pos`, returning an `iterator` pointing to the first
@@ -721,17 +532,7 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   template <typename InputIterator,
             DisableIfAtLeastForwardIterator<InputIterator> = 0>
   iterator insert(const_iterator pos, InputIterator first,
-                  InputIterator last) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    absl::base_internal::HardeningAssertGE(pos, cbegin());
-    absl::base_internal::HardeningAssertLE(pos, cend());
-
-    size_type index = static_cast<size_type>(std::distance(cbegin(), pos));
-    for (size_type i = index; first != last; ++i, static_cast<void>(++first)) {
-      insert(data() + i, *first);
-    }
-
-    return iterator(data() + index);
-  }
+                  InputIterator last) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::emplace(...)`
   //
@@ -739,64 +540,28 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   // `pos`, returning an `iterator` pointing to the newly emplaced element.
   template <typename... Args>
   iterator emplace(const_iterator pos,
-                   Args&&... args) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    absl::base_internal::HardeningAssertGE(pos, cbegin());
-    absl::base_internal::HardeningAssertLE(pos, cend());
-    if (ABSL_PREDICT_FALSE(size() == max_size())) {
-      ThrowStdLengthError("InlinedVector::emplace failed length check");
-    }
-
-    value_type dealias(std::forward<Args>(args)...);
-    // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=102329#c2
-    // It appears that GCC thinks that since `pos` is a const pointer and may
-    // point to uninitialized memory at this point, a warning should be
-    // issued. But `pos` is actually only used to compute an array index to
-    // write to.
-#if !defined(__clang__) && defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif
-    return storage_.Insert(pos,
-                           IteratorValueAdapter<A, MoveIterator<A>>(
-                               MoveIterator<A>(std::addressof(dealias))),
-                           1);
-#if !defined(__clang__) && defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif
-  }
+                   Args&&... args) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::emplace_back(...)`
   //
   // Constructs and inserts an element using `args...` in the inlined vector at
   // `end()`, returning a `reference` to the newly emplaced element.
   template <typename... Args>
-  reference emplace_back(Args&&... args) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    if (ABSL_PREDICT_FALSE(size() == max_size())) {
-      ThrowStdLengthError("InlinedVector::emplace_back failed length check");
-    }
-    return storage_.EmplaceBack(std::forward<Args>(args)...);
-  }
+  reference emplace_back(Args&&... args) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::push_back(...)`
   //
   // Inserts a copy of `v` in the inlined vector at `end()`.
-  void push_back(const_reference v) { static_cast<void>(emplace_back(v)); }
+  void push_back(const_reference v) { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::push_back(...)` for inserting `v` at `end()`
   // using move semantics.
-  void push_back(value_type&& v) {
-    static_cast<void>(emplace_back(std::move(v)));
-  }
+  void push_back(value_type&& v) { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::pop_back()`
   //
   // Destroys the element at `back()`, reducing the size by `1`.
-  void pop_back() noexcept {
-    absl::base_internal::HardeningAssertNonEmpty(*this);
-
-    AllocatorTraits<A>::destroy(storage_.GetAllocator(), data() + (size() - 1));
-    storage_.SubtractSize(1);
-  }
+  void pop_back() noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::erase(...)`
   //
@@ -804,25 +569,7 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   // erased element was located.
   //
   // NOTE: may return `end()`, which is not dereferenceable.
-  iterator erase(const_iterator pos) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    absl::base_internal::HardeningAssertGE(pos, cbegin());
-    absl::base_internal::HardeningAssertLT(pos, cend());
-
-    // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=102329#c2
-    // It appears that GCC thinks that since `pos` is a const pointer and may
-    // point to uninitialized memory at this point, a warning should be
-    // issued. But `pos` is actually only used to compute an array index to
-    // write to.
-#if !defined(__clang__) && defined(__GNUC__)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#pragma GCC diagnostic ignored "-Wuninitialized"
-#endif
-    return storage_.Erase(pos, pos + 1);
-#if !defined(__clang__) && defined(__GNUC__)
-#pragma GCC diagnostic pop
-#endif
-  }
+  iterator erase(const_iterator pos) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of `InlinedVector::erase(...)` that erases every element in the
   // range [`from`, `to`), returning an `iterator` pointing to where the first
@@ -830,37 +577,18 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   //
   // NOTE: may return `end()`, which is not dereferenceable.
   iterator erase(const_iterator from,
-                 const_iterator to) ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    absl::base_internal::HardeningAssertGE(from, cbegin());
-    absl::base_internal::HardeningAssertLE(from, to);
-    absl::base_internal::HardeningAssertLE(to, cend());
-
-    if (ABSL_PREDICT_TRUE(from != to)) {
-      return storage_.Erase(from, to);
-    } else {
-      return const_cast<iterator>(from);
-    }
-  }
+                 const_iterator to) ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::clear()`
   //
   // Destroys all elements in the inlined vector, setting the size to `0` and
   // preserving capacity.
-  void clear() noexcept {
-    inlined_vector_internal::DestroyAdapter<A>::DestroyElements(
-        storage_.GetAllocator(), data(), size());
-    storage_.SetSize(0);
-  }
+  void clear() noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::reserve(...)`
   //
   // Ensures that there is enough room for at least `n` elements.
-  void reserve(size_type n) {
-    if (ABSL_PREDICT_FALSE(n > max_size())) {
-      ThrowStdLengthError("InlinedVector::reserve failed length check");
-    }
-    storage_.Reserve(n);
-  }
+  void reserve(size_type n) { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::shrink_to_fit()`
   //
@@ -870,97 +598,28 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
   //
   // If `size()` is sufficiently small, the elements will be moved into (or kept
   // in) the inlined space.
-  void shrink_to_fit() {
-    if (storage_.GetIsAllocated()) {
-      storage_.ShrinkToFit();
-    }
-  }
+  void shrink_to_fit() { __builtin_trap() /* STUB: not implemented */; }
 
   // `InlinedVector::swap(...)`
   //
   // Swaps the contents of the inlined vector with `other`.
-  void swap(InlinedVector& other) {
-    if (ABSL_PREDICT_TRUE(this != std::addressof(other))) {
-      storage_.Swap(std::addressof(other.storage_));
-    }
-  }
+  void swap(InlinedVector& other) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   template <typename H, typename TheT, size_t TheN, typename TheA>
   friend H AbslHashValue(H h, const absl::InlinedVector<TheT, TheN, TheA>& a);
 
-  void MoveAssignment(MemcpyPolicy, InlinedVector&& other) {
-    // Assumption check: we shouldn't be told to use memcpy to implement move
-    // assignment unless we have trivially destructible elements and an
-    // allocator that does nothing fancy.
-    static_assert(std::is_trivially_destructible_v<value_type>, "");
-    static_assert(std::is_same_v<A, std::allocator<value_type>>, "");
-
-    // Throw away our existing heap allocation, if any. There is no need to
-    // destroy the existing elements one by one because we know they are
-    // trivially destructible.
-    storage_.DeallocateIfAllocated();
-
-    // Adopt the other vector's inline elements or heap allocation.
-    storage_.MemcpyFrom(other.storage_);
-    other.storage_.SetInlinedSize(0);
-  }
+  void MoveAssignment(MemcpyPolicy, InlinedVector&& other) { __builtin_trap() /* STUB: not implemented */; }
 
   // Destroy our existing elements, if any, and adopt the heap-allocated
   // elements of the other vector.
   //
   // REQUIRES: other.storage_.GetIsAllocated()
-  void DestroyExistingAndAdopt(InlinedVector&& other) {
-    absl::base_internal::HardeningAssert(other.storage_.GetIsAllocated());
+  void DestroyExistingAndAdopt(InlinedVector&& other) { __builtin_trap() /* STUB: not implemented */; }
 
-    inlined_vector_internal::DestroyAdapter<A>::DestroyElements(
-        storage_.GetAllocator(), data(), size());
-    storage_.DeallocateIfAllocated();
+  void MoveAssignment(ElementwiseAssignPolicy, InlinedVector&& other) { __builtin_trap() /* STUB: not implemented */; }
 
-    storage_.MemcpyFrom(other.storage_);
-    other.storage_.SetInlinedSize(0);
-  }
-
-  void MoveAssignment(ElementwiseAssignPolicy, InlinedVector&& other) {
-    // Fast path: if the other vector is on the heap then we don't worry about
-    // actually move-assigning each element. Instead we only throw away our own
-    // existing elements and adopt the heap allocation of the other vector.
-    if (other.storage_.GetIsAllocated()) {
-      DestroyExistingAndAdopt(std::move(other));
-      return;
-    }
-
-    storage_.Assign(IteratorValueAdapter<A, MoveIterator<A>>(
-                        MoveIterator<A>(other.storage_.GetInlinedData())),
-                    other.size());
-  }
-
-  void MoveAssignment(ElementwiseConstructPolicy, InlinedVector&& other) {
-    // Fast path: if the other vector is on the heap then we don't worry about
-    // actually move-assigning each element. Instead we only throw away our own
-    // existing elements and adopt the heap allocation of the other vector.
-    if (other.storage_.GetIsAllocated()) {
-      DestroyExistingAndAdopt(std::move(other));
-      return;
-    }
-
-    inlined_vector_internal::DestroyAdapter<A>::DestroyElements(
-        storage_.GetAllocator(), data(), size());
-    storage_.DeallocateIfAllocated();
-
-    if constexpr (!std::is_nothrow_move_constructible_v<value_type>) {
-      // Reset the size to zero before moving to avoid leaking freed memory if
-      // an exception is thrown.
-      storage_.SetInlinedSize(0);
-    }
-
-    IteratorValueAdapter<A, MoveIterator<A>> other_values(
-        MoveIterator<A>(other.storage_.GetInlinedData()));
-    inlined_vector_internal::ConstructElements<A>(
-        storage_.GetAllocator(), storage_.GetInlinedData(), other_values,
-        other.storage_.GetSize());
-    storage_.SetInlinedSize(other.storage_.GetSize());
-  }
+  void MoveAssignment(ElementwiseConstructPolicy, InlinedVector&& other) { __builtin_trap() /* STUB: not implemented */; }
 
   Storage storage_;
 };
@@ -974,29 +633,21 @@ class ABSL_ATTRIBUTE_WARN_UNUSED InlinedVector {
 // Swaps the contents of two inlined vectors.
 template <typename T, size_t N, typename A>
 void swap(absl::InlinedVector<T, N, A>& a,
-          absl::InlinedVector<T, N, A>& b) noexcept(noexcept(a.swap(b))) {
-  a.swap(b);
-}
+          absl::InlinedVector<T, N, A>& b) noexcept(noexcept(a.swap(b))) { __builtin_trap() /* STUB: not implemented */; }
 
 // `operator==(...)`
 //
 // Tests for value-equality of two inlined vectors.
 template <typename T, size_t N, typename A>
 bool operator==(const absl::InlinedVector<T, N, A>& a,
-                const absl::InlinedVector<T, N, A>& b) {
-  auto a_data = a.data();
-  auto b_data = b.data();
-  return std::equal(a_data, a_data + a.size(), b_data, b_data + b.size());
-}
+                const absl::InlinedVector<T, N, A>& b) { __builtin_trap() /* STUB: not implemented */; }
 
 // `operator!=(...)`
 //
 // Tests for value-inequality of two inlined vectors.
 template <typename T, size_t N, typename A>
 bool operator!=(const absl::InlinedVector<T, N, A>& a,
-                const absl::InlinedVector<T, N, A>& b) {
-  return !(a == b);
-}
+                const absl::InlinedVector<T, N, A>& b) { __builtin_trap() /* STUB: not implemented */; }
 
 // `operator<(...)`
 //
@@ -1004,12 +655,7 @@ bool operator!=(const absl::InlinedVector<T, N, A>& a,
 // another inlined vector using a lexicographical comparison algorithm.
 template <typename T, size_t N, typename A>
 bool operator<(const absl::InlinedVector<T, N, A>& a,
-               const absl::InlinedVector<T, N, A>& b) {
-  auto a_data = a.data();
-  auto b_data = b.data();
-  return std::lexicographical_compare(a_data, a_data + a.size(), b_data,
-                                      b_data + b.size());
-}
+               const absl::InlinedVector<T, N, A>& b) { __builtin_trap() /* STUB: not implemented */; }
 
 // `operator>(...)`
 //
@@ -1017,9 +663,7 @@ bool operator<(const absl::InlinedVector<T, N, A>& a,
 // another inlined vector using a lexicographical comparison algorithm.
 template <typename T, size_t N, typename A>
 bool operator>(const absl::InlinedVector<T, N, A>& a,
-               const absl::InlinedVector<T, N, A>& b) {
-  return b < a;
-}
+               const absl::InlinedVector<T, N, A>& b) { __builtin_trap() /* STUB: not implemented */; }
 
 // `operator<=(...)`
 //
@@ -1027,9 +671,7 @@ bool operator>(const absl::InlinedVector<T, N, A>& a,
 // value of another inlined vector using a lexicographical comparison algorithm.
 template <typename T, size_t N, typename A>
 bool operator<=(const absl::InlinedVector<T, N, A>& a,
-                const absl::InlinedVector<T, N, A>& b) {
-  return !(b < a);
-}
+                const absl::InlinedVector<T, N, A>& b) { __builtin_trap() /* STUB: not implemented */; }
 
 // `operator>=(...)`
 //
@@ -1037,28 +679,18 @@ bool operator<=(const absl::InlinedVector<T, N, A>& a,
 // value of another inlined vector using a lexicographical comparison algorithm.
 template <typename T, size_t N, typename A>
 bool operator>=(const absl::InlinedVector<T, N, A>& a,
-                const absl::InlinedVector<T, N, A>& b) {
-  return !(a < b);
-}
+                const absl::InlinedVector<T, N, A>& b) { __builtin_trap() /* STUB: not implemented */; }
 
 // `AbslHashValue(...)`
 //
 // Provides `absl::Hash` support for `absl::InlinedVector`. It is uncommon to
 // call this directly.
 template <typename H, typename T, size_t N, typename A>
-H AbslHashValue(H h, const absl::InlinedVector<T, N, A>& a) {
-  return H::combine_contiguous(std::move(h), a.data(), a.size());
-}
+H AbslHashValue(H h, const absl::InlinedVector<T, N, A>& a) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, size_t N, typename A, typename Predicate>
 constexpr typename InlinedVector<T, N, A>::size_type erase_if(
-    InlinedVector<T, N, A>& v, Predicate pred) {
-  const auto it = std::remove_if(v.begin(), v.end(), std::move(pred));
-  const auto removed = static_cast<typename InlinedVector<T, N, A>::size_type>(
-      std::distance(it, v.end()));
-  v.erase(it, v.end());
-  return removed;
-}
+    InlinedVector<T, N, A>& v, Predicate pred) { return {}; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

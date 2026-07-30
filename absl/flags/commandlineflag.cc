@@ -24,12 +24,9 @@
 namespace absl {
 ABSL_NAMESPACE_BEGIN
 
-absl::string_view CommandLineFlag::TypeName() const { return ""; }
-bool CommandLineFlag::IsRetired() const { return false; }
-bool CommandLineFlag::ParseFrom(absl::string_view value, std::string* error) {
-  return ParseFrom(value, flags_internal::SET_FLAGS_VALUE,
-                   flags_internal::kProgrammaticChange, *error);
-}
+absl::string_view CommandLineFlag::TypeName() const { __builtin_trap() /* STUB: not implemented */; }
+bool CommandLineFlag::IsRetired() const { __builtin_trap() /* STUB: not implemented */; }
+bool CommandLineFlag::ParseFrom(absl::string_view value, std::string* error) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

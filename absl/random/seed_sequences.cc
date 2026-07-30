@@ -22,12 +22,7 @@
 namespace absl {
 ABSL_NAMESPACE_BEGIN
 
-SeedSeq MakeSeedSeq() {
-  SeedSeq::result_type seed_material[8];
-  random_internal::GetEntropyFromRandenPool(&seed_material[0],
-                                            sizeof(seed_material[0]) * 8);
-  return SeedSeq(std::begin(seed_material), std::end(seed_material));
-}
+SeedSeq MakeSeedSeq() { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

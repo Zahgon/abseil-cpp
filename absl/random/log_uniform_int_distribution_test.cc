@@ -127,71 +127,7 @@ class LogUniformIntChiSquaredTest
   absl::random_internal::pcg64_2018_engine rng_{0x2B7E151628AED2A6};
 };
 
-double LogUniformIntChiSquaredTest::ChiSquaredTestImpl() {
-  using absl::random_internal::kChiSquared;
-
-  const auto& param = GetParam();
-
-  // Check the distribution of L=log(log_uniform_int_distribution, base),
-  // expecting that L is roughly uniformly distributed, that is:
-  //
-  //   P[L=0] ~= P[L=1] ~= ... ~= P[L=log(max)]
-  //
-  // For a total of X entries, each bucket should contain some number of samples
-  // in the interval [X/k - a, X/k + a].
-  //
-  // Where `a` is approximately sqrt(X/k). This is validated by bucketing
-  // according to the log function and using a chi-squared test for uniformity.
-
-  const bool is_2 = (param.base() == 2);
-  const double base_log = 1.0 / std::log(param.base());
-  const auto bucket_index = [base_log, is_2, &param](int32_t x) {
-    uint64_t y = static_cast<uint64_t>(x) - param.min();
-    return (y == 0) ? 0
-           : is_2   ? static_cast<int>(1 + std::log2(y))
-                    : static_cast<int>(1 + std::log(y) * base_log);
-  };
-  const int max_bucket = bucket_index(param.max());  // inclusive
-  const size_t trials = 15 + (max_bucket + 1) * 10;
-
-  log_uniform_i32 dist(param);
-
-  std::vector<int64_t> buckets(max_bucket + 1);
-  for (size_t i = 0; i < trials; ++i) {
-    const auto sample = dist(rng_);
-    // Check the bounds.
-    ABSL_ASSERT(sample <= dist.max());
-    ABSL_ASSERT(sample >= dist.min());
-    // Convert the output of the generator to one of num_bucket buckets.
-    int bucket = bucket_index(sample);
-    ABSL_ASSERT(bucket <= max_bucket);
-    ++buckets[bucket];
-  }
-
-  // The null-hypothesis is that the distribution is uniform with respect to
-  // log-uniform-int bucketization.
-  const int dof = buckets.size() - 1;
-  const double expected = trials / static_cast<double>(buckets.size());
-
-  const double threshold = absl::random_internal::ChiSquareValue(dof, 0.98);
-
-  double chi_square = absl::random_internal::ChiSquareWithExpected(
-      std::begin(buckets), std::end(buckets), expected);
-
-  const double p = absl::random_internal::ChiSquarePValue(chi_square, dof);
-
-  if (chi_square > threshold) {
-    LOG(INFO) << "values";
-    for (size_t i = 0; i < buckets.size(); i++) {
-      LOG(INFO) << i << ": " << buckets[i];
-    }
-    LOG(INFO) << "trials=" << trials << "\n"
-              << kChiSquared << "(data, " << dof << ") = " << chi_square << " ("
-              << p << ")\n"
-              << kChiSquared << " @ 0.98 = " << threshold;
-  }
-  return p;
-}
+double LogUniformIntChiSquaredTest::ChiSquaredTestImpl() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(LogUniformIntChiSquaredTest, MultiTest) {
   const int kTrials = 5;
@@ -209,39 +145,10 @@ TEST_P(LogUniformIntChiSquaredTest, MultiTest) {
 }
 
 // Generate the parameters for the test.
-std::vector<log_uniform_i32::param_type> GenParams() {
-  using Param = log_uniform_i32::param_type;
-  using Limits = std::numeric_limits<int32_t>;
-
-  return std::vector<Param>{
-      Param{0, 1, 2},
-      Param{1, 1, 2},
-      Param{0, 2, 2},
-      Param{0, 3, 2},
-      Param{0, 4, 2},
-      Param{0, 9, 10},
-      Param{0, 10, 10},
-      Param{0, 11, 10},
-      Param{1, 10, 10},
-      Param{0, (1 << 8) - 1, 2},
-      Param{0, (1 << 8), 2},
-      Param{0, (1 << 30) - 1, 2},
-      Param{-1000, 1000, 10},
-      Param{0, Limits::max(), 2},
-      Param{0, Limits::max(), 3},
-      Param{0, Limits::max(), 10},
-      Param{Limits::min(), 0},
-      Param{Limits::min(), Limits::max(), 2},
-  };
-}
+std::vector<log_uniform_i32::param_type> GenParams() { __builtin_trap() /* STUB: not implemented */; }
 
 std::string ParamName(
-    const ::testing::TestParamInfo<log_uniform_i32::param_type>& info) {
-  const auto& p = info.param;
-  std::string name =
-      absl::StrCat("min_", p.min(), "__max_", p.max(), "__base_", p.base());
-  return absl::StrReplaceAll(name, {{"+", "_"}, {"-", "_"}, {".", "_"}});
-}
+    const ::testing::TestParamInfo<log_uniform_i32::param_type>& info) { __builtin_trap() /* STUB: not implemented */; }
 
 INSTANTIATE_TEST_SUITE_P(All, LogUniformIntChiSquaredTest,
                          ::testing::ValuesIn(GenParams()), ParamName);

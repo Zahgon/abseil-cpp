@@ -27,35 +27,22 @@ namespace {
 
 class FlagsUsageConfigTest : public testing::Test {
  protected:
-  void SetUp() override {
-    // Install Default config for the use on this unit test.
-    // Binary may install a custom config before tests are run.
-    absl::FlagsUsageConfig default_config;
-    absl::SetFlagsUsageConfig(default_config);
-  }
+  void SetUp() override { __builtin_trap() /* STUB: not implemented */; }
 };
 
 namespace flags = absl::flags_internal;
 
-bool TstContainsHelpshortFlags(absl::string_view f) {
-  return absl::StartsWith(flags::Basename(f), "progname.");
-}
+bool TstContainsHelpshortFlags(absl::string_view f) { __builtin_trap() /* STUB: not implemented */; }
 
-bool TstContainsHelppackageFlags(absl::string_view f) {
-  return absl::EndsWith(flags::Package(f), "aaa/");
-}
+bool TstContainsHelppackageFlags(absl::string_view f) { __builtin_trap() /* STUB: not implemented */; }
 
-bool TstContainsHelpFlags(absl::string_view f) {
-  return absl::EndsWith(flags::Package(f), "zzz/");
-}
+bool TstContainsHelpFlags(absl::string_view f) { __builtin_trap() /* STUB: not implemented */; }
 
-std::string TstVersionString() { return "program 1.0.0"; }
+std::string TstVersionString() { __builtin_trap() /* STUB: not implemented */; }
 
-std::string TstNormalizeFilename(absl::string_view filename) {
-  return std::string(filename.substr(2));
-}
+std::string TstNormalizeFilename(absl::string_view filename) { __builtin_trap() /* STUB: not implemented */; }
 
-void TstReportUsageMessage(absl::string_view msg) {}
+void TstReportUsageMessage(absl::string_view msg) { __builtin_trap() /* STUB: not implemented */; }
 
 // --------------------------------------------------------------------
 

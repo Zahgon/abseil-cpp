@@ -199,46 +199,28 @@ struct Hex {
   explicit Hex(Int v, PadSpec spec = absl::kNoPad,
                std::enable_if_t<sizeof(Int) == 1 && !std::is_pointer_v<Int>,
                                 bool> = true)
-      : Hex(spec, static_cast<uint8_t>(v)) {}
+      : Hex(spec, static_cast<uint8_t>(v)) { __builtin_trap() /* STUB: not implemented */; }
   template <typename Int>
   explicit Hex(Int v, PadSpec spec = absl::kNoPad,
                std::enable_if_t<sizeof(Int) == 2 && !std::is_pointer_v<Int>,
                                 bool> = true)
-      : Hex(spec, static_cast<uint16_t>(v)) {}
+      : Hex(spec, static_cast<uint16_t>(v)) { __builtin_trap() /* STUB: not implemented */; }
   template <typename Int>
   explicit Hex(Int v, PadSpec spec = absl::kNoPad,
                std::enable_if_t<sizeof(Int) == 4 && !std::is_pointer_v<Int>,
                                 bool> = true)
-      : Hex(spec, static_cast<uint32_t>(v)) {}
+      : Hex(spec, static_cast<uint32_t>(v)) { __builtin_trap() /* STUB: not implemented */; }
   template <typename Int>
   explicit Hex(Int v, PadSpec spec = absl::kNoPad,
                std::enable_if_t<sizeof(Int) == 8 && !std::is_pointer_v<Int>,
                                 bool> = true)
-      : Hex(spec, static_cast<uint64_t>(v)) {}
+      : Hex(spec, static_cast<uint64_t>(v)) { __builtin_trap() /* STUB: not implemented */; }
   template <typename Pointee>
   explicit Hex(Pointee* absl_nullable v, PadSpec spec = absl::kNoPad)
-      : Hex(spec, reinterpret_cast<uintptr_t>(v)) {}
+      : Hex(spec, reinterpret_cast<uintptr_t>(v)) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename S>
-  friend void AbslStringify(S& sink, Hex hex) {
-    static_assert(
-        numbers_internal::kFastToBufferSize >= 32,
-        "This function only works when output buffer >= 32 bytes long");
-    char buffer[numbers_internal::kFastToBufferSize];
-    char* const end = &buffer[numbers_internal::kFastToBufferSize];
-    auto real_width =
-        absl::numbers_internal::FastHexToBufferZeroPad16(hex.value, end - 16);
-    if (real_width >= hex.width) {
-      sink.Append(absl::string_view(end - real_width, real_width));
-    } else {
-      // Pad first 16 chars because FastHexToBufferZeroPad16 pads only to 16 and
-      // max pad width can be up to 20.
-      std::memset(end - 32, hex.fill, 16);
-      // Patch up everything else up to the real_width.
-      std::memset(end - real_width - 16, hex.fill, 16);
-      sink.Append(absl::string_view(end - hex.width, hex.width));
-    }
-  }
+  friend void AbslStringify(S& sink, Hex hex) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   Hex(PadSpec spec, uint64_t v)
@@ -247,7 +229,7 @@ struct Hex {
                   ? 1
                   : spec >= absl::kSpacePad2 ? spec - absl::kSpacePad2 + 2
                                              : spec - absl::kZeroPad2 + 2),
-        fill(spec >= absl::kSpacePad2 ? ' ' : '0') {}
+        fill(spec >= absl::kSpacePad2 ? ' ' : '0') { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // -----------------------------------------------------------------------------
@@ -272,39 +254,10 @@ struct Dec {
               : spec >= absl::kSpacePad2 ? spec - absl::kSpacePad2 + 2
                                          : spec - absl::kZeroPad2 + 2),
         fill(spec >= absl::kSpacePad2 ? ' ' : '0'),
-        neg(v < 0) {}
+        neg(v < 0) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename S>
-  friend void AbslStringify(S& sink, Dec dec) {
-    assert(dec.width <= numbers_internal::kFastToBufferSize);
-    char buffer[numbers_internal::kFastToBufferSize];
-    char* const end = &buffer[numbers_internal::kFastToBufferSize];
-    char* const minfill = end - dec.width;
-    char* writer = end;
-    uint64_t val = dec.value;
-    while (val > 9) {
-      *--writer = '0' + (val % 10);
-      val /= 10;
-    }
-    *--writer = '0' + static_cast<char>(val);
-    if (dec.neg) *--writer = '-';
-
-    ptrdiff_t fillers = writer - minfill;
-    if (fillers > 0) {
-      // Tricky: if the fill character is ' ', then it's <fill><+/-><digits>
-      // But...: if the fill character is '0', then it's <+/-><fill><digits>
-      bool add_sign_again = false;
-      if (dec.neg && dec.fill == '0') {  // If filling with '0',
-        ++writer;                    // ignore the sign we just added
-        add_sign_again = true;       // and re-add the sign later.
-      }
-      writer -= fillers;
-      std::fill_n(writer, fillers, dec.fill);
-      if (add_sign_again) *--writer = '-';
-    }
-
-    sink.Append(absl::string_view(writer, static_cast<size_t>(end - writer)));
-  }
+  friend void AbslStringify(S& sink, Dec dec) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // -----------------------------------------------------------------------------
@@ -321,20 +274,10 @@ struct Dec {
 // it if you need the string to convert back to the same floating-point value.
 
 inline strings_internal::AlphaNumBuffer<numbers_internal::kFastToBufferSize>
-HighPrecision(float f) {
-  strings_internal::AlphaNumBuffer<numbers_internal::kFastToBufferSize> result;
-  result.size =
-      strlen(numbers_internal::RoundTripFloatToBuffer(f, &result.data[0]));
-  return result;
-}
+HighPrecision(float f) { __builtin_trap() /* STUB: not implemented */; }
 
 inline strings_internal::AlphaNumBuffer<numbers_internal::kFastToBufferSize>
-HighPrecision(double d) {
-  strings_internal::AlphaNumBuffer<numbers_internal::kFastToBufferSize> result;
-  result.size =
-      strlen(numbers_internal::RoundTripDoubleToBuffer(d, &result.data[0]));
-  return result;
-}
+HighPrecision(double d) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // AlphaNum
@@ -358,63 +301,63 @@ class AlphaNum {
   AlphaNum(int x)  // NOLINT(runtime/explicit)
       : piece_(digits_, static_cast<size_t>(
                             numbers_internal::FastIntToBuffer(x, digits_) -
-                            &digits_[0])) {}
+                            &digits_[0])) { __builtin_trap() /* STUB: not implemented */; }
   AlphaNum(unsigned int x)  // NOLINT(runtime/explicit)
       : piece_(digits_, static_cast<size_t>(
                             numbers_internal::FastIntToBuffer(x, digits_) -
-                            &digits_[0])) {}
+                            &digits_[0])) { __builtin_trap() /* STUB: not implemented */; }
   AlphaNum(long x)  // NOLINT(*)
       : piece_(digits_, static_cast<size_t>(
                             numbers_internal::FastIntToBuffer(x, digits_) -
-                            &digits_[0])) {}
+                            &digits_[0])) { __builtin_trap() /* STUB: not implemented */; }
   AlphaNum(unsigned long x)  // NOLINT(*)
       : piece_(digits_, static_cast<size_t>(
                             numbers_internal::FastIntToBuffer(x, digits_) -
-                            &digits_[0])) {}
+                            &digits_[0])) { __builtin_trap() /* STUB: not implemented */; }
   AlphaNum(long long x)  // NOLINT(*)
       : piece_(digits_, static_cast<size_t>(
                             numbers_internal::FastIntToBuffer(x, digits_) -
-                            &digits_[0])) {}
+                            &digits_[0])) { __builtin_trap() /* STUB: not implemented */; }
   AlphaNum(unsigned long long x)  // NOLINT(*)
       : piece_(digits_, static_cast<size_t>(
                             numbers_internal::FastIntToBuffer(x, digits_) -
-                            &digits_[0])) {}
+                            &digits_[0])) { __builtin_trap() /* STUB: not implemented */; }
 
   AlphaNum(float f)  // NOLINT(runtime/explicit)
-      : piece_(digits_, numbers_internal::SixDigitsToBuffer(f, digits_)) {}
+      : piece_(digits_, numbers_internal::SixDigitsToBuffer(f, digits_)) { __builtin_trap() /* STUB: not implemented */; }
   AlphaNum(double f)  // NOLINT(runtime/explicit)
-      : piece_(digits_, numbers_internal::SixDigitsToBuffer(f, digits_)) {}
+      : piece_(digits_, numbers_internal::SixDigitsToBuffer(f, digits_)) { __builtin_trap() /* STUB: not implemented */; }
 
   template <size_t size>
   AlphaNum(  // NOLINT(runtime/explicit)
       const strings_internal::AlphaNumBuffer<size>& buf
           ABSL_ATTRIBUTE_LIFETIME_BOUND)
-      : piece_(&buf.data[0], buf.size) {}
+      : piece_(&buf.data[0], buf.size) { __builtin_trap() /* STUB: not implemented */; }
 
   AlphaNum(const char* absl_nullable c_str  // NOLINT(runtime/explicit)
                ABSL_ATTRIBUTE_LIFETIME_BOUND)
-      : piece_(NullSafeStringView(c_str)) {}
+      : piece_(NullSafeStringView(c_str)) { __builtin_trap() /* STUB: not implemented */; }
   AlphaNum(absl::string_view pc  // NOLINT(runtime/explicit)
                ABSL_ATTRIBUTE_LIFETIME_BOUND)
-      : piece_(pc) {}
+      : piece_(pc) { __builtin_trap() /* STUB: not implemented */; }
 
 #if !defined(ABSL_USES_STD_STRING_VIEW)
   AlphaNum(std::string_view pc  // NOLINT(runtime/explicit)
                ABSL_ATTRIBUTE_LIFETIME_BOUND)
-      : piece_(pc.data(), pc.size()) {}
+      : piece_(pc.data(), pc.size()) { __builtin_trap() /* STUB: not implemented */; }
 #endif  // !ABSL_USES_STD_STRING_VIEW
 
   template <typename T, typename = std::enable_if_t<HasAbslStringify<T>::value>>
   AlphaNum(  // NOLINT(runtime/explicit)
       const T& v ABSL_ATTRIBUTE_LIFETIME_BOUND,
       strings_internal::StringifySink&& sink ABSL_ATTRIBUTE_LIFETIME_BOUND = {})
-      : piece_(strings_internal::ExtractStringification(sink, v)) {}
+      : piece_(strings_internal::ExtractStringification(sink, v)) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename Allocator>
   AlphaNum(  // NOLINT(runtime/explicit)
       const std::basic_string<char, std::char_traits<char>, Allocator>& str
           ABSL_ATTRIBUTE_LIFETIME_BOUND)
-      : piece_(str) {}
+      : piece_(str) { __builtin_trap() /* STUB: not implemented */; }
 
   // Use string literals ":" instead of character literals ':'.
   AlphaNum(char c) = delete;  // NOLINT(runtime/explicit)
@@ -422,9 +365,9 @@ class AlphaNum {
   AlphaNum(const AlphaNum&) = delete;
   AlphaNum& operator=(const AlphaNum&) = delete;
 
-  absl::string_view::size_type size() const { return piece_.size(); }
-  const char* absl_nullable data() const { return piece_.data(); }
-  absl::string_view Piece() const { return piece_; }
+  absl::string_view::size_type size() const { __builtin_trap() /* STUB: not implemented */; }
+  const char* absl_nullable data() const { __builtin_trap() /* STUB: not implemented */; }
+  absl::string_view Piece() const { __builtin_trap() /* STUB: not implemented */; }
 
   // Match unscoped enums.  Use integral promotion so that a `char`-backed
   // enum becomes a wider integral type AlphaNum will accept.
@@ -433,7 +376,7 @@ class AlphaNum {
                                         std::is_convertible<T, int>{} &&
                                         !HasAbslStringify<T>::value>>
   AlphaNum(T e)  // NOLINT(runtime/explicit)
-      : AlphaNum(+e) {}
+      : AlphaNum(+e) { __builtin_trap() /* STUB: not implemented */; }
 
   // This overload matches scoped enums.  We must explicitly cast to the
   // underlying type, but use integral promotion for the same reason as above.
@@ -442,7 +385,7 @@ class AlphaNum {
                                              !HasAbslStringify<T>::value,
                                          char*> = nullptr>
   AlphaNum(T e)  // NOLINT(runtime/explicit)
-      : AlphaNum(+static_cast<std::underlying_type_t<T>>(e)) {}
+      : AlphaNum(+static_cast<std::underlying_type_t<T>>(e)) { __builtin_trap() /* STUB: not implemented */; }
 
   // vector<bool>::reference and const_reference require special help to
   // convert to `AlphaNum` because it requires two user defined conversions.
@@ -452,7 +395,7 @@ class AlphaNum {
           std::is_class_v<T> &&
           (std::is_same_v<T, std::vector<bool>::reference> ||
            std::is_same_v<T, std::vector<bool>::const_reference>)>* = nullptr>
-  AlphaNum(T e) : AlphaNum(static_cast<bool>(e)) {}  // NOLINT(runtime/explicit)
+  AlphaNum(T e) : AlphaNum(static_cast<bool>(e)) { __builtin_trap() /* STUB: not implemented */; }  // NOLINT(runtime/explicit)
 
  private:
   absl::string_view piece_;
@@ -495,57 +438,27 @@ void AppendPieces(std::string* absl_nonnull dest,
                   std::initializer_list<absl::string_view> pieces);
 
 template <typename Integer>
-std::string IntegerToString(Integer i) {
-  // Any integer (signed/unsigned) up to 64 bits can be formatted into a buffer
-  // with 22 bytes (including NULL at the end).
-  constexpr size_t kMaxDigits10 = 22;
-  std::string result;
-  StringResizeAndOverwrite(
-      result, kMaxDigits10, [i](char* start, size_t buf_size) {
-        // Note: This can be optimized to not write last zero.
-        char* end = numbers_internal::FastIntToBuffer(i, start);
-        auto size = static_cast<size_t>(end - start);
-        ABSL_ASSERT(size < buf_size);
-        return size;
-      });
-  return result;
-}
+std::string IntegerToString(Integer i) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Float>
-std::string FloatToString(Float f) {
-  std::string result;
-  StringResizeAndOverwrite(result, numbers_internal::kSixDigitsToBufferSize,
-                           [f](char* start, size_t buf_size) {
-                             size_t size =
-                                 numbers_internal::SixDigitsToBuffer(f, start);
-                             ABSL_ASSERT(size < buf_size);
-                             return size;
-                           });
-  return result;
-}
+std::string FloatToString(Float f) { __builtin_trap() /* STUB: not implemented */; }
 
 // `SingleArgStrCat` overloads take built-in `int`, `long` and `long long` types
 // (signed / unsigned) to avoid ambiguity on the call side. If we used int32_t
 // and int64_t, then at least one of the three (`int` / `long` / `long long`)
 // would have been ambiguous when passed to `SingleArgStrCat`.
-inline std::string SingleArgStrCat(int x) { return IntegerToString(x); }
-inline std::string SingleArgStrCat(unsigned int x) {
-  return IntegerToString(x);
-}
+inline std::string SingleArgStrCat(int x) { __builtin_trap() /* STUB: not implemented */; }
+inline std::string SingleArgStrCat(unsigned int x) { __builtin_trap() /* STUB: not implemented */; }
 // NOLINTNEXTLINE
-inline std::string SingleArgStrCat(long x) { return IntegerToString(x); }
+inline std::string SingleArgStrCat(long x) { __builtin_trap() /* STUB: not implemented */; }
 // NOLINTNEXTLINE
-inline std::string SingleArgStrCat(unsigned long x) {
-  return IntegerToString(x);
-}
+inline std::string SingleArgStrCat(unsigned long x) { __builtin_trap() /* STUB: not implemented */; }
 // NOLINTNEXTLINE
-inline std::string SingleArgStrCat(long long x) { return IntegerToString(x); }
+inline std::string SingleArgStrCat(long long x) { __builtin_trap() /* STUB: not implemented */; }
 // NOLINTNEXTLINE
-inline std::string SingleArgStrCat(unsigned long long x) {
-  return IntegerToString(x);
-}
-inline std::string SingleArgStrCat(float x) { return FloatToString(x); }
-inline std::string SingleArgStrCat(double x) { return FloatToString(x); }
+inline std::string SingleArgStrCat(unsigned long long x) { __builtin_trap() /* STUB: not implemented */; }
+inline std::string SingleArgStrCat(float x) { __builtin_trap() /* STUB: not implemented */; }
+inline std::string SingleArgStrCat(double x) { __builtin_trap() /* STUB: not implemented */; }
 
 // As of September 2023, the SingleArgStrCat() optimization is only enabled for
 // libc++. The reasons for this are:
@@ -571,16 +484,12 @@ using EnableIfFastCase = T;
 
 }  // namespace strings_internal
 
-[[nodiscard]] inline std::string StrCat() { return std::string(); }
+[[nodiscard]] inline std::string StrCat() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
 [[nodiscard]] inline std::string StrCat(
-    strings_internal::EnableIfFastCase<T> a) {
-  return strings_internal::SingleArgStrCat(a);
-}
-[[nodiscard]] inline std::string StrCat(const AlphaNum& a) {
-  return std::string(a.data(), a.size());
-}
+    strings_internal::EnableIfFastCase<T> a) { __builtin_trap() /* STUB: not implemented */; }
+[[nodiscard]] inline std::string StrCat(const AlphaNum& a) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] std::string StrCat(const AlphaNum& a, const AlphaNum& b);
 [[nodiscard]] std::string StrCat(const AlphaNum& a, const AlphaNum& b,
@@ -592,11 +501,7 @@ template <typename T>
 template <typename... AV>
 [[nodiscard]] inline std::string StrCat(const AlphaNum& a, const AlphaNum& b,
                                         const AlphaNum& c, const AlphaNum& d,
-                                        const AlphaNum& e, const AV&... args) {
-  return strings_internal::CatPieces(
-      {a.Piece(), b.Piece(), c.Piece(), d.Piece(), e.Piece(),
-       static_cast<const AlphaNum&>(args).Piece()...});
-}
+                                        const AlphaNum& e, const AV&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // StrAppend()
@@ -625,7 +530,7 @@ template <typename... AV>
 //   absl::string_view p = s;
 //   StrAppend(&s, p);
 
-inline void StrAppend(std::string* absl_nonnull) {}
+inline void StrAppend(std::string* absl_nonnull) { __builtin_trap() /* STUB: not implemented */; }
 void StrAppend(std::string* absl_nonnull dest, const AlphaNum& a);
 void StrAppend(std::string* absl_nonnull dest, const AlphaNum& a,
                const AlphaNum& b);
@@ -638,22 +543,13 @@ void StrAppend(std::string* absl_nonnull dest, const AlphaNum& a,
 template <typename... AV>
 inline void StrAppend(std::string* absl_nonnull dest, const AlphaNum& a,
                       const AlphaNum& b, const AlphaNum& c, const AlphaNum& d,
-                      const AlphaNum& e, const AV&... args) {
-  strings_internal::AppendPieces(
-      dest, {a.Piece(), b.Piece(), c.Piece(), d.Piece(), e.Piece(),
-             static_cast<const AlphaNum&>(args).Piece()...});
-}
+                      const AlphaNum& e, const AV&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 // Helper function for the future StrCat default floating-point format, %.6g
 // This is fast.
 inline strings_internal::AlphaNumBuffer<
     numbers_internal::kSixDigitsToBufferSize>
-SixDigits(double d) {
-  strings_internal::AlphaNumBuffer<numbers_internal::kSixDigitsToBufferSize>
-      result;
-  result.size = numbers_internal::SixDigitsToBuffer(d, &result.data[0]);
-  return result;
-}
+SixDigits(double d) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

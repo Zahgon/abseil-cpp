@@ -26,59 +26,22 @@
 namespace {
 
 void BenchmarkInsertStrings(benchmark::State& state,
-                            absl::FunctionRef<std::string(int)> factory) {
-  std::vector<std::string> sample;
-  size_t str_bytes = 0;
-  for (int i = 0; i < state.range(0); ++i) {
-    sample.push_back(factory(i));
-    str_bytes += sample.back().size();
-  }
-
-  // Make a batch around 1Mi bytes.
-  const size_t batch_size = std::max(size_t{1}, size_t{1000000} / str_bytes);
-  std::vector<absl::linked_hash_set<std::string>> sets(batch_size);
-
-  while (state.KeepRunningBatch(batch_size)) {
-    state.PauseTiming();
-    for (auto& set : sets) set.clear();
-    state.ResumeTiming();
-    for (auto& set : sets) {
-      for (const auto& str : sample) {
-        benchmark::DoNotOptimize(set.insert(str));
-      }
-    }
-  }
-
-  state.SetItemsProcessed(state.iterations() * state.range(0));
-  state.SetBytesProcessed(state.iterations() * str_bytes);
-}
+                            absl::FunctionRef<std::string(int)> factory) { __builtin_trap() /* STUB: not implemented */; }
 
 constexpr absl::string_view kFormatShort = "%10d";
 constexpr absl::string_view kFormatLong =
     "a longer string that exceeds the SSO %10d";
 
-void BM_InsertShortStrings_Hit(benchmark::State& state) {
-  BenchmarkInsertStrings(
-      state, [](int i) { return absl::StrFormat(kFormatShort, i); });
-}
+void BM_InsertShortStrings_Hit(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_InsertShortStrings_Hit)->Range(1, 1 << 16);
 
-void BM_InsertLongStrings_Hit(benchmark::State& state) {
-  BenchmarkInsertStrings(state,
-                         [](int i) { return absl::StrFormat(kFormatLong, i); });
-}
+void BM_InsertLongStrings_Hit(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_InsertLongStrings_Hit)->Range(1, 1 << 16);
 
-void BM_InsertShortStrings_Miss(benchmark::State& state) {
-  BenchmarkInsertStrings(
-      state, [](int i) { return absl::StrFormat(kFormatShort, i % 20); });
-}
+void BM_InsertShortStrings_Miss(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_InsertShortStrings_Miss)->Range(1, 1 << 16);
 
-void BM_InsertLongStrings_Miss(benchmark::State& state) {
-  BenchmarkInsertStrings(
-      state, [](int i) { return absl::StrFormat(kFormatLong, i % 20); });
-}
+void BM_InsertLongStrings_Miss(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_InsertLongStrings_Miss)->Range(1, 1 << 16);
 
 }  // namespace

@@ -82,63 +82,33 @@ struct AnyOfPolicy {
 // ByString
 //
 
-ByString::ByString(absl::string_view sp) : delimiter_(sp) {}
+ByString::ByString(absl::string_view sp) : delimiter_(sp) { __builtin_trap() /* STUB: not implemented */; }
 
-absl::string_view ByString::Find(absl::string_view text, size_t pos) const {
-  if (delimiter_.length() == 1) {
-    // Much faster to call find on a single character than on an
-    // absl::string_view.
-    size_t found_pos = text.find(delimiter_[0], pos);
-    if (found_pos == absl::string_view::npos)
-      return absl::string_view(text.data() + text.size(), 0);
-    return text.substr(found_pos, 1);
-  }
-  return GenericFind(text, delimiter_, pos, LiteralPolicy());
-}
+absl::string_view ByString::Find(absl::string_view text, size_t pos) const { __builtin_trap() /* STUB: not implemented */; }
 
 absl::string_view ByAsciiWhitespace::Find(absl::string_view text,
-                                          size_t pos) const {
-  return GenericFind(text, " \t\v\f\r\n", pos, AnyOfPolicy());
-}
+                                          size_t pos) const { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // ByChar
 //
 
-absl::string_view ByChar::Find(absl::string_view text, size_t pos) const {
-  size_t found_pos = text.find(c_, pos);
-  if (found_pos == absl::string_view::npos)
-    return absl::string_view(text.data() + text.size(), 0);
-  return text.substr(found_pos, 1);
-}
+absl::string_view ByChar::Find(absl::string_view text, size_t pos) const { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // ByAnyChar
 //
 
-ByAnyChar::ByAnyChar(absl::string_view sp) : delimiters_(sp) {}
+ByAnyChar::ByAnyChar(absl::string_view sp) : delimiters_(sp) { __builtin_trap() /* STUB: not implemented */; }
 
-absl::string_view ByAnyChar::Find(absl::string_view text, size_t pos) const {
-  return GenericFind(text, delimiters_, pos, AnyOfPolicy());
-}
+absl::string_view ByAnyChar::Find(absl::string_view text, size_t pos) const { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // ByLength
 //
-ByLength::ByLength(ptrdiff_t length) : length_(length) {
-  ABSL_RAW_CHECK(length > 0, "");
-}
+ByLength::ByLength(ptrdiff_t length) : length_(length) { __builtin_trap() /* STUB: not implemented */; }
 
-absl::string_view ByLength::Find(absl::string_view text, size_t pos) const {
-  pos = std::min(pos, text.size());  // truncate `pos`
-  absl::string_view substr = text.substr(pos);
-  // If the string is shorter than the chunk size we say we
-  // "can't find the delimiter" so this will be the last chunk.
-  if (substr.length() <= static_cast<size_t>(length_))
-    return absl::string_view(text.data() + text.size(), 0);
-
-  return absl::string_view(substr.data() + length_, 0);
-}
+absl::string_view ByLength::Find(absl::string_view text, size_t pos) const { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

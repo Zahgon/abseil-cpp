@@ -89,10 +89,7 @@ void DoIgnoreLeak(const void* ptr);
 // there is no actual reference in user memory.
 //
 template <typename T>
-T* IgnoreLeak(T* ptr) {
-  DoIgnoreLeak(ptr);
-  return ptr;
-}
+T* IgnoreLeak(T* ptr) { __builtin_trap() /* STUB: not implemented */; }
 
 // FindAndReportLeaks()
 //

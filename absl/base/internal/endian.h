@@ -30,57 +30,28 @@
 namespace absl {
 ABSL_NAMESPACE_BEGIN
 
-constexpr uint64_t gbswap_64(uint64_t x) {
-#if ABSL_HAVE_BUILTIN(__builtin_bswap64) || defined(__GNUC__)
-  return __builtin_bswap64(x);
-#else
-  return (((x & uint64_t{0xFF}) << 56) |
-          ((x & uint64_t{0xFF00}) << 40) |
-          ((x & uint64_t{0xFF0000}) << 24) |
-          ((x & uint64_t{0xFF000000}) << 8) |
-          ((x & uint64_t{0xFF00000000}) >> 8) |
-          ((x & uint64_t{0xFF0000000000}) >> 24) |
-          ((x & uint64_t{0xFF000000000000}) >> 40) |
-          ((x & uint64_t{0xFF00000000000000}) >> 56));
-#endif
-}
+constexpr uint64_t gbswap_64(uint64_t x) { return {}; }
 
-constexpr uint32_t gbswap_32(uint32_t x) {
-#if ABSL_HAVE_BUILTIN(__builtin_bswap32) || defined(__GNUC__)
-  return __builtin_bswap32(x);
-#else
-  return (((x & uint32_t{0xFF}) << 24) |
-          ((x & uint32_t{0xFF00}) << 8) |
-          ((x & uint32_t{0xFF0000}) >> 8) |
-          ((x & uint32_t{0xFF000000}) >> 24));
-#endif
-}
+constexpr uint32_t gbswap_32(uint32_t x) { return {}; }
 
-constexpr uint16_t gbswap_16(uint16_t x) {
-#if ABSL_HAVE_BUILTIN(__builtin_bswap16) || defined(__GNUC__)
-  return __builtin_bswap16(x);
-#else
-  return (((x & uint16_t{0xFF}) << 8) |
-          ((x & uint16_t{0xFF00}) >> 8));
-#endif
-}
+constexpr uint16_t gbswap_16(uint16_t x) { return {}; }
 
 #ifdef ABSL_IS_LITTLE_ENDIAN
 
 // Portable definitions for htonl (host-to-network) and friends on little-endian
 // architectures.
-inline uint16_t ghtons(uint16_t x) { return gbswap_16(x); }
-inline uint32_t ghtonl(uint32_t x) { return gbswap_32(x); }
-inline uint64_t ghtonll(uint64_t x) { return gbswap_64(x); }
+inline uint16_t ghtons(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint32_t ghtonl(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint64_t ghtonll(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
 #elif defined ABSL_IS_BIG_ENDIAN
 
 // Portable definitions for htonl (host-to-network) etc on big-endian
 // architectures. These definitions are simpler since the host byte order is the
 // same as network byte order.
-inline uint16_t ghtons(uint16_t x) { return x; }
-inline uint32_t ghtonl(uint32_t x) { return x; }
-inline uint64_t ghtonll(uint64_t x) { return x; }
+inline uint16_t ghtons(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint32_t ghtonl(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint64_t ghtonll(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
 #else
 #error \
@@ -88,9 +59,9 @@ inline uint64_t ghtonll(uint64_t x) { return x; }
        "ABSL_IS_LITTLE_ENDIAN must be defined"
 #endif  // byte order
 
-inline uint16_t gntohs(uint16_t x) { return ghtons(x); }
-inline uint32_t gntohl(uint32_t x) { return ghtonl(x); }
-inline uint64_t gntohll(uint64_t x) { return ghtonll(x); }
+inline uint16_t gntohs(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint32_t gntohl(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint64_t gntohll(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
 // Utilities to convert numbers between the current hosts's native byte
 // order and little-endian byte order
@@ -100,86 +71,62 @@ namespace little_endian {
 // Conversion functions.
 #ifdef ABSL_IS_LITTLE_ENDIAN
 
-inline uint16_t FromHost16(uint16_t x) { return x; }
-inline uint16_t ToHost16(uint16_t x) { return x; }
+inline uint16_t FromHost16(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint16_t ToHost16(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline uint32_t FromHost32(uint32_t x) { return x; }
-inline uint32_t ToHost32(uint32_t x) { return x; }
+inline uint32_t FromHost32(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint32_t ToHost32(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline uint64_t FromHost64(uint64_t x) { return x; }
-inline uint64_t ToHost64(uint64_t x) { return x; }
+inline uint64_t FromHost64(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint64_t ToHost64(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline constexpr bool IsLittleEndian() { return true; }
+inline constexpr bool IsLittleEndian() { return {}; }
 
 #elif defined ABSL_IS_BIG_ENDIAN
 
-inline uint16_t FromHost16(uint16_t x) { return gbswap_16(x); }
-inline uint16_t ToHost16(uint16_t x) { return gbswap_16(x); }
+inline uint16_t FromHost16(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint16_t ToHost16(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline uint32_t FromHost32(uint32_t x) { return gbswap_32(x); }
-inline uint32_t ToHost32(uint32_t x) { return gbswap_32(x); }
+inline uint32_t FromHost32(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint32_t ToHost32(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline uint64_t FromHost64(uint64_t x) { return gbswap_64(x); }
-inline uint64_t ToHost64(uint64_t x) { return gbswap_64(x); }
+inline uint64_t FromHost64(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint64_t ToHost64(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline constexpr bool IsLittleEndian() { return false; }
+inline constexpr bool IsLittleEndian() { return {}; }
 
 #endif /* ENDIAN */
 
-inline uint8_t FromHost(uint8_t x) { return x; }
-inline uint16_t FromHost(uint16_t x) { return FromHost16(x); }
-inline uint32_t FromHost(uint32_t x) { return FromHost32(x); }
-inline uint64_t FromHost(uint64_t x) { return FromHost64(x); }
-inline uint8_t ToHost(uint8_t x) { return x; }
-inline uint16_t ToHost(uint16_t x) { return ToHost16(x); }
-inline uint32_t ToHost(uint32_t x) { return ToHost32(x); }
-inline uint64_t ToHost(uint64_t x) { return ToHost64(x); }
+inline uint8_t FromHost(uint8_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint16_t FromHost(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint32_t FromHost(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint64_t FromHost(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint8_t ToHost(uint8_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint16_t ToHost(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint32_t ToHost(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint64_t ToHost(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline int8_t FromHost(int8_t x) { return x; }
-inline int16_t FromHost(int16_t x) {
-  return bit_cast<int16_t>(FromHost16(bit_cast<uint16_t>(x)));
-}
-inline int32_t FromHost(int32_t x) {
-  return bit_cast<int32_t>(FromHost32(bit_cast<uint32_t>(x)));
-}
-inline int64_t FromHost(int64_t x) {
-  return bit_cast<int64_t>(FromHost64(bit_cast<uint64_t>(x)));
-}
-inline int8_t ToHost(int8_t x) { return x; }
-inline int16_t ToHost(int16_t x) {
-  return bit_cast<int16_t>(ToHost16(bit_cast<uint16_t>(x)));
-}
-inline int32_t ToHost(int32_t x) {
-  return bit_cast<int32_t>(ToHost32(bit_cast<uint32_t>(x)));
-}
-inline int64_t ToHost(int64_t x) {
-  return bit_cast<int64_t>(ToHost64(bit_cast<uint64_t>(x)));
-}
+inline int8_t FromHost(int8_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int16_t FromHost(int16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int32_t FromHost(int32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int64_t FromHost(int64_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int8_t ToHost(int8_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int16_t ToHost(int16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int32_t ToHost(int32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int64_t ToHost(int64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
 // Functions to do unaligned loads and stores in little-endian order.
-inline uint16_t Load16(const void* absl_nonnull p) {
-  return ToHost16(ABSL_INTERNAL_UNALIGNED_LOAD16(p));
-}
+inline uint16_t Load16(const void* absl_nonnull p) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Store16(void* absl_nonnull p, uint16_t v) {
-  ABSL_INTERNAL_UNALIGNED_STORE16(p, FromHost16(v));
-}
+inline void Store16(void* absl_nonnull p, uint16_t v) { __builtin_trap() /* STUB: not implemented */; }
 
-inline uint32_t Load32(const void* absl_nonnull p) {
-  return ToHost32(ABSL_INTERNAL_UNALIGNED_LOAD32(p));
-}
+inline uint32_t Load32(const void* absl_nonnull p) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Store32(void* absl_nonnull p, uint32_t v) {
-  ABSL_INTERNAL_UNALIGNED_STORE32(p, FromHost32(v));
-}
+inline void Store32(void* absl_nonnull p, uint32_t v) { __builtin_trap() /* STUB: not implemented */; }
 
-inline uint64_t Load64(const void* absl_nonnull p) {
-  return ToHost64(ABSL_INTERNAL_UNALIGNED_LOAD64(p));
-}
+inline uint64_t Load64(const void* absl_nonnull p) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Store64(void* absl_nonnull p, uint64_t v) {
-  ABSL_INTERNAL_UNALIGNED_STORE64(p, FromHost64(v));
-}
+inline void Store64(void* absl_nonnull p, uint64_t v) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace little_endian
 
@@ -190,86 +137,62 @@ inline void Store64(void* absl_nonnull p, uint64_t v) {
 namespace big_endian {
 #ifdef ABSL_IS_LITTLE_ENDIAN
 
-inline uint16_t FromHost16(uint16_t x) { return gbswap_16(x); }
-inline uint16_t ToHost16(uint16_t x) { return gbswap_16(x); }
+inline uint16_t FromHost16(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint16_t ToHost16(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline uint32_t FromHost32(uint32_t x) { return gbswap_32(x); }
-inline uint32_t ToHost32(uint32_t x) { return gbswap_32(x); }
+inline uint32_t FromHost32(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint32_t ToHost32(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline uint64_t FromHost64(uint64_t x) { return gbswap_64(x); }
-inline uint64_t ToHost64(uint64_t x) { return gbswap_64(x); }
+inline uint64_t FromHost64(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint64_t ToHost64(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline constexpr bool IsLittleEndian() { return true; }
+inline constexpr bool IsLittleEndian() { return {}; }
 
 #elif defined ABSL_IS_BIG_ENDIAN
 
-inline uint16_t FromHost16(uint16_t x) { return x; }
-inline uint16_t ToHost16(uint16_t x) { return x; }
+inline uint16_t FromHost16(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint16_t ToHost16(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline uint32_t FromHost32(uint32_t x) { return x; }
-inline uint32_t ToHost32(uint32_t x) { return x; }
+inline uint32_t FromHost32(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint32_t ToHost32(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline uint64_t FromHost64(uint64_t x) { return x; }
-inline uint64_t ToHost64(uint64_t x) { return x; }
+inline uint64_t FromHost64(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint64_t ToHost64(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline constexpr bool IsLittleEndian() { return false; }
+inline constexpr bool IsLittleEndian() { return {}; }
 
 #endif /* ENDIAN */
 
-inline uint8_t FromHost(uint8_t x) { return x; }
-inline uint16_t FromHost(uint16_t x) { return FromHost16(x); }
-inline uint32_t FromHost(uint32_t x) { return FromHost32(x); }
-inline uint64_t FromHost(uint64_t x) { return FromHost64(x); }
-inline uint8_t ToHost(uint8_t x) { return x; }
-inline uint16_t ToHost(uint16_t x) { return ToHost16(x); }
-inline uint32_t ToHost(uint32_t x) { return ToHost32(x); }
-inline uint64_t ToHost(uint64_t x) { return ToHost64(x); }
+inline uint8_t FromHost(uint8_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint16_t FromHost(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint32_t FromHost(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint64_t FromHost(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint8_t ToHost(uint8_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint16_t ToHost(uint16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint32_t ToHost(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline uint64_t ToHost(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline int8_t FromHost(int8_t x) { return x; }
-inline int16_t FromHost(int16_t x) {
-  return bit_cast<int16_t>(FromHost16(bit_cast<uint16_t>(x)));
-}
-inline int32_t FromHost(int32_t x) {
-  return bit_cast<int32_t>(FromHost32(bit_cast<uint32_t>(x)));
-}
-inline int64_t FromHost(int64_t x) {
-  return bit_cast<int64_t>(FromHost64(bit_cast<uint64_t>(x)));
-}
-inline int8_t ToHost(int8_t x) { return x; }
-inline int16_t ToHost(int16_t x) {
-  return bit_cast<int16_t>(ToHost16(bit_cast<uint16_t>(x)));
-}
-inline int32_t ToHost(int32_t x) {
-  return bit_cast<int32_t>(ToHost32(bit_cast<uint32_t>(x)));
-}
-inline int64_t ToHost(int64_t x) {
-  return bit_cast<int64_t>(ToHost64(bit_cast<uint64_t>(x)));
-}
+inline int8_t FromHost(int8_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int16_t FromHost(int16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int32_t FromHost(int32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int64_t FromHost(int64_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int8_t ToHost(int8_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int16_t ToHost(int16_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int32_t ToHost(int32_t x) { __builtin_trap() /* STUB: not implemented */; }
+inline int64_t ToHost(int64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
 // Functions to do unaligned loads and stores in big-endian order.
-inline uint16_t Load16(const void* absl_nonnull p) {
-  return ToHost16(ABSL_INTERNAL_UNALIGNED_LOAD16(p));
-}
+inline uint16_t Load16(const void* absl_nonnull p) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Store16(void* absl_nonnull p, uint16_t v) {
-  ABSL_INTERNAL_UNALIGNED_STORE16(p, FromHost16(v));
-}
+inline void Store16(void* absl_nonnull p, uint16_t v) { __builtin_trap() /* STUB: not implemented */; }
 
-inline uint32_t Load32(const void* absl_nonnull p) {
-  return ToHost32(ABSL_INTERNAL_UNALIGNED_LOAD32(p));
-}
+inline uint32_t Load32(const void* absl_nonnull p) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Store32(void* absl_nonnull p, uint32_t v) {
-  ABSL_INTERNAL_UNALIGNED_STORE32(p, FromHost32(v));
-}
+inline void Store32(void* absl_nonnull p, uint32_t v) { __builtin_trap() /* STUB: not implemented */; }
 
-inline uint64_t Load64(const void* absl_nonnull p) {
-  return ToHost64(ABSL_INTERNAL_UNALIGNED_LOAD64(p));
-}
+inline uint64_t Load64(const void* absl_nonnull p) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Store64(void* absl_nonnull p, uint64_t v) {
-  ABSL_INTERNAL_UNALIGNED_STORE64(p, FromHost64(v));
-}
+inline void Store64(void* absl_nonnull p, uint64_t v) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace big_endian
 

@@ -180,19 +180,13 @@ TEST(StrReplaceAll, ReplacementsInPlaceInMap) {
 
 struct Cont {
   Cont() = default;
-  explicit Cont(absl::string_view src) : data(src) {}
+  explicit Cont(absl::string_view src) : data(src) { __builtin_trap() /* STUB: not implemented */; }
 
   absl::string_view data;
 };
 
 template <int index>
-absl::string_view get(const Cont& c) {
-  auto splitter = absl::StrSplit(c.data, ':');
-  auto it = splitter.begin();
-  for (int i = 0; i < index; ++i) ++it;
-
-  return *it;
-}
+absl::string_view get(const Cont& c) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StrReplaceAll, VariableNumber) {
   std::string s;

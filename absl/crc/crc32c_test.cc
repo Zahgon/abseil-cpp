@@ -69,14 +69,7 @@ TEST(CRC32C, RFC3720) {
             absl::crc32c_t{0xd9963a56});
 }
 
-std::string TestString(size_t len) {
-  std::string result;
-  result.reserve(len);
-  for (size_t i = 0; i < len; ++i) {
-    result.push_back(static_cast<char>(i % 256));
-  }
-  return result;
-}
+std::string TestString(size_t len) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(CRC32C, Compute) {
   EXPECT_EQ(absl::ComputeCrc32c(""), absl::crc32c_t{0});

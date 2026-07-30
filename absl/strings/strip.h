@@ -46,11 +46,7 @@ ABSL_NAMESPACE_BEGIN
 //   EXPECT_TRUE(absl::ConsumePrefix(&input, "a"));
 //   EXPECT_EQ(input, "bc");
 inline constexpr bool ConsumePrefix(absl::string_view* absl_nonnull str,
-                                    absl::string_view expected) {
-  if (!absl::StartsWith(*str, expected)) return false;
-  str->remove_prefix(expected.size());
-  return true;
-}
+                                    absl::string_view expected) { return {}; }
 // ConsumeSuffix()
 //
 // Strips the `expected` suffix, if found, from the end of `str`.
@@ -63,11 +59,7 @@ inline constexpr bool ConsumePrefix(absl::string_view* absl_nonnull str,
 //   EXPECT_TRUE(absl::ConsumeSuffix(&input, "def"));
 //   EXPECT_EQ(input, "abc");
 inline constexpr bool ConsumeSuffix(absl::string_view* absl_nonnull str,
-                                    absl::string_view expected) {
-  if (!absl::EndsWith(*str, expected)) return false;
-  str->remove_suffix(expected.size());
-  return true;
-}
+                                    absl::string_view expected) { return {}; }
 
 // StripPrefix()
 //
@@ -76,10 +68,7 @@ inline constexpr bool ConsumeSuffix(absl::string_view* absl_nonnull str,
 // start of the string, returns the original string instead.
 [[nodiscard]] inline constexpr absl::string_view StripPrefix(
     absl::string_view str ABSL_ATTRIBUTE_LIFETIME_BOUND,
-    absl::string_view prefix) {
-  if (absl::StartsWith(str, prefix)) str.remove_prefix(prefix.size());
-  return str;
-}
+    absl::string_view prefix) { return {}; }
 
 // StripSuffix()
 //
@@ -88,10 +77,7 @@ inline constexpr bool ConsumeSuffix(absl::string_view* absl_nonnull str,
 // end of the string, returns the original string instead.
 [[nodiscard]] inline constexpr absl::string_view StripSuffix(
     absl::string_view str ABSL_ATTRIBUTE_LIFETIME_BOUND,
-    absl::string_view suffix) {
-  if (absl::EndsWith(str, suffix)) str.remove_suffix(suffix.size());
-  return str;
-}
+    absl::string_view suffix) { return {}; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

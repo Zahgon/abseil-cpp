@@ -142,14 +142,11 @@ struct ViableSubstitution {
 
   ViableSubstitution(absl::string_view old_str,
                      absl::string_view replacement_str, size_t offset_val)
-      : old(old_str), replacement(replacement_str), offset(offset_val) {}
+      : old(old_str), replacement(replacement_str), offset(offset_val) { __builtin_trap() /* STUB: not implemented */; }
 
   // One substitution occurs "before" another (takes priority) if either
   // it has the lowest offset, or it has the same offset but a larger size.
-  bool OccursBefore(const ViableSubstitution& y) const {
-    if (offset != y.offset) return offset < y.offset;
-    return old.size() > y.old.size();
-  }
+  bool OccursBefore(const ViableSubstitution& y) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // Build a vector of ViableSubstitutions based on the given list of
@@ -158,33 +155,7 @@ struct ViableSubstitution {
 // overhead of such a queue isn't worth it.
 template <typename StrToStrMapping>
 std::vector<ViableSubstitution> FindSubstitutions(
-    absl::string_view s, const StrToStrMapping& replacements) {
-  std::vector<ViableSubstitution> subs;
-  subs.reserve(replacements.size());
-
-  for (const auto& rep : replacements) {
-    using std::get;
-    absl::string_view old(get<0>(rep));
-
-    size_t pos = s.find(old);
-    if (pos == s.npos) continue;
-
-    // Ignore attempts to replace "". This condition is almost never true,
-    // but above condition is frequently true. That's why we test for this
-    // now and not before.
-    if (old.empty()) continue;
-
-    subs.emplace_back(old, get<1>(rep), pos);
-
-    // Insertion sort to ensure the last ViableSubstitution comes before
-    // all the others.
-    size_t index = subs.size();
-    while (--index && subs[index - 1].OccursBefore(subs[index])) {
-      std::swap(subs[index], subs[index - 1]);
-    }
-  }
-  return subs;
-}
+    absl::string_view s, const StrToStrMapping& replacements) { __builtin_trap() /* STUB: not implemented */; }
 
 int ApplySubstitutions(absl::string_view s,
                        std::vector<ViableSubstitution>* absl_nonnull subs_ptr,
@@ -194,27 +165,11 @@ int ApplySubstitutions(absl::string_view s,
 
 template <typename StrToStrMapping>
 std::string StrReplaceAll(absl::string_view s,
-                          const StrToStrMapping& replacements) {
-  auto subs = strings_internal::FindSubstitutions(s, replacements);
-  std::string result;
-  result.reserve(s.size());
-  strings_internal::ApplySubstitutions(s, &subs, &result);
-  return result;
-}
+                          const StrToStrMapping& replacements) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename StrToStrMapping>
 int StrReplaceAll(const StrToStrMapping& replacements,
-                  std::string* absl_nonnull target) {
-  auto subs = strings_internal::FindSubstitutions(*target, replacements);
-  if (subs.empty()) return 0;
-
-  std::string result;
-  result.reserve(target->size());
-  int substitutions =
-      strings_internal::ApplySubstitutions(*target, &subs, &result);
-  target->swap(result);
-  return substitutions;
-}
+                  std::string* absl_nonnull target) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

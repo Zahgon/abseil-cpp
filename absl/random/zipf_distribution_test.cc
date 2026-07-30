@@ -108,9 +108,9 @@ TYPED_TEST(ZipfDistributionTypedTest, SerializeTest) {
 
 class ZipfModel {
  public:
-  ZipfModel(size_t k, double q, double v) : k_(k), q_(q), v_(v) {}
+  ZipfModel(size_t k, double q, double v) : k_(k), q_(q), v_(v) { __builtin_trap() /* STUB: not implemented */; }
 
-  double mean() const { return mean_; }
+  double mean() const { __builtin_trap() /* STUB: not implemented */; }
 
   // For the other moments of the Zipf distribution, see, for example,
   // http://mathworld.wolfram.com/ZipfDistribution.html
@@ -135,20 +135,7 @@ class ZipfModel {
   // The InverseCDF returns the k values which bound p on the upper and lower
   // bound. Since there is no closed-form solution, this is implemented as a
   // bisction of the cdf.
-  std::pair<size_t, size_t> InverseCDF(double p) {
-    size_t min = 0;
-    size_t max = hnq_.size();
-    while (max > min + 1) {
-      size_t target = (max + min) >> 1;
-      double x = CDF(target);
-      if (x > p) {
-        max = target;
-      } else {
-        min = target;
-      }
-    }
-    return {min, max};
-  }
+  std::pair<size_t, size_t> InverseCDF(double p) { __builtin_trap() /* STUB: not implemented */; }
 
   // Compute the probability totals, which are based on the generalized harmonic
   // number, H(N,s).
@@ -161,40 +148,7 @@ class ZipfModel {
   // Given the parameter v = 1, this gives the following function:
   // (Hn(100, 1) - Hn(1,1)) / (Hn(100,2) - Hn(1,2)) = 6.5944
   //
-  void Init() {
-    if (!hnq_.empty()) {
-      return;
-    }
-    hnq_.clear();
-    hnq_.reserve(std::min(k_, size_t{1000}));
-
-    sum_hnq_ = 0;
-    double qm1 = q_ - 1.0;
-    double sum_hnq_m1 = 0;
-    for (size_t i = 0; i < k_; i++) {
-      // Partial n-th generalized harmonic number
-      const double x = v_ + i;
-
-      // H(n, q-1)
-      const double hnqm1 = (q_ == 2.0)   ? (1.0 / x)
-                           : (q_ == 3.0) ? (1.0 / (x * x))
-                                         : std::pow(x, -qm1);
-      sum_hnq_m1 += hnqm1;
-
-      // H(n, q)
-      const double hnq = (q_ == 2.0)   ? (1.0 / (x * x))
-                         : (q_ == 3.0) ? (1.0 / (x * x * x))
-                                       : std::pow(x, -q_);
-      sum_hnq_ += hnq;
-      hnq_.push_back(hnq);
-      if (i > 1000 && hnq <= 1e-10) {
-        // The harmonic number is too small.
-        break;
-      }
-    }
-    assert(sum_hnq_ > 0);
-    mean_ = sum_hnq_m1 / sum_hnq_;
-  }
+  void Init() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   const size_t k_;
@@ -211,7 +165,7 @@ using zipf_u64 = absl::zipf_distribution<uint64_t>;
 class ZipfTest : public testing::TestWithParam<zipf_u64::param_type>,
                  public ZipfModel {
  public:
-  ZipfTest() : ZipfModel(GetParam().k(), GetParam().q(), GetParam().v()) {}
+  ZipfTest() : ZipfModel(GetParam().k(), GetParam().q(), GetParam().v()) { __builtin_trap() /* STUB: not implemented */; }
 
   // We use a fixed bit generator for distribution accuracy tests.  This allows
   // these tests to be deterministic, while still testing the qualify of the
@@ -316,32 +270,10 @@ TEST_P(ZipfTest, ChiSquaredTest) {
   }
 }
 
-std::vector<zipf_u64::param_type> GenParams() {
-  using param = zipf_u64::param_type;
-  const auto k = param().k();
-  const auto q = param().q();
-  const auto v = param().v();
-  const uint64_t k2 = 1 << 10;
-  return std::vector<zipf_u64::param_type>{
-      // Default
-      param(k, q, v),
-      // vary K
-      param(4, q, v), param(1 << 4, q, v), param(k2, q, v),
-      // vary V
-      param(k2, q, 0.5), param(k2, q, 1.5), param(k2, q, 2.5), param(k2, q, 10),
-      // vary Q
-      param(k2, 1.5, v), param(k2, 3, v), param(k2, 5, v), param(k2, 10, v),
-      // Vary V & Q
-      param(k2, 1.5, 0.5), param(k2, 3, 1.5), param(k, 10, 10)};
-}
+std::vector<zipf_u64::param_type> GenParams() { __builtin_trap() /* STUB: not implemented */; }
 
 std::string ParamName(
-    const ::testing::TestParamInfo<zipf_u64::param_type>& info) {
-  const auto& p = info.param;
-  std::string name = absl::StrCat("k_", p.k(), "__q_", absl::SixDigits(p.q()),
-                                  "__v_", absl::SixDigits(p.v()));
-  return absl::StrReplaceAll(name, {{"+", "_"}, {"-", "_"}, {".", "_"}});
-}
+    const ::testing::TestParamInfo<zipf_u64::param_type>& info) { __builtin_trap() /* STUB: not implemented */; }
 
 INSTANTIATE_TEST_SUITE_P(All, ZipfTest, ::testing::ValuesIn(GenParams()),
                          ParamName);

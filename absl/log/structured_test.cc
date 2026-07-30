@@ -38,11 +38,7 @@ auto *test_env ABSL_ATTRIBUTE_UNUSED = ::testing::AddGlobalTestEnvironment(
 
 // Abseil Logging library uses these by default, so we set them on the
 // `std::ostream` we compare against too.
-std::ios &LoggingDefaults(std::ios &str) {
-  str.setf(std::ios_base::showbase | std::ios_base::boolalpha |
-           std::ios_base::internal);
-  return str;
-}
+std::ios &LoggingDefaults(std::ios &str) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StreamingFormatTest, LogAsLiteral) {
   std::ostringstream stream;

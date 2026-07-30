@@ -58,31 +58,18 @@ using ::testing::VariantWith;
 
 struct CopyDetector {
   CopyDetector() = default;
-  explicit CopyDetector(int xx) : x(xx) {}
+  explicit CopyDetector(int xx) : x(xx) { __builtin_trap() /* STUB: not implemented */; }
   CopyDetector(CopyDetector&& d) noexcept
-      : x(d.x), copied(false), moved(true) {}
-  CopyDetector(const CopyDetector& d) : x(d.x), copied(true), moved(false) {}
-  CopyDetector& operator=(const CopyDetector& c) {
-    x = c.x;
-    copied = true;
-    moved = false;
-    return *this;
-  }
-  CopyDetector& operator=(CopyDetector&& c) noexcept {
-    x = c.x;
-    copied = false;
-    moved = true;
-    return *this;
-  }
+      : x(d.x), copied(false), moved(true) { __builtin_trap() /* STUB: not implemented */; }
+  CopyDetector(const CopyDetector& d) : x(d.x), copied(true), moved(false) { __builtin_trap() /* STUB: not implemented */; }
+  CopyDetector& operator=(const CopyDetector& c) { __builtin_trap() /* STUB: not implemented */; }
+  CopyDetector& operator=(CopyDetector&& c) noexcept { __builtin_trap() /* STUB: not implemented */; }
   int x = 0;
   bool copied = false;
   bool moved = false;
 };
 
-testing::Matcher<const CopyDetector&> CopyDetectorHas(int a, bool b, bool c) {
-  return AllOf(Field(&CopyDetector::x, a), Field(&CopyDetector::moved, b),
-               Field(&CopyDetector::copied, c));
-}
+testing::Matcher<const CopyDetector&> CopyDetectorHas(int a, bool b, bool c) { __builtin_trap() /* STUB: not implemented */; }
 
 class Base1 {
  public:
@@ -104,7 +91,7 @@ class Derived : public Base1, public Base2 {
 
 class CopyNoAssign {
  public:
-  explicit CopyNoAssign(int value) : foo(value) {}
+  explicit CopyNoAssign(int value) : foo(value) { __builtin_trap() /* STUB: not implemented */; }
   CopyNoAssign(const CopyNoAssign& other) = default;
   int foo;
 
@@ -112,10 +99,7 @@ class CopyNoAssign {
   const CopyNoAssign& operator=(const CopyNoAssign&);
 };
 
-absl::StatusOr<std::unique_ptr<int>> ReturnUniquePtr() {
-  // Uses implicit constructor from T&&
-  return std::make_unique<int>(0);
-}
+absl::StatusOr<std::unique_ptr<int>> ReturnUniquePtr() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StatusOr, ElementType) {
   static_assert(std::is_same<absl::StatusOr<int>::value_type, int>(), "");
@@ -353,7 +337,7 @@ TEST(StatusOr, TestValueCtor) {
 
 struct Foo {
   const int x;
-  explicit Foo(int y) : x(y) {}
+  explicit Foo(int y) : x(y) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(StatusOr, InPlaceConstruction) {
@@ -363,7 +347,7 @@ TEST(StatusOr, InPlaceConstruction) {
 
 struct InPlaceHelper {
   InPlaceHelper(std::initializer_list<int> xs, std::unique_ptr<int> yy)
-      : x(xs), y(std::move(yy)) {}
+      : x(xs), y(std::move(yy)) { __builtin_trap() /* STUB: not implemented */; }
   const std::vector<int> x;
   std::unique_ptr<int> y;
 };
@@ -408,27 +392,12 @@ TEST(StatusOr, EmplaceInitializerList) {
 #ifdef ABSL_HAVE_EXCEPTIONS
 class ThrowOnEmplace {
  public:
-  explicit ThrowOnEmplace(int* counter, int val) : destructor_calls_(counter) {
-    if (val < 0) {
-      throw std::runtime_error("expected");
-    }
-    // While destructor_calls tracks the logic, ptr_ ensures that a double
-    // destruction actually results in a reliable crash. Performing a real heap
-    // allocation and deallocation (new/delete) guarantees that AddressSanitizer
-    // (ASAN) or the heap allocator will instantly catch the double-free if the
-    // bug regresses, rather than relying solely on the integer check.
-    ptr_ = new int(val);
-  }
+  explicit ThrowOnEmplace(int* counter, int val) : destructor_calls_(counter) { __builtin_trap() /* STUB: not implemented */; }
 
   ThrowOnEmplace(const ThrowOnEmplace&) = delete;
   ThrowOnEmplace& operator=(const ThrowOnEmplace&) = delete;
 
-  ~ThrowOnEmplace() {
-    if (destructor_calls_) {
-      ++(*destructor_calls_);
-    }
-    delete ptr_;
-  }
+  ~ThrowOnEmplace() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   int* destructor_calls_ = nullptr;
@@ -601,9 +570,9 @@ struct ImplicitConstructibleFromA {
   int x;
   bool moved;
   ImplicitConstructibleFromA(const A& a)  // NOLINT
-      : x(a.x), moved(false) {}
+      : x(a.x), moved(false) { __builtin_trap() /* STUB: not implemented */; }
   ImplicitConstructibleFromA(A&& a)  // NOLINT
-      : x(a.x), moved(true) {}
+      : x(a.x), moved(true) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(StatusOr, ImplicitConvertingConstructor) {
@@ -622,8 +591,8 @@ TEST(StatusOr, ImplicitConvertingConstructor) {
 struct ExplicitConstructibleFromA {
   int x;
   bool moved;
-  explicit ExplicitConstructibleFromA(const A& a) : x(a.x), moved(false) {}
-  explicit ExplicitConstructibleFromA(A&& a) : x(a.x), moved(true) {}
+  explicit ExplicitConstructibleFromA(const A& a) : x(a.x), moved(false) { __builtin_trap() /* STUB: not implemented */; }
+  explicit ExplicitConstructibleFromA(A&& a) : x(a.x), moved(true) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(StatusOr, ExplicitConvertingConstructor) {
@@ -645,13 +614,13 @@ TEST(StatusOr, ExplicitConvertingConstructor) {
 }
 
 struct ImplicitConstructibleFromBool {
-  ImplicitConstructibleFromBool(bool y) : x(y) {}  // NOLINT
+  ImplicitConstructibleFromBool(bool y) : x(y) { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
   bool x = false;
 };
 
 struct ConvertibleToBool {
-  explicit ConvertibleToBool(bool y) : x(y) {}
-  operator bool() const { return x; }  // NOLINT
+  explicit ConvertibleToBool(bool y) : x(y) { __builtin_trap() /* STUB: not implemented */; }
+  operator bool() const { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
   bool x = false;
 };
 
@@ -732,7 +701,7 @@ TEST(StatusOr, ConstExplicitConstruction) {
 
 struct ExplicitConstructibleFromInt {
   int x;
-  explicit ExplicitConstructibleFromInt(int y) : x(y) {}
+  explicit ExplicitConstructibleFromInt(int y) : x(y) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(StatusOr, ExplicitConstruction) {
@@ -815,8 +784,8 @@ struct Copyable {
 
 struct MoveOnly {
   MoveOnly() = default;
-  MoveOnly(MoveOnly&&) {}
-  MoveOnly& operator=(MoveOnly&&) { return *this; }
+  MoveOnly(MoveOnly&&) { __builtin_trap() /* STUB: not implemented */; }
+  MoveOnly& operator=(MoveOnly&&) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 struct NonMovable {
@@ -1090,33 +1059,21 @@ struct FromAssignableOnly {};
 struct MockValue {
   // Constructs `MockValue` from `FromConstructibleAssignableLvalue`.
   MockValue(const FromConstructibleAssignableLvalue&)  // NOLINT
-      : from_rvalue(false), assigned(false) {}
+      : from_rvalue(false), assigned(false) { __builtin_trap() /* STUB: not implemented */; }
   // Constructs `MockValue` from `FromConstructibleAssignableRvalue`.
   MockValue(FromConstructibleAssignableRvalue&&)  // NOLINT
-      : from_rvalue(true), assigned(false) {}
+      : from_rvalue(true), assigned(false) { __builtin_trap() /* STUB: not implemented */; }
   // Constructs `MockValue` from `FromImplicitConstructibleOnly`.
   // `MockValue` is not assignable from `FromImplicitConstructibleOnly`.
   MockValue(const FromImplicitConstructibleOnly&)  // NOLINT
-      : from_rvalue(false), assigned(false) {}
+      : from_rvalue(false), assigned(false) { __builtin_trap() /* STUB: not implemented */; }
   // Assigns `FromConstructibleAssignableLvalue`.
-  MockValue& operator=(const FromConstructibleAssignableLvalue&) {
-    from_rvalue = false;
-    assigned = true;
-    return *this;
-  }
+  MockValue& operator=(const FromConstructibleAssignableLvalue&) { __builtin_trap() /* STUB: not implemented */; }
   // Assigns `FromConstructibleAssignableRvalue` (rvalue only).
-  MockValue& operator=(FromConstructibleAssignableRvalue&&) {
-    from_rvalue = true;
-    assigned = true;
-    return *this;
-  }
+  MockValue& operator=(FromConstructibleAssignableRvalue&&) { __builtin_trap() /* STUB: not implemented */; }
   // Assigns `FromAssignableOnly`, but not constructible from
   // `FromAssignableOnly`.
-  MockValue& operator=(const FromAssignableOnly&) {
-    from_rvalue = false;
-    assigned = true;
-    return *this;
-  }
+  MockValue& operator=(const FromAssignableOnly&) { __builtin_trap() /* STUB: not implemented */; }
   bool from_rvalue;
   bool assigned;
 };
@@ -1453,7 +1410,7 @@ TEST(StatusOr, MoveOnlyValueOrDefault) {
               Pointee(-1));
 }
 
-static absl::StatusOr<int> MakeStatus() { return 100; }
+static absl::StatusOr<int> MakeStatus() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StatusOr, TestIgnoreError) { MakeStatus().IgnoreError(); }
 
@@ -1481,7 +1438,7 @@ TEST(StatusOr, EqualityOperator) {
 }
 
 struct MyType {
-  bool operator==(const MyType&) const { return true; }
+  bool operator==(const MyType&) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 enum class ConvTraits { kNone = 0, kImplicit = 1, kExplicit = 2 };
@@ -1493,22 +1450,14 @@ struct StatusOrConversionBase {};
 
 template <typename T>
 struct StatusOrConversionBase<T, ConvTraits::kImplicit> {
-  operator absl::StatusOr<T>() const& {  // NOLINT
-    return absl::InvalidArgumentError("conversion to absl::StatusOr");
-  }
-  operator absl::StatusOr<T>() && {  // NOLINT
-    return absl::InvalidArgumentError("conversion to absl::StatusOr");
-  }
+  operator absl::StatusOr<T>() const& { __builtin_trap() /* STUB: not implemented */; }
+  operator absl::StatusOr<T>() && { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename T>
 struct StatusOrConversionBase<T, ConvTraits::kExplicit> {
-  explicit operator absl::StatusOr<T>() const& {
-    return absl::InvalidArgumentError("conversion to absl::StatusOr");
-  }
-  explicit operator absl::StatusOr<T>() && {
-    return absl::InvalidArgumentError("conversion to absl::StatusOr");
-  }
+  explicit operator absl::StatusOr<T>() const& { __builtin_trap() /* STUB: not implemented */; }
+  explicit operator absl::StatusOr<T>() && { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // This class has conversion operator to `T` based on the value of
@@ -1518,15 +1467,15 @@ struct ConversionBase {};
 
 template <typename T>
 struct ConversionBase<T, ConvTraits::kImplicit> {
-  operator T() const& { return t; }         // NOLINT
-  operator T() && { return std::move(t); }  // NOLINT
+  operator T() const& { __builtin_trap() /* STUB: not implemented */; }         // NOLINT
+  operator T() && { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
   T t;
 };
 
 template <typename T>
 struct ConversionBase<T, ConvTraits::kExplicit> {
-  explicit operator T() const& { return t; }
-  explicit operator T() && { return std::move(t); }
+  explicit operator T() const& { __builtin_trap() /* STUB: not implemented */; }
+  explicit operator T() && { __builtin_trap() /* STUB: not implemented */; }
   T t;
 };
 
@@ -1537,22 +1486,14 @@ struct StatusConversionBase {};
 
 template <>
 struct StatusConversionBase<ConvTraits::kImplicit> {
-  operator absl::Status() const& {  // NOLINT
-    return absl::InternalError("conversion to Status");
-  }
-  operator absl::Status() && {  // NOLINT
-    return absl::InternalError("conversion to Status");
-  }
+  operator absl::Status() const& { __builtin_trap() /* STUB: not implemented */; }
+  operator absl::Status() && { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <>
 struct StatusConversionBase<ConvTraits::kExplicit> {
-  explicit operator absl::Status() const& {  // NOLINT
-    return absl::InternalError("conversion to Status");
-  }
-  explicit operator absl::Status() && {  // NOLINT
-    return absl::InternalError("conversion to Status");
-  }
+  explicit operator absl::Status() const& { __builtin_trap() /* STUB: not implemented */; }
+  explicit operator absl::Status() && { __builtin_trap() /* STUB: not implemented */; }
 };
 
 static constexpr int kConvToStatus = 1;
@@ -1560,12 +1501,7 @@ static constexpr int kConvToStatusOr = 2;
 static constexpr int kConvToT = 4;
 static constexpr int kConvExplicit = 8;
 
-constexpr ConvTraits GetConvTraits(int bit, int config) {
-  return (config & bit) == 0
-             ? ConvTraits::kNone
-             : ((config & kConvExplicit) == 0 ? ConvTraits::kImplicit
-                                              : ConvTraits::kExplicit);
-}
+constexpr ConvTraits GetConvTraits(int bit, int config) { return {}; }
 
 // This class conditionally has conversion operator to `absl::Status`, `T`,
 // `StatusOr<T>`, based on values of the template parameters.
@@ -1577,9 +1513,7 @@ struct CustomType
 
 struct ConvertibleToAnyStatusOr {
   template <typename T>
-  operator absl::StatusOr<T>() const {  // NOLINT
-    return absl::InvalidArgumentError("Conversion to absl::StatusOr");
-  }
+  operator absl::StatusOr<T>() const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // Test the rank of overload resolution for `StatusOr<T>` constructor and
@@ -1815,14 +1749,10 @@ TEST(StatusOr, StatusAssignmentFromTypeConvertibleToStatus) {
 }
 
 struct PrintTestStruct {
-  friend std::ostream& operator<<(std::ostream& os, const PrintTestStruct&) {
-    return os << "ostream";
-  }
+  friend std::ostream& operator<<(std::ostream& os, const PrintTestStruct&) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename Sink>
-  friend void AbslStringify(Sink& sink, const PrintTestStruct&) {
-    sink.Append("stringify");
-  }
+  friend void AbslStringify(Sink& sink, const PrintTestStruct&) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(StatusOr, OkPrinting) {
@@ -1854,17 +1784,7 @@ TEST(StatusOr, ErrorPrinting) {
 template <typename T>
 void CheckSourceLocation(
     const absl::StatusOr<T>& status_or, std::vector<int> lines = {},
-    absl::SourceLocation loc = absl::SourceLocation::current()) {
-  ASSERT_EQ(status_or.GetSourceLocations().size(), lines.size())
-      << "Size check failed at " << loc.line();
-  for (size_t i = 0; i < lines.size(); ++i) {
-    EXPECT_EQ(absl::string_view(status_or.GetSourceLocations()[i].file_name()),
-              absl::string_view(loc.file_name()))
-        << "File name check failed at " << loc.line();
-    EXPECT_EQ(status_or.GetSourceLocations()[i].line(), lines[i])
-        << "Line check failed at " << loc.line();
-  }
-}
+    absl::SourceLocation loc = absl::SourceLocation::current()) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StatusOr, AddSourceLocation) {
   constexpr int kMaxIter = 10;
@@ -1905,9 +1825,7 @@ TEST(StatusOr, AddSourceLocation) {
   }
 }
 
-absl::StatusOr<int>&& IsRvalueStatus(absl::StatusOr<int>&& s) {
-  return std::move(s);
-}
+absl::StatusOr<int>&& IsRvalueStatus(absl::StatusOr<int>&& s) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StatusOr, WithSourceLocationMove) {
   absl::StatusOr<int> original = absl::Status(
@@ -2230,10 +2148,7 @@ TEST(StatusOr, ReferenceIsNotLifetimeBoundForStarValue) {
 }
 
 template <typename Expected, typename T>
-void TestReferenceDeref() {
-  static_assert(std::is_same_v<Expected, decltype(*std::declval<T>())>);
-  static_assert(std::is_same_v<Expected, decltype(std::declval<T>().value())>);
-}
+void TestReferenceDeref() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StatusOr, ReferenceTypeIsMaintainedOnDeref) {
   TestReferenceDeref<int&, absl::StatusOr<int&>&>();

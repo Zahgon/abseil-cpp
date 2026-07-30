@@ -38,24 +38,16 @@ class forward_list_queue {
   ~forward_list_queue() = default;
 
   template <typename... Args>
-  void emplace_back(Args&&... args) {
-    if (list_.empty()) {
-      list_.emplace_front(std::forward<Args>(args)...);
-      tail_ = list_.begin();
-    } else {
-      list_.emplace_after(tail_, std::forward<Args>(args)...);
-      ++tail_;
-    }
-  }
+  void emplace_back(Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
-  void push_back(const T& value) { emplace_back(value); }
-  iterator begin() { return list_.begin(); }
-  iterator end() { return list_.end(); }
-  T& front() { return list_.front(); }
-  const T& front() const { return list_.front(); }
-  void pop_front() { list_.pop_front(); }
-  bool empty() const { return list_.empty(); }
-  void clear() { list_.clear(); }
+  void push_back(const T& value) { __builtin_trap() /* STUB: not implemented */; }
+  iterator begin() { __builtin_trap() /* STUB: not implemented */; }
+  iterator end() { __builtin_trap() /* STUB: not implemented */; }
+  T& front() { __builtin_trap() /* STUB: not implemented */; }
+  const T& front() const { __builtin_trap() /* STUB: not implemented */; }
+  void pop_front() { __builtin_trap() /* STUB: not implemented */; }
+  bool empty() const { __builtin_trap() /* STUB: not implemented */; }
+  void clear() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   std::forward_list<T> list_;
@@ -75,9 +67,9 @@ using ExpChunked = absl::chunked_queue<T, 2, 64>;
 
 class Element {
  public:
-  Element() : Element(-1) {}
-  Element(int type) : type_(type) {}      // NOLINT
-  operator int() const { return type_; }  // NOLINT
+  Element() : Element(-1) { __builtin_trap() /* STUB: not implemented */; }
+  Element(int type) : type_(type) { __builtin_trap() /* STUB: not implemented */; }      // NOLINT
+  operator int() const { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
 
  private:
   int type_;
@@ -86,27 +78,12 @@ class Element {
 };
 
 template <class Q>
-Q MakeQueue(int64_t num_elements) {
-  Q q;
-  for (int64_t i = 0; i < num_elements; i++) {
-    q.push_back(static_cast<int>(i));
-  }
-  return q;
-}
+Q MakeQueue(int64_t num_elements) { __builtin_trap() /* STUB: not implemented */; }
 
-void CustomArgs(benchmark::internal::Benchmark* b) {
-  b->Arg(1 << 4);
-  b->Arg(1 << 10);
-  b->Arg(1 << 17);
-}
+void CustomArgs(benchmark::internal::Benchmark* b) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class Q>
-void BM_construct(benchmark::State& state) {
-  for (auto s : state) {
-    Q q;
-    benchmark::DoNotOptimize(q);
-  }
-}
+void BM_construct(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 BENCHMARK_TEMPLATE(BM_construct, Deque<int64_t>);
 BENCHMARK_TEMPLATE(BM_construct, List<int64_t>);
@@ -120,19 +97,7 @@ BENCHMARK_TEMPLATE(BM_construct, Chunked<Element>);
 BENCHMARK_TEMPLATE(BM_construct, ExpChunked<Element>);
 
 template <class Q>
-void BM_destroy(benchmark::State& state) {
-  const int64_t num_elements = state.range(0);
-
-  for (auto s : state) {
-    state.PauseTiming();
-    {
-      Q q = MakeQueue<Q>(num_elements);
-      benchmark::DoNotOptimize(q);
-      state.ResumeTiming();
-    }
-  }
-  state.SetItemsProcessed(state.iterations() * num_elements);
-}
+void BM_destroy(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 BENCHMARK_TEMPLATE(BM_destroy, Deque<int64_t>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_destroy, List<int64_t>)->Apply(CustomArgs);
@@ -146,18 +111,7 @@ BENCHMARK_TEMPLATE(BM_destroy, Chunked<Element>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_destroy, ExpChunked<Element>)->Apply(CustomArgs);
 
 template <class Q>
-void BM_push_back(benchmark::State& state) {
-  const int64_t num_elements = state.range(0);
-
-  state.SetItemsProcessed(state.max_iterations * num_elements);
-  for (auto s : state) {
-    state.PauseTiming();
-    Q q;
-    state.ResumeTiming();
-    for (int j = 0; j < num_elements; j++) q.push_back(j);
-    benchmark::DoNotOptimize(q);
-  }
-}
+void BM_push_back(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 BENCHMARK_TEMPLATE(BM_push_back, Deque<int64_t>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_push_back, List<int64_t>)->Apply(CustomArgs);
@@ -171,18 +125,7 @@ BENCHMARK_TEMPLATE(BM_push_back, Chunked<Element>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_push_back, ExpChunked<Element>)->Apply(CustomArgs);
 
 template <class Q>
-void BM_pop_front(benchmark::State& state) {
-  const int64_t num_elements = state.range(0);
-
-  state.SetItemsProcessed(state.max_iterations * num_elements);
-  for (auto s : state) {
-    state.PauseTiming();
-    Q q = MakeQueue<Q>(num_elements);
-    state.ResumeTiming();
-    for (int j = 0; j < num_elements; j++) q.pop_front();
-    benchmark::DoNotOptimize(q);
-  }
-}
+void BM_pop_front(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 BENCHMARK_TEMPLATE(BM_pop_front, Deque<int64_t>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_pop_front, List<int64_t>)->Apply(CustomArgs);
@@ -196,18 +139,7 @@ BENCHMARK_TEMPLATE(BM_pop_front, Chunked<Element>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_pop_front, ExpChunked<Element>)->Apply(CustomArgs);
 
 template <class Q>
-void BM_clear(benchmark::State& state) {
-  const int64_t num_elements = state.range(0);
-
-  state.SetItemsProcessed(state.max_iterations * num_elements);
-  for (auto s : state) {
-    state.PauseTiming();
-    Q q = MakeQueue<Q>(num_elements);
-    state.ResumeTiming();
-    q.clear();
-    benchmark::DoNotOptimize(q);
-  }
-}
+void BM_clear(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 BENCHMARK_TEMPLATE(BM_clear, Deque<int64_t>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_clear, List<int64_t>)->Apply(CustomArgs);
@@ -221,19 +153,7 @@ BENCHMARK_TEMPLATE(BM_clear, Chunked<Element>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_clear, ExpChunked<Element>)->Apply(CustomArgs);
 
 template <class Q>
-void BM_iter(benchmark::State& state) {
-  const int64_t num_elements = state.range(0);
-
-  state.SetItemsProcessed(state.max_iterations * num_elements);
-  for (auto s : state) {
-    state.PauseTiming();
-    Q q = MakeQueue<Q>(state.max_iterations);
-    int sum = 0;
-    state.ResumeTiming();
-    for (const auto& v : q) sum += v;
-    benchmark::DoNotOptimize(sum);
-  }
-}
+void BM_iter(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 BENCHMARK_TEMPLATE(BM_iter, Deque<int64_t>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_iter, List<int64_t>)->Apply(CustomArgs);
@@ -247,18 +167,7 @@ BENCHMARK_TEMPLATE(BM_iter, Chunked<Element>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_iter, ExpChunked<Element>)->Apply(CustomArgs);
 
 template <class Q>
-void BM_resize_shrink(benchmark::State& state) {
-  const int64_t num_elements = state.range(0);
-
-  state.SetItemsProcessed(state.max_iterations * num_elements);
-  for (auto s : state) {
-    state.PauseTiming();
-    Q q = MakeQueue<Q>(num_elements * 2);
-    state.ResumeTiming();
-    q.resize(num_elements);
-    benchmark::DoNotOptimize(q);
-  }
-}
+void BM_resize_shrink(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 // FwdList does not support resize.
 BENCHMARK_TEMPLATE(BM_resize_shrink, Deque<int64_t>)->Apply(CustomArgs);
@@ -273,18 +182,7 @@ BENCHMARK_TEMPLATE(BM_resize_shrink, Chunked<Element>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_resize_shrink, ExpChunked<Element>)->Apply(CustomArgs);
 
 template <class Q>
-void BM_resize_grow(benchmark::State& state) {
-  const int64_t num_elements = state.range(0);
-
-  state.SetItemsProcessed(state.max_iterations * num_elements);
-  for (auto s : state) {
-    state.PauseTiming();
-    Q q = MakeQueue<Q>(num_elements);
-    state.ResumeTiming();
-    q.resize(static_cast<size_t>(num_elements) * 2);
-    benchmark::DoNotOptimize(q);
-  }
-}
+void BM_resize_grow(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 // FwdList does not support resize.
 BENCHMARK_TEMPLATE(BM_resize_grow, Deque<int64_t>)->Apply(CustomArgs);
@@ -299,19 +197,7 @@ BENCHMARK_TEMPLATE(BM_resize_grow, Chunked<Element>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_resize_grow, ExpChunked<Element>)->Apply(CustomArgs);
 
 template <class Q>
-void BM_assign_shrink(benchmark::State& state) {
-  const int64_t num_elements = state.range(0);
-
-  state.SetItemsProcessed(state.max_iterations * num_elements);
-  for (auto s : state) {
-    state.PauseTiming();
-    const Q src = MakeQueue<Q>(num_elements);
-    Q dst = MakeQueue<Q>(num_elements * 2);
-    state.ResumeTiming();
-    dst = src;
-    benchmark::DoNotOptimize(dst);
-  }
-}
+void BM_assign_shrink(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 BENCHMARK_TEMPLATE(BM_assign_shrink, Deque<int64_t>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_assign_shrink, List<int64_t>)->Apply(CustomArgs);
@@ -325,19 +211,7 @@ BENCHMARK_TEMPLATE(BM_assign_shrink, Chunked<Element>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_assign_shrink, ExpChunked<Element>)->Apply(CustomArgs);
 
 template <class Q>
-void BM_assign_grow(benchmark::State& state) {
-  const int64_t num_elements = state.range(0);
-
-  state.SetItemsProcessed(state.max_iterations * num_elements);
-  for (auto s : state) {
-    state.PauseTiming();
-    const Q src = MakeQueue<Q>(num_elements * 2);
-    Q dst = MakeQueue<Q>(num_elements);
-    state.ResumeTiming();
-    dst = src;
-    benchmark::DoNotOptimize(dst);
-  }
-}
+void BM_assign_grow(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 BENCHMARK_TEMPLATE(BM_assign_grow, Deque<int64_t>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_assign_grow, List<int64_t>)->Apply(CustomArgs);
@@ -351,26 +225,7 @@ BENCHMARK_TEMPLATE(BM_assign_grow, Chunked<Element>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_assign_grow, ExpChunked<Element>)->Apply(CustomArgs);
 
 template <class Q>
-void BM_push_pop(benchmark::State& state) {
-  const int64_t num_elements = state.range(0);
-
-  state.SetItemsProcessed(state.max_iterations * num_elements);
-
-  std::mt19937 rnd;
-  for (auto s : state) {
-    state.PauseTiming();
-    Q q;
-    state.ResumeTiming();
-    for (int j = 0; j < num_elements; j++) {
-      if (q.empty() || absl::Bernoulli(rnd, 0.5)) {
-        q.push_back(state.iterations());
-      } else {
-        q.pop_front();
-      }
-    }
-    benchmark::DoNotOptimize(q);
-  }
-}
+void BM_push_pop(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 BENCHMARK_TEMPLATE(BM_push_pop, Deque<int64_t>)->Apply(CustomArgs);
 BENCHMARK_TEMPLATE(BM_push_pop, List<int64_t>)->Apply(CustomArgs);

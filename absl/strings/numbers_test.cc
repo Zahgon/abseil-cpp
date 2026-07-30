@@ -81,46 +81,7 @@ const int kFloatNumCases = 5000000;
 // This is a slow, brute-force routine to compute the exact base-10
 // representation of a double-precision floating-point number.  It
 // is useful for debugging only.
-std::string PerfectDtoa(double d) {
-  if (d == 0) return "0";
-  if (d < 0) return "-" + PerfectDtoa(-d);
-
-  // Basic theory: decompose d into mantissa and exp, where
-  // d = mantissa * 2^exp, and exp is as close to zero as possible.
-  int64_t mantissa, exp = 0;
-  while (d >= 1ULL << 63) ++exp, d *= 0.5;
-  while ((mantissa = d) != d) --exp, d *= 2.0;
-
-  // Then convert mantissa to ASCII, and either double it (if
-  // exp > 0) or halve it (if exp < 0) repeatedly.  "halve it"
-  // in this case means multiplying it by five and dividing by 10.
-  constexpr int maxlen = 1100;  // worst case is actually 1030 or so.
-  char buf[maxlen + 5];
-  for (int64_t num = mantissa, pos = maxlen; --pos >= 0;) {
-    buf[pos] = '0' + (num % 10);
-    num /= 10;
-  }
-  char* begin = &buf[0];
-  char* end = buf + maxlen;
-  for (int i = 0; i != exp; i += (exp > 0) ? 1 : -1) {
-    int carry = 0;
-    for (char* p = end; --p != begin;) {
-      int dig = *p - '0';
-      dig = dig * (exp > 0 ? 2 : 5) + carry;
-      carry = dig / 10;
-      dig %= 10;
-      *p = '0' + dig;
-    }
-  }
-  if (exp < 0) {
-    // "dividing by 10" above means we have to add the decimal point.
-    memmove(end + 1 + exp, end + exp, 1 - exp);
-    end[exp] = '.';
-    ++end;
-  }
-  while (*begin == '0' && begin[1] != '.') ++begin;
-  return {begin, end};
-}
+std::string PerfectDtoa(double d) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ToString, PerfectDtoa) {
   EXPECT_THAT(PerfectDtoa(1), Eq("1"));
@@ -141,22 +102,22 @@ TEST(ToString, PerfectDtoa) {
 template <typename integer>
 struct MyInteger {
   integer i;
-  explicit constexpr MyInteger(integer i) : i(i) {}
-  constexpr operator integer() const { return i; }
+  explicit constexpr MyInteger(integer i) : i(i) { }
+  constexpr operator integer() const { return {}; }
 
-  constexpr MyInteger operator+(MyInteger other) const { return i + other.i; }
-  constexpr MyInteger operator-(MyInteger other) const { return i - other.i; }
-  constexpr MyInteger operator*(MyInteger other) const { return i * other.i; }
-  constexpr MyInteger operator/(MyInteger other) const { return i / other.i; }
+  constexpr MyInteger operator+(MyInteger other) const { return {}; }
+  constexpr MyInteger operator-(MyInteger other) const { return {}; }
+  constexpr MyInteger operator*(MyInteger other) const { return {}; }
+  constexpr MyInteger operator/(MyInteger other) const { return {}; }
 
-  constexpr bool operator<(MyInteger other) const { return i < other.i; }
-  constexpr bool operator<=(MyInteger other) const { return i <= other.i; }
-  constexpr bool operator==(MyInteger other) const { return i == other.i; }
-  constexpr bool operator>=(MyInteger other) const { return i >= other.i; }
-  constexpr bool operator>(MyInteger other) const { return i > other.i; }
-  constexpr bool operator!=(MyInteger other) const { return i != other.i; }
+  constexpr bool operator<(MyInteger other) const { return {}; }
+  constexpr bool operator<=(MyInteger other) const { return {}; }
+  constexpr bool operator==(MyInteger other) const { return {}; }
+  constexpr bool operator>=(MyInteger other) const { return {}; }
+  constexpr bool operator>(MyInteger other) const { return {}; }
+  constexpr bool operator!=(MyInteger other) const { return {}; }
 
-  integer as_integer() const { return i; }
+  integer as_integer() const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 typedef MyInteger<int64_t> MyInt64;
@@ -164,93 +125,19 @@ typedef MyInteger<uint64_t> MyUInt64;
 typedef MyInteger<absl::uint128> MyUInt128;
 typedef MyInteger<absl::int128> MyInt128;
 
-void CheckInt32(int32_t x) {
-  char buffer[absl::numbers_internal::kFastToBufferSize];
-  char* actual = absl::numbers_internal::FastIntToBuffer(x, buffer);
-  std::string expected = std::to_string(x);
-  EXPECT_EQ(expected, std::string(buffer, actual)) << " Input " << x;
+void CheckInt32(int32_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-  char* generic_actual = absl::numbers_internal::FastIntToBuffer(x, buffer);
-  EXPECT_EQ(expected, std::string(buffer, generic_actual)) << " Input " << x;
-}
+void CheckInt64(int64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-void CheckInt64(int64_t x) {
-  char buffer[absl::numbers_internal::kFastToBufferSize + 3];
-  buffer[0] = '*';
-  buffer[23] = '*';
-  buffer[24] = '*';
-  char* actual = absl::numbers_internal::FastIntToBuffer(x, &buffer[1]);
-  std::string expected = std::to_string(x);
-  EXPECT_EQ(expected, std::string(&buffer[1], actual)) << " Input " << x;
-  EXPECT_EQ(buffer[0], '*');
-  EXPECT_EQ(buffer[23], '*');
-  EXPECT_EQ(buffer[24], '*');
+void CheckUInt32(uint32_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-  char* my_actual =
-      absl::numbers_internal::FastIntToBuffer(MyInt64(x), &buffer[1]);
-  EXPECT_EQ(expected, std::string(&buffer[1], my_actual)) << " Input " << x;
-}
+void CheckUInt64(uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
-void CheckUInt32(uint32_t x) {
-  char buffer[absl::numbers_internal::kFastToBufferSize];
-  char* actual = absl::numbers_internal::FastIntToBuffer(x, buffer);
-  std::string expected = std::to_string(x);
-  EXPECT_EQ(expected, std::string(buffer, actual)) << " Input " << x;
+void CheckUInt128(absl::uint128 x) { __builtin_trap() /* STUB: not implemented */; }
 
-  char* generic_actual = absl::numbers_internal::FastIntToBuffer(x, buffer);
-  EXPECT_EQ(expected, std::string(buffer, generic_actual)) << " Input " << x;
-}
+void CheckInt128(absl::int128 x) { __builtin_trap() /* STUB: not implemented */; }
 
-void CheckUInt64(uint64_t x) {
-  char buffer[absl::numbers_internal::kFastToBufferSize + 1];
-  char* actual = absl::numbers_internal::FastIntToBuffer(x, &buffer[1]);
-  std::string expected = std::to_string(x);
-  EXPECT_EQ(expected, std::string(&buffer[1], actual)) << " Input " << x;
-
-  char* generic_actual = absl::numbers_internal::FastIntToBuffer(x, &buffer[1]);
-  EXPECT_EQ(expected, std::string(&buffer[1], generic_actual))
-      << " Input " << x;
-
-  char* my_actual =
-      absl::numbers_internal::FastIntToBuffer(MyUInt64(x), &buffer[1]);
-  EXPECT_EQ(expected, std::string(&buffer[1], my_actual)) << " Input " << x;
-}
-
-void CheckUInt128(absl::uint128 x) {
-  char buffer[absl::numbers_internal::kFastToBuffer128Size];
-  char* actual = absl::numbers_internal::FastIntToBuffer(x, buffer);
-  std::string s;
-  absl::strings_internal::OStringStream strm(&s);
-  strm << x;
-  EXPECT_EQ(s, std::string(buffer, actual)) << " Input " << s;
-
-  char* my_actual =
-      absl::numbers_internal::FastIntToBuffer(MyUInt128(x), buffer);
-  EXPECT_EQ(s, std::string(buffer, my_actual)) << " Input " << s;
-}
-
-void CheckInt128(absl::int128 x) {
-  char buffer[absl::numbers_internal::kFastToBuffer128Size];
-  char* actual = absl::numbers_internal::FastIntToBuffer(x, buffer);
-  std::string s;
-  absl::strings_internal::OStringStream strm(&s);
-  strm << x;
-  EXPECT_EQ(s, std::string(buffer, actual)) << " Input " << s;
-
-  char* my_actual =
-      absl::numbers_internal::FastIntToBuffer(MyInt128(x), buffer);
-  EXPECT_EQ(s, std::string(buffer, my_actual)) << " Input " << s;
-}
-
-void CheckHex64(uint64_t v) {
-  char expected[16 + 1];
-  std::string actual = absl::StrCat(absl::Hex(v, absl::kZeroPad16));
-  snprintf(expected, sizeof(expected), "%016" PRIx64, static_cast<uint64_t>(v));
-  EXPECT_EQ(expected, actual) << " Input " << v;
-  actual = absl::StrCat(absl::Hex(v, absl::kSpacePad16));
-  snprintf(expected, sizeof(expected), "%16" PRIx64, static_cast<uint64_t>(v));
-  EXPECT_EQ(expected, actual) << " Input " << v;
-}
+void CheckHex64(uint64_t v) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Numbers, TestFastPrints) {
   for (int i = -100; i <= 100; i++) {
@@ -317,24 +204,10 @@ TEST(Numbers, TestFastPrints) {
 }
 
 template <typename int_type, typename in_val_type>
-void VerifySimpleAtoiGood(in_val_type in_value, int_type exp_value) {
-  std::string s = absl::StrCat(in_value);
-  int_type x = static_cast<int_type>(~exp_value);
-  EXPECT_TRUE(SimpleAtoi(s, &x))
-      << "in_value=" << in_value << " s=" << s << " x=" << x;
-  EXPECT_EQ(exp_value, x);
-  x = static_cast<int_type>(~exp_value);
-  EXPECT_TRUE(SimpleAtoi(s.c_str(), &x));
-  EXPECT_EQ(exp_value, x);
-}
+void VerifySimpleAtoiGood(in_val_type in_value, int_type exp_value) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename int_type, typename in_val_type>
-void VerifySimpleAtoiBad(in_val_type in_value) {
-  std::string s = absl::StrCat(in_value);
-  int_type x;
-  EXPECT_FALSE(SimpleAtoi(s, &x));
-  EXPECT_FALSE(SimpleAtoi(s.c_str(), &x));
-}
+void VerifySimpleAtoiBad(in_val_type in_value) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(NumbersTest, Atoi) {
   // SimpleAtoi(absl::string_view, int8_t)
@@ -806,50 +679,10 @@ TEST(NumbersTest, Atoenum) {
 }
 
 template <typename int_type, typename in_val_type>
-void VerifySimpleHexAtoiGood(in_val_type in_value, int_type exp_value) {
-  std::string s;
-  absl::strings_internal::OStringStream strm(&s);
-  if (in_value >= 0) {
-    if constexpr (std::is_arithmetic_v<in_val_type>) {
-      absl::StrAppend(&s, absl::Hex(in_value));
-    } else {
-      // absl::Hex doesn't work with absl::(u)int128.
-      strm << std::hex << in_value;
-    }
-  } else {
-    // Inefficient for small integers, but works with all integral types.
-    strm << "-" << std::hex << -absl::uint128(in_value);
-  }
-  int_type x = static_cast<int_type>(~exp_value);
-  EXPECT_TRUE(SimpleHexAtoi(s, &x))
-      << "in_value=" << std::hex << in_value << " s=" << s << " x=" << x;
-  EXPECT_EQ(exp_value, x);
-  x = static_cast<int_type>(~exp_value);
-  EXPECT_TRUE(SimpleHexAtoi(
-      s.c_str(), &x));  // NOLINT: readability-redundant-string-conversions
-  EXPECT_EQ(exp_value, x);
-}
+void VerifySimpleHexAtoiGood(in_val_type in_value, int_type exp_value) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename int_type, typename in_val_type>
-void VerifySimpleHexAtoiBad(in_val_type in_value) {
-  std::string s;
-  absl::strings_internal::OStringStream strm(&s);
-  if (in_value >= 0) {
-    if constexpr (std::is_arithmetic_v<in_val_type>) {
-      absl::StrAppend(&s, absl::Hex(in_value));
-    } else {
-      // absl::Hex doesn't work with absl::(u)int128.
-      strm << std::hex << in_value;
-    }
-  } else {
-    // Inefficient for small integers, but works with all integral types.
-    strm << "-" << std::hex << -absl::uint128(in_value);
-  }
-  int_type x;
-  EXPECT_FALSE(SimpleHexAtoi(s, &x));
-  EXPECT_FALSE(SimpleHexAtoi(
-      s.c_str(), &x));  // NOLINT: readability-redundant-string-conversions
-}
+void VerifySimpleHexAtoiBad(in_val_type in_value) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(NumbersTest, HexAtoi) {
   // SimpleHexAtoi(absl::string_view, int8_t)
@@ -1441,37 +1274,7 @@ const size_t kNumRandomTests = 10000;
 
 template <typename IntType,
           bool parse_func(absl::string_view, IntType* value, int base)>
-void test_random_integer_parse_base() {
-  absl::InsecureBitGen rng;
-  std::uniform_int_distribution<IntType> random_int(
-      std::numeric_limits<IntType>::min());
-  std::uniform_int_distribution<int> random_base(2, 36);
-  for (size_t i = 0; i < kNumRandomTests; i++) {
-    IntType value = random_int(rng);
-    int base = random_base(rng);
-    std::string str_value;
-    EXPECT_TRUE(Itoa<IntType>(value, base, &str_value));
-    IntType parsed_value;
-
-    // Test successful parse
-    EXPECT_TRUE(parse_func(str_value, &parsed_value, base));
-    EXPECT_EQ(parsed_value, value);
-
-    // Test overflow
-    EXPECT_FALSE(
-        parse_func(absl::StrCat(std::numeric_limits<IntType>::max(), value),
-                   &parsed_value, base));
-
-    // Test underflow
-    if (std::numeric_limits<IntType>::min() < 0) {
-      EXPECT_FALSE(
-          parse_func(absl::StrCat(std::numeric_limits<IntType>::min(), value),
-                     &parsed_value, base));
-    } else {
-      EXPECT_FALSE(parse_func(absl::StrCat("-", value), &parsed_value, base));
-    }
-  }
-}
+void test_random_integer_parse_base() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(stringtest, safe_strto16_random) {
   test_random_integer_parse_base<int16_t, safe_strto16_base>();
@@ -1691,30 +1494,11 @@ TEST(stringtest, safe_strtou64_base_length_delimited) {
 
 class SimpleDtoaTest : public testing::Test {
  protected:
-  void SetUp() override {
-    // Store the current floating point env & clear away any pending exceptions.
-    feholdexcept(&fp_env_);
-#ifdef ABSL_HAVE_FEENABLEEXCEPT
-    // Turn on floating point exceptions.
-    feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
-#endif
-  }
+  void SetUp() override { __builtin_trap() /* STUB: not implemented */; }
 
-  void TearDown() override {
-    // Restore the floating point environment to the original state.
-    // In theory fedisableexcept is unnecessary; fesetenv will also do it.
-    // In practice, our toolchains have subtle bugs.
-#ifdef ABSL_HAVE_FEDISABLEEXCEPT
-    fedisableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
-#endif
-    fesetenv(&fp_env_);
-  }
+  void TearDown() override { __builtin_trap() /* STUB: not implemented */; }
 
-  std::string ToNineDigits(double value) {
-    char buffer[16];  // more than enough for %.9g
-    snprintf(buffer, sizeof(buffer), "%.9g", value);
-    return buffer;
-  }
+  std::string ToNineDigits(double value) { __builtin_trap() /* STUB: not implemented */; }
 
   fenv_t fp_env_;
 };
@@ -1757,61 +1541,7 @@ TEST(SimpleDtoa, HighPrecisionIsLocaleIndependent) {
 // float, and then we add additional test cases evenly distributed between them.
 // Each test case is passed to runnable as both a positive and negative value.
 template <typename R>
-void ExhaustiveFloat(uint32_t cases, R&& runnable) {
-  runnable(0.0f);
-  runnable(-0.0f);
-  if (cases >= 2e9) {  // more than 2 billion?  Might as well run them all.
-    for (float f = 0; f < std::numeric_limits<float>::max(); ) {
-      f = nextafterf(f, std::numeric_limits<float>::max());
-      runnable(-f);
-      runnable(f);
-    }
-    return;
-  }
-  std::set<float> floats = {3.4028234e38f};
-  for (float f : {1.0, 3.14159265, 2.718281828, 1 / 2.718281828}) {
-    for (float testf = f; testf != 0; testf *= 0.1f) floats.insert(testf);
-    for (float testf = f; testf != 0; testf *= 0.5f) floats.insert(testf);
-    for (float testf = f; testf < 3e38f / 2; testf *= 2.0f)
-      floats.insert(testf);
-    for (float testf = f; testf < 3e38f / 10; testf *= 10) floats.insert(testf);
-  }
-
-  float last = *floats.begin();
-
-  runnable(last);
-  runnable(-last);
-  int iters_per_float = cases / floats.size();
-  if (iters_per_float == 0) iters_per_float = 1;
-  for (float f : floats) {
-    if (f == last) continue;
-    float testf = std::nextafter(last, std::numeric_limits<float>::max());
-    runnable(testf);
-    runnable(-testf);
-    last = testf;
-    if (f == last) continue;
-    double step = (double{f} - last) / iters_per_float;
-    for (double d = last + step; d < f; d += step) {
-      testf = d;
-      if (testf != last) {
-        runnable(testf);
-        runnable(-testf);
-        last = testf;
-      }
-    }
-    testf = std::nextafter(f, 0.0f);
-    if (testf > last) {
-      runnable(testf);
-      runnable(-testf);
-      last = testf;
-    }
-    if (f != last) {
-      runnable(f);
-      runnable(-f);
-      last = f;
-    }
-  }
-}
+void ExhaustiveFloat(uint32_t cases, R&& runnable) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_F(SimpleDtoaTest, ExhaustiveFloatToBuffer) {
   uint64_t test_count = 0;
@@ -2338,16 +2068,7 @@ TEST(StrToUint64Base, PrefixOnly) {
   }
 }
 
-void TestFastHexToBufferZeroPad16(uint64_t v) {
-  char buf[16];
-  auto digits = absl::numbers_internal::FastHexToBufferZeroPad16(v, buf);
-  absl::string_view res(buf, 16);
-  char buf2[17];
-  snprintf(buf2, sizeof(buf2), "%016" PRIx64, v);
-  EXPECT_EQ(res, buf2) << v;
-  size_t expected_digits = snprintf(buf2, sizeof(buf2), "%" PRIx64, v);
-  EXPECT_EQ(digits, expected_digits) << v;
-}
+void TestFastHexToBufferZeroPad16(uint64_t v) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(FastHexToBufferZeroPad16, Smoke) {
   TestFastHexToBufferZeroPad16(std::numeric_limits<uint64_t>::min());
@@ -2363,18 +2084,7 @@ TEST(FastHexToBufferZeroPad16, Smoke) {
 }
 
 template <typename Int>
-void ExpectWritesNull() {
-  {
-    char buf[absl::numbers_internal::kFastToBufferSize];
-    Int x = std::numeric_limits<Int>::min();
-    EXPECT_THAT(absl::numbers_internal::FastIntToBuffer(x, buf), Pointee('\0'));
-  }
-  {
-    char buf[absl::numbers_internal::kFastToBufferSize];
-    Int x = std::numeric_limits<Int>::max();
-    EXPECT_THAT(absl::numbers_internal::FastIntToBuffer(x, buf), Pointee('\0'));
-  }
-}
+void ExpectWritesNull() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(FastIntToBuffer, WritesNull) {
   ExpectWritesNull<int8_t>();

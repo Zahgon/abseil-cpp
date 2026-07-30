@@ -117,31 +117,25 @@ class uniform_real_distribution {
   void reset() {}
 
   template <typename URBG>
-  result_type operator()(URBG& gen) {  // NOLINT(runtime/references)
-    return operator()(gen, param_);
-  }
+  result_type operator()(URBG& gen) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename URBG>
   result_type operator()(URBG& gen,  // NOLINT(runtime/references)
                          const param_type& p);
 
-  result_type a() const { return param_.a(); }
-  result_type b() const { return param_.b(); }
+  result_type a() const { __builtin_trap() /* STUB: not implemented */; }
+  result_type b() const { __builtin_trap() /* STUB: not implemented */; }
 
-  param_type param() const { return param_; }
-  void param(const param_type& params) { param_ = params; }
+  param_type param() const { __builtin_trap() /* STUB: not implemented */; }
+  void param(const param_type& params) { __builtin_trap() /* STUB: not implemented */; }
 
-  result_type(min)() const { return a(); }
-  result_type(max)() const { return b(); }
+  result_type(min)() const { __builtin_trap() /* STUB: not implemented */; }
+  result_type(max)() const { __builtin_trap() /* STUB: not implemented */; }
 
   friend bool operator==(const uniform_real_distribution& a,
-                         const uniform_real_distribution& b) {
-    return a.param_ == b.param_;
-  }
+                         const uniform_real_distribution& b) { __builtin_trap() /* STUB: not implemented */; }
   friend bool operator!=(const uniform_real_distribution& a,
-                         const uniform_real_distribution& b) {
-    return a.param_ != b.param_;
-  }
+                         const uniform_real_distribution& b) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   param_type param_;
@@ -155,49 +149,17 @@ template <typename RealType>
 template <typename URBG>
 typename uniform_real_distribution<RealType>::result_type
 uniform_real_distribution<RealType>::operator()(
-    URBG& gen, const param_type& p) {  // NOLINT(runtime/references)
-  using random_internal::GeneratePositiveTag;
-  using random_internal::GenerateRealFromBits;
-  using real_type =
-      std::conditional_t<std::is_same_v<RealType, float>, float, double>;
-
-  while (true) {
-    const result_type sample =
-        GenerateRealFromBits<real_type, GeneratePositiveTag, true>(
-            fast_u64_(gen));
-    const result_type res = p.a() + (sample * p.range_);
-    if (res < p.b() || p.range_ <= 0 || !std::isfinite(p.range_)) {
-      return res;
-    }
-    // else sample rejected, try again.
-  }
-}
+    URBG& gen, const param_type& p) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename CharT, typename Traits, typename RealType>
 std::basic_ostream<CharT, Traits>& operator<<(
     std::basic_ostream<CharT, Traits>& os,  // NOLINT(runtime/references)
-    const uniform_real_distribution<RealType>& x) {
-  auto saver = random_internal::make_ostream_state_saver(os);
-  os.precision(random_internal::stream_precision_helper<RealType>::kPrecision);
-  os << x.a() << os.fill() << x.b();
-  return os;
-}
+    const uniform_real_distribution<RealType>& x) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename CharT, typename Traits, typename RealType>
 std::basic_istream<CharT, Traits>& operator>>(
     std::basic_istream<CharT, Traits>& is,     // NOLINT(runtime/references)
-    uniform_real_distribution<RealType>& x) {  // NOLINT(runtime/references)
-  using param_type = typename uniform_real_distribution<RealType>::param_type;
-  using result_type = typename uniform_real_distribution<RealType>::result_type;
-  auto saver = random_internal::make_istream_state_saver(is);
-  auto a = random_internal::read_floating_point<result_type>(is);
-  if (is.fail()) return is;
-  auto b = random_internal::read_floating_point<result_type>(is);
-  if (!is.fail()) {
-    x.param(param_type(a, b));
-  }
-  return is;
-}
+    uniform_real_distribution<RealType>& x) { __builtin_trap() /* STUB: not implemented */; }
 ABSL_NAMESPACE_END
 }  // namespace absl
 

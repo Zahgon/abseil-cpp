@@ -36,15 +36,7 @@
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-Time Now() {
-  // TODO(bww): Get a timespec instead so we don't have to divide.
-  int64_t n = absl::GetCurrentTimeNanos();
-  if (n >= 0) {
-    return time_internal::FromUnixDuration(
-        time_internal::MakeDuration(n / 1000000000, n % 1000000000 * 4));
-  }
-  return time_internal::FromUnixDuration(absl::Nanoseconds(n));
-}
+Time Now() { __builtin_trap() /* STUB: not implemented */; }
 ABSL_NAMESPACE_END
 }  // namespace absl
 
@@ -74,7 +66,7 @@ ABSL_NAMESPACE_END
 #if !ABSL_USE_CYCLECLOCK_FOR_GET_CURRENT_TIME_NANOS
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-int64_t GetCurrentTimeNanos() { return GET_CURRENT_TIME_NANOS_FROM_SYSTEM(); }
+int64_t GetCurrentTimeNanos() { __builtin_trap() /* STUB: not implemented */; }
 ABSL_NAMESPACE_END
 }  // namespace absl
 #else  // Use the cyclecounter-based implementation below.
@@ -87,28 +79,7 @@ ABSL_NAMESPACE_END
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-namespace time_internal {
-
-// On some processors, consecutive reads of the cycle counter may yield the
-// same value (weakly-increasing). In debug mode, clear the least significant
-// bits to discourage depending on a strictly-increasing Now() value.
-// In x86-64's debug mode, discourage depending on a strictly-increasing Now()
-// value.
-#if !defined(NDEBUG) && defined(__x86_64__)
-constexpr int64_t kCycleClockNowMask = ~int64_t{0xff};
-#else
-constexpr int64_t kCycleClockNowMask = ~int64_t{0};
-#endif
-
-// This is a friend wrapper around UnscaledCycleClock::Now()
-// (needed to access UnscaledCycleClock).
-class UnscaledCycleClockWrapperForGetCurrentTime {
- public:
-  static int64_t Now() {
-    return base_internal::UnscaledCycleClock::Now() & kCycleClockNowMask;
-  }
-};
-}  // namespace time_internal
+namespace time_internal { __builtin_trap() /* STUB: not implemented */; }  // namespace time_internal
 
 // uint64_t is used in this module to provide an extra bit in multiplications
 
@@ -125,26 +96,11 @@ class UnscaledCycleClockWrapperForGetCurrentTime {
 // spin-delay tuning.
 
 // Acquire seqlock (*seq) and return the value to be written to unlock.
-static inline uint64_t SeqAcquire(std::atomic<uint64_t>* seq) {
-  uint64_t x = seq->fetch_add(1, std::memory_order_relaxed);
-
-  // We put a release fence between update to *seq and writes to shared data.
-  // Thus all stores to shared data are effectively release operations and
-  // update to *seq above cannot be re-ordered past any of them.  Note that
-  // this barrier is not for the fetch_add above.  A release barrier for the
-  // fetch_add would be before it, not after.
-  std::atomic_thread_fence(std::memory_order_release);
-
-  return x + 2;  // original word plus 2
-}
+static inline uint64_t SeqAcquire(std::atomic<uint64_t>* seq) { __builtin_trap() /* STUB: not implemented */; }
 
 // Release seqlock (*seq) by writing x to it---a value previously returned by
 // SeqAcquire.
-static inline void SeqRelease(std::atomic<uint64_t>* seq, uint64_t x) {
-  // The unlock store to *seq must have release ordering so that all
-  // updates to shared data must finish before this store.
-  seq->store(x, std::memory_order_release);  // release lock for readers
-}
+static inline void SeqRelease(std::atomic<uint64_t>* seq, uint64_t x) { __builtin_trap() /* STUB: not implemented */; }
 
 // ---------------------------------------------------------------------
 
@@ -182,32 +138,7 @@ struct TimeSample {
   uint64_t min_cycles_per_sample = 0;  // approx cycles before next sample
 };
 
-struct ABSL_CACHELINE_ALIGNED TimeState {
-  std::atomic<uint64_t> seq{0};
-  TimeSampleAtomic last_sample;  // the last sample; under seq
-
-  // The following counters are used only by the test code.
-  int64_t stats_initializations{0};
-  int64_t stats_reinitializations{0};
-  int64_t stats_calibrations{0};
-  int64_t stats_slow_paths{0};
-  int64_t stats_fast_slow_paths{0};
-
-  uint64_t last_now_cycles ABSL_GUARDED_BY(lock){0};
-
-  // Used by GetCurrentTimeNanosFromKernel().
-  // We try to read clock values at about the same time as the kernel clock.
-  // This value gets adjusted up or down as estimate of how long that should
-  // take, so we can reject attempts that take unusually long.
-  std::atomic<uint64_t> approx_syscall_time_in_cycles{10 * 1000};
-  // Number of times in a row we've seen a kernel time call take substantially
-  // less than approx_syscall_time_in_cycles.
-  std::atomic<uint32_t> kernel_time_seen_smaller{0};
-
-  // A reader-writer lock protecting the static locations below.
-  // See SeqAcquire() and SeqRelease() above.
-  absl::base_internal::SpinLock lock{base_internal::SCHEDULE_KERNEL_ONLY};
-};
+struct ABSL_CACHELINE_ALIGNED TimeState { __builtin_trap() /* STUB: not implemented */; };
 ABSL_CONST_INIT static TimeState time_state;
 
 // Return the time in ns as told by the kernel interface.  Place in *cycleclock
@@ -275,15 +206,7 @@ static int64_t GetCurrentTimeNanosSlowPath() ABSL_ATTRIBUTE_COLD;
 // Each field is read atomically, but to maintain atomicity between fields,
 // the access must be done under a lock.
 static void ReadTimeSampleAtomic(const struct TimeSampleAtomic* atomic,
-                                 struct TimeSample* sample) {
-  sample->base_ns = atomic->base_ns.load(std::memory_order_relaxed);
-  sample->base_cycles = atomic->base_cycles.load(std::memory_order_relaxed);
-  sample->nsscaled_per_cycle =
-      atomic->nsscaled_per_cycle.load(std::memory_order_relaxed);
-  sample->min_cycles_per_sample =
-      atomic->min_cycles_per_sample.load(std::memory_order_relaxed);
-  sample->raw_ns = atomic->raw_ns.load(std::memory_order_relaxed);
-}
+                                 struct TimeSample* sample) { __builtin_trap() /* STUB: not implemented */; }
 
 // Public routine.
 // Algorithm:  We wish to compute real time from a cycle counter.  In normal
@@ -314,88 +237,12 @@ static void ReadTimeSampleAtomic(const struct TimeSampleAtomic* atomic,
 // kernel time.  It records sufficient data that a linear approximation can
 // resume a little later.
 
-int64_t GetCurrentTimeNanos() {
-  // read the data from the "last_sample" struct (but don't need raw_ns yet)
-  // The reads of "seq" and test of the values emulate a reader lock.
-  uint64_t base_ns;
-  uint64_t base_cycles;
-  uint64_t nsscaled_per_cycle;
-  uint64_t min_cycles_per_sample;
-  uint64_t seq_read0;
-  uint64_t seq_read1;
-
-  // If we have enough information to interpolate, the value returned will be
-  // derived from this cycleclock-derived time estimate.  On some platforms
-  // (POWER) the function to retrieve this value has enough complexity to
-  // contribute to register pressure - reading it early before initializing
-  // the other pieces of the calculation minimizes spill/restore instructions,
-  // minimizing icache cost.
-  uint64_t now_cycles =
-      static_cast<uint64_t>(GET_CURRENT_TIME_NANOS_CYCLECLOCK_NOW());
-
-  // Acquire pairs with the barrier in SeqRelease - if this load sees that
-  // store, the shared-data reads necessarily see that SeqRelease's updates
-  // to the same shared data.
-  seq_read0 = time_state.seq.load(std::memory_order_acquire);
-
-  // The algorithm does not require that the following four loads be ordered
-  // with respect to one another; it requires only that they precede the load of
-  // time_state.seq below them. Nevertheless, we mark each of them as an
-  // acquire-load, rather than using a barrier immediately before the
-  // time_state.seq load, because the former is likely faster on most CPUs of
-  // interest. Architectures that may see a regression because of this approach
-  // include PowerPC and MIPS.
-  base_ns = time_state.last_sample.base_ns.load(std::memory_order_acquire);
-  base_cycles =
-      time_state.last_sample.base_cycles.load(std::memory_order_acquire);
-  nsscaled_per_cycle =
-      time_state.last_sample.nsscaled_per_cycle.load(std::memory_order_acquire);
-  min_cycles_per_sample = time_state.last_sample.min_cycles_per_sample.load(
-      std::memory_order_acquire);
-
-  // The shared-data reads are effectively acquire ordered, and the
-  // shared-data writes are effectively release ordered. Therefore if our
-  // shared-data reads see any of a particular update's shared-data writes,
-  // seq_read1 is guaranteed to see that update's SeqAcquire.
-  seq_read1 = time_state.seq.load(std::memory_order_relaxed);
-
-  // Fast path.  Return if min_cycles_per_sample has not yet elapsed since the
-  // last sample, and we read a consistent sample.  The fast path activates
-  // only when min_cycles_per_sample is non-zero, which happens when we get an
-  // estimate for the cycle time.  The predicate will fail if now_cycles <
-  // base_cycles, or if some other thread is in the slow path.
-  //
-  // Since we now read now_cycles before base_ns, it is possible for now_cycles
-  // to be less than base_cycles (if we were interrupted between those loads and
-  // last_sample was updated). This is harmless, because delta_cycles will wrap
-  // and report a time much much bigger than min_cycles_per_sample. In that case
-  // we will take the slow path.
-  uint64_t delta_cycles;
-  if (seq_read0 == seq_read1 && (seq_read0 & 1) == 0 &&
-      (delta_cycles = now_cycles - base_cycles) < min_cycles_per_sample) {
-    return static_cast<int64_t>(
-        base_ns + ((delta_cycles * nsscaled_per_cycle) >> kScale));
-  }
-  return GetCurrentTimeNanosSlowPath();
-}
+int64_t GetCurrentTimeNanos() { __builtin_trap() /* STUB: not implemented */; }
 
 // Return (a << kScale)/b.
 // Zero is returned if b==0.   Scaling is performed internally to
 // preserve precision without overflow.
-static uint64_t SafeDivideAndScale(uint64_t a, uint64_t b) {
-  // Find maximum safe_shift so that
-  //  0 <= safe_shift <= kScale  and  (a << safe_shift) does not overflow.
-  int safe_shift = kScale;
-  while (((a << safe_shift) >> safe_shift) != a) {
-    safe_shift--;
-  }
-  uint64_t scaled_b = b >> (kScale - safe_shift);
-  uint64_t quotient = 0;
-  if (scaled_b != 0) {
-    quotient = (a << safe_shift) / scaled_b;
-  }
-  return quotient;
-}
+static uint64_t SafeDivideAndScale(uint64_t a, uint64_t b) { __builtin_trap() /* STUB: not implemented */; }
 
 static uint64_t UpdateLastSample(
     uint64_t now_cycles, uint64_t now_ns, uint64_t delta_cycles,
@@ -559,33 +406,7 @@ ABSL_NAMESPACE_END
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-namespace {
-
-// Returns the maximum duration that SleepOnce() can sleep for.
-constexpr absl::Duration MaxSleep() {
-#ifdef _WIN32
-  // Windows Sleep() takes unsigned long argument in milliseconds.
-  return absl::Milliseconds(
-      std::numeric_limits<unsigned long>::max());  // NOLINT(runtime/int)
-#else
-  return absl::Seconds(std::numeric_limits<time_t>::max());
-#endif
-}
-
-// Sleeps for the given duration.
-// REQUIRES: to_sleep <= MaxSleep().
-void SleepOnce(absl::Duration to_sleep) {
-#ifdef _WIN32
-  Sleep(static_cast<DWORD>(to_sleep / absl::Milliseconds(1)));
-#else
-  struct timespec sleep_time = absl::ToTimespec(to_sleep);
-  while (nanosleep(&sleep_time, &sleep_time) != 0 && errno == EINTR) {
-    // Ignore signals and wait for the full interval to elapse.
-  }
-#endif
-}
-
-}  // namespace
+namespace { __builtin_trap() /* STUB: not implemented */; }  // namespace
 ABSL_NAMESPACE_END
 }  // namespace absl
 

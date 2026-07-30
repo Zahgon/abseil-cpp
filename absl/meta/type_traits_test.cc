@@ -156,30 +156,22 @@ enum class TypeEnum { A, B, C, D };
 
 struct GetTypeT {
   template <typename T, std::enable_if_t<std::is_same_v<T, TypeA>, int> = 0>
-  TypeEnum operator()(Wrap<T>) const {
-    return TypeEnum::A;
-  }
+  TypeEnum operator()(Wrap<T>) const { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T, std::enable_if_t<std::is_same_v<T, TypeB>, int> = 0>
-  TypeEnum operator()(Wrap<T>) const {
-    return TypeEnum::B;
-  }
+  TypeEnum operator()(Wrap<T>) const { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T, std::enable_if_t<std::is_same_v<T, TypeC>, int> = 0>
-  TypeEnum operator()(Wrap<T>) const {
-    return TypeEnum::C;
-  }
+  TypeEnum operator()(Wrap<T>) const { __builtin_trap() /* STUB: not implemented */; }
 
   // NOTE: TypeD is intentionally not handled
 } constexpr GetType = {};
 
 struct GetTypeExtT {
   template <typename T>
-  absl::result_of_t<const GetTypeT&(T)> operator()(T&& arg) const {
-    return GetType(std::forward<T>(arg));
-  }
+  absl::result_of_t<const GetTypeT&(T)> operator()(T&& arg) const { __builtin_trap() /* STUB: not implemented */; }
 
-  TypeEnum operator()(Wrap<TypeD>) const { return TypeEnum::D; }
+  TypeEnum operator()(Wrap<TypeD>) const { __builtin_trap() /* STUB: not implemented */; }
 } constexpr GetTypeExt = {};
 
 TEST(TypeTraitsTest, TestResultOf) {
@@ -196,12 +188,12 @@ struct DeletedSwap {};
 void swap(DeletedSwap&, DeletedSwap&) = delete;
 
 struct SpecialNoexceptSwap {
-  SpecialNoexceptSwap(SpecialNoexceptSwap&&) {}
-  SpecialNoexceptSwap& operator=(SpecialNoexceptSwap&&) { return *this; }
+  SpecialNoexceptSwap(SpecialNoexceptSwap&&) { __builtin_trap() /* STUB: not implemented */; }
+  SpecialNoexceptSwap& operator=(SpecialNoexceptSwap&&) { __builtin_trap() /* STUB: not implemented */; }
   ~SpecialNoexceptSwap() = default;
 };
 
-void swap(SpecialNoexceptSwap&, SpecialNoexceptSwap&) noexcept {}
+void swap(SpecialNoexceptSwap&, SpecialNoexceptSwap&) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace adl_namespace
 
@@ -342,13 +334,7 @@ TEST(TriviallyRelocatable, UserProvidedDestructor) {
 
 #ifdef ABSL_HAVE_CONSTANT_EVALUATED
 
-constexpr int64_t NegateIfConstantEvaluated(int64_t i) {
-  if (absl::is_constant_evaluated()) {
-    return -i;
-  } else {
-    return i;
-  }
-}
+constexpr int64_t NegateIfConstantEvaluated(int64_t i) { return {}; }
 
 #endif  // ABSL_HAVE_CONSTANT_EVALUATED
 

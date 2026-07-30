@@ -73,33 +73,29 @@ class LogEntry final {
   // into a statically allocated character array obtained from `__FILE__`.
   // Statements like `LOG(INFO).AtLocation(std::string(...), ...)` will expose
   // the bug.  If you need the data later, you must copy them.
-  absl::string_view source_filename() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return full_filename_;
-  }
-  absl::string_view source_basename() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return base_filename_;
-  }
-  int source_line() const { return line_; }
+  absl::string_view source_filename() const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  absl::string_view source_basename() const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  int source_line() const { __builtin_trap() /* STUB: not implemented */; }
 
   // LogEntry::prefix()
   //
   // True unless the metadata prefix was suppressed once by
   // `LOG(...).NoPrefix()` or globally by `absl::EnableLogPrefix(false)`.
   // Implies `text_message_with_prefix() == text_message()`.
-  bool prefix() const { return prefix_; }
+  bool prefix() const { __builtin_trap() /* STUB: not implemented */; }
 
   // LogEntry::log_severity()
   //
   // Returns this entry's severity.  For `LOG`, taken from the first argument;
   // for `CHECK`, always `absl::LogSeverity::kFatal`.
-  absl::LogSeverity log_severity() const { return severity_; }
+  absl::LogSeverity log_severity() const { __builtin_trap() /* STUB: not implemented */; }
 
   // LogEntry::verbosity()
   //
   // Returns this entry's verbosity, or `kNoVerbosityLevel` for a non-verbose
   // entry. Taken from the argument to `VLOG` or from
   // `LOG(...).WithVerbosity(...)`.
-  int verbosity() const { return verbose_level_; }
+  int verbosity() const { __builtin_trap() /* STUB: not implemented */; }
 
   // LogEntry::timestamp()
   //
@@ -110,7 +106,7 @@ class LogEntry final {
   // Take care not to rely on timestamps increasing monotonically, or even to
   // rely on timestamps having any particular relationship with reality (since
   // they can be overridden).
-  absl::Time timestamp() const { return timestamp_; }
+  absl::Time timestamp() const { __builtin_trap() /* STUB: not implemented */; }
 
   // LogEntry::tid()
   //
@@ -119,7 +115,7 @@ class LogEntry final {
   //
   // Take care not to *rely* on reported thread IDs as they can be overridden as
   // specified above.
-  tid_t tid() const { return tid_; }
+  tid_t tid() const { __builtin_trap() /* STUB: not implemented */; }
 
   // Text-formatted version of the log message.  An underlying buffer holds
   // these contiguous data:
@@ -144,41 +140,21 @@ class LogEntry final {
   // The buffer does not outlive the entry; if you need the data later, you must
   // copy them.
   absl::string_view text_message_with_prefix_and_newline() const
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return absl::string_view(
-        text_message_with_prefix_and_newline_and_nul_.data(),
-        text_message_with_prefix_and_newline_and_nul_.size() - 1);
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
   absl::string_view text_message_with_prefix() const
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return absl::string_view(
-        text_message_with_prefix_and_newline_and_nul_.data(),
-        text_message_with_prefix_and_newline_and_nul_.size() - 2);
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
   absl::string_view text_message_with_newline() const
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return absl::string_view(
-        text_message_with_prefix_and_newline_and_nul_.data() + prefix_len_,
-        text_message_with_prefix_and_newline_and_nul_.size() - prefix_len_ - 1);
-  }
-  absl::string_view text_message() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return absl::string_view(
-        text_message_with_prefix_and_newline_and_nul_.data() + prefix_len_,
-        text_message_with_prefix_and_newline_and_nul_.size() - prefix_len_ - 2);
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
+  absl::string_view text_message() const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
   const char* text_message_with_prefix_and_newline_c_str() const
-      ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return text_message_with_prefix_and_newline_and_nul_.data();
-  }
+      ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // Returns a serialized protobuf holding the operands streamed into this
   // log message.  The message definition is not yet published.
   //
   // The buffer does not outlive the entry; if you need the data later, you must
   // copy them.
-  absl::string_view encoded_message() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return encoding_;
-  }
+  absl::string_view encoded_message() const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
   // LogEntry::stacktrace()
   //
@@ -192,9 +168,7 @@ class LogEntry final {
   //
   // The buffer does not outlive the entry; if you need the data later, you must
   // copy them.
-  absl::string_view stacktrace() const ABSL_ATTRIBUTE_LIFETIME_BOUND {
-    return stacktrace_;
-  }
+  absl::string_view stacktrace() const ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   LogEntry() = default;

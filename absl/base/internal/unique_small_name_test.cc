@@ -22,13 +22,7 @@
 namespace {
 
 template <class T>
-void DoNotOptimize(const T& var) {
-#ifdef __GNUC__
-  asm volatile("" : "+m"(const_cast<T&>(var)));
-#else
-  std::cout << (void*)&var;
-#endif
-}
+void DoNotOptimize(const T& var) { __builtin_trap() /* STUB: not implemented */; }
 
 int very_long_int_variable_name ABSL_INTERNAL_UNIQUE_SMALL_NAME() = 0;
 char very_long_str_variable_name[] ABSL_INTERNAL_UNIQUE_SMALL_NAME() = "abc";
@@ -46,7 +40,7 @@ TEST(UniqueSmallName, FreeFunction) {
   EXPECT_EQ(VeryLongFreeFunctionName(), 456);
 }
 
-int VeryLongFreeFunctionName() { return 456; }
+int VeryLongFreeFunctionName() { __builtin_trap() /* STUB: not implemented */; }
 
 struct VeryLongStructName {
   explicit VeryLongStructName(int i);
@@ -70,8 +64,8 @@ TEST(UniqueSmallName, Struct) {
   EXPECT_EQ(VeryLongStructName::VeryLongStaticMethodName(), 123);
 }
 
-VeryLongStructName::VeryLongStructName(int i) : fld(i) {}
-int VeryLongStructName::VeryLongMethodName() { return fld; }
-int VeryLongStructName::VeryLongStaticMethodName() { return 123; }
+VeryLongStructName::VeryLongStructName(int i) : fld(i) { __builtin_trap() /* STUB: not implemented */; }
+int VeryLongStructName::VeryLongMethodName() { __builtin_trap() /* STUB: not implemented */; }
+int VeryLongStructName::VeryLongStaticMethodName() { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace

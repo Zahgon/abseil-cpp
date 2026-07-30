@@ -36,11 +36,7 @@ using ::testing::TestWithParam;
 using ::testing::Values;
 
 template <typename T>
-std::string StreamHelper(T value) {
-  std::ostringstream stream;
-  stream << value;
-  return stream.str();
-}
+std::string StreamHelper(T value) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StreamTest, Works) {
   EXPECT_THAT(StreamHelper(static_cast<absl::LogSeverity>(-100)),

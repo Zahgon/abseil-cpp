@@ -89,33 +89,13 @@ absl::from_chars_result from_chars(const char* absl_nonnull first,
 
 // std::chars_format is specified as a bitmask type, which means the following
 // operations must be provided:
-inline constexpr chars_format operator&(chars_format lhs, chars_format rhs) {
-  return static_cast<chars_format>(static_cast<int>(lhs) &
-                                   static_cast<int>(rhs));
-}
-inline constexpr chars_format operator|(chars_format lhs, chars_format rhs) {
-  return static_cast<chars_format>(static_cast<int>(lhs) |
-                                   static_cast<int>(rhs));
-}
-inline constexpr chars_format operator^(chars_format lhs, chars_format rhs) {
-  return static_cast<chars_format>(static_cast<int>(lhs) ^
-                                   static_cast<int>(rhs));
-}
-inline constexpr chars_format operator~(chars_format arg) {
-  return static_cast<chars_format>(~static_cast<int>(arg));
-}
-inline chars_format& operator&=(chars_format& lhs, chars_format rhs) {
-  lhs = lhs & rhs;
-  return lhs;
-}
-inline chars_format& operator|=(chars_format& lhs, chars_format rhs) {
-  lhs = lhs | rhs;
-  return lhs;
-}
-inline chars_format& operator^=(chars_format& lhs, chars_format rhs) {
-  lhs = lhs ^ rhs;
-  return lhs;
-}
+inline constexpr chars_format operator&(chars_format lhs, chars_format rhs) { return {}; }
+inline constexpr chars_format operator|(chars_format lhs, chars_format rhs) { return {}; }
+inline constexpr chars_format operator^(chars_format lhs, chars_format rhs) { return {}; }
+inline constexpr chars_format operator~(chars_format arg) { return {}; }
+inline chars_format& operator&=(chars_format& lhs, chars_format rhs) { __builtin_trap() /* STUB: not implemented */; }
+inline chars_format& operator|=(chars_format& lhs, chars_format rhs) { __builtin_trap() /* STUB: not implemented */; }
+inline chars_format& operator^=(chars_format& lhs, chars_format rhs) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

@@ -44,19 +44,15 @@ ABSL_NAMESPACE_BEGIN
 // sink instead which writes them to `stderr`.
 //
 // Do not call these inside `absl::LogSink::Send`.
-inline void AddLogSink(absl::LogSink* absl_nonnull sink) {
-  log_internal::AddLogSink(sink);
-}
-inline void RemoveLogSink(absl::LogSink* absl_nonnull sink) {
-  log_internal::RemoveLogSink(sink);
-}
+inline void AddLogSink(absl::LogSink* absl_nonnull sink) { __builtin_trap() /* STUB: not implemented */; }
+inline void RemoveLogSink(absl::LogSink* absl_nonnull sink) { __builtin_trap() /* STUB: not implemented */; }
 
 // FlushLogSinks()
 //
 // Calls `absl::LogSink::Flush` on all registered sinks.
 //
 // Do not call this inside `absl::LogSink::Send`.
-inline void FlushLogSinks() { log_internal::FlushLogSinks(); }
+inline void FlushLogSinks() { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

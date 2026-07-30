@@ -63,39 +63,20 @@ class discrete_distribution {
 
     template <typename InputIterator>
     explicit param_type(InputIterator begin, InputIterator end)
-        : p_(begin, end) {
-      init();
-    }
+        : p_(begin, end) { __builtin_trap() /* STUB: not implemented */; }
 
-    explicit param_type(std::initializer_list<double> weights) : p_(weights) {
-      init();
-    }
+    explicit param_type(std::initializer_list<double> weights) : p_(weights) { __builtin_trap() /* STUB: not implemented */; }
 
     template <class UnaryOperation>
     explicit param_type(size_t nw, double xmin, double xmax,
-                        UnaryOperation fw) {
-      if (nw > 0) {
-        p_.reserve(nw);
-        double delta = (xmax - xmin) / static_cast<double>(nw);
-        assert(delta > 0);
-        double t = delta * 0.5;
-        for (size_t i = 0; i < nw; ++i) {
-          p_.push_back(fw(xmin + i * delta + t));
-        }
-      }
-      init();
-    }
+                        UnaryOperation fw) { __builtin_trap() /* STUB: not implemented */; }
 
-    const std::vector<double>& probabilities() const { return p_; }
-    size_t n() const { return p_.size() - 1; }
+    const std::vector<double>& probabilities() const { __builtin_trap() /* STUB: not implemented */; }
+    size_t n() const { __builtin_trap() /* STUB: not implemented */; }
 
-    friend bool operator==(const param_type& a, const param_type& b) {
-      return a.probabilities() == b.probabilities();
-    }
+    friend bool operator==(const param_type& a, const param_type& b) { __builtin_trap() /* STUB: not implemented */; }
 
-    friend bool operator!=(const param_type& a, const param_type& b) {
-      return !(a == b);
-    }
+    friend bool operator!=(const param_type& a, const param_type& b) { __builtin_trap() /* STUB: not implemented */; }
 
    private:
     friend class discrete_distribution;
@@ -110,56 +91,46 @@ class discrete_distribution {
                   "parameterized using an integral type.");
   };
 
-  discrete_distribution() : param_() {}
+  discrete_distribution() : param_() { __builtin_trap() /* STUB: not implemented */; }
 
-  explicit discrete_distribution(const param_type& p) : param_(p) {}
+  explicit discrete_distribution(const param_type& p) : param_(p) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename InputIterator>
   explicit discrete_distribution(InputIterator begin, InputIterator end)
-      : param_(begin, end) {}
+      : param_(begin, end) { __builtin_trap() /* STUB: not implemented */; }
 
   explicit discrete_distribution(std::initializer_list<double> weights)
-      : param_(weights) {}
+      : param_(weights) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class UnaryOperation>
   explicit discrete_distribution(size_t nw, double xmin, double xmax,
                                  UnaryOperation fw)
-      : param_(nw, xmin, xmax, std::move(fw)) {}
+      : param_(nw, xmin, xmax, std::move(fw)) { __builtin_trap() /* STUB: not implemented */; }
 
-  void reset() {}
+  void reset() { __builtin_trap() /* STUB: not implemented */; }
 
   // generating functions
   template <typename URBG>
-  result_type operator()(URBG& g) {  // NOLINT(runtime/references)
-    return (*this)(g, param_);
-  }
+  result_type operator()(URBG& g) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename URBG>
   result_type operator()(URBG& g,  // NOLINT(runtime/references)
                          const param_type& p);
 
-  const param_type& param() const { return param_; }
-  void param(const param_type& p) { param_ = p; }
+  const param_type& param() const { __builtin_trap() /* STUB: not implemented */; }
+  void param(const param_type& p) { __builtin_trap() /* STUB: not implemented */; }
 
-  result_type(min)() const { return 0; }
-  result_type(max)() const {
-    return static_cast<result_type>(param_.n());
-  }  // inclusive
+  result_type(min)() const { __builtin_trap() /* STUB: not implemented */; }
+  result_type(max)() const { __builtin_trap() /* STUB: not implemented */; }  // inclusive
 
   // NOTE [rand.dist.sample.discrete] returns a std::vector<double> not a
   // const std::vector<double>&.
-  const std::vector<double>& probabilities() const {
-    return param_.probabilities();
-  }
+  const std::vector<double>& probabilities() const { __builtin_trap() /* STUB: not implemented */; }
 
   friend bool operator==(const discrete_distribution& a,
-                         const discrete_distribution& b) {
-    return a.param_ == b.param_;
-  }
+                         const discrete_distribution& b) { __builtin_trap() /* STUB: not implemented */; }
   friend bool operator!=(const discrete_distribution& a,
-                         const discrete_distribution& b) {
-    return a.param_ != b.param_;
-  }
+                         const discrete_distribution& b) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   param_type param_;
@@ -182,66 +153,24 @@ std::vector<std::pair<double, size_t>> InitDiscreteDistribution(
 }  // namespace random_internal
 
 template <typename IntType>
-void discrete_distribution<IntType>::param_type::init() {
-  if (p_.empty()) {
-    p_.push_back(1.0);
-    q_.emplace_back(1.0, 0);
-  } else {
-    assert(n() <= (std::numeric_limits<IntType>::max)());
-    q_ = random_internal::InitDiscreteDistribution(&p_);
-  }
-}
+void discrete_distribution<IntType>::param_type::init() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename IntType>
 template <typename URBG>
 typename discrete_distribution<IntType>::result_type
 discrete_distribution<IntType>::operator()(
     URBG& g,  // NOLINT(runtime/references)
-    const param_type& p) {
-  const auto idx = absl::uniform_int_distribution<result_type>(0, p.n())(g);
-  const auto& q = p.q_[idx];
-  const bool selected = absl::bernoulli_distribution(q.first)(g);
-  return selected ? idx : static_cast<result_type>(q.second);
-}
+    const param_type& p) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename CharT, typename Traits, typename IntType>
 std::basic_ostream<CharT, Traits>& operator<<(
     std::basic_ostream<CharT, Traits>& os,  // NOLINT(runtime/references)
-    const discrete_distribution<IntType>& x) {
-  auto saver = random_internal::make_ostream_state_saver(os);
-  const auto& probabilities = x.param().probabilities();
-  os << probabilities.size();
-
-  os.precision(random_internal::stream_precision_helper<double>::kPrecision);
-  for (const auto& p : probabilities) {
-    os << os.fill() << p;
-  }
-  return os;
-}
+    const discrete_distribution<IntType>& x) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename CharT, typename Traits, typename IntType>
 std::basic_istream<CharT, Traits>& operator>>(
     std::basic_istream<CharT, Traits>& is,  // NOLINT(runtime/references)
-    discrete_distribution<IntType>& x) {    // NOLINT(runtime/references)
-  using param_type = typename discrete_distribution<IntType>::param_type;
-  auto saver = random_internal::make_istream_state_saver(is);
-
-  size_t n;
-  std::vector<double> p;
-
-  is >> n;
-  if (is.fail()) return is;
-  if (n > 0) {
-    p.reserve(n);
-    for (IntType i = 0; i < n && !is.fail(); ++i) {
-      auto tmp = random_internal::read_floating_point<double>(is);
-      if (is.fail()) return is;
-      p.push_back(tmp);
-    }
-  }
-  x.param(param_type(p.begin(), p.end()));
-  return is;
-}
+    discrete_distribution<IntType>& x) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

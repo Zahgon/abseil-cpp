@@ -73,13 +73,9 @@ class linked_hash_set {
   template <class Fn>
   class Wrapped {
     template <typename K>
-    static const K& ToKey(const K& k) {
-      return k;
-    }
-    static const key_type& ToKey(typename ListType::const_iterator it) {
-      return *it;
-    }
-    static const key_type& ToKey(typename ListType::iterator it) { return *it; }
+    static const K& ToKey(const K& k) { __builtin_trap() /* STUB: not implemented */; }
+    static const key_type& ToKey(typename ListType::const_iterator it) { __builtin_trap() /* STUB: not implemented */; }
+    static const key_type& ToKey(typename ListType::iterator it) { __builtin_trap() /* STUB: not implemented */; }
 
     Fn fn_;
 
@@ -89,13 +85,11 @@ class linked_hash_set {
     using is_transparent = void;
 
     Wrapped() = default;
-    explicit Wrapped(Fn fn) : fn_(std::move(fn)) {}
+    explicit Wrapped(Fn fn) : fn_(std::move(fn)) { __builtin_trap() /* STUB: not implemented */; }
 
     template <class... Args>
     auto operator()(Args&&... args) const
-        -> decltype(this->fn_(ToKey(args)...)) {
-      return fn_(ToKey(args)...);
-    }
+        -> decltype(this->fn_(ToKey(args)...)) { __builtin_trap() /* STUB: not implemented */; }
   };
   using SetType =
       absl::flat_hash_set<typename ListType::iterator, Wrapped<hasher>,
@@ -110,16 +104,16 @@ class linked_hash_set {
     NodeHandle(NodeHandle&& nh) noexcept = default;
     ~NodeHandle() = default;
     NodeHandle& operator=(NodeHandle&& node) noexcept = default;
-    bool empty() const noexcept { return list_.empty(); }
-    explicit operator bool() const noexcept { return !empty(); }
-    allocator_type get_allocator() const { return list_.get_allocator(); }
-    value_type& value() { return list_.front(); }
-    void swap(NodeHandle& nh) noexcept { list_.swap(nh.list_); }
+    bool empty() const noexcept { __builtin_trap() /* STUB: not implemented */; }
+    explicit operator bool() const noexcept { __builtin_trap() /* STUB: not implemented */; }
+    allocator_type get_allocator() const { __builtin_trap() /* STUB: not implemented */; }
+    value_type& value() { __builtin_trap() /* STUB: not implemented */; }
+    void swap(NodeHandle& nh) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
    private:
     friend linked_hash_set;
 
-    explicit NodeHandle(ListType list) : list_(std::move(list)) {}
+    explicit NodeHandle(ListType list) : list_(std::move(list)) { __builtin_trap() /* STUB: not implemented */; }
     ListType list_;
   };
 
@@ -144,7 +138,7 @@ class linked_hash_set {
   using node_type = NodeHandle;
   using insert_return_type = InsertReturnType<iterator, node_type>;
 
-  linked_hash_set() {}
+  linked_hash_set() { __builtin_trap() /* STUB: not implemented */; }
 
   explicit linked_hash_set(size_t reservation_size,
                            const hasher& hash = hasher(),
@@ -152,372 +146,208 @@ class linked_hash_set {
                            const allocator_type& alloc = allocator_type())
       : set_(reservation_size, Wrapped<hasher>(hash), Wrapped<key_equal>(eq),
              alloc),
-        list_(alloc) {}
+        list_(alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   linked_hash_set(size_t reservation_size, const hasher& hash,
                   const allocator_type& alloc)
-      : linked_hash_set(reservation_size, hash, key_equal(), alloc) {}
+      : linked_hash_set(reservation_size, hash, key_equal(), alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   linked_hash_set(size_t reservation_size, const allocator_type& alloc)
-      : linked_hash_set(reservation_size, hasher(), key_equal(), alloc) {}
+      : linked_hash_set(reservation_size, hasher(), key_equal(), alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   explicit linked_hash_set(const allocator_type& alloc)
-      : linked_hash_set(0, hasher(), key_equal(), alloc) {}
+      : linked_hash_set(0, hasher(), key_equal(), alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class InputIt>
   linked_hash_set(InputIt first, InputIt last, size_t reservation_size = 0,
                   const hasher& hash = hasher(),
                   const key_equal& eq = key_equal(),
                   const allocator_type& alloc = allocator_type())
-      : linked_hash_set(reservation_size, hash, eq, alloc) {
-    insert(first, last);
-  }
+      : linked_hash_set(reservation_size, hash, eq, alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class InputIter>
   linked_hash_set(InputIter first, InputIter last, size_t reservation_size,
                   const hasher& hash, const allocator_type& alloc)
       : linked_hash_set(first, last, reservation_size, hash, key_equal(),
-                        alloc) {}
+                        alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class InputIter>
   linked_hash_set(InputIter first, InputIter last, size_t reservation_size,
                   const allocator_type& alloc)
       : linked_hash_set(first, last, reservation_size, hasher(), key_equal(),
-                        alloc) {}
+                        alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class InputIt>
   linked_hash_set(InputIt first, InputIt last, const allocator_type& alloc)
       : linked_hash_set(first, last, /*reservation_size=*/0, hasher(),
-                        key_equal(), alloc) {}
+                        key_equal(), alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   linked_hash_set(std::initializer_list<key_type> init,
                   size_t reservation_size = 0, const hasher& hash = hasher(),
                   const key_equal& eq = key_equal(),
                   const allocator_type& alloc = allocator_type())
       : linked_hash_set(init.begin(), init.end(), reservation_size, hash, eq,
-                        alloc) {}
+                        alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   linked_hash_set(std::initializer_list<key_type> init, size_t reservation_size,
                   const allocator_type& alloc)
-      : linked_hash_set(init, reservation_size, hasher(), key_equal(), alloc) {}
+      : linked_hash_set(init, reservation_size, hasher(), key_equal(), alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   linked_hash_set(std::initializer_list<key_type> init, size_t reservation_size,
                   const hasher& hash, const allocator_type& alloc)
-      : linked_hash_set(init, reservation_size, hash, key_equal(), alloc) {}
+      : linked_hash_set(init, reservation_size, hash, key_equal(), alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   linked_hash_set(std::initializer_list<key_type> init,
                   const allocator_type& alloc)
       : linked_hash_set(init, /*reservation_size=*/0, hasher(), key_equal(),
-                        alloc) {}
+                        alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   linked_hash_set(const linked_hash_set& other)
       : linked_hash_set(0, other.hash_function(), other.key_eq(),
-                        other.get_allocator()) {
-    reserve(other.size());
-    CopyFrom(other);
-  }
+                        other.get_allocator()) { __builtin_trap() /* STUB: not implemented */; }
 
   linked_hash_set(const linked_hash_set& other, const allocator_type& alloc)
-      : linked_hash_set(0, other.hash_function(), other.key_eq(), alloc) {
-    reserve(other.size());
-    CopyFrom(other);
-  }
+      : linked_hash_set(0, other.hash_function(), other.key_eq(), alloc) { __builtin_trap() /* STUB: not implemented */; }
 
   linked_hash_set(linked_hash_set&& other) noexcept
-      : set_(std::move(other.set_)), list_(std::move(other.list_)) {
-    // Since the list and set must agree for other to end up "valid",
-    // explicitly clear them.
-    other.set_.clear();
-    other.list_.clear();
-  }
+      : set_(std::move(other.set_)), list_(std::move(other.list_)) { __builtin_trap() /* STUB: not implemented */; }
 
   linked_hash_set(linked_hash_set&& other, const allocator_type& alloc)
-      : linked_hash_set(0, other.hash_function(), other.key_eq(), alloc) {
-    if (get_allocator() == other.get_allocator()) {
-      *this = std::move(other);
-    } else {
-      CopyFrom(std::move(other));
-    }
-  }
+      : linked_hash_set(0, other.hash_function(), other.key_eq(), alloc) { __builtin_trap() /* STUB: not implemented */; }
 
-  linked_hash_set& operator=(const linked_hash_set& other) {
-    if (this != &other) {
-      // Make a new set, with other's hash/eq/alloc.
-      set_ = SetType(0, other.set_.hash_function(),
-                     other.set_.key_eq(), other.get_allocator());
-      set_.reserve(other.size());
-      // Copy the list, with other's allocator.
-      list_ = ListType(other.get_allocator());
-      CopyFrom(other);
-    }
-    return *this;
-  }
+  linked_hash_set& operator=(const linked_hash_set& other) { __builtin_trap() /* STUB: not implemented */; }
 
-  linked_hash_set& operator=(linked_hash_set&& other) noexcept {
-    if (this != &other) {
-      set_ = std::move(other.set_);
-      list_ = std::move(other.list_);
-      other.set_.clear();
-      other.list_.clear();
-    }
-    return *this;
-  }
+  linked_hash_set& operator=(linked_hash_set&& other) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
-  linked_hash_set& operator=(std::initializer_list<key_type> values) {
-    clear();
-    reserve(values.size());
-    insert(values.begin(), values.end());
-    return *this;
-  }
+  linked_hash_set& operator=(std::initializer_list<key_type> values) { __builtin_trap() /* STUB: not implemented */; }
 
   // Derive size from set_, as list::size might be O(N).
-  size_type size() const { return set_.size(); }
-  size_type max_size() const noexcept { return ~size_type{}; }
-  bool empty() const { return set_.empty(); }
+  size_type size() const { __builtin_trap() /* STUB: not implemented */; }
+  size_type max_size() const noexcept { __builtin_trap() /* STUB: not implemented */; }
+  bool empty() const { __builtin_trap() /* STUB: not implemented */; }
 
   // Iteration is list-like, in insertion order.
   // These are all forwarded.
-  iterator begin() { return list_.begin(); }
-  iterator end() { return list_.end(); }
-  const_iterator begin() const { return list_.begin(); }
-  const_iterator end() const { return list_.end(); }
-  const_iterator cbegin() const { return list_.cbegin(); }
-  const_iterator cend() const { return list_.cend(); }
-  reverse_iterator rbegin() { return list_.rbegin(); }
-  reverse_iterator rend() { return list_.rend(); }
-  const_reverse_iterator rbegin() const { return list_.rbegin(); }
-  const_reverse_iterator rend() const { return list_.rend(); }
-  const_reverse_iterator crbegin() const { return list_.crbegin(); }
-  const_reverse_iterator crend() const { return list_.crend(); }
-  reference front() { return list_.front(); }
-  reference back() { return list_.back(); }
-  const_reference front() const { return list_.front(); }
-  const_reference back() const { return list_.back(); }
+  iterator begin() { __builtin_trap() /* STUB: not implemented */; }
+  iterator end() { __builtin_trap() /* STUB: not implemented */; }
+  const_iterator begin() const { __builtin_trap() /* STUB: not implemented */; }
+  const_iterator end() const { __builtin_trap() /* STUB: not implemented */; }
+  const_iterator cbegin() const { __builtin_trap() /* STUB: not implemented */; }
+  const_iterator cend() const { __builtin_trap() /* STUB: not implemented */; }
+  reverse_iterator rbegin() { __builtin_trap() /* STUB: not implemented */; }
+  reverse_iterator rend() { __builtin_trap() /* STUB: not implemented */; }
+  const_reverse_iterator rbegin() const { __builtin_trap() /* STUB: not implemented */; }
+  const_reverse_iterator rend() const { __builtin_trap() /* STUB: not implemented */; }
+  const_reverse_iterator crbegin() const { __builtin_trap() /* STUB: not implemented */; }
+  const_reverse_iterator crend() const { __builtin_trap() /* STUB: not implemented */; }
+  reference front() { __builtin_trap() /* STUB: not implemented */; }
+  reference back() { __builtin_trap() /* STUB: not implemented */; }
+  const_reference front() const { __builtin_trap() /* STUB: not implemented */; }
+  const_reference back() const { __builtin_trap() /* STUB: not implemented */; }
 
-  void pop_front() { erase(begin()); }
-  void pop_back() { erase(std::prev(end())); }
+  void pop_front() { __builtin_trap() /* STUB: not implemented */; }
+  void pop_back() { __builtin_trap() /* STUB: not implemented */; }
 
-  ABSL_ATTRIBUTE_REINITIALIZES void clear() {
-    set_.clear();
-    list_.clear();
-  }
+  ABSL_ATTRIBUTE_REINITIALIZES void clear() { __builtin_trap() /* STUB: not implemented */; }
 
-  void reserve(size_t n) { set_.reserve(n); }
-  size_t bucket_count() const { return set_.bucket_count(); }
-  size_t capacity() const { return set_.capacity(); }
-  float load_factor() const { return set_.load_factor(); }
+  void reserve(size_t n) { __builtin_trap() /* STUB: not implemented */; }
+  size_t bucket_count() const { __builtin_trap() /* STUB: not implemented */; }
+  size_t capacity() const { __builtin_trap() /* STUB: not implemented */; }
+  float load_factor() const { __builtin_trap() /* STUB: not implemented */; }
 
-  hasher hash_function() const { return set_.hash_function().fn_; }
-  key_equal key_eq() const { return set_.key_eq().fn_; }
-  allocator_type get_allocator() const { return list_.get_allocator(); }
+  hasher hash_function() const { __builtin_trap() /* STUB: not implemented */; }
+  key_equal key_eq() const { __builtin_trap() /* STUB: not implemented */; }
+  allocator_type get_allocator() const { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename K = key_type>
-  size_type erase(const key_arg<K>& key) {
-    auto found = set_.find(key);
-    if (found == set_.end()) return 0;
-    auto list_it = *found;
-    // Erase set entry first since it refers to the list element.
-    set_.erase(found);
-    list_.erase(list_it);
-    return 1;
-  }
+  size_type erase(const key_arg<K>& key) { __builtin_trap() /* STUB: not implemented */; }
 
-  iterator erase(const_iterator position) {
-    auto found = set_.find(position);
-    assert(*found == position);
-    set_.erase(found);
-    return list_.erase(position);
-  }
+  iterator erase(const_iterator position) { __builtin_trap() /* STUB: not implemented */; }
 
-  iterator erase(const_iterator first, const_iterator last) {
-    while (first != last) first = erase(first);
-    return first;
-  }
+  iterator erase(const_iterator first, const_iterator last) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename K = key_type>
-  iterator find(const key_arg<K>& key) {
-    auto found = set_.find(key);
-    if (found == set_.end()) return end();
-    return *found;
-  }
+  iterator find(const key_arg<K>& key) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename K = key_type>
-  const_iterator find(const key_arg<K>& key) const {
-    auto found = set_.find(key);
-    if (found == set_.end()) return end();
-    return *found;
-  }
+  const_iterator find(const key_arg<K>& key) const { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename K = key_type>
-  size_t count(const key_arg<K>& key) const {
-    return contains(key) ? 1 : 0;
-  }
+  size_t count(const key_arg<K>& key) const { __builtin_trap() /* STUB: not implemented */; }
   template <typename K = key_type>
-  bool contains(const key_arg<K>& key) const {
-    return set_.contains(key);
-  }
+  bool contains(const key_arg<K>& key) const { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename K = key_type>
-  std::pair<iterator, iterator> equal_range(const key_arg<K>& key) {
-    auto iter = set_.find(key);
-    if (iter == set_.end()) return {end(), end()};
-    return {*iter, std::next(*iter)};
-  }
+  std::pair<iterator, iterator> equal_range(const key_arg<K>& key) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename K = key_type>
   std::pair<const_iterator, const_iterator> equal_range(
-      const key_arg<K>& key) const {
-    auto iter = set_.find(key);
-    if (iter == set_.end()) return {end(), end()};
-    return {*iter, std::next(*iter)};
-  }
+      const key_arg<K>& key) const { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename K = key_type>
-  std::pair<iterator, bool> insert(const key_arg<K>& k) {
-    return InsertInternal(list_.end(), k);
-  }
+  std::pair<iterator, bool> insert(const key_arg<K>& k) { __builtin_trap() /* STUB: not implemented */; }
   template <typename K = key_type, K* = nullptr>
-  std::pair<iterator, bool> insert(key_arg<K>&& k) {
-    return InsertInternal(list_.end(), std::move(k));
-  }
+  std::pair<iterator, bool> insert(key_arg<K>&& k) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename K = key_type,
             std::enable_if_t<
                 !std::is_convertible_v<const key_arg<K>&, const_iterator> &&
                     !std::is_convertible_v<const key_arg<K>&, iterator>,
                 int> = 0>
-  iterator insert(const_iterator hint, const key_arg<K>& k) {
-    return InsertInternal(hint, k).first;
-  }
+  iterator insert(const_iterator hint, const key_arg<K>& k) { __builtin_trap() /* STUB: not implemented */; }
   template <
       typename K = key_type, K* = nullptr,
       std::enable_if_t<!std::is_convertible_v<key_arg<K>&&, const_iterator> &&
                            !std::is_convertible_v<key_arg<K>&&, iterator>,
                        int> = 0>
-  iterator insert(const_iterator hint, key_arg<K>&& k) {
-    return InsertInternal(hint, std::move(k)).first;
-  }
+  iterator insert(const_iterator hint, key_arg<K>&& k) { __builtin_trap() /* STUB: not implemented */; }
 
-  void insert(std::initializer_list<key_type> ilist) {
-    insert(ilist.begin(), ilist.end());
-  }
+  void insert(std::initializer_list<key_type> ilist) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class InputIt>
-  void insert(InputIt first, InputIt last) {
-    for (; first != last; ++first) insert(*first);
-  }
+  void insert(InputIt first, InputIt last) { __builtin_trap() /* STUB: not implemented */; }
 
-  insert_return_type insert(node_type&& node) {
-    if (node.empty()) return {end(), false, node_type()};
-    if (auto [set_itr, inserted] = set_.emplace(node.list_.begin()); inserted) {
-      list_.splice(list_.end(), node.list_);
-      return {*set_itr, true, node_type()};
-    } else {
-      return {*set_itr, false, std::move(node)};
-    }
-  }
+  insert_return_type insert(node_type&& node) { __builtin_trap() /* STUB: not implemented */; }
 
-  iterator insert(const_iterator, node_type&& node) {
-    return insert(std::move(node)).first;
-  }
+  iterator insert(const_iterator, node_type&& node) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename... Args>
-  std::pair<iterator, bool> emplace(Args&&... args) {
-    return EmplaceInternal(list_.end(), std::forward<Args>(args)...);
-  }
+  std::pair<iterator, bool> emplace(Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename... Args>
-  iterator emplace_hint(const_iterator hint, Args&&... args) {
-    return EmplaceInternal(hint, std::forward<Args>(args)...).first;
-  }
+  iterator emplace_hint(const_iterator hint, Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename H, typename E>
-  void merge(linked_hash_set<Key, H, E, Alloc>& src) {
-    auto itr = src.list_.begin();
-    while (itr != src.list_.end()) {
-      if (contains(*itr)) {
-        ++itr;
-      } else {
-        insert(src.extract(itr++));
-      }
-    }
-  }
+  void merge(linked_hash_set<Key, H, E, Alloc>& src) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename H, typename E>
-  void merge(linked_hash_set<Key, H, E, Alloc>&& src) {
-    merge(src);
-  }
+  void merge(linked_hash_set<Key, H, E, Alloc>&& src) { __builtin_trap() /* STUB: not implemented */; }
 
-  node_type extract(const_iterator position) {
-    set_.erase(position);
-    ListType extracted_node_list(get_allocator());
-    extracted_node_list.splice(extracted_node_list.end(), list_, position);
-    return node_type(std::move(extracted_node_list));
-  }
+  node_type extract(const_iterator position) { __builtin_trap() /* STUB: not implemented */; }
 
   template <class K = key_type,
             typename std::enable_if_t<!std::is_same_v<K, iterator>, int> = 0>
-  node_type extract(const key_arg<K>& key) {
-    auto node = set_.extract(key);
-    if (node.empty()) return node_type();
-    ListType extracted_node_list(get_allocator());
-    extracted_node_list.splice(extracted_node_list.end(), list_, node.value());
-    return node_type(std::move(extracted_node_list));
-  }
+  node_type extract(const key_arg<K>& key) { __builtin_trap() /* STUB: not implemented */; }
 
-  void swap(linked_hash_set& other) noexcept {
-    using std::swap;
-    swap(set_, other.set_);
-    swap(list_, other.list_);
-  }
+  void swap(linked_hash_set& other) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
-  friend bool operator==(const linked_hash_set& a, const linked_hash_set& b) {
-    if (a.size() != b.size()) return false;
-    const linked_hash_set* outer = &a;
-    const linked_hash_set* inner = &b;
-    if (outer->capacity() > inner->capacity()) std::swap(outer, inner);
-    for (const value_type& elem : *outer)
-      if (!inner->contains(elem)) return false;
-    return true;
-  }
+  friend bool operator==(const linked_hash_set& a, const linked_hash_set& b) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend bool operator!=(const linked_hash_set& a, const linked_hash_set& b) {
-    return !(a == b);
-  }
+  friend bool operator!=(const linked_hash_set& a, const linked_hash_set& b) { __builtin_trap() /* STUB: not implemented */; }
 
-  void rehash(size_t n) { set_.rehash(n); }
+  void rehash(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   template <typename Other>
-  void CopyFrom(Other&& other) {
-    for (auto& elem : other.list_) {
-      set_.insert(list_.insert(list_.end(), std::move(elem)));
-    }
-    assert(set_.size() == list_.size());
-  }
+  void CopyFrom(Other&& other) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename... Args>
   std::pair<iterator, bool> EmplaceInternal(const_iterator hint,
-                                            Args&&... args) {
-    ListType node_donor(get_allocator());
-    auto list_iter =
-        node_donor.emplace(node_donor.end(), std::forward<Args>(args)...);
-    auto ins = set_.insert(list_iter);
-    if (!ins.second) return {*ins.first, false};
-    list_.splice(hint, node_donor, list_iter);
-    return {list_iter, true};
-  }
+                                            Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename U>
   std::pair<iterator, bool> InsertInternal(const_iterator hint,
-                                           U&& key) {  // NOLINT(build/c++11)
-    bool constructed = false;
-    auto set_iter = set_.lazy_emplace(key, [&](const auto& ctor) {
-      constructed = true;
-      ctor(list_.emplace(hint, std::forward<U>(key)));
-    });
-    return {*set_iter, constructed};
-  }
+                                           U&& key) { __builtin_trap() /* STUB: not implemented */; }
 
   // The set component, used for speedy lookups.
   SetType set_;

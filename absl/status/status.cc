@@ -38,140 +38,45 @@ static_assert(
     alignof(status_internal::StatusRep) >= 4,
     "absl::Status assumes it can use the bottom 2 bits of a StatusRep*.");
 
-std::string StatusCodeToString(StatusCode code) {
-  return std::string(absl::StatusCodeToStringView(code));
-}
+std::string StatusCodeToString(StatusCode code) { __builtin_trap() /* STUB: not implemented */; }
 
-absl::string_view StatusCodeToStringView(StatusCode code) {
-  switch (code) {
-    case StatusCode::kOk:
-      return "OK";
-    case StatusCode::kCancelled:
-      return "CANCELLED";
-    case StatusCode::kUnknown:
-      return "UNKNOWN";
-    case StatusCode::kInvalidArgument:
-      return "INVALID_ARGUMENT";
-    case StatusCode::kDeadlineExceeded:
-      return "DEADLINE_EXCEEDED";
-    case StatusCode::kNotFound:
-      return "NOT_FOUND";
-    case StatusCode::kAlreadyExists:
-      return "ALREADY_EXISTS";
-    case StatusCode::kPermissionDenied:
-      return "PERMISSION_DENIED";
-    case StatusCode::kUnauthenticated:
-      return "UNAUTHENTICATED";
-    case StatusCode::kResourceExhausted:
-      return "RESOURCE_EXHAUSTED";
-    case StatusCode::kFailedPrecondition:
-      return "FAILED_PRECONDITION";
-    case StatusCode::kAborted:
-      return "ABORTED";
-    case StatusCode::kOutOfRange:
-      return "OUT_OF_RANGE";
-    case StatusCode::kUnimplemented:
-      return "UNIMPLEMENTED";
-    case StatusCode::kInternal:
-      return "INTERNAL";
-    case StatusCode::kUnavailable:
-      return "UNAVAILABLE";
-    case StatusCode::kDataLoss:
-      return "DATA_LOSS";
-    default:
-      return "";
-  }
-}
+absl::string_view StatusCodeToStringView(StatusCode code) { __builtin_trap() /* STUB: not implemented */; }
 
-std::ostream& operator<<(std::ostream& os, StatusCode code) {
-  return os << StatusCodeToString(code);
-}
+std::ostream& operator<<(std::ostream& os, StatusCode code) { __builtin_trap() /* STUB: not implemented */; }
 
-const std::string* absl_nonnull Status::EmptyString() {
-  static const absl::NoDestructor<std::string> kEmpty;
-  return kEmpty.get();
-}
+const std::string* absl_nonnull Status::EmptyString() { __builtin_trap() /* STUB: not implemented */; }
 
-const std::string* absl_nonnull Status::MovedFromString() {
-  static const absl::NoDestructor<std::string> kMovedFrom(kMovedFromString);
-  return kMovedFrom.get();
-}
+const std::string* absl_nonnull Status::MovedFromString() { __builtin_trap() /* STUB: not implemented */; }
 
 absl::Status absl::Status::MakeNonOkStatusWithOkCode(
-    absl::string_view message) {
-  return absl::Status(
-      absl::Status::PointerToRep(new absl::status_internal::StatusRep(
-          absl::StatusCode::kOk, message, nullptr)));
-}
+    absl::string_view message) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename StringOrView>
 uintptr_t MakeStatusRepImpl(uintptr_t inlined_rep, StringOrView msg,
-                            absl::SourceLocation loc) {
-  static_assert(std::is_same_v<StringOrView, absl::string_view> ||
-                std::is_same_v<StringOrView, std::string&&>);
-  bool ok = inlined_rep == Status::CodeToInlinedRep(absl::StatusCode::kOk);
-  if (ok) return inlined_rep;
-  if (msg.empty()
-  ) {
-    return inlined_rep;
-  }
-  auto* rep =
-      new status_internal::StatusRep(Status::InlinedRepToCode(inlined_rep),
-                                     std::forward<StringOrView>(msg), nullptr);
-  if (loc.file_name()[0] != '\0') {
-    rep->AddSourceLocation(loc);
-  }
-  return Status::PointerToRep(rep);
-}
+                            absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 
 uintptr_t Status::MakeRepFromStringView(uintptr_t inlined_rep,
                                         absl::string_view msg,
-                                        absl::SourceLocation loc) {
-  return MakeStatusRepImpl<absl::string_view>(inlined_rep, msg, loc);
-}
+                                        absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 
 uintptr_t Status::MakeRepFromStringRvalue(uintptr_t inlined_rep,
                                           std::string&& msg,
-                                          absl::SourceLocation loc) {
-  return MakeStatusRepImpl<std::string&&>(inlined_rep, std::move(msg), loc);
-}
+                                          absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 
 uintptr_t Status::AddSourceLocationImpl(uintptr_t rep,
-                                        absl::SourceLocation loc) {
-  if (IsInlined(rep)) return rep;
-  if (loc.file_name()[0] == '\0') return rep;
-  status_internal::StatusRep* rep_ptr = PrepareToModify(rep);
-  rep_ptr->AddSourceLocation(loc);
-  return PointerToRep(rep_ptr);
-}
+                                        absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 
 status_internal::StatusRep* absl_nonnull Status::PrepareToModify(
-    uintptr_t rep) {
-  if (IsInlined(rep)) {
-    return new status_internal::StatusRep(InlinedRepToCode(rep),
-                                          absl::string_view(), nullptr);
-  }
-  return RepToPointer(rep)->CloneAndUnref();
-}
+    uintptr_t rep) { __builtin_trap() /* STUB: not implemented */; }
 
-std::string Status::ToStringSlow(uintptr_t rep, StatusToStringMode mode) {
-  if (IsInlined(rep)) {
-    return absl::StrCat(absl::StatusCodeToString(InlinedRepToCode(rep)), ": ");
-  }
-  return RepToPointer(rep)->ToString(mode);
-}
+std::string Status::ToStringSlow(uintptr_t rep, StatusToStringMode mode) { __builtin_trap() /* STUB: not implemented */; }
 
-std::ostream& operator<<(std::ostream& os, const Status& x) {
-  os << x.ToString(StatusToStringMode::kWithEverything);
-  return os;
-}
+std::ostream& operator<<(std::ostream& os, const Status& x) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace status_internal {
 // We use an int in the template parameter to shorten mangled names.
 template <int error_code>
-Status MakeErrorImpl(string_view message, SourceLocation loc) {
-  return Status(static_cast<StatusCode>(error_code), message, loc);
-}
+Status MakeErrorImpl(string_view message, SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 
 // Explicit instantiation for all the error codes.
 // If we add more error code, we need to add their values on this list.
@@ -196,226 +101,49 @@ template Status MakeErrorImpl<15>(string_view, SourceLocation);
 template Status MakeErrorImpl<16>(string_view, SourceLocation);
 }  // namespace status_internal
 
-bool IsAborted(const Status& status) {
-  return status.code() == absl::StatusCode::kAborted;
-}
+bool IsAborted(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsAlreadyExists(const Status& status) {
-  return status.code() == absl::StatusCode::kAlreadyExists;
-}
+bool IsAlreadyExists(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsCancelled(const Status& status) {
-  return status.code() == absl::StatusCode::kCancelled;
-}
+bool IsCancelled(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsDataLoss(const Status& status) {
-  return status.code() == absl::StatusCode::kDataLoss;
-}
+bool IsDataLoss(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsDeadlineExceeded(const Status& status) {
-  return status.code() == absl::StatusCode::kDeadlineExceeded;
-}
+bool IsDeadlineExceeded(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsFailedPrecondition(const Status& status) {
-  return status.code() == absl::StatusCode::kFailedPrecondition;
-}
+bool IsFailedPrecondition(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsInternal(const Status& status) {
-  return status.code() == absl::StatusCode::kInternal;
-}
+bool IsInternal(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsInvalidArgument(const Status& status) {
-  return status.code() == absl::StatusCode::kInvalidArgument;
-}
+bool IsInvalidArgument(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsNotFound(const Status& status) {
-  return status.code() == absl::StatusCode::kNotFound;
-}
+bool IsNotFound(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsOutOfRange(const Status& status) {
-  return status.code() == absl::StatusCode::kOutOfRange;
-}
+bool IsOutOfRange(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsPermissionDenied(const Status& status) {
-  return status.code() == absl::StatusCode::kPermissionDenied;
-}
+bool IsPermissionDenied(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsResourceExhausted(const Status& status) {
-  return status.code() == absl::StatusCode::kResourceExhausted;
-}
+bool IsResourceExhausted(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsUnauthenticated(const Status& status) {
-  return status.code() == absl::StatusCode::kUnauthenticated;
-}
+bool IsUnauthenticated(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsUnavailable(const Status& status) {
-  return status.code() == absl::StatusCode::kUnavailable;
-}
+bool IsUnavailable(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsUnimplemented(const Status& status) {
-  return status.code() == absl::StatusCode::kUnimplemented;
-}
+bool IsUnimplemented(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-bool IsUnknown(const Status& status) {
-  return status.code() == absl::StatusCode::kUnknown;
-}
+bool IsUnknown(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-StatusCode ErrnoToStatusCode(int error_number) {
-  switch (error_number) {
-    case 0:
-      return StatusCode::kOk;
-    case EINVAL:        // Invalid argument
-    case ENAMETOOLONG:  // Filename too long
-    case E2BIG:         // Argument list too long
-    case EDESTADDRREQ:  // Destination address required
-    case EDOM:          // Mathematics argument out of domain of function
-    case EFAULT:        // Bad address
-    case EILSEQ:        // Illegal byte sequence
-    case ENOPROTOOPT:   // Protocol not available
-    case ENOTSOCK:      // Not a socket
-    case ENOTTY:        // Inappropriate I/O control operation
-    case EPROTOTYPE:    // Protocol wrong type for socket
-    case ESPIPE:        // Invalid seek
-      return StatusCode::kInvalidArgument;
-    case ETIMEDOUT:  // Connection timed out
-      return StatusCode::kDeadlineExceeded;
-    case ENODEV:  // No such device
-    case ENOENT:  // No such file or directory
-#ifdef ENOMEDIUM
-    case ENOMEDIUM:  // No medium found
-#endif
-    case ENXIO:  // No such device or address
-    case ESRCH:  // No such process
-      return StatusCode::kNotFound;
-    case EEXIST:         // File exists
-    case EADDRNOTAVAIL:  // Address not available
-    case EALREADY:       // Connection already in progress
-#ifdef ENOTUNIQ
-    case ENOTUNIQ:  // Name not unique on network
-#endif
-      return StatusCode::kAlreadyExists;
-    case EPERM:   // Operation not permitted
-    case EACCES:  // Permission denied
-#ifdef ENOKEY
-    case ENOKEY:  // Required key not available
-#endif
-    case EROFS:  // Read only file system
-      return StatusCode::kPermissionDenied;
-    case ENOTEMPTY:   // Directory not empty
-    case EISDIR:      // Is a directory
-    case ENOTDIR:     // Not a directory
-    case EADDRINUSE:  // Address already in use
-    case EBADF:       // Invalid file descriptor
-#ifdef EBADFD
-    case EBADFD:  // File descriptor in bad state
-#endif
-    case EBUSY:    // Device or resource busy
-    case ECHILD:   // No child processes
-    case EISCONN:  // Socket is connected
-#ifdef EISNAM
-    case EISNAM:  // Is a named type file
-#endif
-#ifdef ENOTBLK
-    case ENOTBLK:  // Block device required
-#endif
-    case ENOTCONN:  // The socket is not connected
-    case EPIPE:     // Broken pipe
-#ifdef ESHUTDOWN
-    case ESHUTDOWN:  // Cannot send after transport endpoint shutdown
-#endif
-    case ETXTBSY:  // Text file busy
-#ifdef EUNATCH
-    case EUNATCH:  // Protocol driver not attached
-#endif
-      return StatusCode::kFailedPrecondition;
-    case ENOSPC:  // No space left on device
-#ifdef EDQUOT
-    case EDQUOT:  // Disk quota exceeded
-#endif
-    case EMFILE:   // Too many open files
-    case EMLINK:   // Too many links
-    case ENFILE:   // Too many open files in system
-    case ENOBUFS:  // No buffer space available
-    case ENOMEM:   // Not enough space
-#ifdef EUSERS
-    case EUSERS:  // Too many users
-#endif
-      return StatusCode::kResourceExhausted;
-#ifdef ECHRNG
-    case ECHRNG:  // Channel number out of range
-#endif
-    case EFBIG:      // File too large
-    case EOVERFLOW:  // Value too large to be stored in data type
-    case ERANGE:     // Result too large
-      return StatusCode::kOutOfRange;
-#ifdef ENOPKG
-    case ENOPKG:  // Package not installed
-#endif
-    case ENOSYS:        // Function not implemented
-    case ENOTSUP:       // Operation not supported
-    case EAFNOSUPPORT:  // Address family not supported
-#ifdef EPFNOSUPPORT
-    case EPFNOSUPPORT:  // Protocol family not supported
-#endif
-    case EPROTONOSUPPORT:  // Protocol not supported
-#ifdef ESOCKTNOSUPPORT
-    case ESOCKTNOSUPPORT:  // Socket type not supported
-#endif
-    case EXDEV:  // Improper link
-      return StatusCode::kUnimplemented;
-    case EAGAIN:  // Resource temporarily unavailable
-#ifdef ECOMM
-    case ECOMM:  // Communication error on send
-#endif
-    case ECONNREFUSED:  // Connection refused
-    case ECONNABORTED:  // Connection aborted
-    case ECONNRESET:    // Connection reset
-    case EINTR:         // Interrupted function call
-#ifdef EHOSTDOWN
-    case EHOSTDOWN:  // Host is down
-#endif
-    case EHOSTUNREACH:  // Host is unreachable
-    case ENETDOWN:      // Network is down
-    case ENETRESET:     // Connection aborted by network
-    case ENETUNREACH:   // Network unreachable
-    case ENOLCK:        // No locks available
-    case ENOLINK:       // Link has been severed
-#ifdef ENONET
-    case ENONET:  // Machine is not on the network
-#endif
-      return StatusCode::kUnavailable;
-    case EDEADLK:  // Resource deadlock avoided
-#ifdef ESTALE
-    case ESTALE:  // Stale file handle
-#endif
-      return StatusCode::kAborted;
-    case ECANCELED:  // Operation cancelled
-      return StatusCode::kCancelled;
-    default:
-      return StatusCode::kUnknown;
-  }
-}
+StatusCode ErrnoToStatusCode(int error_number) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace {
 std::string MessageForErrnoToStatus(int error_number,
-                                    absl::string_view message) {
-  return absl::StrCat(message, ": ",
-                      absl::base_internal::StrError(error_number));
-}
+                                    absl::string_view message) { __builtin_trap() /* STUB: not implemented */; }
 }  // namespace
 
 Status ErrnoToStatus(int error_number, absl::string_view message,
-                     absl::SourceLocation loc) {
-  return Status(ErrnoToStatusCode(error_number),
-                MessageForErrnoToStatus(error_number, message), loc);
-}
+                     absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 
-const char* absl_nonnull StatusMessageAsCStr(const Status& status) {
-  // As an internal implementation detail, we guarantee that if status.message()
-  // is non-empty, then the resulting string_view is null terminated.
-  auto sv_message = status.message();
-  return sv_message.empty() ? "" : sv_message.data();
-}
+const char* absl_nonnull StatusMessageAsCStr(const Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

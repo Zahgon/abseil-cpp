@@ -44,44 +44,21 @@ ABSL_NAMESPACE_BEGIN
 //
 // Returns whether a given string `haystack` contains the substring `needle`.
 inline bool StrContains(absl::string_view haystack,
-                        absl::string_view needle) noexcept {
-  return haystack.find(needle, 0) != haystack.npos;
-}
+                        absl::string_view needle) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool StrContains(absl::string_view haystack, char needle) noexcept {
-  return haystack.find(needle) != haystack.npos;
-}
+inline bool StrContains(absl::string_view haystack, char needle) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 // StartsWith()
 //
 // Returns whether a given string `text` begins with `prefix`.
 inline constexpr bool StartsWith(absl::string_view text,
-                                 absl::string_view prefix) noexcept {
-  if (prefix.empty()) {
-    return true;
-  }
-  if (text.size() < prefix.size()) {
-    return false;
-  }
-  absl::string_view possible_match = text.substr(0, prefix.size());
-
-  return possible_match == prefix;
-}
+                                 absl::string_view prefix) noexcept { return {}; }
 
 // EndsWith()
 //
 // Returns whether a given string `text` ends with `suffix`.
 inline constexpr bool EndsWith(absl::string_view text,
-                               absl::string_view suffix) noexcept {
-  if (suffix.empty()) {
-    return true;
-  }
-  if (text.size() < suffix.size()) {
-    return false;
-  }
-  absl::string_view possible_match = text.substr(text.size() - suffix.size());
-  return possible_match == suffix;
-}
+                               absl::string_view suffix) noexcept { return {}; }
 // StrContainsIgnoreCase()
 //
 // Returns whether a given ASCII string `haystack` contains the ASCII substring

@@ -21,40 +21,16 @@
 
 namespace {
 
-void BM_CreateOk(benchmark::State& state) {
-  for (auto _ : state) {
-    absl::Status s;  // ok.
-    benchmark::DoNotOptimize(s);
-  }
-}
+void BM_CreateOk(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_CreateOk);
 
-void BM_CreateBad(benchmark::State& state) {
-  for (auto _ : state) {
-    absl::Status s(absl::StatusCode::kInvalidArgument, "message");
-    benchmark::DoNotOptimize(s);
-  }
-}
+void BM_CreateBad(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_CreateBad);
 
-void BM_AppendSourceLocation(benchmark::State& state) {
-  for (auto _ : state) {
-    absl::Status s(absl::StatusCode::kInvalidArgument, "message");
-    benchmark::DoNotOptimize(s);
-    absl::Status s2(std::move(s), absl::SourceLocation::current());
-    benchmark::DoNotOptimize(s2);
-  }
-}
+void BM_AppendSourceLocation(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_AppendSourceLocation);
 
-void BM_LongMessageRValue(benchmark::State& state) {
-  for (auto _ : state) {
-    std::string msg(100, 'X');
-    benchmark::DoNotOptimize(msg);
-    absl::Status s(absl::StatusCode::kInvalidArgument, std::move(msg));
-    benchmark::DoNotOptimize(s);
-  }
-}
+void BM_LongMessageRValue(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_LongMessageRValue);
 
 }  // namespace

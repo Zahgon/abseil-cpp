@@ -1126,12 +1126,7 @@ TEST(MarshallingTest, TestStdOptionalUnparsing) {
 #endif
 
 template <typename T>
-void TestRoundtrip(T v) {
-  T new_v;
-  std::string err;
-  EXPECT_TRUE(absl::ParseFlag(absl::UnparseFlag(v), &new_v, &err));
-  EXPECT_EQ(new_v, v);
-}
+void TestRoundtrip(T v) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(MarshallingTest, TestFloatRoundTrip) {
   TestRoundtrip(0.1f);

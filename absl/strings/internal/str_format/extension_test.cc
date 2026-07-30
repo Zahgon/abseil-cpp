@@ -31,12 +31,10 @@ class UserDefinedType {
  public:
   UserDefinedType() = default;
 
-  void Append(absl::string_view str) { value_.append(str.data(), str.size()); }
-  const std::string& Value() const { return value_; }
+  void Append(absl::string_view str) { __builtin_trap() /* STUB: not implemented */; }
+  const std::string& Value() const { __builtin_trap() /* STUB: not implemented */; }
 
-  friend void AbslFormatFlush(UserDefinedType* x, absl::string_view str) {
-    x->Append(str);
-  }
+  friend void AbslFormatFlush(UserDefinedType* x, absl::string_view str) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   std::string value_;
@@ -45,15 +43,7 @@ class UserDefinedType {
 
 namespace {
 
-std::string MakeRandomString(size_t len) {
-  absl::InsecureBitGen gen;
-  std::uniform_int_distribution<> dis('a', 'z');
-  std::string s(len, '0');
-  for (char& c : s) {
-    c = dis(gen);
-  }
-  return s;
-}
+std::string MakeRandomString(size_t len) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(FormatExtensionTest, SinkAppendSubstring) {
   for (size_t chunk_size : {1, 10, 100, 1000, 10000}) {

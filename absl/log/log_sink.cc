@@ -18,6 +18,6 @@
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-void LogSink::KeyFunction() const {}
+void LogSink::KeyFunction() const { __builtin_trap() /* STUB: not implemented */; }
 ABSL_NAMESPACE_END
 }  // namespace absl

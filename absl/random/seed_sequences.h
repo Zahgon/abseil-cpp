@@ -79,15 +79,7 @@ using SeedSeq = random_internal::SaltedSeedSeq<std::seed_seq>;
 //                                      // correlated.
 //
 template <typename URBG>
-SeedSeq CreateSeedSeqFrom(URBG* urbg) {
-  SeedSeq::result_type seed_material[random_internal::kEntropyBlocksNeeded];
-
-  if (!random_internal::ReadSeedMaterialFromURBG(
-          urbg, absl::MakeSpan(seed_material))) {
-    random_internal::ThrowSeedGenException();
-  }
-  return SeedSeq(std::begin(seed_material), std::end(seed_material));
-}
+SeedSeq CreateSeedSeqFrom(URBG* urbg) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // absl::MakeSeedSeq()

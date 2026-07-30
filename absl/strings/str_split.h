@@ -121,14 +121,7 @@ ABSL_NAMESPACE_BEGIN
 //   std::vector<std::string> v2 = absl::StrSplit("a, b, c",
 //                                                ByString(", "));
 //   // v[0] == "a", v[1] == "b", v[2] == "c"
-class ByString {
- public:
-  explicit ByString(absl::string_view sp);
-  absl::string_view Find(absl::string_view text, size_t pos) const;
-
- private:
-  std::string delimiter_;
-};
+class ByString { __builtin_trap() /* STUB: not implemented */; };
 
 // ByAsciiWhitespace
 //
@@ -173,7 +166,7 @@ class ByAsciiWhitespace {
 //
 class ByChar {
  public:
-  explicit ByChar(char c) : c_(c) {}
+  explicit ByChar(char c) : c_(c) { __builtin_trap() /* STUB: not implemented */; }
   absl::string_view Find(absl::string_view text, size_t pos) const;
 
  private:
@@ -277,14 +270,8 @@ template <typename Delimiter>
 class MaxSplitsImpl {
  public:
   MaxSplitsImpl(Delimiter delimiter, int limit)
-      : delimiter_(std::move(delimiter)), limit_(limit), count_(0) {}
-  absl::string_view Find(absl::string_view text, size_t pos) {
-    if (count_++ == limit_) {
-      return absl::string_view(text.data() + text.size(),
-                               0);  // No more matches.
-    }
-    return delimiter_.Find(text, pos);
-  }
+      : delimiter_(std::move(delimiter)), limit_(limit), count_(0) { __builtin_trap() /* STUB: not implemented */; }
+  absl::string_view Find(absl::string_view text, size_t pos) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   Delimiter delimiter_;
@@ -309,12 +296,7 @@ class MaxSplitsImpl {
 template <typename Delimiter>
 inline strings_internal::MaxSplitsImpl<
     typename strings_internal::SelectDelimiter<Delimiter>::type>
-MaxSplits(Delimiter delimiter, int limit) {
-  typedef
-      typename strings_internal::SelectDelimiter<Delimiter>::type DelimiterType;
-  return strings_internal::MaxSplitsImpl<DelimiterType>(
-      DelimiterType(delimiter), limit);
-}
+MaxSplits(Delimiter delimiter, int limit) { __builtin_trap() /* STUB: not implemented */; }
 
 //------------------------------------------------------------------------------
 // Predicates
@@ -345,7 +327,7 @@ MaxSplits(Delimiter delimiter, int limit) {
 //
 //  // v[0] == " a ", v[1] == " ", v[2] == "", v[3] = "b", v[4] == ""
 struct AllowEmpty {
-  bool operator()(absl::string_view) const { return true; }
+  bool operator()(absl::string_view) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // SkipEmpty()
@@ -363,7 +345,7 @@ struct AllowEmpty {
 // to be empty. To skip such whitespace as well, use the `SkipWhitespace()`
 // predicate.
 struct SkipEmpty {
-  bool operator()(absl::string_view sp) const { return !sp.empty(); }
+  bool operator()(absl::string_view sp) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // SkipWhitespace()
@@ -381,10 +363,7 @@ struct SkipEmpty {
 //   std::vector<std::string> v = absl::StrSplit(" a , ,,b,", ',', SkipEmpty());
 //   // v[0] == " a ", v[1] == " ", v[2] == "b"
 struct SkipWhitespace {
-  bool operator()(absl::string_view sp) const {
-    sp = absl::StripLeadingAsciiWhitespace(sp);
-    return !sp.empty();
-  }
+  bool operator()(absl::string_view sp) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename T>
@@ -536,50 +515,28 @@ template <typename Delimiter>
 strings_internal::Splitter<
     typename strings_internal::SelectDelimiter<Delimiter>::type, AllowEmpty,
     absl::string_view>
-StrSplit(strings_internal::ConvertibleToStringView text, Delimiter d) {
-  using DelimiterType =
-      typename strings_internal::SelectDelimiter<Delimiter>::type;
-  return strings_internal::Splitter<DelimiterType, AllowEmpty,
-                                    absl::string_view>(
-      text.value(), DelimiterType(d), AllowEmpty());
-}
+StrSplit(strings_internal::ConvertibleToStringView text, Delimiter d) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Delimiter, typename StringType,
           EnableSplitIfString<StringType> = 0>
 strings_internal::Splitter<
     typename strings_internal::SelectDelimiter<Delimiter>::type, AllowEmpty,
     std::string>
-StrSplit(StringType&& text, Delimiter d) {
-  using DelimiterType =
-      typename strings_internal::SelectDelimiter<Delimiter>::type;
-  return strings_internal::Splitter<DelimiterType, AllowEmpty, std::string>(
-      std::move(text), DelimiterType(d), AllowEmpty());
-}
+StrSplit(StringType&& text, Delimiter d) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Delimiter, typename Predicate>
 strings_internal::Splitter<
     typename strings_internal::SelectDelimiter<Delimiter>::type, Predicate,
     absl::string_view>
 StrSplit(strings_internal::ConvertibleToStringView text, Delimiter d,
-         Predicate p) {
-  using DelimiterType =
-      typename strings_internal::SelectDelimiter<Delimiter>::type;
-  return strings_internal::Splitter<DelimiterType, Predicate,
-                                    absl::string_view>(
-      text.value(), DelimiterType(std::move(d)), std::move(p));
-}
+         Predicate p) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Delimiter, typename Predicate, typename StringType,
           EnableSplitIfString<StringType> = 0>
 strings_internal::Splitter<
     typename strings_internal::SelectDelimiter<Delimiter>::type, Predicate,
     std::string>
-StrSplit(StringType&& text, Delimiter d, Predicate p) {
-  using DelimiterType =
-      typename strings_internal::SelectDelimiter<Delimiter>::type;
-  return strings_internal::Splitter<DelimiterType, Predicate, std::string>(
-      std::move(text), DelimiterType(d), std::move(p));
-}
+StrSplit(StringType&& text, Delimiter d, Predicate p) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

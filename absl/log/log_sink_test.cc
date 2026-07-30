@@ -186,27 +186,11 @@ class ReentrancyTest : public ::testing::Test {
    public:
     explicit ReentrantSendLogSink(absl::LogSeverity severity,
                                   absl::LogSink* sink, LogMode mode)
-        : severity_(severity), sink_(sink), mode_(mode) {}
+        : severity_(severity), sink_(sink), mode_(mode) { __builtin_trap() /* STUB: not implemented */; }
     explicit ReentrantSendLogSink(absl::LogSeverity severity)
-        : ReentrantSendLogSink(severity, nullptr, LogMode::kNormal) {}
+        : ReentrantSendLogSink(severity, nullptr, LogMode::kNormal) { __builtin_trap() /* STUB: not implemented */; }
 
-    void Send(const absl::LogEntry&) override {
-      switch (mode_) {
-        case LogMode::kNormal:
-          LOG(LEVEL(severity_)) << "The log is coming from *inside the sink*.";
-          break;
-        case LogMode::kToSinkAlso:
-          LOG(LEVEL(severity_)).ToSinkAlso(sink_)
-              << "The log is coming from *inside the sink*.";
-          break;
-        case LogMode::kToSinkOnly:
-          LOG(LEVEL(severity_)).ToSinkOnly(sink_)
-              << "The log is coming from *inside the sink*.";
-          break;
-        default:
-          LOG(FATAL) << "Invalid mode " << static_cast<int>(mode_);
-      }
-    }
+    void Send(const absl::LogEntry&) override { __builtin_trap() /* STUB: not implemented */; }
 
    private:
     absl::LogSeverity severity_;
@@ -216,10 +200,7 @@ class ReentrancyTest : public ::testing::Test {
 
   static absl::string_view LogAndReturn(absl::LogSeverity severity,
                                         absl::string_view to_log,
-                                        absl::string_view to_return) {
-    LOG(LEVEL(severity)) << to_log;
-    return to_return;
-  }
+                                        absl::string_view to_return) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST_F(ReentrancyTest, LogFunctionThatLogs) {

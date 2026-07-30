@@ -25,7 +25,7 @@ struct TypeWithoutAbslStringify {};
 
 struct TypeWithAbslStringify {
   template <typename Sink>
-  friend void AbslStringify(Sink&, const TypeWithAbslStringify&) {}
+  friend void AbslStringify(Sink&, const TypeWithAbslStringify&) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(HasAbslStringifyTest, Works) {

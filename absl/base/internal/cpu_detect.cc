@@ -46,18 +46,8 @@ extern void __cpuidex(int[4], int, int);
 #elif !defined(_WIN32) && !defined(_WIN64)
 // MSVC defines this function for us.
 // https://learn.microsoft.com/en-us/cpp/intrinsics/cpuid-cpuidex
-static void __cpuid(int cpu_info[4], int info_type) {
-  __asm__ volatile("cpuid \n\t"
-                   : "=a"(cpu_info[0]), "=b"(cpu_info[1]), "=c"(cpu_info[2]),
-                     "=d"(cpu_info[3])
-                   : "a"(info_type), "c"(0));
-}
-static void __cpuidex(int cpu_info[4], int info_type, int ecx) {
-  __asm__ volatile("cpuid \n\t"
-                   : "=a"(cpu_info[0]), "=b"(cpu_info[1]), "=c"(cpu_info[2]),
-                     "=d"(cpu_info[3])
-                   : "a"(info_type), "c"(ecx));
-}
+static void __cpuid(int cpu_info[4], int info_type) { __builtin_trap() /* STUB: not implemented */; }
+static void __cpuidex(int cpu_info[4], int info_type, int ecx) { __builtin_trap() /* STUB: not implemented */; }
 #endif  // !defined(_WIN32) && !defined(_WIN64)
 #endif  // defined(__x86_64__) || defined(_M_X64)
 

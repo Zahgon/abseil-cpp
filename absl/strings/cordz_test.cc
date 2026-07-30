@@ -49,9 +49,7 @@ using Method = CordzUpdateTracker::MethodIdentifier;
 
 // Do not print cord contents, we only care about 'size' perhaps.
 // Note that this method must be inside the named namespace.
-inline void PrintTo(const Cord& cord, std::ostream* s) {
-  if (s) *s << "Cord[" << cord.size() << "]";
-}
+inline void PrintTo(const Cord& cord, std::ostream* s) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace {
 
@@ -59,36 +57,20 @@ auto constexpr kMaxInline = cord_internal::kMaxInline;
 
 // Returns a string_view value of the specified length
 // We do this to avoid 'consuming' large strings in Cord by default.
-absl::string_view MakeString(size_t size) {
-  thread_local std::string str;
-  str = std::string(size, '.');
-  return str;
-}
+absl::string_view MakeString(size_t size) { __builtin_trap() /* STUB: not implemented */; }
 
-absl::string_view MakeString(TestCordSize size) {
-  return MakeString(Length(size));
-}
+absl::string_view MakeString(TestCordSize size) { __builtin_trap() /* STUB: not implemented */; }
 
 // Returns a cord with a sampled method of kAppendString.
-absl::Cord MakeAppendStringCord(TestCordSize size) {
-  CordzSamplingIntervalHelper always(1);
-  absl::Cord cord;
-  cord.Append(MakeString(size));
-  return cord;
-}
+absl::Cord MakeAppendStringCord(TestCordSize size) { __builtin_trap() /* STUB: not implemented */; }
 
-std::string TestParamToString(::testing::TestParamInfo<TestCordSize> size) {
-  return absl::StrCat("On", ToString(size.param), "Cord");
-}
+std::string TestParamToString(::testing::TestParamInfo<TestCordSize> size) { __builtin_trap() /* STUB: not implemented */; }
 
 class CordzUpdateTest : public testing::TestWithParam<TestCordSize> {
  public:
-  Cord& cord() { return cord_; }
+  Cord& cord() { __builtin_trap() /* STUB: not implemented */; }
 
-  Method InitialOr(Method method) const {
-    return (GetParam() > TestCordSize::kInlined) ? Method::kConstructorString
-                                                 : method;
-  }
+  Method InitialOr(Method method) const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   CordzSamplingIntervalHelper sample_every_{1};
@@ -96,9 +78,7 @@ class CordzUpdateTest : public testing::TestWithParam<TestCordSize> {
 };
 
 template <typename T>
-std::string ParamToString(::testing::TestParamInfo<T> param) {
-  return std::string(ToString(param.param));
-}
+std::string ParamToString(::testing::TestParamInfo<T> param) { __builtin_trap() /* STUB: not implemented */; }
 
 INSTANTIATE_TEST_SUITE_P(WithParam, CordzUpdateTest,
                          testing::Values(TestCordSize::kEmpty,

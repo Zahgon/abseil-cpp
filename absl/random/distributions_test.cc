@@ -78,20 +78,7 @@ Invalid InferredTaggedUniformReturnT(...);
 //
 // will assert that this overload does not exist.
 template <typename A, typename B, typename Expect>
-void CheckArgsInferType() {
-  static_assert(
-      std::conjunction_v<
-          std::is_same<Expect, decltype(InferredUniformReturnT<A, B>(0))>,
-          std::is_same<Expect, decltype(InferredUniformReturnT<B, A>(0))>>,
-      "");
-  static_assert(
-      std::conjunction_v<
-          std::is_same<Expect, decltype(InferredTaggedUniformReturnT<
-                                        absl::IntervalOpenOpenTag, A, B>(0))>,
-          std::is_same<Expect, decltype(InferredTaggedUniformReturnT<
-                                        absl::IntervalOpenOpenTag, B, A>(0))>>,
-      "");
-}
+void CheckArgsInferType() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename A, typename B, typename ExplicitRet>
 auto ExplicitUniformReturnT(int) -> decltype(absl::Uniform<ExplicitRet>(
@@ -117,24 +104,7 @@ Invalid ExplicitTaggedUniformReturnT(...);
 //
 //   Expect(URBG&, Expect, Expect)
 template <typename A, typename B, typename Expect>
-void CheckArgsReturnExpectedType() {
-  static_assert(
-      std::conjunction_v<
-          std::is_same<Expect,
-                       decltype(ExplicitUniformReturnT<A, B, Expect>(0))>,
-          std::is_same<Expect,
-                       decltype(ExplicitUniformReturnT<B, A, Expect>(0))>>,
-      "");
-  static_assert(
-      std::conjunction_v<
-          std::is_same<Expect,
-                       decltype(ExplicitTaggedUniformReturnT<
-                                absl::IntervalOpenOpenTag, A, B, Expect>(0))>,
-          std::is_same<Expect,
-                       decltype(ExplicitTaggedUniformReturnT<
-                                absl::IntervalOpenOpenTag, B, A, Expect>(0))>>,
-      "");
-}
+void CheckArgsReturnExpectedType() { __builtin_trap() /* STUB: not implemented */; }
 
 // Takes the type of `absl::Uniform<R>(gen)` if valid or `Invalid` otherwise.
 template <typename R>

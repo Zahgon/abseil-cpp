@@ -39,34 +39,7 @@ ABSL_NAMESPACE_BEGIN
 // URBG such as absl::MockingBitGen by calling RandomMockingAccess::InvokeMock
 // after checking that RandomMockingAccess::HasInvokeMock<URBG> is true for the
 // underlying URBG type.
-class RandomMockingAccess {
-  template <template <class...> class Trait, class AlwaysVoid, class... Args>
-  struct detector : std::false_type {};
-  template <template <class...> class Trait, class... Args>
-  struct detector<Trait, std::void_t<Trait<Args...>>, Args...>
-      : std::true_type {};
-
-  using IdType = ::absl::FastTypeIdType;
-
-  // Detector for `bool InvokeMock(key_id, args_tuple*, result*)`
-  // Lives inside RandomMockingAccess so that it has friend access to private
-  // members of URBG types.
-  template <class T>
-  using invoke_mock_t = decltype(std::declval<T*>()->InvokeMock(
-      std::declval<IdType>(), std::declval<void*>(), std::declval<void*>()));
-
- public:
-  // Returns true if the URBG type has an InvokeMock method.
-  template <typename T>
-  using HasInvokeMock = typename detector<invoke_mock_t, void, T>::type;
-
-  // InvokeMock is private; calls to InvokeMock are proxied by MockingAccess.
-  template <typename URBG>
-  static inline bool InvokeMock(URBG* urbg, IdType key_id, void* args_tuple,
-                                void* result) {
-    return urbg->InvokeMock(key_id, args_tuple, result);
-  }
-};
+class RandomMockingAccess { __builtin_trap() /* STUB: not implemented */; };
 
 ABSL_NAMESPACE_END
 }  // namespace absl

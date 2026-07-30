@@ -34,16 +34,10 @@ static_assert(!is_urbg<uint64_t>::value);
 // - T IS widening-convertible to itself.
 //
 template <typename T>
-void CheckWideningConvertsToSelf() {
-  static_assert(is_widening_convertible<T, T>::value,
-                "Type is not convertible to self!");
-}
+void CheckWideningConvertsToSelf() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, typename Next, typename... Args>
-void CheckWideningConvertsToSelf() {
-  CheckWideningConvertsToSelf<T>();
-  CheckWideningConvertsToSelf<Next, Args...>();
-}
+void CheckWideningConvertsToSelf() { __builtin_trap() /* STUB: not implemented */; }
 
 // CheckNotWideningConvertibleWithSigned<T1, T2, ...>()
 //
@@ -52,20 +46,10 @@ void CheckWideningConvertsToSelf() {
 // - Signed(T) is NOT widening-convertible to T
 //
 template <typename T>
-void CheckNotWideningConvertibleWithSigned() {
-  using signed_t = std::make_signed_t<T>;
-
-  static_assert(!is_widening_convertible<T, signed_t>::value,
-                "Unsigned type is convertible to same-sized signed-type!");
-  static_assert(!is_widening_convertible<signed_t, T>::value,
-                "Signed type is convertible to same-sized unsigned-type!");
-}
+void CheckNotWideningConvertibleWithSigned() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, typename Next, typename... Args>
-void CheckNotWideningConvertibleWithSigned() {
-  CheckNotWideningConvertibleWithSigned<T>();
-  CheckWideningConvertsToSelf<Next, Args...>();
-}
+void CheckNotWideningConvertibleWithSigned() { __builtin_trap() /* STUB: not implemented */; }
 
 // CheckWideningConvertsToLargerType<T1, T2, ...>()
 //
@@ -75,36 +59,17 @@ void CheckNotWideningConvertibleWithSigned() {
 // - Signed(Ti) is NOT widening-convertible to Ti
 // - Signed(Ti) IS widening-convertible to Ti+1
 template <typename T, typename Higher>
-void CheckWideningConvertsToLargerTypes() {
-  using signed_t = std::make_signed_t<T>;
-  using higher_t = Higher;
-  using signed_higher_t = std::make_signed_t<Higher>;
-
-  static_assert(is_widening_convertible<T, higher_t>::value,
-                "Type not embeddable into larger type!");
-  static_assert(is_widening_convertible<T, signed_higher_t>::value,
-                "Type not embeddable into larger signed type!");
-  static_assert(!is_widening_convertible<signed_t, higher_t>::value,
-                "Signed type is embeddable into larger unsigned type!");
-  static_assert(is_widening_convertible<signed_t, signed_higher_t>::value,
-                "Signed type not embeddable into larger signed type!");
-}
+void CheckWideningConvertsToLargerTypes() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, typename Higher, typename Next, typename... Args>
-void CheckWideningConvertsToLargerTypes() {
-  CheckWideningConvertsToLargerTypes<T, Higher>();
-  CheckWideningConvertsToLargerTypes<Higher, Next, Args...>();
-}
+void CheckWideningConvertsToLargerTypes() { __builtin_trap() /* STUB: not implemented */; }
 
 // CheckWideningConvertsTo<T, U, [expect]>
 //
 // Checks that T DOES widening-convert to U.
 // If "expect" is false, then asserts that T does NOT widening-convert to U.
 template <typename T, typename U, bool expect = true>
-void CheckWideningConvertsTo() {
-  static_assert(is_widening_convertible<T, U>::value == expect,
-                "Unexpected result for is_widening_convertible<T, U>!");
-}
+void CheckWideningConvertsTo() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(TraitsTest, IsWideningConvertibleTest) {
   constexpr bool kInvalid = false;

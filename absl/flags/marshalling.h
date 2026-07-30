@@ -240,24 +240,10 @@ bool AbslParseFlag(absl::string_view, std::vector<std::string>*, std::string*);
 
 template <typename T>
 bool AbslParseFlag(absl::string_view text, std::optional<T>* f,
-                   std::string* err) {
-  if (text.empty()) {
-    *f = std::nullopt;
-    return true;
-  }
-  T value;
-  if (!absl::ParseFlag(text, &value, err)) return false;
-
-  *f = std::move(value);
-  return true;
-}
+                   std::string* err) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
-bool InvokeParseFlag(absl::string_view input, T* dst, std::string* err) {
-  // Comment on next line provides a good compiler error message if T
-  // does not have AbslParseFlag(absl::string_view, T*, std::string*).
-  return AbslParseFlag(input, dst, err);  // Is T missing AbslParseFlag?
-}
+bool InvokeParseFlag(absl::string_view input, T* dst, std::string* err) { __builtin_trap() /* STUB: not implemented */; }
 
 // Strings and std:: containers do not have the same overload resolution
 // considerations as fundamental types. Naming these 'AbslUnparseFlag' means we
@@ -266,16 +252,10 @@ std::string AbslUnparseFlag(absl::string_view v);
 std::string AbslUnparseFlag(const std::vector<std::string>&);
 
 template <typename T>
-std::string AbslUnparseFlag(const std::optional<T>& f) {
-  return f.has_value() ? absl::UnparseFlag(*f) : "";
-}
+std::string AbslUnparseFlag(const std::optional<T>& f) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
-std::string Unparse(const T& v) {
-  // Comment on next line provides a good compiler error message if T does not
-  // have UnparseFlag.
-  return AbslUnparseFlag(v);  // Is T missing AbslUnparseFlag?
-}
+std::string Unparse(const T& v) { __builtin_trap() /* STUB: not implemented */; }
 
 // Overloads for builtin types.
 std::string Unparse(bool v);
@@ -304,9 +284,7 @@ std::string Unparse(double v);
 // constituent types which already have Abseil flag support, may need to call
 // `absl::ParseFlag()` on those consituent string values. (See above.)
 template <typename T>
-inline bool ParseFlag(absl::string_view input, T* dst, std::string* error) {
-  return flags_internal::InvokeParseFlag(input, dst, error);
-}
+inline bool ParseFlag(absl::string_view input, T* dst, std::string* error) { __builtin_trap() /* STUB: not implemented */; }
 
 // UnparseFlag()
 //
@@ -318,9 +296,7 @@ inline bool ParseFlag(absl::string_view input, T* dst, std::string* error) {
 // constituent types which already have Abseil flag support, may want to call
 // `absl::UnparseFlag()` on those constituent types. (See above.)
 template <typename T>
-inline std::string UnparseFlag(const T& v) {
-  return flags_internal::Unparse(v);
-}
+inline std::string UnparseFlag(const T& v) { __builtin_trap() /* STUB: not implemented */; }
 
 // Overloads for `absl::LogSeverity` can't (easily) appear alongside that type's
 // definition because it is layered below flags.  See proper documentation in

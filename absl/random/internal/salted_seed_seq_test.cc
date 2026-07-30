@@ -35,42 +35,7 @@ using testing::Pointwise;
 namespace {
 
 template <typename Sseq>
-void ConformsToInterface() {
-  // Check that the SeedSequence can be default-constructed.
-  {
-    Sseq default_constructed_seq;
-  }
-  // Check that the SeedSequence can be constructed with two iterators.
-  {
-    uint32_t init_array[] = {1, 3, 5, 7, 9};
-    Sseq iterator_constructed_seq(std::begin(init_array), std::end(init_array));
-  }
-  // Check that the SeedSequence can be std::initializer_list-constructed.
-  {
-    Sseq list_constructed_seq = {1, 3, 5, 7, 9, 11, 13};
-  }
-  // Check that param() and size() return state provided to constructor.
-  {
-    uint32_t init_array[] = {1, 2, 3, 4, 5};
-    Sseq seq(std::begin(init_array), std::end(init_array));
-    EXPECT_EQ(seq.size(), ABSL_ARRAYSIZE(init_array));
-
-    std::vector<uint32_t> state_vector;
-    seq.param(std::back_inserter(state_vector));
-
-    EXPECT_EQ(state_vector.size(), ABSL_ARRAYSIZE(init_array));
-    for (int i = 0; i < state_vector.size(); i++) {
-      EXPECT_EQ(state_vector[i], i + 1);
-    }
-  }
-  // Check for presence of generate() method.
-  {
-    Sseq seq;
-    uint32_t seeds[5];
-
-    seq.generate(std::begin(seeds), std::end(seeds));
-  }
-}
+void ConformsToInterface() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(SaltedSeedSeq, CheckInterfaces) {
   // Control case

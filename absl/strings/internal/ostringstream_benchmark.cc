@@ -27,28 +27,7 @@ enum StringType {
 
 // Benchmarks for std::ostringstream.
 template <StringType kOutput>
-void BM_StdStream(benchmark::State& state) {
-  const int num_writes = state.range(0);
-  const int bytes_per_write = state.range(1);
-  const std::string payload(bytes_per_write, 'x');
-  for (auto _ : state) {
-    std::ostringstream strm;
-    benchmark::DoNotOptimize(strm);
-    for (int i = 0; i != num_writes; ++i) {
-      strm << payload;
-    }
-    switch (kOutput) {
-      case kNone: {
-        break;
-      }
-      case kStdString: {
-        std::string s = strm.str();
-        benchmark::DoNotOptimize(s);
-        break;
-      }
-    }
-  }
-}
+void BM_StdStream(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 // Create the stream, optionally write to it, then destroy it.
 BENCHMARK_TEMPLATE(BM_StdStream, kNone)
@@ -64,29 +43,7 @@ BENCHMARK_TEMPLATE(BM_StdStream, kStdString)
 
 // Benchmarks for OStringStream.
 template <StringType kOutput>
-void BM_CustomStream(benchmark::State& state) {
-  const int num_writes = state.range(0);
-  const int bytes_per_write = state.range(1);
-  const std::string payload(bytes_per_write, 'x');
-  for (auto _ : state) {
-    std::string out;
-    absl::strings_internal::OStringStream strm(&out);
-    benchmark::DoNotOptimize(strm);
-    for (int i = 0; i != num_writes; ++i) {
-      strm << payload;
-    }
-    switch (kOutput) {
-      case kNone: {
-        break;
-      }
-      case kStdString: {
-        std::string s = out;
-        benchmark::DoNotOptimize(s);
-        break;
-      }
-    }
-  }
-}
+void BM_CustomStream(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 // Create the stream, optionally write to it, then destroy it.
 BENCHMARK_TEMPLATE(BM_CustomStream, kNone)

@@ -56,33 +56,13 @@ enum class TestCordSize {
 };
 
 // To string helper
-inline absl::string_view ToString(TestCordSize size) {
-  switch (size) {
-    case TestCordSize::kEmpty:
-      return "Empty";
-    case TestCordSize::kInlined:
-      return "Inlined";
-    case TestCordSize::kSmall:
-      return "Small";
-    case TestCordSize::kStringSso1:
-      return "StringSso1";
-    case TestCordSize::kStringSso2:
-      return "StringSso2";
-    case TestCordSize::kMedium:
-      return "Medium";
-    case TestCordSize::kLarge:
-      return "Large";
-  }
-  return "???";
-}
+inline absl::string_view ToString(TestCordSize size) { __builtin_trap() /* STUB: not implemented */; }
 
 // Returns the length matching the specified size
-inline size_t Length(TestCordSize size) { return static_cast<size_t>(size); }
+inline size_t Length(TestCordSize size) { __builtin_trap() /* STUB: not implemented */; }
 
 // Stream output helper
-inline std::ostream& operator<<(std::ostream& stream, TestCordSize size) {
-  return stream << ToString(size);
-}
+inline std::ostream& operator<<(std::ostream& stream, TestCordSize size) { __builtin_trap() /* STUB: not implemented */; }
 
 // Creates a multi-segment Cord from an iterable container of strings.  The
 // resulting Cord is guaranteed to have one segment for every string in the
@@ -100,21 +80,9 @@ inline std::ostream& operator<<(std::ostream& stream, TestCordSize size) {
 // MakeFragmentedCord will, however, always be updated to return a multi-segment
 // Cord.
 template <typename Container>
-Cord MakeFragmentedCord(const Container& c) {
-  Cord result;
-  for (const auto& s : c) {
-    auto* external = new std::string(s);
-    Cord tmp = absl::MakeCordFromExternal(
-        *external, [external](absl::string_view) { delete external; });
-    tmp.Prepend(result);
-    result = tmp;
-  }
-  return result;
-}
+Cord MakeFragmentedCord(const Container& c) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord MakeFragmentedCord(std::initializer_list<absl::string_view> list) {
-  return MakeFragmentedCord<std::initializer_list<absl::string_view>>(list);
-}
+inline Cord MakeFragmentedCord(std::initializer_list<absl::string_view> list) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

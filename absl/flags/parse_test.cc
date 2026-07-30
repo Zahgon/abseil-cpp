@@ -83,88 +83,12 @@ struct UDT {
   int value;
 };
 
-bool AbslParseFlag(absl::string_view in, UDT* udt, std::string* err) {
-  if (in == "A") {
-    udt->value = 1;
-    return true;
-  }
-  if (in == "AAA") {
-    udt->value = 10;
-    return true;
-  }
+bool AbslParseFlag(absl::string_view in, UDT* udt, std::string* err) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(const UDT& udt) { __builtin_trap() /* STUB: not implemented */; }
 
-  *err = "Use values A, AAA instead";
-  return false;
-}
-std::string AbslUnparseFlag(const UDT& udt) {
-  return udt.value == 1 ? "A" : "AAA";
-}
+std::string GetTestTmpDirEnvVar(const char* const env_var_name) { __builtin_trap() /* STUB: not implemented */; }
 
-std::string GetTestTmpDirEnvVar(const char* const env_var_name) {
-#ifdef _WIN32
-  char buf[MAX_PATH];
-  auto get_res = GetEnvironmentVariableA(env_var_name, buf, sizeof(buf));
-  if (get_res >= sizeof(buf) || get_res == 0) {
-    return "";
-  }
-
-  return std::string(buf, get_res);
-#else
-  const char* val = ::getenv(env_var_name);
-  if (val == nullptr) {
-    return "";
-  }
-
-  return val;
-#endif
-}
-
-const std::string& GetTestTempDir() {
-  static std::string* temp_dir_name = []() -> std::string* {
-    std::string* res = new std::string(GetTestTmpDirEnvVar("TEST_TMPDIR"));
-
-    if (res->empty()) {
-      *res = GetTestTmpDirEnvVar("TMPDIR");
-    }
-
-    if (res->empty()) {
-#ifdef _WIN32
-      char temp_path_buffer[MAX_PATH];
-
-      auto len = GetTempPathA(MAX_PATH, temp_path_buffer);
-      if (len < MAX_PATH && len != 0) {
-        std::string temp_dir_name = temp_path_buffer;
-        if (!absl::EndsWith(temp_dir_name, "\\")) {
-          temp_dir_name.push_back('\\');
-        }
-        absl::StrAppend(&temp_dir_name, "parse_test.", GetCurrentProcessId());
-        if (CreateDirectoryA(temp_dir_name.c_str(), nullptr)) {
-          *res = temp_dir_name;
-        }
-      }
-#else
-      char temp_dir_template[] = "/tmp/parse_test.XXXXXX";
-      if (auto* unique_name = ::mkdtemp(temp_dir_template)) {
-        *res = unique_name;
-      }
-#endif
-    }
-
-    if (res->empty()) {
-      LOG(FATAL) << "Failed to make temporary directory for data files";
-    }
-
-#ifdef _WIN32
-    *res += "\\";
-#else
-    *res += "/";
-#endif
-
-    return res;
-  }();
-
-  return *temp_dir_name;
-}
+const std::string& GetTestTempDir() { __builtin_trap() /* STUB: not implemented */; }
 
 struct FlagfileData {
   const absl::string_view file_name;
@@ -203,24 +127,7 @@ constexpr const char* const ff2_data[] = {
 // temporary directory location. This way we can test inclusion of one flagfile
 // from another flagfile.
 const char* GetFlagfileFlag(const std::vector<FlagfileData>& ffd,
-                            std::string& flagfile_flag) {
-  flagfile_flag = "--flagfile=";
-  absl::string_view separator;
-  for (const auto& flagfile_data : ffd) {
-    std::string flagfile_name =
-        absl::StrCat(GetTestTempDir(), flagfile_data.file_name);
-
-    std::ofstream flagfile_out(flagfile_name);
-    for (auto line : flagfile_data.file_lines) {
-      flagfile_out << absl::Substitute(line, GetTestTempDir()) << "\n";
-    }
-
-    absl::StrAppend(&flagfile_flag, separator, flagfile_name);
-    separator = ",";
-  }
-
-  return flagfile_flag.c_str();
-}
+                            std::string& flagfile_flag) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace
 

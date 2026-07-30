@@ -81,49 +81,14 @@ class CommandLineFlag {
   //
   // Return true iff flag has type T.
   template <typename T>
-  inline bool IsOfType() const {
-    return TypeId() == FastTypeId<T>();
-  }
+  inline bool IsOfType() const { __builtin_trap() /* STUB: not implemented */; }
 
   // absl::CommandLineFlag::TryGet()
   //
   // Attempts to retrieve the flag value. Returns value on success,
   // std::nullopt otherwise.
   template <typename T>
-  std::optional<T> TryGet() const {
-    if (IsRetired() || !IsOfType<T>()) {
-      return std::nullopt;
-    }
-
-    // Implementation notes:
-    //
-    // We are wrapping a union around the value of `T` to serve three purposes:
-    //
-    //  1. `U.value` has correct size and alignment for a value of type `T`
-    //  2. The `U.value` constructor is not invoked since U's constructor does
-    //     not do it explicitly.
-    //  3. The `U.value` destructor is invoked since U's destructor does it
-    //     explicitly. This makes `U` a kind of RAII wrapper around non default
-    //     constructible value of T, which is destructed when we leave the
-    //     scope. We do need to destroy U.value, which is constructed by
-    //     CommandLineFlag::Read even though we left it in a moved-from state
-    //     after std::move.
-    //
-    // All of this serves to avoid requiring `T` being default constructible.
-    union U {
-      T value;
-      U() {}
-      ~U() { value.~T(); }
-    };
-    U u;
-
-    Read(&u.value);
-    // allow retired flags to be "read", so we can report invalid access.
-    if (IsRetired()) {
-      return std::nullopt;
-    }
-    return std::move(u.value);
-  }
+  std::optional<T> TryGet() const { __builtin_trap() /* STUB: not implemented */; }
 
   // absl::CommandLineFlag::Name()
   //

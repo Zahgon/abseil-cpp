@@ -42,12 +42,7 @@ const char* kSkipFlakyReason = nullptr;
 
 void AwaitWithDeadlineAndNotify(absl::Clock* clock, absl::Mutex* mu,
                                 absl::Condition* cond, absl::Time wakeup_time,
-                                absl::Notification* note, bool* return_val) {
-  mu->lock_shared();
-  *return_val = clock->AwaitWithDeadline(mu, *cond, wakeup_time);
-  mu->unlock_shared();
-  note->Notify();
-}
+                                absl::Notification* note, bool* return_val) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(RealClockTest, AwaitWithVeryLargeDeadline) {
   if (kSkipFlakyReason != nullptr) {

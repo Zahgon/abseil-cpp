@@ -59,13 +59,7 @@ namespace base_internal {
 #if ABSL_HAVE_CPP_ATTRIBUTE(clang::nomerge)
 [[clang::nomerge]]  // Needed when this function is not inlined
 #endif
-[[noreturn]] inline void HardeningAbort() {
-#if ABSL_HAVE_CPP_ATTRIBUTE(clang::nomerge)
-  [[clang::nomerge]]  // Needed when this function is inlined
-#endif
-  ABSL_INTERNAL_IMMEDIATE_ABORT_IMPL();
-  ABSL_INTERNAL_UNREACHABLE_IMPL();
-}
+[[noreturn]] inline void HardeningAbort() { __builtin_trap() /* STUB: not implemented */; }
 }  // namespace base_internal
 ABSL_NAMESPACE_END
 }  // namespace absl

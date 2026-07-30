@@ -24,9 +24,7 @@ namespace {
 using absl::strings_internal::MakeStringConstant;
 
 struct Callable {
-  constexpr absl::string_view operator()() const {
-    return absl::string_view("Callable", 8);
-  }
+  constexpr absl::string_view operator()() const { return {}; }
 };
 
 TEST(StringConstant, Traits) {

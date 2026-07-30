@@ -315,67 +315,36 @@ class CordBuffer {
     static constexpr size_t kInlineCapacity = sizeof(intptr_t) * 2 - 1;
 
     // Creates a default instance with kInlineCapacity.
-    Rep() : short_rep{} {}
+    Rep() : short_rep{} { __builtin_trap() /* STUB: not implemented */; }
 
     // Creates an instance managing an allocated non zero CordRep.
-    explicit Rep(cord_internal::CordRepFlat* rep) : long_rep{rep} {
-      assert(rep != nullptr);
-    }
+    explicit Rep(cord_internal::CordRepFlat* rep) : long_rep{rep} { __builtin_trap() /* STUB: not implemented */; }
 
     // Returns true if this instance manages the SSO internal buffer.
-    bool is_short() const {
-      constexpr size_t offset = offsetof(Short, raw_size);
-      return (reinterpret_cast<const char*>(this)[offset] & 1) != 0;
-    }
+    bool is_short() const { __builtin_trap() /* STUB: not implemented */; }
 
     // Returns the available area of the internal SSO data
-    absl::Span<char> short_available() {
-      const size_t length = short_length();
-      return absl::Span<char>(short_rep.data + length,
-                              kInlineCapacity - length);
-    }
+    absl::Span<char> short_available() { __builtin_trap() /* STUB: not implemented */; }
 
     // Returns the available area of the internal SSO data
-    absl::Span<char> long_available() const {
-      assert(!is_short());
-      const size_t length = long_rep.rep->length;
-      return absl::Span<char>(long_rep.rep->Data() + length,
-                              long_rep.rep->Capacity() - length);
-    }
+    absl::Span<char> long_available() const { __builtin_trap() /* STUB: not implemented */; }
 
     // Returns the length of the internal SSO data.
-    size_t short_length() const {
-      assert(is_short());
-      return static_cast<size_t>(short_rep.raw_size >> 1);
-    }
+    size_t short_length() const { __builtin_trap() /* STUB: not implemented */; }
 
     // Sets the length of the internal SSO data.
     // Disregards any previously set CordRep instance.
-    void set_short_length(size_t length) {
-      short_rep.raw_size = static_cast<char>((length << 1) + 1);
-    }
+    void set_short_length(size_t length) { __builtin_trap() /* STUB: not implemented */; }
 
     // Adds `n` to the current short length.
-    void add_short_length(size_t n) {
-      assert(is_short());
-      short_rep.raw_size += static_cast<char>(n << 1);
-    }
+    void add_short_length(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
     // Returns reference to the internal SSO data buffer.
-    char* data() {
-      assert(is_short());
-      return short_rep.data;
-    }
-    const char* data() const {
-      assert(is_short());
-      return short_rep.data;
-    }
+    char* data() { __builtin_trap() /* STUB: not implemented */; }
+    const char* data() const { __builtin_trap() /* STUB: not implemented */; }
 
     // Returns a pointer the external CordRep managed by this instance.
-    cord_internal::CordRepFlat* rep() const {
-      assert(!is_short());
-      return long_rep.rep;
-    }
+    cord_internal::CordRepFlat* rep() const { __builtin_trap() /* STUB: not implemented */; }
 
     // The internal representation takes advantage of the fact that allocated
     // memory is always on an even address, and uses the least significant bit
@@ -383,7 +352,7 @@ class CordBuffer {
     // indicator overlapping with the least significant byte of the CordRep*.
 #if defined(ABSL_IS_BIG_ENDIAN)
     struct Long {
-      explicit Long(cord_internal::CordRepFlat* rep_arg) : rep(rep_arg) {}
+      explicit Long(cord_internal::CordRepFlat* rep_arg) : rep(rep_arg) { __builtin_trap() /* STUB: not implemented */; }
       void* padding;
       cord_internal::CordRepFlat* rep;
     };
@@ -393,7 +362,7 @@ class CordBuffer {
     };
 #else
     struct Long {
-      explicit Long(cord_internal::CordRepFlat* rep_arg) : rep(rep_arg) {}
+      explicit Long(cord_internal::CordRepFlat* rep_arg) : rep(rep_arg) { __builtin_trap() /* STUB: not implemented */; }
       cord_internal::CordRepFlat* rep;
       void* padding;
     };
@@ -410,13 +379,9 @@ class CordBuffer {
   };
 
   // Power2 functions
-  static bool IsPow2(size_t size) { return absl::has_single_bit(size); }
-  static size_t Log2Floor(size_t size) {
-    return static_cast<size_t>(absl::bit_width(size) - 1);
-  }
-  static size_t Log2Ceil(size_t size) {
-    return static_cast<size_t>(absl::bit_width(size - 1));
-  }
+  static bool IsPow2(size_t size) { __builtin_trap() /* STUB: not implemented */; }
+  static size_t Log2Floor(size_t size) { __builtin_trap() /* STUB: not implemented */; }
+  static size_t Log2Ceil(size_t size) { __builtin_trap() /* STUB: not implemented */; }
 
   // Implementation of `CreateWithCustomLimit()`.
   // This implementation allows for future memory allocation hints to
@@ -433,21 +398,10 @@ class CordBuffer {
   // `short_value` to the inlined data value. In either case, the current
   // instance length is reset to zero.
   // This method is intended to be used by Cord internal functions only.
-  cord_internal::CordRep* ConsumeValue(absl::string_view& short_value) {
-    cord_internal::CordRep* rep = nullptr;
-    if (rep_.is_short()) {
-      short_value = absl::string_view(rep_.data(), rep_.short_length());
-    } else {
-      rep = rep_.rep();
-    }
-    rep_.set_short_length(0);
-    return rep;
-  }
+  cord_internal::CordRep* ConsumeValue(absl::string_view& short_value) { __builtin_trap() /* STUB: not implemented */; }
 
   // Internal constructor.
-  explicit CordBuffer(cord_internal::CordRepFlat* rep) : rep_(rep) {
-    assert(rep != nullptr);
-  }
+  explicit CordBuffer(cord_internal::CordRepFlat* rep) : rep_(rep) { __builtin_trap() /* STUB: not implemented */; }
 
   Rep rep_;
 
@@ -455,118 +409,40 @@ class CordBuffer {
   friend class CordBufferTestPeer;
 };
 
-inline constexpr size_t CordBuffer::MaximumPayload() {
-  return cord_internal::kMaxFlatLength;
-}
+inline constexpr size_t CordBuffer::MaximumPayload() { return {}; }
 
-inline constexpr size_t CordBuffer::MaximumPayload(size_t block_size) {
-  return (std::min)(kCustomLimit, block_size) - cord_internal::kFlatOverhead;
-}
+inline constexpr size_t CordBuffer::MaximumPayload(size_t block_size) { return {}; }
 
-inline CordBuffer CordBuffer::CreateWithDefaultLimit(size_t capacity) {
-  if (capacity > Rep::kInlineCapacity) {
-    auto* rep = cord_internal::CordRepFlat::New(capacity);
-    rep->length = 0;
-    return CordBuffer(rep);
-  }
-  return CordBuffer();
-}
+inline CordBuffer CordBuffer::CreateWithDefaultLimit(size_t capacity) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename... AllocationHints>
 inline CordBuffer CordBuffer::CreateWithCustomLimitImpl(
-    size_t block_size, size_t capacity, AllocationHints... hints) {
-  assert(IsPow2(block_size));
-  capacity = (std::min)(capacity, kCustomLimit);
-  block_size = (std::min)(block_size, kCustomLimit);
-  if (capacity + kOverhead >= block_size) {
-    capacity = block_size;
-  } else if (capacity <= kDefaultLimit) {
-    capacity = capacity + kOverhead;
-  } else if (!IsPow2(capacity)) {
-    // Check if rounded up to next power 2 is a good enough fit
-    // with limited waste making it an acceptable direct fit.
-    const size_t rounded_up = size_t{1} << Log2Ceil(capacity);
-    const size_t slop = rounded_up - capacity;
-    if (slop >= kOverhead && slop <= kMaxPageSlop + kOverhead) {
-      capacity = rounded_up;
-    } else {
-      // Round down to highest power of 2 <= capacity.
-      // Consider a more aggressive step down if that may reduce the
-      // risk of fragmentation where 'people are holding it wrong'.
-      const size_t rounded_down = size_t{1} << Log2Floor(capacity);
-      capacity = rounded_down;
-    }
-  }
-  const size_t length = capacity - kOverhead;
-  auto* rep = CordRepFlat::New(CordRepFlat::Large(), length, hints...);
-  rep->length = 0;
-  return CordBuffer(rep);
-}
+    size_t block_size, size_t capacity, AllocationHints... hints) { __builtin_trap() /* STUB: not implemented */; }
 
 inline CordBuffer CordBuffer::CreateWithCustomLimit(size_t block_size,
-                                                    size_t capacity) {
-  return CreateWithCustomLimitImpl(block_size, capacity);
-}
+                                                    size_t capacity) { __builtin_trap() /* STUB: not implemented */; }
 
-inline CordBuffer::~CordBuffer() {
-  if (!rep_.is_short()) {
-    cord_internal::CordRepFlat::Delete(rep_.rep());
-  }
-}
+inline CordBuffer::~CordBuffer() { __builtin_trap() /* STUB: not implemented */; }
 
-inline CordBuffer::CordBuffer(CordBuffer&& rhs) noexcept : rep_(rhs.rep_) {
-  rhs.rep_.set_short_length(0);
-}
+inline CordBuffer::CordBuffer(CordBuffer&& rhs) noexcept : rep_(rhs.rep_) { __builtin_trap() /* STUB: not implemented */; }
 
-inline CordBuffer& CordBuffer::operator=(CordBuffer&& rhs) noexcept {
-  if (!rep_.is_short()) cord_internal::CordRepFlat::Delete(rep_.rep());
-  rep_ = rhs.rep_;
-  rhs.rep_.set_short_length(0);
-  return *this;
-}
+inline CordBuffer& CordBuffer::operator=(CordBuffer&& rhs) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
-inline absl::Span<char> CordBuffer::available() {
-  return rep_.is_short() ? rep_.short_available() : rep_.long_available();
-}
+inline absl::Span<char> CordBuffer::available() { __builtin_trap() /* STUB: not implemented */; }
 
-inline absl::Span<char> CordBuffer::available_up_to(size_t size) {
-  return available().subspan(0, size);
-}
+inline absl::Span<char> CordBuffer::available_up_to(size_t size) { __builtin_trap() /* STUB: not implemented */; }
 
-inline char* CordBuffer::data() {
-  return rep_.is_short() ? rep_.data() : rep_.rep()->Data();
-}
+inline char* CordBuffer::data() { __builtin_trap() /* STUB: not implemented */; }
 
-inline const char* CordBuffer::data() const {
-  return rep_.is_short() ? rep_.data() : rep_.rep()->Data();
-}
+inline const char* CordBuffer::data() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline size_t CordBuffer::capacity() const {
-  return rep_.is_short() ? Rep::kInlineCapacity : rep_.rep()->Capacity();
-}
+inline size_t CordBuffer::capacity() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline size_t CordBuffer::length() const {
-  return rep_.is_short() ? rep_.short_length() : rep_.rep()->length;
-}
+inline size_t CordBuffer::length() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline void CordBuffer::SetLength(size_t length) {
-  absl::base_internal::HardeningAssertLE(length, capacity());
-  if (rep_.is_short()) {
-    rep_.set_short_length(length);
-  } else {
-    rep_.rep()->length = length;
-  }
-}
+inline void CordBuffer::SetLength(size_t length) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void CordBuffer::IncreaseLengthBy(size_t n) {
-  absl::base_internal::HardeningAssertLE(n, capacity());
-  absl::base_internal::HardeningAssertLE(length() + n, capacity());
-  if (rep_.is_short()) {
-    rep_.add_short_length(n);
-  } else {
-    rep_.rep()->length += n;
-  }
-}
+inline void CordBuffer::IncreaseLengthBy(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

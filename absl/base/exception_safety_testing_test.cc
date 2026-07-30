@@ -37,13 +37,7 @@ using ::testing::exceptions_internal::UnsetCountdown;
 
 // EXPECT_NO_THROW can't inspect the thrown inspection in general.
 template <typename F>
-void ExpectNoThrow(const F& f) {
-  try {
-    f();
-  } catch (const TestException& e) {
-    ADD_FAILURE() << "Unexpected exception thrown from " << e.what();
-  }
-}
+void ExpectNoThrow(const F& f) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ThrowingValueTest, Throws) {
   SetCountdown();
@@ -64,13 +58,7 @@ TEST(ThrowingValueTest, Throws) {
 // the countdown doesn't hit 0, and doesn't modify the state of the
 // ThrowingValue if it throws
 template <typename F>
-void TestOp(const F& f) {
-  ExpectNoThrow(f);
-
-  SetCountdown();
-  EXPECT_THROW(f(), TestException);
-  UnsetCountdown();
-}
+void TestOp(const F& f) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ThrowingValueTest, ThrowingCtors) {
   ThrowingValue<> bomb;
@@ -225,13 +213,7 @@ TEST(ThrowingValueTest, StreamOpsOutput) {
 }
 
 template <typename F>
-void TestAllocatingOp(const F& f) {
-  ExpectNoThrow(f);
-
-  SetCountdown();
-  EXPECT_THROW(f(), exceptions_internal::TestBadAllocException);
-  UnsetCountdown();
-}
+void TestAllocatingOp(const F& f) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ThrowingValueTest, ThrowingAllocatingOps) {
   // make_unique calls unqualified operator new, so these exercise the
@@ -522,11 +504,9 @@ struct NullaryTestValidator<
     : public std::true_type {};
 
 template <typename TesterInstance>
-bool HasNullaryTest(const TesterInstance&) {
-  return NullaryTestValidator<TesterInstance>::value;
-}
+bool HasNullaryTest(const TesterInstance&) { __builtin_trap() /* STUB: not implemented */; }
 
-void DummyOp(void*) {}
+void DummyOp(void*) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename TesterInstance, typename = void>
 struct UnaryTestValidator : public std::false_type {};
@@ -538,9 +518,7 @@ struct UnaryTestValidator<
     : public std::true_type {};
 
 template <typename TesterInstance>
-bool HasUnaryTest(const TesterInstance&) {
-  return UnaryTestValidator<TesterInstance>::value;
-}
+bool HasUnaryTest(const TesterInstance&) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ExceptionSafetyTesterTest, IncompleteTypesAreNotTestable) {
   using T = exceptions_internal::UninitializedT;
@@ -574,30 +552,22 @@ TEST(ExceptionSafetyTesterTest, IncompleteTypesAreNotTestable) {
 
 struct ExampleStruct {};
 
-std::unique_ptr<ExampleStruct> ExampleFunctionFactory() {
-  return std::make_unique<ExampleStruct>();
-}
+std::unique_ptr<ExampleStruct> ExampleFunctionFactory() { __builtin_trap() /* STUB: not implemented */; }
 
-void ExampleFunctionOperation(ExampleStruct*) {}
+void ExampleFunctionOperation(ExampleStruct*) { __builtin_trap() /* STUB: not implemented */; }
 
-testing::AssertionResult ExampleFunctionContract(ExampleStruct*) {
-  return testing::AssertionSuccess();
-}
+testing::AssertionResult ExampleFunctionContract(ExampleStruct*) { __builtin_trap() /* STUB: not implemented */; }
 
 struct {
-  std::unique_ptr<ExampleStruct> operator()() const {
-    return ExampleFunctionFactory();
-  }
+  std::unique_ptr<ExampleStruct> operator()() const { __builtin_trap() /* STUB: not implemented */; }
 } example_struct_factory;
 
 struct {
-  void operator()(ExampleStruct*) const {}
+  void operator()(ExampleStruct*) const { __builtin_trap() /* STUB: not implemented */; }
 } example_struct_operation;
 
 struct {
-  testing::AssertionResult operator()(ExampleStruct* example_struct) const {
-    return ExampleFunctionContract(example_struct);
-  }
+  testing::AssertionResult operator()(ExampleStruct* example_struct) const { __builtin_trap() /* STUB: not implemented */; }
 } example_struct_contract;
 
 auto example_lambda_factory = []() { return ExampleFunctionFactory(); };
@@ -641,23 +611,15 @@ TEST(ExceptionSafetyTesterTest, MixedFunctionTypes) {
 }
 
 struct NonNegative {
-  bool operator==(const NonNegative& other) const { return i == other.i; }
+  bool operator==(const NonNegative& other) const { __builtin_trap() /* STUB: not implemented */; }
   int i;
 };
 
-testing::AssertionResult CheckNonNegativeInvariants(NonNegative* g) {
-  if (g->i >= 0) {
-    return testing::AssertionSuccess();
-  }
-  return testing::AssertionFailure()
-         << "i should be non-negative but is " << g->i;
-}
+testing::AssertionResult CheckNonNegativeInvariants(NonNegative* g) { __builtin_trap() /* STUB: not implemented */; }
 
 struct {
   template <typename T>
-  void operator()(T* t) const {
-    (*t)();
-  }
+  void operator()(T* t) const { __builtin_trap() /* STUB: not implemented */; }
 } invoker;
 
 auto tester =
@@ -666,11 +628,7 @@ auto tester =
 auto strong_tester = tester.WithContracts(testing::strong_guarantee);
 
 struct FailsBasicGuarantee : public NonNegative {
-  void operator()() {
-    --i;
-    ThrowingValue<> bomb;
-    ++i;
-  }
+  void operator()() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(ExceptionCheckTest, BasicGuaranteeFailure) {
@@ -678,10 +636,7 @@ TEST(ExceptionCheckTest, BasicGuaranteeFailure) {
 }
 
 struct FollowsBasicGuarantee : public NonNegative {
-  void operator()() {
-    ++i;
-    ThrowingValue<> bomb;
-  }
+  void operator()() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(ExceptionCheckTest, BasicGuarantee) {
@@ -695,12 +650,7 @@ TEST(ExceptionCheckTest, StrongGuaranteeFailure) {
 
 struct BasicGuaranteeWithExtraContracts : public NonNegative {
   // After operator(), i is incremented.  If operator() throws, i is set to 9999
-  void operator()() {
-    int old_i = i;
-    i = kExceptionSentinel;
-    ThrowingValue<> bomb;
-    i = ++old_i;
-  }
+  void operator()() { __builtin_trap() /* STUB: not implemented */; }
 
   static constexpr int kExceptionSentinel = 9999;
 };
@@ -724,7 +674,7 @@ TEST(ExceptionCheckTest, BasicGuaranteeWithExtraContracts) {
 }
 
 struct FollowsStrongGuarantee : public NonNegative {
-  void operator()() { ThrowingValue<> bomb; }
+  void operator()() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(ExceptionCheckTest, StrongGuarantee) {
@@ -733,19 +683,12 @@ TEST(ExceptionCheckTest, StrongGuarantee) {
 }
 
 struct HasReset : public NonNegative {
-  void operator()() {
-    i = -1;
-    ThrowingValue<> bomb;
-    i = 1;
-  }
+  void operator()() { __builtin_trap() /* STUB: not implemented */; }
 
-  void reset() { i = 0; }
+  void reset() { __builtin_trap() /* STUB: not implemented */; }
 };
 
-testing::AssertionResult CheckHasResetContracts(HasReset* h) {
-  h->reset();
-  return testing::AssertionResult(h->i == 0);
-}
+testing::AssertionResult CheckHasResetContracts(HasReset* h) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ExceptionCheckTest, ModifyingChecker) {
   auto set_to_1000 = [](FollowsBasicGuarantee* g) {
@@ -786,9 +729,9 @@ TEST(ExceptionSafetyTesterTest, ResetsCountdown) {
 
 struct NonCopyable : public NonNegative {
   NonCopyable(const NonCopyable&) = delete;
-  NonCopyable() : NonNegative{0} {}
+  NonCopyable() : NonNegative{0} { __builtin_trap() /* STUB: not implemented */; }
 
-  void operator()() { ThrowingValue<> bomb; }
+  void operator()() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(ExceptionCheckTest, NonCopyable) {
@@ -798,14 +741,9 @@ TEST(ExceptionCheckTest, NonCopyable) {
 }
 
 struct NonEqualityComparable : public NonNegative {
-  void operator()() { ThrowingValue<> bomb; }
+  void operator()() { __builtin_trap() /* STUB: not implemented */; }
 
-  void ModifyOnThrow() {
-    ++i;
-    ThrowingValue<> bomb;
-    static_cast<void>(bomb);
-    --i;
-  }
+  void ModifyOnThrow() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(ExceptionCheckTest, NonEqualityComparable) {
@@ -822,31 +760,16 @@ TEST(ExceptionCheckTest, NonEqualityComparable) {
 
 template <typename T>
 struct ExhaustivenessTester {
-  void operator()() {
-    successes |= 1;
-    T b1;
-    static_cast<void>(b1);
-    successes |= (1 << 1);
-    T b2;
-    static_cast<void>(b2);
-    successes |= (1 << 2);
-    T b3;
-    static_cast<void>(b3);
-    successes |= (1 << 3);
-  }
+  void operator()() { __builtin_trap() /* STUB: not implemented */; }
 
-  bool operator==(const ExhaustivenessTester<ThrowingValue<>>&) const {
-    return true;
-  }
+  bool operator==(const ExhaustivenessTester<ThrowingValue<>>&) const { __builtin_trap() /* STUB: not implemented */; }
 
   static unsigned char successes;
 };
 
 struct {
   template <typename T>
-  testing::AssertionResult operator()(ExhaustivenessTester<T>*) const {
-    return testing::AssertionSuccess();
-  }
+  testing::AssertionResult operator()(ExhaustivenessTester<T>*) const { __builtin_trap() /* STUB: not implemented */; }
 } CheckExhaustivenessTesterContracts;
 
 template <typename T>
@@ -869,14 +792,9 @@ TEST(ExceptionCheckTest, Exhaustiveness) {
 }
 
 struct LeaksIfCtorThrows : private exceptions_internal::TrackedObject {
-  LeaksIfCtorThrows() : TrackedObject(ABSL_INTERNAL_PRETTY_FUNCTION) {
-    ++counter;
-    ThrowingValue<> v;
-    static_cast<void>(v);
-    --counter;
-  }
+  LeaksIfCtorThrows() : TrackedObject(ABSL_INTERNAL_PRETTY_FUNCTION) { __builtin_trap() /* STUB: not implemented */; }
   LeaksIfCtorThrows(const LeaksIfCtorThrows&) noexcept
-      : TrackedObject(ABSL_INTERNAL_PRETTY_FUNCTION) {}
+      : TrackedObject(ABSL_INTERNAL_PRETTY_FUNCTION) { __builtin_trap() /* STUB: not implemented */; }
   static int counter;
 };
 int LeaksIfCtorThrows::counter = 0;
@@ -888,7 +806,7 @@ TEST(ExceptionCheckTest, TestLeakyCtor) {
 }
 
 struct Tracked : private exceptions_internal::TrackedObject {
-  Tracked() : TrackedObject(ABSL_INTERNAL_PRETTY_FUNCTION) {}
+  Tracked() : TrackedObject(ABSL_INTERNAL_PRETTY_FUNCTION) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(ConstructorTrackerTest, CreatedBefore) {

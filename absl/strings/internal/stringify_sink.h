@@ -55,13 +55,7 @@ string_view ExtractStringification(StringifySink& sink, const T& v) {
 }  // namespace strings_internal
 
 template <typename Sink>
-void AbslStringify(Sink& sink, SourceLocation l) {
-  sink.Append(l.file_name());
-  sink.Append(":");
-  std::array<char, numbers_internal::kFastToBufferSize> buffer;
-  numbers_internal::FastIntToBuffer(l.line(), buffer.data());
-  sink.Append(buffer.data());
-}
+void AbslStringify(Sink& sink, SourceLocation l) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

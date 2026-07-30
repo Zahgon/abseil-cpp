@@ -58,37 +58,27 @@ class UnorderedSequence {
   UnorderedSequence() = default;
   template <typename TT>
   UnorderedSequence(std::initializer_list<TT> l)
-      : values_(l.begin(), l.end()) {}
+      : values_(l.begin(), l.end()) { __builtin_trap() /* STUB: not implemented */; }
   template <typename ForwardIterator,
             std::enable_if_t<!std::is_integral_v<ForwardIterator>, bool> = true>
   UnorderedSequence(ForwardIterator begin, ForwardIterator end)
-      : values_(begin, end) {}
+      : values_(begin, end) { __builtin_trap() /* STUB: not implemented */; }
   // one-argument constructor of value type T, to appease older toolchains that
   // get confused by one-element initializer lists in some contexts
-  explicit UnorderedSequence(const T& v) : values_(&v, &v + 1) {}
+  explicit UnorderedSequence(const T& v) : values_(&v, &v + 1) { __builtin_trap() /* STUB: not implemented */; }
 
   using value_type = T;
 
-  size_t size() const { return values_.size(); }
-  typename std::vector<T>::const_iterator begin() const {
-    return values_.begin();
-  }
-  typename std::vector<T>::const_iterator end() const { return values_.end(); }
+  size_t size() const { __builtin_trap() /* STUB: not implemented */; }
+  typename std::vector<T>::const_iterator begin() const { __builtin_trap() /* STUB: not implemented */; }
+  typename std::vector<T>::const_iterator end() const { __builtin_trap() /* STUB: not implemented */; }
 
   friend bool operator==(const UnorderedSequence& lhs,
-                         const UnorderedSequence& rhs) {
-    return lhs.size() == rhs.size() &&
-           std::is_permutation(lhs.begin(), lhs.end(), rhs.begin());
-  }
+                         const UnorderedSequence& rhs) { __builtin_trap() /* STUB: not implemented */; }
   friend bool operator!=(const UnorderedSequence& lhs,
-                         const UnorderedSequence& rhs) {
-    return !(lhs == rhs);
-  }
+                         const UnorderedSequence& rhs) { __builtin_trap() /* STUB: not implemented */; }
   template <typename H>
-  friend H AbslHashValue(H h, const UnorderedSequence& u) {
-    return H::combine(H::combine_unordered(std::move(h), u.begin(), u.end()),
-                      u.size());
-  }
+  friend H AbslHashValue(H h, const UnorderedSequence& u) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   std::vector<T> values_;

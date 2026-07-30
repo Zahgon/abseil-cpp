@@ -31,12 +31,8 @@ using ::testing::StrEq;
 auto* test_env ABSL_ATTRIBUTE_UNUSED = ::testing::AddGlobalTestEnvironment(
     new absl::log_internal::LogTestEnvironment);
 
-constexpr static absl::LogSeverityAtLeast DefaultMinLogLevel() {
-  return absl::LogSeverityAtLeast::kInfo;
-}
-constexpr static absl::LogSeverityAtLeast DefaultStderrThreshold() {
-  return absl::LogSeverityAtLeast::kError;
-}
+constexpr static absl::LogSeverityAtLeast DefaultMinLogLevel() { return {}; }
+constexpr static absl::LogSeverityAtLeast DefaultStderrThreshold() { return {}; }
 
 TEST(TestGlobals, MinLogLevel) {
   EXPECT_EQ(absl::MinLogLevel(), DefaultMinLogLevel());

@@ -35,51 +35,11 @@ using absl::random_internal::stream_precision_helper;
 
 template <typename T>
 typename std::enable_if_t<std::is_integral_v<T>, T>  //
-StreamRoundTrip(T t) {
-  std::stringstream ss;
-  {
-    auto saver = make_ostream_state_saver(ss);
-    ss.precision(stream_precision_helper<T>::kPrecision);
-    ss << t;
-  }
-  T result = 0;
-  {
-    auto saver = make_istream_state_saver(ss);
-    ss >> result;
-  }
-  EXPECT_FALSE(ss.fail())            //
-      << ss.str() << " "             //
-      << (ss.good() ? "good " : "")  //
-      << (ss.bad() ? "bad " : "")    //
-      << (ss.eof() ? "eof " : "")    //
-      << (ss.fail() ? "fail " : "");
-
-  return result;
-}
+StreamRoundTrip(T t) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
 typename std::enable_if_t<std::is_floating_point_v<T>, T>  //
-StreamRoundTrip(T t) {
-  std::stringstream ss;
-  {
-    auto saver = make_ostream_state_saver(ss);
-    ss.precision(stream_precision_helper<T>::kPrecision);
-    ss << t;
-  }
-  T result = 0;
-  {
-    auto saver = make_istream_state_saver(ss);
-    result = absl::random_internal::read_floating_point<T>(ss);
-  }
-  EXPECT_FALSE(ss.fail())            //
-      << ss.str() << " "             //
-      << (ss.good() ? "good " : "")  //
-      << (ss.bad() ? "bad " : "")    //
-      << (ss.eof() ? "eof " : "")    //
-      << (ss.fail() ? "fail " : "");
-
-  return result;
-}
+StreamRoundTrip(T t) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(IOStreamStateSaver, BasicSaverState) {
   std::stringstream ss;

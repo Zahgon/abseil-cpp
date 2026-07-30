@@ -20,10 +20,6 @@
 #include "benchmark/benchmark.h"
 
 namespace {
-void BM_AbslStrError(benchmark::State& state) {
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(absl::base_internal::StrError(ERANGE));
-  }
-}
+void BM_AbslStrError(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_AbslStrError);
 }  // namespace

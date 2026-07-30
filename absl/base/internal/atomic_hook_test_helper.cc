@@ -19,14 +19,6 @@
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-namespace atomic_hook_internal {
-
-ABSL_INTERNAL_ATOMIC_HOOK_ATTRIBUTES absl::base_internal::AtomicHook<VoidF>
-    func(DefaultFunc);
-ABSL_CONST_INIT int default_func_calls = 0;
-void DefaultFunc() { default_func_calls++; }
-void RegisterFunc(VoidF f) { func.Store(f); }
-
-}  // namespace atomic_hook_internal
+namespace atomic_hook_internal { __builtin_trap() /* STUB: not implemented */; }  // namespace atomic_hook_internal
 ABSL_NAMESPACE_END
 }  // namespace absl

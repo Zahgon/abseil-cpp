@@ -45,55 +45,31 @@ static_assert(!std::is_copy_constructible_v<StatusAdaptorForMacros>);
 static_assert(!std::is_copy_assignable_v<ReturnIfErrorAdaptor>);
 static_assert(!std::is_copy_assignable_v<StatusAdaptorForMacros>);
 
-absl::Status ReturnOk() { return absl::OkStatus(); }
+absl::Status ReturnOk() { __builtin_trap() /* STUB: not implemented */; }
 
-absl::StatusBuilder ReturnOkBuilder() {
-  return absl::StatusBuilder(absl::OkStatus());
-}
+absl::StatusBuilder ReturnOkBuilder() { __builtin_trap() /* STUB: not implemented */; }
 
-absl::Status ReturnError(absl::string_view msg) {
-  return absl::Status(absl::StatusCode::kUnknown, msg);
-}
+absl::Status ReturnError(absl::string_view msg) { __builtin_trap() /* STUB: not implemented */; }
 
-absl::StatusBuilder ReturnErrorBuilder(absl::string_view msg) {
-  return absl::StatusBuilder(absl::Status(absl::StatusCode::kUnknown, msg));
-}
+absl::StatusBuilder ReturnErrorBuilder(absl::string_view msg) { __builtin_trap() /* STUB: not implemented */; }
 
-absl::StatusOr<int> ReturnStatusOrValue(int v) { return v; }
+absl::StatusOr<int> ReturnStatusOrValue(int v) { __builtin_trap() /* STUB: not implemented */; }
 
-absl::StatusOr<int> ReturnStatusOrError(absl::string_view msg) {
-  return absl::Status(absl::StatusCode::kUnknown, msg);
-}
+absl::StatusOr<int> ReturnStatusOrError(absl::string_view msg) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class... Args>
-absl::StatusOr<std::tuple<Args...>> ReturnStatusOrTupleValue(Args&&... v) {
-  return std::tuple<Args...>(std::forward<Args>(v)...);
-}
+absl::StatusOr<std::tuple<Args...>> ReturnStatusOrTupleValue(Args&&... v) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class... Args>
 absl::StatusOr<std::tuple<Args...>> ReturnStatusOrTupleError(
-    absl::string_view msg) {
-  return absl::Status(absl::StatusCode::kUnknown, msg);
-}
+    absl::string_view msg) { __builtin_trap() /* STUB: not implemented */; }
 
-absl::StatusOr<int&> ReturnStatusOrRef(int& v) { return v; }
+absl::StatusOr<int&> ReturnStatusOrRef(int& v) { __builtin_trap() /* STUB: not implemented */; }
 
-absl::StatusOr<std::unique_ptr<int>> ReturnStatusOrPtrValue(int v) {
-  return std::make_unique<int>(v);
-}
+absl::StatusOr<std::unique_ptr<int>> ReturnStatusOrPtrValue(int v) { __builtin_trap() /* STUB: not implemented */; }
 void CheckSourceLocation(
     const absl::Status& status, std::vector<int> lines = {},
-    absl::SourceLocation loc = absl::SourceLocation::current()) {
-  ASSERT_EQ(status.GetSourceLocations().size(), lines.size())
-      << "Size check failed at " << loc.line();
-  for (size_t i = 0; i < lines.size(); ++i) {
-    EXPECT_EQ(absl::string_view(status.GetSourceLocations()[i].file_name()),
-              absl::string_view(loc.file_name()))
-        << "File name check failed at " << loc.line();
-    EXPECT_EQ(status.GetSourceLocations()[i].line(), lines[i])
-        << "Line check failed at " << loc.line();
-  }
-}
+    absl::SourceLocation loc = absl::SourceLocation::current()) { __builtin_trap() /* STUB: not implemented */; }
 TEST(AssignOrReturn, Works) {
   auto func = []() -> absl::Status {
     ABSL_ASSIGN_OR_RETURN(int value1, ReturnStatusOrValue(1));

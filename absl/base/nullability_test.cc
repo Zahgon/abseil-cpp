@@ -21,9 +21,9 @@
 #include "gtest/gtest.h"
 
 namespace {
-void funcWithNonnullArg(int* absl_nonnull /*arg*/) {}
+void funcWithNonnullArg(int* absl_nonnull /*arg*/) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T>
-void funcWithDeducedNonnullArg(T* absl_nonnull /*arg*/) {}
+void funcWithDeducedNonnullArg(T* absl_nonnull /*arg*/) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(NonnullTest, NonnullArgument) {
   int var = 0;
@@ -31,10 +31,7 @@ TEST(NonnullTest, NonnullArgument) {
   funcWithDeducedNonnullArg(&var);
 }
 
-int* absl_nonnull funcWithNonnullReturn() {
-  static int var = 0;
-  return &var;
-}
+int* absl_nonnull funcWithNonnullReturn() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(NonnullTest, NonnullReturn) {
   auto var = funcWithNonnullReturn();

@@ -63,43 +63,11 @@ class SimulatedClock::WakeUpInfo {
         cancelled_(false),
         wakeup_called_(false) {}
 
-  void WakeUp() {
-    // If we are cancelled then AwaitWithDeadline may have returned, in which
-    // case we can't lock mu_.
-    {
-      absl::MutexLock lock(cancellation_mu_);
-      if (cancelled_) return;
-      wakeup_called_ = true;
-    }
-    absl::MutexLock lock(*mu_);
-    wakeup_time_passed_ = true;
-  }
+  void WakeUp() { __builtin_trap() /* STUB: not implemented */; }
 
-  void AwaitConditionOrWakeUp() {
-    mu_->Await(absl::Condition(this, &WakeUpInfo::Ready));
-  }
+  void AwaitConditionOrWakeUp() { __builtin_trap() /* STUB: not implemented */; }
 
-  void CancelOrAwaitWakeUp() {
-    bool wakeup_called;
-    {
-      absl::MutexLock lock(cancellation_mu_);
-      cancelled_ = true;
-      wakeup_called = wakeup_called_;
-    }
-    if (wakeup_called && !wakeup_time_passed_) {
-      // Wait for WakeUp to complete.
-      //
-      // Note that this will unlock 'mu_'; this is actually necessary
-      // so that WakeUp() can unblock and complete.  This does allow
-      // for 'cond_' to potentially change from true to false; that is
-      // OK, since WakeUp() is being called, so the deadline must be
-      // past, and so this method is fulfilling its duties.  (Well, the
-      // destructor might be calling WakeUp(), but if you're deleting
-      // time itself while waiting for a deadline to pass, you deserve
-      // what you get.)
-      mu_->Await(absl::Condition(&wakeup_time_passed_));
-    }
-  }
+  void CancelOrAwaitWakeUp() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   bool Ready() const { return wakeup_time_passed_ || cond_.Eval(); }
@@ -112,114 +80,29 @@ class SimulatedClock::WakeUpInfo {
   bool wakeup_called_ ABSL_GUARDED_BY(cancellation_mu_);
 };
 
-SimulatedClock::SimulatedClock(absl::Time t) : now_(t) {}
+SimulatedClock::SimulatedClock(absl::Time t) : now_(t) { __builtin_trap() /* STUB: not implemented */; }
 
-SimulatedClock::~SimulatedClock() {
-  // Wake up all existing waiters.
-  WaiterList waiters;
-  {
-    absl::MutexLock l(lock_);
-    waiters.swap(waiters_);
-  }
-  for (auto& iter : waiters) {
-    iter.second->WakeUp();
-  }
-}
+SimulatedClock::~SimulatedClock() { __builtin_trap() /* STUB: not implemented */; }
 
-absl::Time SimulatedClock::TimeNow() {
-  absl::ReaderMutexLock l(lock_);
-  return now_;
-}
+absl::Time SimulatedClock::TimeNow() { __builtin_trap() /* STUB: not implemented */; }
 
-void SimulatedClock::Sleep(absl::Duration d) { SleepUntil(TimeNow() + d); }
+void SimulatedClock::Sleep(absl::Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
-int64_t SimulatedClock::SetTime(absl::Time t) ABSL_NO_THREAD_SAFETY_ANALYSIS {
-  return UpdateTime([this, t]()
-                        ABSL_EXCLUSIVE_LOCKS_REQUIRED(lock_) { now_ = t; });
-}
+int64_t SimulatedClock::SetTime(absl::Time t) ABSL_NO_THREAD_SAFETY_ANALYSIS { __builtin_trap() /* STUB: not implemented */; }
 
 int64_t SimulatedClock::AdvanceTime(absl::Duration d)
-    ABSL_NO_THREAD_SAFETY_ANALYSIS {
-  return UpdateTime([this, d]()
-                        ABSL_EXCLUSIVE_LOCKS_REQUIRED(lock_) { now_ += d; });
-}
+    ABSL_NO_THREAD_SAFETY_ANALYSIS { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T>
-int64_t SimulatedClock::UpdateTime(const T& now_updater) {
-  // Deadlock could occur if UpdateTime() were to hold lock_ while waking up
-  // waiters, since waking up requires acquiring the external mutex, and
-  // AwaitWithDeadline() acquires the mutexes in the opposite order.  So let's
-  // first grab all the wakeup callbacks, then release lock_, then call the
-  // callbacks.
-  std::vector<WaiterList::mapped_type> wakeup_calls;
+int64_t SimulatedClock::UpdateTime(const T& now_updater) { __builtin_trap() /* STUB: not implemented */; }
 
-  lock_.lock();
-  now_updater();  // reset now_
-  WaiterList::iterator iter;
-  while (((iter = waiters_.begin()) != waiters_.end()) &&
-         (iter->first <= now_)) {
-    wakeup_calls.push_back(std::move(iter->second));
-    waiters_.erase(iter);
-  }
-  lock_.unlock();
-
-  for (const auto& wakeup_call : wakeup_calls) {
-    wakeup_call->WakeUp();
-  }
-
-  return static_cast<int64_t>(wakeup_calls.size());
-}
-
-void SimulatedClock::SleepUntil(absl::Time wakeup_time) {
-  absl::Mutex mu;
-  absl::MutexLock lock(mu);
-  bool f = false;
-  AwaitWithDeadline(&mu, absl::Condition(&f), wakeup_time);
-}
+void SimulatedClock::SleepUntil(absl::Time wakeup_time) { __builtin_trap() /* STUB: not implemented */; }
 
 bool SimulatedClock::AwaitWithDeadline(absl::Mutex* mu,
                                        const absl::Condition& cond,
-                                       absl::Time deadline) {
-  mu->AssertReaderHeld();
+                                       absl::Time deadline) { __builtin_trap() /* STUB: not implemented */; }
 
-  // Evaluate cond outside our own lock to minimize contention.
-  const bool ready = cond.Eval();
-
-  lock_.lock();
-  num_await_calls_++;
-
-  // Return now if the deadline is already past, or if the condition is true.
-  // This avoids creating a WakeUpInfo that won't be deleted until an
-  // appropriate UpdateTime() call.
-  if (deadline <= now_ || ready) {
-    lock_.unlock();
-    return ready;
-  }
-
-  auto wakeup_info = std::make_shared<WakeUpInfo>(mu, cond);
-  waiters_.insert(std::make_pair(deadline, wakeup_info));
-
-  lock_.unlock();
-  // SimulatedClock may be destroyed any time after this, so we can't
-  // acquire lock_ again.
-
-  // Wait until either cond.Eval() becomes true, or the deadline has passed.
-  wakeup_info->AwaitConditionOrWakeUp();
-
-  // Cancel the wakeup call, or if it's already in progress, wait for it to
-  // finish, since we must ensure no one touches 'mu' or 'cond' after we return.
-  wakeup_info->CancelOrAwaitWakeUp();
-
-  return cond.Eval();
-}
-
-std::optional<absl::Time> SimulatedClock::GetEarliestWakeupTime() const {
-  absl::ReaderMutexLock l(lock_);
-  if (waiters_.empty()) {
-    return std::nullopt;
-  }
-  return waiters_.begin()->first;
-}
+std::optional<absl::Time> SimulatedClock::GetEarliestWakeupTime() const { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

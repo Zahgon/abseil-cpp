@@ -102,11 +102,7 @@ TEST(StatusMatcherTest, IsOkAndHoldsFailure) {
 }
 
 template <typename MatcherType, typename Value>
-std::string Explain(const MatcherType& m, const Value& x) {
-  ::testing::StringMatchResultListener listener;
-  ExplainMatchResult(m, x, &listener);
-  return listener.str();
-}
+std::string Explain(const MatcherType& m, const Value& x) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StatusMatcherTest, StatusIs) {
   absl::Status unknown = absl::UnknownError("unbekannt");

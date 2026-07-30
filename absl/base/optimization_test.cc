@@ -91,10 +91,8 @@ TEST(PredictTest, Optional) {
 
 class ImplicitlyConvertibleToBool {
  public:
-  explicit ImplicitlyConvertibleToBool(bool value) : value_(value) {}
-  operator bool() const {  // NOLINT(google-explicit-constructor)
-    return value_;
-  }
+  explicit ImplicitlyConvertibleToBool(bool value) : value_(value) { __builtin_trap() /* STUB: not implemented */; }
+  operator bool() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   bool value_;
@@ -111,8 +109,8 @@ TEST(PredictTest, ImplicitBoolConversion) {
 
 class ExplicitlyConvertibleToBool {
  public:
-  explicit ExplicitlyConvertibleToBool(bool value) : value_(value) {}
-  explicit operator bool() const { return value_; }
+  explicit ExplicitlyConvertibleToBool(bool value) : value_(value) { __builtin_trap() /* STUB: not implemented */; }
+  explicit operator bool() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   bool value_;

@@ -25,181 +25,37 @@
 namespace absl {
 ABSL_NAMESPACE_BEGIN
 
-void ThrowStdLogicError(const std::string& what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::logic_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg.c_str());
-  std::abort();
-#endif
-}
-void ThrowStdLogicError(const char* what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::logic_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg);
-  std::abort();
-#endif
-}
-void ThrowStdInvalidArgument(const std::string& what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::invalid_argument(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg.c_str());
-  std::abort();
-#endif
-}
-void ThrowStdInvalidArgument(const char* what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::invalid_argument(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg);
-  std::abort();
-#endif
-}
+void ThrowStdLogicError(const std::string& what_arg) { __builtin_trap() /* STUB: not implemented */; }
+void ThrowStdLogicError(const char* what_arg) { __builtin_trap() /* STUB: not implemented */; }
+void ThrowStdInvalidArgument(const std::string& what_arg) { __builtin_trap() /* STUB: not implemented */; }
+void ThrowStdInvalidArgument(const char* what_arg) { __builtin_trap() /* STUB: not implemented */; }
 
-void ThrowStdDomainError(const std::string& what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::domain_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg.c_str());
-  std::abort();
-#endif
-}
-void ThrowStdDomainError(const char* what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::domain_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg);
-  std::abort();
-#endif
-}
+void ThrowStdDomainError(const std::string& what_arg) { __builtin_trap() /* STUB: not implemented */; }
+void ThrowStdDomainError(const char* what_arg) { __builtin_trap() /* STUB: not implemented */; }
 
-void ThrowStdLengthError(const std::string& what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::length_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg.c_str());
-  std::abort();
-#endif
-}
-void ThrowStdLengthError(const char* what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::length_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg);
-  std::abort();
-#endif
-}
+void ThrowStdLengthError(const std::string& what_arg) { __builtin_trap() /* STUB: not implemented */; }
+void ThrowStdLengthError(const char* what_arg) { __builtin_trap() /* STUB: not implemented */; }
 
-void ThrowStdOutOfRange(const std::string& what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::out_of_range(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg.c_str());
-  std::abort();
-#endif
-}
-void ThrowStdOutOfRange(const char* what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::out_of_range(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg);
-  std::abort();
-#endif
-}
+void ThrowStdOutOfRange(const std::string& what_arg) { __builtin_trap() /* STUB: not implemented */; }
+void ThrowStdOutOfRange(const char* what_arg) { __builtin_trap() /* STUB: not implemented */; }
 
-void ThrowStdRuntimeError(const std::string& what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::runtime_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg.c_str());
-  std::abort();
-#endif
-}
-void ThrowStdRuntimeError(const char* what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::runtime_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg);
-  std::abort();
-#endif
-}
+void ThrowStdRuntimeError(const std::string& what_arg) { __builtin_trap() /* STUB: not implemented */; }
+void ThrowStdRuntimeError(const char* what_arg) { __builtin_trap() /* STUB: not implemented */; }
 
-void ThrowStdRangeError(const std::string& what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::range_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg.c_str());
-  std::abort();
-#endif
-}
-void ThrowStdRangeError(const char* what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::range_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg);
-  std::abort();
-#endif
-}
+void ThrowStdRangeError(const std::string& what_arg) { __builtin_trap() /* STUB: not implemented */; }
+void ThrowStdRangeError(const char* what_arg) { __builtin_trap() /* STUB: not implemented */; }
 
-void ThrowStdOverflowError(const std::string& what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::overflow_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg.c_str());
-  std::abort();
-#endif
-}
-void ThrowStdOverflowError(const char* what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::overflow_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg);
-  std::abort();
-#endif
-}
+void ThrowStdOverflowError(const std::string& what_arg) { __builtin_trap() /* STUB: not implemented */; }
+void ThrowStdOverflowError(const char* what_arg) { __builtin_trap() /* STUB: not implemented */; }
 
-void ThrowStdUnderflowError(const std::string& what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::underflow_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg.c_str());
-  std::abort();
-#endif
-}
-void ThrowStdUnderflowError(const char* what_arg) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::underflow_error(what_arg);
-#else
-  ABSL_RAW_LOG(FATAL, "%s", what_arg);
-  std::abort();
-#endif
-}
+void ThrowStdUnderflowError(const std::string& what_arg) { __builtin_trap() /* STUB: not implemented */; }
+void ThrowStdUnderflowError(const char* what_arg) { __builtin_trap() /* STUB: not implemented */; }
 
-void ThrowStdBadFunctionCall() {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::bad_function_call();
-#else
-  std::abort();
-#endif
-}
+void ThrowStdBadFunctionCall() { __builtin_trap() /* STUB: not implemented */; }
 
-void ThrowStdBadAlloc() {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::bad_alloc();
-#else
-  std::abort();
-#endif
-}
+void ThrowStdBadAlloc() { __builtin_trap() /* STUB: not implemented */; }
 
-void ThrowStdBadArrayNewLength() {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw std::bad_array_new_length();
-#else
-  std::abort();
-#endif
-}
+void ThrowStdBadArrayNewLength() { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

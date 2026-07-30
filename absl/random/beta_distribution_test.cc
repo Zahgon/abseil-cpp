@@ -45,21 +45,7 @@ namespace {
 template <typename IntType>
 class BetaDistributionInterfaceTest : public ::testing::Test {};
 
-constexpr bool ShouldExerciseLongDoubleTests() {
-  // long double arithmetic is not supported well by either GCC or Clang on
-  // most platforms specifically not when implemented in terms of double-double;
-  // see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99048,
-  // https://bugs.llvm.org/show_bug.cgi?id=49131, and
-  // https://bugs.llvm.org/show_bug.cgi?id=49132.
-  // So a conservative choice here is to disable long-double tests pretty much
-  // everywhere except on x64 but only if long double is not implemented as
-  // double-double.
-#if defined(__i686__) && defined(__x86_64__)
-  return !absl::numeric_internal::IsDoubleDouble();
-#else
-  return false;
-#endif
-}
+constexpr bool ShouldExerciseLongDoubleTests() { return {}; }
 
 using RealTypes =
     std::conditional_t<ShouldExerciseLongDoubleTests(),
@@ -255,21 +241,13 @@ TYPED_TEST(BetaDistributionInterfaceTest, DegenerateCases) {
 class BetaDistributionModel {
  public:
   explicit BetaDistributionModel(::testing::tuple<double, double> p)
-      : alpha_(::testing::get<0>(p)), beta_(::testing::get<1>(p)) {}
+      : alpha_(::testing::get<0>(p)), beta_(::testing::get<1>(p)) { __builtin_trap() /* STUB: not implemented */; }
 
-  double Mean() const { return alpha_ / (alpha_ + beta_); }
+  double Mean() const { __builtin_trap() /* STUB: not implemented */; }
 
-  double Variance() const {
-    return alpha_ * beta_ / (alpha_ + beta_ + 1) / (alpha_ + beta_) /
-           (alpha_ + beta_);
-  }
+  double Variance() const { __builtin_trap() /* STUB: not implemented */; }
 
-  double Kurtosis() const {
-    return 3 + 6 *
-                   ((alpha_ - beta_) * (alpha_ - beta_) * (alpha_ + beta_ + 1) -
-                    alpha_ * beta_ * (2 + alpha_ + beta_)) /
-                   alpha_ / beta_ / (alpha_ + beta_ + 2) / (alpha_ + beta_ + 3);
-  }
+  double Kurtosis() const { __builtin_trap() /* STUB: not implemented */; }
 
  protected:
   const double alpha_;
@@ -280,7 +258,7 @@ class BetaDistributionTest
     : public ::testing::TestWithParam<::testing::tuple<double, double>>,
       public BetaDistributionModel {
  public:
-  BetaDistributionTest() : BetaDistributionModel(GetParam()) {}
+  BetaDistributionTest() : BetaDistributionModel(GetParam()) { __builtin_trap() /* STUB: not implemented */; }
 
  protected:
   template <class D>
@@ -294,119 +272,11 @@ class BetaDistributionTest
 
 template <class D>
 bool BetaDistributionTest::SingleZTestOnMeanAndVariance(double p,
-                                                        size_t samples) {
-  D dis(alpha_, beta_);
-
-  std::vector<double> data;
-  data.reserve(samples);
-  for (size_t i = 0; i < samples; i++) {
-    const double variate = dis(rng_);
-    EXPECT_FALSE(std::isnan(variate));
-    // Note that equality is allowed on both sides.
-    EXPECT_GE(variate, 0.0);
-    EXPECT_LE(variate, 1.0);
-    data.push_back(variate);
-  }
-
-  // We validate that the sample mean and sample variance are indeed from a
-  // Beta distribution with the given shape parameters.
-  const auto m = absl::random_internal::ComputeDistributionMoments(data);
-
-  // The variance of the sample mean is variance / n.
-  const double mean_stddev = std::sqrt(Variance() / static_cast<double>(m.n));
-
-  // The variance of the sample variance is (approximately):
-  //   (kurtosis - 1) * variance^2 / n
-  const double variance_stddev = std::sqrt(
-      (Kurtosis() - 1) * Variance() * Variance() / static_cast<double>(m.n));
-  // z score for the sample variance.
-  const double z_variance = (m.variance - Variance()) / variance_stddev;
-
-  const double max_err = absl::random_internal::MaxErrorTolerance(p);
-  const double z_mean = absl::random_internal::ZScore(Mean(), m);
-  const bool pass =
-      absl::random_internal::Near("z", z_mean, 0.0, max_err) &&
-      absl::random_internal::Near("z_variance", z_variance, 0.0, max_err);
-  if (!pass) {
-    LOG(INFO) << "Beta(" << alpha_ << ", " << beta_ << "), mean: sample "
-              << m.mean << ", expect " << Mean() << ", which is "
-              << std::abs(m.mean - Mean()) / mean_stddev
-              << " stddevs away, variance: sample " << m.variance << ", expect "
-              << Variance() << ", which is "
-              << std::abs(m.variance - Variance()) / variance_stddev
-              << " stddevs away.";
-  }
-  return pass;
-}
+                                                        size_t samples) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class D>
 bool BetaDistributionTest::SingleChiSquaredTest(double p, size_t samples,
-                                                size_t buckets) {
-  constexpr double kErr = 1e-7;
-  std::vector<double> cutoffs, expected;
-  const double bucket_width = 1.0 / static_cast<double>(buckets);
-  int i = 1;
-  int unmerged_buckets = 0;
-  for (; i < buckets; ++i) {
-    const double p = bucket_width * static_cast<double>(i);
-    const double boundary =
-        absl::random_internal::BetaIncompleteInv(alpha_, beta_, p);
-    // The intention is to add `boundary` to the list of `cutoffs`. It becomes
-    // problematic, however, when the boundary values are not monotone, due to
-    // numerical issues when computing the inverse regularized incomplete
-    // Beta function. In these cases, we merge that bucket with its previous
-    // neighbor and merge their expected counts.
-    if ((cutoffs.empty() && boundary < kErr) ||
-        (!cutoffs.empty() && boundary <= cutoffs.back())) {
-      unmerged_buckets++;
-      continue;
-    }
-    if (boundary >= 1.0 - 1e-10) {
-      break;
-    }
-    cutoffs.push_back(boundary);
-    expected.push_back(static_cast<double>(1 + unmerged_buckets) *
-                       bucket_width * static_cast<double>(samples));
-    unmerged_buckets = 0;
-  }
-  cutoffs.push_back(std::numeric_limits<double>::infinity());
-  // Merge all remaining buckets.
-  expected.push_back(static_cast<double>(buckets - i + 1) * bucket_width *
-                     static_cast<double>(samples));
-  // Make sure that we don't merge all the buckets, making this test
-  // meaningless.
-  EXPECT_GE(cutoffs.size(), 3) << alpha_ << ", " << beta_;
-
-  D dis(alpha_, beta_);
-
-  std::vector<int32_t> counts(cutoffs.size(), 0);
-  for (int i = 0; i < samples; i++) {
-    const double x = dis(rng_);
-    auto it = std::upper_bound(cutoffs.begin(), cutoffs.end(), x);
-    counts[std::distance(cutoffs.begin(), it)]++;
-  }
-
-  // Null-hypothesis is that the distribution is beta distributed with the
-  // provided alpha, beta params (not estimated from the data).
-  const int dof = cutoffs.size() - 1;
-
-  const double chi_square = absl::random_internal::ChiSquare(
-      counts.begin(), counts.end(), expected.begin(), expected.end());
-  const bool pass =
-      (absl::random_internal::ChiSquarePValue(chi_square, dof) >= p);
-  if (!pass) {
-    for (size_t i = 0; i < cutoffs.size(); i++) {
-      LOG(INFO) << "cutoff[" << i << "] = " << cutoffs[i] << ", actual count "
-                << counts[i] << ", expected " << static_cast<int>(expected[i]);
-    }
-
-    LOG(INFO) << "Beta(" << alpha_ << ", " << beta_ << ") "
-              << absl::random_internal::kChiSquared << " " << chi_square
-              << ", p = "
-              << absl::random_internal::ChiSquarePValue(chi_square, dof);
-  }
-  return pass;
-}
+                                                size_t buckets) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(BetaDistributionTest, TestSampleStatistics) {
   static constexpr int kRuns = 20;
@@ -431,11 +301,7 @@ TEST_P(BetaDistributionTest, TestSampleStatistics) {
 }
 
 std::string ParamName(
-    const ::testing::TestParamInfo<::testing::tuple<double, double>>& info) {
-  std::string name = absl::StrCat("alpha_", ::testing::get<0>(info.param),
-                                  "__beta_", ::testing::get<1>(info.param));
-  return absl::StrReplaceAll(name, {{"+", "_"}, {"-", "_"}, {".", "_"}});
-}
+    const ::testing::TestParamInfo<::testing::tuple<double, double>>& info) { __builtin_trap() /* STUB: not implemented */; }
 
 INSTANTIATE_TEST_SUITE_P(
     TestSampleStatisticsCombinations, BetaDistributionTest,

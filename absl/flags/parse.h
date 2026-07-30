@@ -47,9 +47,7 @@ struct UnrecognizedFlag {
 };
 
 inline bool operator==(const UnrecognizedFlag& lhs,
-                       const UnrecognizedFlag& rhs) {
-  return lhs.source == rhs.source && lhs.flag_name == rhs.flag_name;
-}
+                       const UnrecognizedFlag& rhs) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace flags_internal {
 

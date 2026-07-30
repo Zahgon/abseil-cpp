@@ -131,14 +131,7 @@ auto FormatConvertImpl(const T& v, FormatConversionSpecImpl conv,
                        FormatSinkImpl* sink)
     -> decltype(AbslFormatConvert(v,
                                   std::declval<const FormatConversionSpec&>(),
-                                  std::declval<FormatSink*>())) {
-  using FormatConversionSpecT =
-      std::enable_if_t<sizeof(const T& (*)()) != 0, FormatConversionSpec>;
-  using FormatSinkT = std::enable_if_t<sizeof(const T& (*)()) != 0, FormatSink>;
-  auto fcs = conv.Wrap<FormatConversionSpecT>();
-  auto fs = sink->Wrap<FormatSinkT>();
-  return AbslFormatConvert(v, fcs, &fs);
-}
+                                  std::declval<FormatSink*>())) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
 auto FormatConvertImpl(const T& v, FormatConversionSpecImpl conv,
@@ -146,18 +139,7 @@ auto FormatConvertImpl(const T& v, FormatConversionSpecImpl conv,
     -> std::enable_if_t<std::is_enum_v<T> &&
                             std::is_void_v<decltype(AbslStringify(
                                 std::declval<FormatSink&>(), v))>,
-                        IntegralConvertResult> {
-  if (conv.conversion_char() == FormatConversionCharInternal::v) {
-    using FormatSinkT =
-        std::enable_if_t<sizeof(const T& (*)()) != 0, FormatSink>;
-    auto fs = sink->Wrap<FormatSinkT>();
-    AbslStringify(fs, v);
-    return {true};
-  } else {
-    return {
-        ConvertIntArg(static_cast<std::underlying_type_t<T>>(v), conv, sink)};
-  }
-}
+                        IntegralConvertResult> { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
 auto FormatConvertImpl(const T& v, FormatConversionSpecImpl,
@@ -165,12 +147,7 @@ auto FormatConvertImpl(const T& v, FormatConversionSpecImpl,
     -> std::enable_if_t<!std::is_enum_v<T> && !std::is_same_v<T, absl::Cord> &&
                             std::is_void_v<decltype(AbslStringify(
                                 std::declval<FormatSink&>(), v))>,
-                        ArgConvertResult<FormatConversionCharSetInternal::v>> {
-  using FormatSinkT = std::enable_if_t<sizeof(const T& (*)()) != 0, FormatSink>;
-  auto fs = sink->Wrap<FormatSinkT>();
-  AbslStringify(fs, v);
-  return {true};
-}
+                        ArgConvertResult<FormatConversionCharSetInternal::v>> { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
 class StreamedWrapper;
@@ -192,19 +169,15 @@ struct VoidPtr {
   template <typename T,
             decltype(reinterpret_cast<uintptr_t>(std::declval<T*>())) = 0>
   VoidPtr(T* ptr)  // NOLINT
-      : value(ptr ? reinterpret_cast<uintptr_t>(ptr) : 0) {}
+      : value(ptr ? reinterpret_cast<uintptr_t>(ptr) : 0) { __builtin_trap() /* STUB: not implemented */; }
   uintptr_t value;
 };
 
 template <FormatConversionCharSet C>
-constexpr FormatConversionCharSet ExtractCharSet(FormatConvertResult<C>) {
-  return C;
-}
+constexpr FormatConversionCharSet ExtractCharSet(FormatConvertResult<C>) { return {}; }
 
 template <FormatConversionCharSet C>
-constexpr FormatConversionCharSet ExtractCharSet(ArgConvertResult<C>) {
-  return C;
-}
+constexpr FormatConversionCharSet ExtractCharSet(ArgConvertResult<C>) { return {}; }
 
 ArgConvertResult<FormatConversionCharSetInternal::p> FormatConvertImpl(
     VoidPtr v, FormatConversionSpecImpl conv, FormatSinkImpl* sink);
@@ -227,9 +200,7 @@ StringConvertResult FormatConvertImpl(std::wstring_view v,
 #if !defined(ABSL_USES_STD_STRING_VIEW)
 inline StringConvertResult FormatConvertImpl(std::string_view v,
                                              FormatConversionSpecImpl conv,
-                                             FormatSinkImpl* sink) {
-  return FormatConvertImpl(absl::string_view(v.data(), v.size()), conv, sink);
-}
+                                             FormatSinkImpl* sink) { __builtin_trap() /* STUB: not implemented */; }
 #endif  // !ABSL_USES_STD_STRING_VIEW
 
 using StringPtrConvertResult = ArgConvertResult<FormatConversionCharSetUnion(
@@ -250,39 +221,7 @@ template <class AbslCord,
           std::enable_if_t<std::is_same_v<AbslCord, absl::Cord>>* = nullptr>
 StringConvertResult FormatConvertImpl(const AbslCord& value,
                                       FormatConversionSpecImpl conv,
-                                      FormatSinkImpl* sink) {
-  bool is_left = conv.has_left_flag();
-  size_t space_remaining = 0;
-
-  int width = conv.width();
-  if (width >= 0) space_remaining = static_cast<size_t>(width);
-
-  size_t to_write = value.size();
-
-  int precision = conv.precision();
-  if (precision >= 0)
-    to_write = (std::min)(to_write, static_cast<size_t>(precision));
-
-  space_remaining = Excess(to_write, space_remaining);
-
-  if (space_remaining > 0 && !is_left) sink->Append(space_remaining, ' ');
-
-  for (string_view piece : value.Chunks()) {
-    if (piece.size() > to_write) {
-      piece.remove_suffix(piece.size() - to_write);
-      to_write = 0;
-    } else {
-      to_write -= piece.size();
-    }
-    sink->Append(piece);
-    if (to_write == 0) {
-      break;
-    }
-  }
-
-  if (space_remaining > 0 && is_left) sink->Append(space_remaining, ' ');
-  return {true};
-}
+                                      FormatSinkImpl* sink) { __builtin_trap() /* STUB: not implemented */; }
 
 bool ConvertBoolArg(bool v, FormatSinkImpl* sink);
 
@@ -341,13 +280,7 @@ IntegralConvertResult FormatConvertImpl(uint128 v,
 // conversions.
 template <typename T, std::enable_if_t<std::is_same_v<T, bool>, int> = 0>
 IntegralConvertResult FormatConvertImpl(T v, FormatConversionSpecImpl conv,
-                                        FormatSinkImpl* sink) {
-  if (conv.conversion_char() == FormatConversionCharInternal::v) {
-    return {ConvertBoolArg(v, sink)};
-  }
-
-  return FormatConvertImpl(static_cast<int>(v), conv, sink);
-}
+                                        FormatSinkImpl* sink) { __builtin_trap() /* STUB: not implemented */; }
 
 // We provide this function to help the checker, but it is never defined.
 // FormatArgImpl will use the underlying Convert functions instead.
@@ -360,12 +293,7 @@ FormatConvertImpl(T v, FormatConversionSpecImpl conv, FormatSinkImpl* sink);
 template <typename T>
 StringConvertResult FormatConvertImpl(const StreamedWrapper<T>& v,
                                       FormatConversionSpecImpl conv,
-                                      FormatSinkImpl* out) {
-  std::ostringstream oss;
-  oss << v.v_;
-  if (!oss) return {false};
-  return str_format_internal::FormatConvertImpl(oss.str(), conv, out);
-}
+                                      FormatSinkImpl* out) { __builtin_trap() /* STUB: not implemented */; }
 
 // Use templates and dependent types to delay evaluation of the function
 // until after FormatCountCapture is fully defined.
@@ -373,55 +301,30 @@ struct FormatCountCaptureHelper {
   template <class T = int>
   static ArgConvertResult<FormatConversionCharSetInternal::n> ConvertHelper(
       const FormatCountCapture& v, FormatConversionSpecImpl conv,
-      FormatSinkImpl* sink) {
-    const std::enable_if_t<sizeof(T) != 0, FormatCountCapture>& v2 = v;
-
-    if (conv.conversion_char() !=
-        str_format_internal::FormatConversionCharInternal::n) {
-      return {false};
-    }
-    *v2.p_ = static_cast<int>(sink->size());
-    return {true};
-  }
+      FormatSinkImpl* sink) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <class T = int>
 ArgConvertResult<FormatConversionCharSetInternal::n> FormatConvertImpl(
     const FormatCountCapture& v, FormatConversionSpecImpl conv,
-    FormatSinkImpl* sink) {
-  return FormatCountCaptureHelper::ConvertHelper(v, conv, sink);
-}
+    FormatSinkImpl* sink) { __builtin_trap() /* STUB: not implemented */; }
 
 // Helper friend struct to hide implementation details from the public API of
 // FormatArgImpl.
 struct FormatArgImplFriend {
   template <typename Arg>
-  static bool ToInt(Arg arg, int* out) {
-    // A value initialized FormatConversionSpecImpl has a `none` conv, which
-    // tells the dispatcher to run the `int` conversion.
-    return arg.dispatcher_(arg.data_, {}, out);
-  }
+  static bool ToInt(Arg arg, int* out) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename Arg>
   static bool Convert(Arg arg, FormatConversionSpecImpl conv,
-                      FormatSinkImpl* out) {
-    return arg.dispatcher_(arg.data_, conv, out);
-  }
+                      FormatSinkImpl* out) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename Arg>
-  static typename Arg::Dispatcher GetVTablePtrForTest(Arg arg) {
-    return arg.dispatcher_;
-  }
+  static typename Arg::Dispatcher GetVTablePtrForTest(Arg arg) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename Arg>
-constexpr FormatConversionCharSet ArgumentToConv() {
-  using ConvResult = decltype(str_format_internal::FormatConvertImpl(
-      std::declval<const Arg&>(),
-      std::declval<const FormatConversionSpecImpl&>(),
-      std::declval<FormatSinkImpl*>()));
-  return absl::str_format_internal::ExtractCharSet(ConvResult{});
-}
+constexpr FormatConversionCharSet ArgumentToConv() { return {}; }
 
 // A type-erased handle to a format argument.
 class FormatArgImpl {
@@ -487,13 +390,7 @@ class FormatArgImpl {
 
  public:
   template <typename T>
-  explicit FormatArgImpl(const T& value) {
-    using D = typename DecayType<T>::type;
-    static_assert(
-        std::is_same_v<D, const T&> || storage_policy<D>::value == ByValue,
-        "Decayed types must be stored by value");
-    Init(static_cast<D>(value));
-  }
+  explicit FormatArgImpl(const T& value) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   friend struct str_format_internal::FormatArgImplFriend;
@@ -502,100 +399,44 @@ class FormatArgImpl {
 
   template <typename T>
   struct Manager<T, ByPointer> {
-    static Data SetValue(const T& value) {
-      Data data;
-      data.ptr = std::addressof(value);
-      return data;
-    }
+    static Data SetValue(const T& value) { __builtin_trap() /* STUB: not implemented */; }
 
-    static const T& Value(Data arg) { return *static_cast<const T*>(arg.ptr); }
+    static const T& Value(Data arg) { __builtin_trap() /* STUB: not implemented */; }
   };
 
   template <typename T>
   struct Manager<T, ByVolatilePointer> {
-    static Data SetValue(const T& value) {
-      Data data;
-      data.volatile_ptr = &value;
-      return data;
-    }
+    static Data SetValue(const T& value) { __builtin_trap() /* STUB: not implemented */; }
 
-    static const T& Value(Data arg) {
-      return *static_cast<const T*>(arg.volatile_ptr);
-    }
+    static const T& Value(Data arg) { __builtin_trap() /* STUB: not implemented */; }
   };
 
   template <typename T>
   struct Manager<T, ByValue> {
-    static Data SetValue(const T& value) {
-      Data data;
-      memcpy(data.buf, &value, sizeof(value));
-      return data;
-    }
+    static Data SetValue(const T& value) { __builtin_trap() /* STUB: not implemented */; }
 
-    static T Value(Data arg) {
-      T value;
-      memcpy(&value, arg.buf, sizeof(T));
-      return value;
-    }
+    static T Value(Data arg) { __builtin_trap() /* STUB: not implemented */; }
   };
 
   template <typename T>
-  void Init(const T& value) {
-    data_ = Manager<T>::SetValue(value);
-    dispatcher_ = &Dispatch<T>;
-  }
+  void Init(const T& value) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
-  static int ToIntVal(const T& val) {
-    using CommonType =
-        std::conditional_t<std::is_signed_v<T>, int64_t, uint64_t>;
-    if (static_cast<CommonType>(val) >
-        static_cast<CommonType>((std::numeric_limits<int>::max)())) {
-      return (std::numeric_limits<int>::max)();
-    } else if (std::is_signed_v<T> &&
-               static_cast<CommonType>(val) <
-                   static_cast<CommonType>((std::numeric_limits<int>::min)())) {
-      return (std::numeric_limits<int>::min)();
-    }
-    return static_cast<int>(val);
-  }
+  static int ToIntVal(const T& val) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
   static bool ToInt(Data arg, int* out, std::true_type /* is_integral */,
-                    std::false_type) {
-    *out = ToIntVal(Manager<T>::Value(arg));
-    return true;
-  }
+                    std::false_type) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
   static bool ToInt(Data arg, int* out, std::false_type,
-                    std::true_type /* is_enum */) {
-    *out = ToIntVal(
-        static_cast<std::underlying_type_t<T>>(Manager<T>::Value(arg)));
-    return true;
-  }
+                    std::true_type /* is_enum */) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
-  static bool ToInt(Data, int*, std::false_type, std::false_type) {
-    return false;
-  }
+  static bool ToInt(Data, int*, std::false_type, std::false_type) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
-  static bool Dispatch(Data arg, FormatConversionSpecImpl spec, void* out) {
-    // A `none` conv indicates that we want the `int` conversion.
-    if (ABSL_PREDICT_FALSE(spec.conversion_char() ==
-                           FormatConversionCharInternal::kNone)) {
-      return ToInt<T>(arg, static_cast<int*>(out), std::is_integral<T>(),
-                      std::is_enum<T>());
-    }
-    if (ABSL_PREDICT_FALSE(
-            !Contains(ArgumentToConv<T>(), spec.conversion_char()))) {
-      return false;
-    }
-    return str_format_internal::FormatConvertImpl(
-               Manager<T>::Value(arg), spec, static_cast<FormatSinkImpl*>(out))
-        .value;
-  }
+  static bool Dispatch(Data arg, FormatConversionSpecImpl spec, void* out) { __builtin_trap() /* STUB: not implemented */; }
 
   Data data_;
   Dispatcher dispatcher_;

@@ -69,15 +69,11 @@ using std::rotr;
 // Rotating functions
 template <class T>
 [[nodiscard]] constexpr std::enable_if_t<std::is_unsigned_v<T>, T> rotl(
-    T x, int s) noexcept {
-  return numeric_internal::RotateLeft(x, s);
-}
+    T x, int s) noexcept { return {}; }
 
 template <class T>
 [[nodiscard]] constexpr std::enable_if_t<std::is_unsigned_v<T>, T> rotr(
-    T x, int s) noexcept {
-  return numeric_internal::RotateRight(x, s);
-}
+    T x, int s) noexcept { return {}; }
 
 #endif
 
@@ -102,36 +98,24 @@ using std::popcount;
 // intrinsics.
 template <class T>
 ABSL_INTERNAL_CONSTEXPR_CLZ inline std::enable_if_t<std::is_unsigned_v<T>, int>
-countl_zero(T x) noexcept {
-  return numeric_internal::CountLeadingZeroes(x);
-}
+countl_zero(T x) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T>
 ABSL_INTERNAL_CONSTEXPR_CLZ inline std::enable_if_t<std::is_unsigned_v<T>, int>
-countl_one(T x) noexcept {
-  // Avoid integer promotion to a wider type
-  return countl_zero(static_cast<T>(~x));
-}
+countl_one(T x) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T>
 ABSL_INTERNAL_CONSTEXPR_CTZ inline std::enable_if_t<std::is_unsigned_v<T>, int>
-countr_zero(T x) noexcept {
-  return numeric_internal::CountTrailingZeroes(x);
-}
+countr_zero(T x) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T>
 ABSL_INTERNAL_CONSTEXPR_CTZ inline std::enable_if_t<std::is_unsigned_v<T>, int>
-countr_one(T x) noexcept {
-  // Avoid integer promotion to a wider type
-  return countr_zero(static_cast<T>(~x));
-}
+countr_one(T x) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T>
 ABSL_INTERNAL_CONSTEXPR_POPCOUNT inline std::enable_if_t<std::is_unsigned_v<T>,
                                                          int>
-popcount(T x) noexcept {
-  return numeric_internal::Popcount(x);
-}
+popcount(T x) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 #endif
 
@@ -147,42 +131,26 @@ using std::has_single_bit;
 // Returns: true if x is an integral power of two; false otherwise.
 template <class T>
 constexpr inline std::enable_if_t<std::is_unsigned_v<T>, bool> has_single_bit(
-    T x) noexcept {
-  return x != 0 && (x & (x - 1)) == 0;
-}
+    T x) noexcept { return {}; }
 
 // Returns: If x == 0, 0; otherwise one plus the base-2 logarithm of x, with any
 // fractional part discarded.
 template <class T>
 ABSL_INTERNAL_CONSTEXPR_CLZ inline std::enable_if_t<std::is_unsigned_v<T>, int>
-bit_width(T x) noexcept {
-  return std::numeric_limits<T>::digits - countl_zero(x);
-}
+bit_width(T x) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 // Returns: If x == 0, 0; otherwise the maximal value y such that
 // has_single_bit(y) is true and y <= x.
 template <class T>
 ABSL_INTERNAL_CONSTEXPR_CLZ inline std::enable_if_t<std::is_unsigned_v<T>, T>
-bit_floor(T x) noexcept {
-  return x == 0 ? 0 : T{1} << (bit_width(x) - 1);
-}
+bit_floor(T x) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 // Returns: N, where N is the smallest power of 2 greater than or equal to x.
 //
 // Preconditions: N is representable as a value of type T.
 template <class T>
 ABSL_INTERNAL_CONSTEXPR_CLZ inline std::enable_if_t<std::is_unsigned_v<T>, T>
-bit_ceil(T x) {
-  // If T is narrower than unsigned, T{1} << bit_width will be promoted.  We
-  // want to force it to wraparound so that bit_ceil of an invalid value are not
-  // core constant expressions.
-  //
-  // BitCeilNonPowerOf2 triggers an overflow in constexpr contexts if we would
-  // undergo promotion to unsigned but not fit the result into T without
-  // truncation.
-  return has_single_bit(x) ? T{1} << (bit_width(x) - 1)
-                           : numeric_internal::BitCeilNonPowerOf2(x);
-}
+bit_ceil(T x) { __builtin_trap() /* STUB: not implemented */; }
 
 #endif
 
@@ -228,22 +196,7 @@ using std::byteswap;
 #else
 
 template <class T>
-[[nodiscard]] constexpr T byteswap(T x) noexcept {
-  static_assert(std::is_integral_v<T>,
-                "byteswap requires an integral argument");
-  static_assert(
-      sizeof(T) == 1 || sizeof(T) == 2 || sizeof(T) == 4 || sizeof(T) == 8,
-      "byteswap works only with 8, 16, 32, or 64-bit integers");
-  if constexpr (sizeof(T) == 1) {
-    return x;
-  } else if constexpr (sizeof(T) == 2) {
-    return static_cast<T>(gbswap_16(static_cast<uint16_t>(x)));
-  } else if constexpr (sizeof(T) == 4) {
-    return static_cast<T>(gbswap_32(static_cast<uint32_t>(x)));
-  } else if constexpr (sizeof(T) == 8) {
-    return static_cast<T>(gbswap_64(static_cast<uint64_t>(x)));
-  }
-}
+[[nodiscard]] constexpr T byteswap(T x) noexcept { return {}; }
 
 #endif  // defined(__cpp_lib_byteswap) && __cpp_lib_byteswap >= 202110L
 

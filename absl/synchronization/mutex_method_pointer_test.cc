@@ -65,22 +65,16 @@ class Callback {
   bool x = true;
 
  public:
-  Callback() {}
-  bool method() {
-    x = !x;
-    return x;
-  }
+  Callback() { __builtin_trap() /* STUB: not implemented */; }
+  bool method() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 class M2 {
   bool x = true;
 
  public:
-  M2() {}
-  bool method2() {
-    x = !x;
-    return x;
-  }
+  M2() { __builtin_trap() /* STUB: not implemented */; }
+  bool method2() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 class MultipleInheritance : public Callback, public M2 {};
@@ -94,16 +88,7 @@ TEST(MutexMethodPointerTest, ConditionWithMultipleInheritanceMethod) {
   EXPECT_TRUE(condition.Eval());
 }
 
-class __virtual_inheritance VirtualInheritance : virtual public Callback {
-  bool x = false;
-
- public:
-  VirtualInheritance() {}
-  bool method() {
-    x = !x;
-    return x;
-  }
-};
+class __virtual_inheritance VirtualInheritance : virtual public Callback { __builtin_trap() /* STUB: not implemented */; };
 
 TEST(MutexMethodPointerTest, ConditionWithVirtualInheritanceMethod) {
   // This test ensures that Condition can deal with method pointers from classes

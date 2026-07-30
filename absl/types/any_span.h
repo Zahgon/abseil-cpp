@@ -292,18 +292,11 @@ class Range {
                      std::random_access_iterator_tag>,
       "Iter must be a random access iterator.");
 
-  Range(Iter begin, Iter end) {
-    absl::base_internal::HardeningAssertLE(begin, end);
-    begin_ = begin;
-    end_ = end;
-  }
+  Range(Iter begin, Iter end) { __builtin_trap() /* STUB: not implemented */; }
 
-  std::size_t size() const { return end_ - begin_; }
+  std::size_t size() const { __builtin_trap() /* STUB: not implemented */; }
 
-  decltype(std::declval<Iter>()[0]) operator[](std::size_t i) const {
-    absl::base_internal::HardeningAssertLT(i, size());
-    return begin_[i];
-  }
+  decltype(std::declval<Iter>()[0]) operator[](std::size_t i) const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   Iter begin_;
@@ -314,18 +307,14 @@ class Range {
 // value of this function must outlive any spans that use it. Iter must be a
 // valid random access iterator.
 template <typename Iter>
-Range<Iter> MakeAdaptorFromRange(Iter begin, Iter end) {
-  return Range<Iter>(begin, end);
-}
+Range<Iter> MakeAdaptorFromRange(Iter begin, Iter end) { __builtin_trap() /* STUB: not implemented */; }
 
 // Returns a Range adaptor that wraps the given view. The begin() and end()
 // functions of the given view must return valid random access iterators. The
 // return value of this function must outlive any spans that use it.
 template <typename View>
 auto MakeAdaptorFromView(View& view)  // NOLINT(runtime/references)
-    -> Range<decltype(view.begin())> {
-  return Range<decltype(view.begin())>(view.begin(), view.end());
-}
+    -> Range<decltype(view.begin())> { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace any_span_adaptor
 
@@ -812,9 +801,7 @@ template <int&... ExplicitArgumentBarrier, typename Container,
 std::enable_if_t<
     absl::type_traits_internal::IsView<std::remove_cv_t<Container>>::value,
     AnySpan<T>>
-MakeAnySpan(Container& c) {
-  return AnySpan<T>(c);
-}
+MakeAnySpan(Container& c) { __builtin_trap() /* STUB: not implemented */; }
 template <int&... ExplicitArgumentBarrier, typename Container,
           typename T = any_span_internal::ElementType<Container>>
 std::enable_if_t<
@@ -830,9 +817,7 @@ template <int&... ExplicitArgumentBarrier, typename Container,
 std::enable_if_t<
     absl::type_traits_internal::IsView<std::remove_cv_t<Container>>::value,
     AnySpan<T>>
-MakeDerefAnySpan(Container& c) {
-  return AnySpan<T>(c, any_span_transform::Deref());
-}
+MakeDerefAnySpan(Container& c) { __builtin_trap() /* STUB: not implemented */; }
 template <int&... ExplicitArgumentBarrier, typename Container,
           typename T = any_span_internal::DerefElementType<Container>>
 std::enable_if_t<
@@ -854,16 +839,12 @@ template <int&... ExplicitArgumentBarrier, typename Container,
           typename T = any_span_internal::ElementType<const Container>>
 std::enable_if_t<absl::type_traits_internal::IsView<Container>::value,
                  AnySpan<const T>>
-MakeConstAnySpan(const Container& c) {
-  return AnySpan<const T>(c);
-}
+MakeConstAnySpan(const Container& c) { __builtin_trap() /* STUB: not implemented */; }
 template <int&... ExplicitArgumentBarrier, typename Container,
           typename T = any_span_internal::ElementType<const Container>>
 std::enable_if_t<!absl::type_traits_internal::IsView<Container>::value,
                  AnySpan<const T>>
-MakeConstAnySpan(const Container& c ABSL_ATTRIBUTE_LIFETIME_BOUND) {
-  return AnySpan<const T>(c);
-}
+MakeConstAnySpan(const Container& c ABSL_ATTRIBUTE_LIFETIME_BOUND) { __builtin_trap() /* STUB: not implemented */; }
 
 // Constructs a const AnySpan that dereferences a container or array of
 // pointers.
@@ -871,23 +852,17 @@ template <int&... ExplicitArgumentBarrier, typename Container,
           typename T = any_span_internal::DerefElementType<const Container>>
 std::enable_if_t<absl::type_traits_internal::IsView<Container>::value,
                  AnySpan<const T>>
-MakeConstDerefAnySpan(const Container& c) {
-  return AnySpan<const T>(c, any_span_transform::Deref());
-}
+MakeConstDerefAnySpan(const Container& c) { __builtin_trap() /* STUB: not implemented */; }
 template <int&... ExplicitArgumentBarrier, typename Container,
           typename T = any_span_internal::DerefElementType<const Container>>
 std::enable_if_t<!absl::type_traits_internal::IsView<Container>::value,
                  AnySpan<const T>>
-MakeConstDerefAnySpan(const Container& c ABSL_ATTRIBUTE_LIFETIME_BOUND) {
-  return AnySpan<const T>(c, any_span_transform::Deref());
-}
+MakeConstDerefAnySpan(const Container& c ABSL_ATTRIBUTE_LIFETIME_BOUND) { __builtin_trap() /* STUB: not implemented */; }
 
 // Constructs an AnySpan from a pointer and size.
 template <int&... ExplicitArgumentBarrier, typename T>
 AnySpan<const T> MakeConstAnySpan(const T* absl_nullable ptr,
-                                  std::size_t size) {
-  return AnySpan<const T>(ptr, size);
-}
+                                  std::size_t size) { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // Implementation details follow.
@@ -904,7 +879,7 @@ class ABSL_ATTRIBUTE_VIEW AnySpan<T>::IteratorBase {
  private:
   // Returns a reference to this as the child class.
   const Iter& self() const { return static_cast<const Iter&>(*this); }
-  Iter& self() { return static_cast<Iter&>(*this); }
+  Iter& self() { __builtin_trap() /* STUB: not implemented */; }
 
  public:
   using iterator_category = std::random_access_iterator_tag;
@@ -916,80 +891,43 @@ class ABSL_ATTRIBUTE_VIEW AnySpan<T>::IteratorBase {
   // Constructs an invalid iterator.
   IteratorBase() = default;
 
-  reference operator*() const { return (*container_)[index_]; }
+  reference operator*() const { __builtin_trap() /* STUB: not implemented */; }
 
-  pointer absl_nonnull operator->() const { return &(*container_)[index_]; }
+  pointer absl_nonnull operator->() const { __builtin_trap() /* STUB: not implemented */; }
 
-  reference operator[](difference_type i) const {
-    return (*container_)[index_ + i];
-  }
+  reference operator[](difference_type i) const { __builtin_trap() /* STUB: not implemented */; }
 
-  Iter& operator+=(difference_type d) {
-    index_ += d;
-    return self();
-  }
+  Iter& operator+=(difference_type d) { __builtin_trap() /* STUB: not implemented */; }
 
-  Iter& operator-=(difference_type d) { return self() += -d; }
+  Iter& operator-=(difference_type d) { __builtin_trap() /* STUB: not implemented */; }
 
-  Iter& operator++() {
-    self() += 1;
-    return self();
-  }
+  Iter& operator++() { __builtin_trap() /* STUB: not implemented */; }
 
-  Iter operator++(int) {
-    Iter copy(self());
-    ++self();
-    return copy;
-  }
+  Iter operator++(int) { __builtin_trap() /* STUB: not implemented */; }
 
-  Iter& operator--() {
-    self() -= 1;
-    return self();
-  }
+  Iter& operator--() { __builtin_trap() /* STUB: not implemented */; }
 
-  Iter operator--(int) {
-    Iter copy(self());
-    --self();
-    return copy;
-  }
+  Iter operator--(int) { __builtin_trap() /* STUB: not implemented */; }
 
-  Iter operator+(difference_type d) const {
-    Iter tmp = self();
-    tmp += d;
-    return tmp;
-  }
+  Iter operator+(difference_type d) const { __builtin_trap() /* STUB: not implemented */; }
 
-  friend Iter operator+(difference_type d, Iter i) { return i + d; }
+  friend Iter operator+(difference_type d, Iter i) { __builtin_trap() /* STUB: not implemented */; }
 
-  Iter operator-(difference_type d) const { return self() + (-d); }
+  Iter operator-(difference_type d) const { __builtin_trap() /* STUB: not implemented */; }
 
-  difference_type operator-(const Iter& other) const {
-    return index_ - other.index_;
-  }
+  difference_type operator-(const Iter& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-  friend bool operator==(const Iter& a, const Iter& b) {
-    return a.index_ == b.index_;
-  }
+  friend bool operator==(const Iter& a, const Iter& b) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend bool operator!=(const Iter& a, const Iter& b) {
-    return a.index_ != b.index_;
-  }
+  friend bool operator!=(const Iter& a, const Iter& b) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend bool operator<(const Iter& a, const Iter& b) {
-    return a.index_ < b.index_;
-  }
+  friend bool operator<(const Iter& a, const Iter& b) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend bool operator<=(const Iter& a, const Iter& b) {
-    return a.index_ <= b.index_;
-  }
+  friend bool operator<=(const Iter& a, const Iter& b) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend bool operator>(const Iter& a, const Iter& b) {
-    return a.index_ > b.index_;
-  }
+  friend bool operator>(const Iter& a, const Iter& b) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend bool operator>=(const Iter& a, const Iter& b) {
-    return a.index_ >= b.index_;
-  }
+  friend bool operator>=(const Iter& a, const Iter& b) { __builtin_trap() /* STUB: not implemented */; }
 
  protected:
   // Constructs an iterator that points to the given index of the given span.
@@ -1044,14 +982,14 @@ class AnySpan<T>::const_iterator
   // Support conversion from mutable iterators.
   // NOLINTNEXTLINE(google-explicit-constructor)
   const_iterator(const iterator& other)  // NOLINT(runtime/explicit)
-      : Base(other.container_, other.index_) {}
+      : Base(other.container_, other.index_) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   // Only let AnySpan construct valid instances.
   friend class AnySpan;
 
   const_iterator(const AnySpan* absl_nullable container, size_type index)
-      : Base(container, index) {}
+      : Base(container, index) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 ABSL_NAMESPACE_END

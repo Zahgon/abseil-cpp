@@ -32,33 +32,10 @@ const char* const kFormats[] = {
 const int kNumFormats = sizeof(kFormats) / sizeof(kFormats[0]);
 }  // namespace
 
-void BM_Format_FormatTime(benchmark::State& state) {
-  const std::string fmt = kFormats[state.range(0)];
-  state.SetLabel(fmt);
-  const absl::TimeZone lax =
-      absl::time_internal::LoadTimeZone("America/Los_Angeles");
-  const absl::Time t =
-      absl::FromCivil(absl::CivilSecond(1977, 6, 28, 9, 8, 7), lax) +
-      absl::Nanoseconds(1);
-  while (state.KeepRunning()) {
-    benchmark::DoNotOptimize(absl::FormatTime(fmt, t, lax).length());
-  }
-}
+void BM_Format_FormatTime(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_Format_FormatTime)->DenseRange(0, kNumFormats - 1);
 
-void BM_Format_ParseTime(benchmark::State& state) {
-  const std::string fmt = kFormats[state.range(0)];
-  state.SetLabel(fmt);
-  const absl::TimeZone lax =
-      absl::time_internal::LoadTimeZone("America/Los_Angeles");
-  absl::Time t = absl::FromCivil(absl::CivilSecond(1977, 6, 28, 9, 8, 7), lax) +
-                 absl::Nanoseconds(1);
-  const std::string when = absl::FormatTime(fmt, t, lax);
-  std::string err;
-  while (state.KeepRunning()) {
-    benchmark::DoNotOptimize(absl::ParseTime(fmt, when, lax, &t, &err));
-  }
-}
+void BM_Format_ParseTime(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_Format_ParseTime)->DenseRange(0, kNumFormats - 1);
 
 }  // namespace

@@ -77,9 +77,7 @@ bool CUnescape(absl::string_view source, std::string* absl_nonnull dest,
 
 // Overload of `CUnescape()` with no error reporting.
 inline bool CUnescape(absl::string_view source,
-                      std::string* absl_nonnull dest) {
-  return CUnescape(source, dest, nullptr);
-}
+                      std::string* absl_nonnull dest) { __builtin_trap() /* STUB: not implemented */; }
 
 // CEscape()
 //
@@ -131,9 +129,7 @@ std::string Base64Escape(absl::string_view src);
 [[deprecated(
     "Use the string-returning version of "
     "Base64Escape()")]] ABSL_REFACTOR_INLINE inline void
-Base64Escape(absl::string_view src, std::string* absl_nonnull dest) {
-  *dest = Base64Escape(src);
-}
+Base64Escape(absl::string_view src, std::string* absl_nonnull dest) { __builtin_trap() /* STUB: not implemented */; }
 
 // WebSafeBase64Escape()
 //
@@ -144,9 +140,7 @@ std::string WebSafeBase64Escape(absl::string_view src);
 [[deprecated(
     "Use the string-returning version of "
     "WebSafeBase64Escape()")]] ABSL_REFACTOR_INLINE inline void
-WebSafeBase64Escape(absl::string_view src, std::string* absl_nonnull dest) {
-  *dest = WebSafeBase64Escape(src);
-}
+WebSafeBase64Escape(absl::string_view src, std::string* absl_nonnull dest) { __builtin_trap() /* STUB: not implemented */; }
 
 // Base64Unescape()
 //

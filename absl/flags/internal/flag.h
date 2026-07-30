@@ -93,76 +93,36 @@ template <typename T>
 void* FlagOps(FlagOp op, const void* v1, void* v2, void* v3);
 
 // Allocate aligned memory for a flag value.
-inline void* Alloc(FlagOpFn op) {
-  return op(FlagOp::kAlloc, nullptr, nullptr, nullptr);
-}
+inline void* Alloc(FlagOpFn op) { __builtin_trap() /* STUB: not implemented */; }
 // Deletes memory interpreting obj as flag value type pointer.
-inline void Delete(FlagOpFn op, void* obj) {
-  op(FlagOp::kDelete, nullptr, obj, nullptr);
-}
+inline void Delete(FlagOpFn op, void* obj) { __builtin_trap() /* STUB: not implemented */; }
 // Copies src to dst interpreting as flag value type pointers.
-inline void Copy(FlagOpFn op, const void* src, void* dst) {
-  op(FlagOp::kCopy, src, dst, nullptr);
-}
+inline void Copy(FlagOpFn op, const void* src, void* dst) { __builtin_trap() /* STUB: not implemented */; }
 // Construct a copy of flag value in a location pointed by dst
 // based on src - pointer to the flag's value.
-inline void CopyConstruct(FlagOpFn op, const void* src, void* dst) {
-  op(FlagOp::kCopyConstruct, src, dst, nullptr);
-}
+inline void CopyConstruct(FlagOpFn op, const void* src, void* dst) { __builtin_trap() /* STUB: not implemented */; }
 // Makes a copy of flag value pointed by obj.
-inline void* Clone(FlagOpFn op, const void* obj) {
-  void* res = flags_internal::Alloc(op);
-  flags_internal::CopyConstruct(op, obj, res);
-  return res;
-}
+inline void* Clone(FlagOpFn op, const void* obj) { __builtin_trap() /* STUB: not implemented */; }
 // Returns true if parsing of input text is successful.
 inline bool Parse(FlagOpFn op, absl::string_view text, void* dst,
-                  std::string* error) {
-  return op(FlagOp::kParse, &text, dst, error) != nullptr;
-}
+                  std::string* error) { __builtin_trap() /* STUB: not implemented */; }
 // Returns string representing supplied value.
-inline std::string Unparse(FlagOpFn op, const void* val) {
-  std::string result;
-  op(FlagOp::kUnparse, val, &result, nullptr);
-  return result;
-}
+inline std::string Unparse(FlagOpFn op, const void* val) { __builtin_trap() /* STUB: not implemented */; }
 // Returns size of flag value type.
-inline size_t Sizeof(FlagOpFn op) {
-  // This sequence of casts reverses the sequence from
-  // `flags_internal::FlagOps()`
-  return static_cast<size_t>(reinterpret_cast<intptr_t>(
-      op(FlagOp::kSizeof, nullptr, nullptr, nullptr)));
-}
+inline size_t Sizeof(FlagOpFn op) { __builtin_trap() /* STUB: not implemented */; }
 // Returns fast type id corresponding to the value type.
-inline FlagFastTypeId FastTypeId(FlagOpFn op) {
-  return absl::bit_cast<FlagFastTypeId>(
-      op(FlagOp::kFastTypeId, nullptr, nullptr, nullptr));
-}
+inline FlagFastTypeId FastTypeId(FlagOpFn op) { __builtin_trap() /* STUB: not implemented */; }
 // Returns fast type id corresponding to the value type.
-inline const std::type_info* RuntimeTypeId(FlagOpFn op) {
-  return reinterpret_cast<const std::type_info*>(
-      op(FlagOp::kRuntimeTypeId, nullptr, nullptr, nullptr));
-}
+inline const std::type_info* RuntimeTypeId(FlagOpFn op) { __builtin_trap() /* STUB: not implemented */; }
 // Returns offset of the field value_ from the field impl_ inside of
 // absl::Flag<T> data. Given FlagImpl pointer p you can get the
 // location of the corresponding value as:
 //      reinterpret_cast<char*>(p) + ValueOffset().
-inline ptrdiff_t ValueOffset(FlagOpFn op) {
-  // This sequence of casts reverses the sequence from
-  // `flags_internal::FlagOps()`
-  return static_cast<ptrdiff_t>(reinterpret_cast<intptr_t>(
-      op(FlagOp::kValueOffset, nullptr, nullptr, nullptr)));
-}
+inline ptrdiff_t ValueOffset(FlagOpFn op) { __builtin_trap() /* STUB: not implemented */; }
 
 // Returns an address of RTTI's typeid(T).
 template <typename T>
-inline const std::type_info* GenRuntimeTypeId() {
-#ifdef ABSL_INTERNAL_HAS_RTTI
-  return &typeid(T);
-#else
-  return nullptr;
-#endif
-}
+inline const std::type_info* GenRuntimeTypeId() { __builtin_trap() /* STUB: not implemented */; }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Flag help auxiliary structs.
@@ -178,25 +138,18 @@ struct FixedCharArray {
 
   template <size_t... I>
   static constexpr FixedCharArray<N> FromLiteralString(
-      absl::string_view str, std::index_sequence<I...>) {
-    return (void)str, FixedCharArray<N>({{str[I]..., '\0'}});
-  }
+      absl::string_view str, std::index_sequence<I...>) { return {}; }
 };
 
 template <typename Gen, size_t N = Gen::Value().size()>
-constexpr FixedCharArray<N + 1> HelpStringAsArray(int) {
-  return FixedCharArray<N + 1>::FromLiteralString(
-      Gen::Value(), std::make_index_sequence<N>{});
-}
+constexpr FixedCharArray<N + 1> HelpStringAsArray(int) { return {}; }
 
 template <typename Gen>
-constexpr std::false_type HelpStringAsArray(char) {
-  return std::false_type{};
-}
+constexpr std::false_type HelpStringAsArray(char) { return {}; }
 
 union FlagHelpMsg {
-  constexpr explicit FlagHelpMsg(const char* help_msg) : literal(help_msg) {}
-  constexpr explicit FlagHelpMsg(HelpGenFunc help_gen) : gen_func(help_gen) {}
+  constexpr explicit FlagHelpMsg(const char* help_msg) : literal(help_msg) { }
+  constexpr explicit FlagHelpMsg(HelpGenFunc help_gen) : gen_func(help_gen) { }
 
   const char* literal;
   HelpGenFunc gen_func;
@@ -226,14 +179,10 @@ extern const char kStrippedFlagHelp[];
 // evaluatable in constexpr context, but the cost is an extra function being
 // generated in the ABSL_FLAG code.
 template <typename Gen, size_t N>
-constexpr FlagHelpArg HelpArg(const FixedCharArray<N>& value) {
-  return {FlagHelpMsg(value.value), FlagHelpKind::kLiteral};
-}
+constexpr FlagHelpArg HelpArg(const FixedCharArray<N>& value) { return {}; }
 
 template <typename Gen>
-constexpr FlagHelpArg HelpArg(std::false_type) {
-  return {FlagHelpMsg(&Gen::NonConst), FlagHelpKind::kGenFunc};
-}
+constexpr FlagHelpArg HelpArg(std::false_type) { return {}; }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Flag default value auxiliary structs.
@@ -244,7 +193,7 @@ using FlagDfltGenFunc = void (*)(void*);
 
 union FlagDefaultSrc {
   constexpr explicit FlagDefaultSrc(FlagDfltGenFunc gen_func_arg)
-      : gen_func(gen_func_arg) {}
+      : gen_func(gen_func_arg) { }
 
 #define ABSL_FLAGS_INTERNAL_DFLT_FOR_TYPE(T, name) \
   T name##_value;                                  \
@@ -273,25 +222,17 @@ struct FlagDefaultArg {
 struct EmptyBraces {};
 
 template <typename T>
-constexpr T InitDefaultValue(T t) {
-  return t;
-}
+constexpr T InitDefaultValue(T t) { return {}; }
 
 template <typename T>
-constexpr T InitDefaultValue(EmptyBraces) {
-  return T{};
-}
+constexpr T InitDefaultValue(EmptyBraces) { return {}; }
 
 template <typename ValueT, typename GenT,
           std::enable_if_t<std::is_integral_v<ValueT>, int> = ((void)GenT{}, 0)>
-constexpr FlagDefaultArg DefaultArg(int) {
-  return {FlagDefaultSrc(GenT{}.value), FlagDefaultKind::kOneWord};
-}
+constexpr FlagDefaultArg DefaultArg(int) { return {}; }
 
 template <typename ValueT, typename GenT>
-constexpr FlagDefaultArg DefaultArg(char) {
-  return {FlagDefaultSrc(&GenT::Gen), FlagDefaultKind::kGenFunc};
-}
+constexpr FlagDefaultArg DefaultArg(char) { return {}; }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Flag storage selector traits. Each trait indicates what kind of storage kind
@@ -322,27 +263,17 @@ enum class FlagValueStorageKind : uint8_t {
 // This constexpr function returns the storage kind for the given flag value
 // type.
 template <typename T>
-static constexpr FlagValueStorageKind StorageKind() {
-  return FlagUseValueAndInitBitStorage<T>::value
-             ? FlagValueStorageKind::kValueAndInitBit
-         : FlagUseOneWordStorage<T>::value
-             ? FlagValueStorageKind::kOneWordAtomic
-         : FlagUseSequenceLockStorage<T>::value
-             ? FlagValueStorageKind::kSequenceLocked
-             : FlagValueStorageKind::kHeapAllocated;
-}
+static constexpr FlagValueStorageKind StorageKind() { return {}; }
 
 // This is a base class for the storage classes used by kOneWordAtomic and
 // kValueAndInitBit storage kinds. It literally just stores the one word value
 // as an atomic. By default, it is initialized to a magic value that is unlikely
 // a valid value for the flag value type.
 struct FlagOneWordValue {
-  constexpr static int64_t Uninitialized() {
-    return static_cast<int64_t>(0xababababababababll);
-  }
+  constexpr static int64_t Uninitialized() { return {}; }
 
-  constexpr FlagOneWordValue() : value(Uninitialized()) {}
-  constexpr explicit FlagOneWordValue(int64_t v) : value(v) {}
+  constexpr FlagOneWordValue() : value(Uninitialized()) { }
+  constexpr explicit FlagOneWordValue(int64_t v) : value(v) { }
   std::atomic<int64_t> value;
 };
 
@@ -369,23 +300,17 @@ class MaskedPointer {
   using mask_t = uintptr_t;
   using ptr_t = void*;
 
-  static constexpr int RequiredAlignment() { return 4; }
+  static constexpr int RequiredAlignment() { return {}; }
 
-  constexpr MaskedPointer() : ptr_(nullptr) {}
-  constexpr explicit MaskedPointer(ptr_t rhs) : ptr_(rhs) {}
+  constexpr MaskedPointer() : ptr_(nullptr) { }
+  constexpr explicit MaskedPointer(ptr_t rhs) : ptr_(rhs) { }
   MaskedPointer(ptr_t rhs, bool is_candidate);
 
   MaskedPointer(const MaskedPointer& rhs) = default;
   MaskedPointer& operator=(const MaskedPointer& rhs) = default;
 
-  void* Ptr() const {
-    return reinterpret_cast<void*>(reinterpret_cast<mask_t>(ptr_) &
-                                   kPtrValueMask);
-  }
-  bool AllowsUnprotectedRead() const {
-    return (reinterpret_cast<mask_t>(ptr_) & kAllowsUnprotectedRead) ==
-           kAllowsUnprotectedRead;
-  }
+  void* Ptr() const { __builtin_trap() /* STUB: not implemented */; }
+  bool AllowsUnprotectedRead() const { __builtin_trap() /* STUB: not implemented */; }
   bool IsUnprotectedReadCandidate() const;
   bool HasBeenRead() const;
 
@@ -417,7 +342,7 @@ class MaskedPointer {
 // in an uninitialized state.
 struct FlagMaskedPointerValue {
   constexpr explicit FlagMaskedPointerValue(MaskedPointer::ptr_t initial_buffer)
-      : value(MaskedPointer(initial_buffer)) {}
+      : value(MaskedPointer(initial_buffer)) { }
 
   std::atomic<MaskedPointer> value;
 };
@@ -436,19 +361,8 @@ struct FlagValue;
 // value has been initialized or not.
 template <typename T>
 struct FlagValue<T, FlagValueStorageKind::kValueAndInitBit> : FlagOneWordValue {
-  constexpr FlagValue() : FlagOneWordValue(0) {}
-  bool Get(const SequenceLock&, T& dst) const {
-    int64_t storage = value.load(std::memory_order_acquire);
-    if (ABSL_PREDICT_FALSE(storage == 0)) {
-      // This assert is to ensure that the initialization inside FlagImpl::Init
-      // is able to set init member correctly.
-      static_assert(offsetof(FlagValueAndInitBit<T>, init) == sizeof(T),
-                    "Unexpected memory layout of FlagValueAndInitBit");
-      return false;
-    }
-    dst = absl::bit_cast<FlagValueAndInitBit<T>>(storage).value;
-    return true;
-  }
+  constexpr FlagValue() : FlagOneWordValue(0) { }
+  bool Get(const SequenceLock&, T& dst) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // This specialization represents the storage of flag values types with the
@@ -457,15 +371,8 @@ struct FlagValue<T, FlagValueStorageKind::kValueAndInitBit> : FlagOneWordValue {
 // FlagOneWordValue to indicate that the value has been initialized or not.
 template <typename T>
 struct FlagValue<T, FlagValueStorageKind::kOneWordAtomic> : FlagOneWordValue {
-  constexpr FlagValue() : FlagOneWordValue() {}
-  bool Get(const SequenceLock&, T& dst) const {
-    int64_t one_word_val = value.load(std::memory_order_acquire);
-    if (ABSL_PREDICT_FALSE(one_word_val == FlagOneWordValue::Uninitialized())) {
-      return false;
-    }
-    std::memcpy(&dst, static_cast<const void*>(&one_word_val), sizeof(T));
-    return true;
-  }
+  constexpr FlagValue() : FlagOneWordValue() { }
+  bool Get(const SequenceLock&, T& dst) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // This specialization represents the storage of flag values types with the
@@ -476,9 +383,7 @@ struct FlagValue<T, FlagValueStorageKind::kOneWordAtomic> : FlagOneWordValue {
 // value once it is initialized.
 template <typename T>
 struct FlagValue<T, FlagValueStorageKind::kSequenceLocked> {
-  bool Get(const SequenceLock& lock, T& dst) const {
-    return lock.TryRead(&dst, value_words, sizeof(T));
-  }
+  bool Get(const SequenceLock& lock, T& dst) const { __builtin_trap() /* STUB: not implemented */; }
 
   static constexpr int kNumWords =
       flags_internal::AlignUp(sizeof(T), sizeof(uint64_t)) / sizeof(uint64_t);
@@ -529,17 +434,9 @@ struct FlagValue<T, FlagValueStorageKind::kHeapAllocated>
   // We const initialize the value with unmasked pointer to the internal buffer,
   // making sure it is not a candidate for unprotected read. This way we can
   // ensure Init is done before any access to the flag value.
-  constexpr FlagValue() : FlagMaskedPointerValue(&buffer[0]) {}
+  constexpr FlagValue() : FlagMaskedPointerValue(&buffer[0]) { }
 
-  bool Get(const SequenceLock&, T& dst) const {
-    MaskedPointer ptr_value = value.load(std::memory_order_acquire);
-
-    if (ABSL_PREDICT_TRUE(ptr_value.AllowsUnprotectedRead())) {
-      ::new (static_cast<void*>(&dst)) T(*static_cast<T*>(ptr_value.Ptr()));
-      return true;
-    }
-    return false;
-  }
+  bool Get(const SequenceLock&, T& dst) const { __builtin_trap() /* STUB: not implemented */; }
 
   alignas(MaskedPointer::RequiredAlignment()) alignas(
       T) char buffer[sizeof(T)]{};
@@ -596,7 +493,7 @@ class FlagImpl final : public CommandLineFlag {
         on_command_line_(false),
         callback_(nullptr),
         default_value_(default_arg.source),
-        data_guard_{} {}
+        data_guard_{} { }
 
   // Constant access methods
   int64_t ReadOneWord() const ABSL_LOCKS_EXCLUDED(DataGuard());
@@ -684,12 +581,8 @@ class FlagImpl final : public CommandLineFlag {
   // REQUIRES: ValueStorageKind() == kSequenceLocked.
   void ReadSequenceLockedData(void* dst) const ABSL_LOCKS_EXCLUDED(DataGuard());
 
-  FlagHelpKind HelpSourceKind() const {
-    return static_cast<FlagHelpKind>(help_source_kind_);
-  }
-  FlagValueStorageKind ValueStorageKind() const {
-    return static_cast<FlagValueStorageKind>(value_storage_kind_);
-  }
+  FlagHelpKind HelpSourceKind() const { __builtin_trap() /* STUB: not implemented */; }
+  FlagValueStorageKind ValueStorageKind() const { __builtin_trap() /* STUB: not implemented */; }
   FlagDefaultKind DefaultKind() const
       ABSL_EXCLUSIVE_LOCKS_REQUIRED(DataGuard()) {
     return static_cast<FlagDefaultKind>(def_kind_);
@@ -797,49 +690,27 @@ class Flag {
                  FlagHelpArg help, const FlagDefaultArg default_arg)
       : impl_(name, type_name, filename, &FlagOps<T>, help,
               flags_internal::StorageKind<T>(), default_arg),
-        value_() {}
+        value_() { }
 
   // CommandLineFlag interface
-  absl::string_view Name() const { return impl_.Name(); }
-  std::string Filename() const { return impl_.Filename(); }
-  std::string Help() const { return impl_.Help(); }
+  absl::string_view Name() const { __builtin_trap() /* STUB: not implemented */; }
+  std::string Filename() const { __builtin_trap() /* STUB: not implemented */; }
+  std::string Help() const { __builtin_trap() /* STUB: not implemented */; }
   // Do not use. To be removed.
-  bool IsSpecifiedOnCommandLine() const {
-    return impl_.IsSpecifiedOnCommandLine();
-  }
-  std::string DefaultValue() const { return impl_.DefaultValue(); }
-  std::string CurrentValue() const { return impl_.CurrentValue(); }
+  bool IsSpecifiedOnCommandLine() const { __builtin_trap() /* STUB: not implemented */; }
+  std::string DefaultValue() const { __builtin_trap() /* STUB: not implemented */; }
+  std::string CurrentValue() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   template <typename, bool>
   friend class FlagRegistrar;
   friend class FlagImplPeer;
 
-  T Get() const {
-    // See implementation notes in CommandLineFlag::Get().
-    union U {
-      T value;
-      U() {}
-      ~U() { value.~T(); }
-    };
-    U u;
-
-#if !defined(NDEBUG)
-    impl_.AssertValidType(absl::FastTypeId<T>(), &GenRuntimeTypeId<T>);
-#endif
-
-    if (ABSL_PREDICT_FALSE(!value_.Get(impl_.seq_lock_, u.value))) {
-      impl_.Read(&u.value);
-    }
-    return std::move(u.value);
-  }
-  void Set(const T& v) {
-    impl_.AssertValidType(absl::FastTypeId<T>(), &GenRuntimeTypeId<T>);
-    impl_.Write(&v);
-  }
+  T Get() const { __builtin_trap() /* STUB: not implemented */; }
+  void Set(const T& v) { __builtin_trap() /* STUB: not implemented */; }
 
   // Access to the reflection.
-  const CommandLineFlag& Reflect() const { return impl_; }
+  const CommandLineFlag& Reflect() const { __builtin_trap() /* STUB: not implemented */; }
 
   // Flag's data
   // The implementation depends on value_ field to be placed exactly after the
@@ -855,78 +726,17 @@ class Flag {
 class FlagImplPeer {
  public:
   template <typename T, typename FlagType>
-  static T InvokeGet(const FlagType& flag) {
-    return flag.Get();
-  }
+  static T InvokeGet(const FlagType& flag) { __builtin_trap() /* STUB: not implemented */; }
   template <typename FlagType, typename T>
-  static void InvokeSet(FlagType& flag, const T& v) {
-    flag.Set(v);
-  }
+  static void InvokeSet(FlagType& flag, const T& v) { __builtin_trap() /* STUB: not implemented */; }
   template <typename FlagType>
-  static const CommandLineFlag& InvokeReflect(const FlagType& f) {
-    return f.Reflect();
-  }
+  static const CommandLineFlag& InvokeReflect(const FlagType& f) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 ///////////////////////////////////////////////////////////////////////////////
 // Implementation of Flag value specific operations routine.
 template <typename T>
-void* FlagOps(FlagOp op, const void* v1, void* v2, void* v3) {
-  struct AlignedSpace {
-    alignas(MaskedPointer::RequiredAlignment()) alignas(
-        T) unsigned char buf[sizeof(T)];
-  };
-  using Allocator = std::allocator<AlignedSpace>;
-  switch (op) {
-    case FlagOp::kAlloc: {
-      Allocator alloc;
-      return std::allocator_traits<Allocator>::allocate(alloc, 1);
-    }
-    case FlagOp::kDelete: {
-      T* p = static_cast<T*>(v2);
-      p->~T();
-      Allocator alloc;
-      std::allocator_traits<Allocator>::deallocate(
-          alloc, reinterpret_cast<AlignedSpace*>(p), 1);
-      return nullptr;
-    }
-    case FlagOp::kCopy:
-      *static_cast<T*>(v2) = *static_cast<const T*>(v1);
-      return nullptr;
-    case FlagOp::kCopyConstruct:
-      new (v2) T(*static_cast<const T*>(v1));
-      return nullptr;
-    case FlagOp::kSizeof:
-      return reinterpret_cast<void*>(static_cast<uintptr_t>(sizeof(T)));
-    case FlagOp::kFastTypeId:
-      return absl::bit_cast<void*>(absl::FastTypeId<T>());
-    case FlagOp::kRuntimeTypeId:
-      return const_cast<std::type_info*>(GenRuntimeTypeId<T>());
-    case FlagOp::kParse: {
-      // Initialize the temporary instance of type T based on current value in
-      // destination (which is going to be flag's default value).
-      T temp(*static_cast<T*>(v2));
-      if (!absl::ParseFlag<T>(*static_cast<const absl::string_view*>(v1), &temp,
-                              static_cast<std::string*>(v3))) {
-        return nullptr;
-      }
-      *static_cast<T*>(v2) = std::move(temp);
-      return v2;
-    }
-    case FlagOp::kUnparse:
-      *static_cast<std::string*>(v2) =
-          absl::UnparseFlag<T>(*static_cast<const T*>(v1));
-      return nullptr;
-    case FlagOp::kValueOffset: {
-      // Round sizeof(FlagImp) to a multiple of alignof(FlagValue<T>) to get the
-      // offset of the data.
-      size_t round_to = alignof(FlagValue<T>);
-      size_t offset = (sizeof(FlagImpl) + round_to - 1) / round_to * round_to;
-      return reinterpret_cast<void*>(offset);
-    }
-  }
-  return nullptr;
-}
+void* FlagOps(FlagOp op, const void* v1, void* v2, void* v3) { __builtin_trap() /* STUB: not implemented */; }
 
 ///////////////////////////////////////////////////////////////////////////////
 // This class facilitates Flag object registration and tail expression-based
@@ -937,15 +747,9 @@ template <typename T, bool do_register>
 class FlagRegistrar {
  public:
   constexpr explicit FlagRegistrar(Flag<T>& flag, const char* filename)
-      : flag_(flag) {
-    if (do_register)
-      flags_internal::RegisterCommandLineFlag(flag_.impl_, filename);
-  }
+      : flag_(flag) { }
 
-  FlagRegistrar OnUpdate(FlagCallbackFunc cb) && {
-    flag_.impl_.SetCallback(cb);
-    return *this;
-  }
+  FlagRegistrar OnUpdate(FlagCallbackFunc cb) && { __builtin_trap() /* STUB: not implemented */; }
 
   // Makes the registrar die gracefully as an empty struct on a line where
   // registration happens. Registrar objects are intended to live only as

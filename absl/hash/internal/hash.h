@@ -154,7 +154,7 @@ namespace hash_internal {
 
 // Internal detail: Large buffers are hashed in smaller chunks.  This function
 // returns the size of these chunks.
-constexpr size_t PiecewiseChunkSize() { return 1024; }
+constexpr size_t PiecewiseChunkSize() { return {}; }
 
 // PiecewiseCombiner is an internal-only helper class for hashing a piecewise
 // buffer of `char` or `unsigned char` as though it were contiguous.  This class
@@ -185,10 +185,7 @@ class PiecewiseCombiner {
   template <typename H>
   H add_buffer(H state, const unsigned char* data, size_t size);
   template <typename H>
-  H add_buffer(H state, const char* data, size_t size) {
-    return add_buffer(std::move(state),
-                      reinterpret_cast<const unsigned char*>(data), size);
-  }
+  H add_buffer(H state, const char* data, size_t size) { __builtin_trap() /* STUB: not implemented */; }
 
   // Finishes combining the hash sequence, which may may modify the provided
   // hash state.
@@ -296,7 +293,7 @@ class HashStateBase {
   //   state = H::combine(std::move(state), value3);
   template <typename T, typename... Ts>
   static H combine(H state, const T& value, const Ts&... values);
-  static H combine(H state) { return state; }
+  static H combine(H state) { __builtin_trap() /* STUB: not implemented */; }
 
   // Combines a contiguous array of `size` elements into a hash state, returning
   // the updated state.
@@ -328,12 +325,7 @@ class HashStateBase {
     I end;
 
     template <typename InnerH, typename ElementStateConsumer>
-    void operator()(InnerH inner_state, ElementStateConsumer cb) {
-      for (; begin != end; ++begin) {
-        inner_state = H::combine(std::move(inner_state), *begin);
-        cb(inner_state);
-      }
-    }
+    void operator()(InnerH inner_state, ElementStateConsumer cb) { __builtin_trap() /* STUB: not implemented */; }
   };
 };
 
@@ -401,50 +393,26 @@ struct FitsIn64Bits : std::bool_constant<sizeof(T) <= 8> {};
 
 struct CombineRaw {
   template <typename H>
-  H operator()(H state, uint64_t value) const {
-    return H::combine_raw(std::move(state), value);
-  }
+  H operator()(H state, uint64_t value) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // For use in `raw_hash_set` to pass a seed to the hash function.
 struct HashWithSeed {
   template <typename Hasher, typename T>
-  size_t hash(const Hasher& hasher, const T& value, size_t seed) const {
-    // NOLINTNEXTLINE(clang-diagnostic-sign-conversion)
-    return hasher.hash_with_seed(value, seed);
-  }
+  size_t hash(const Hasher& hasher, const T& value, size_t seed) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // Convenience function that combines `hash_state` with the byte representation
 // of `value`.
 template <typename H, typename T,
           std::enable_if_t<FitsIn64Bits<T>::value, int> = 0>
-H hash_bytes(H hash_state, const T& value) {
-  const unsigned char* start = reinterpret_cast<const unsigned char*>(&value);
-  uint64_t v;
-  if constexpr (sizeof(T) == 1) {
-    v = *start;
-  } else if constexpr (sizeof(T) == 2) {
-    v = absl::base_internal::UnalignedLoad16(start);
-  } else if constexpr (sizeof(T) == 4) {
-    v = absl::base_internal::UnalignedLoad32(start);
-  } else {
-    static_assert(sizeof(T) == 8);
-    v = absl::base_internal::UnalignedLoad64(start);
-  }
-  return CombineRaw()(std::move(hash_state), v);
-}
+H hash_bytes(H hash_state, const T& value) { __builtin_trap() /* STUB: not implemented */; }
 template <typename H, typename T,
           std::enable_if_t<!FitsIn64Bits<T>::value, int> = 0>
-H hash_bytes(H hash_state, const T& value) {
-  const unsigned char* start = reinterpret_cast<const unsigned char*>(&value);
-  return H::combine_contiguous(std::move(hash_state), start, sizeof(value));
-}
+H hash_bytes(H hash_state, const T& value) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename H>
-H hash_weakly_mixed_integer(H hash_state, WeaklyMixedInteger value) {
-  return H::combine_weakly_mixed_integer(std::move(hash_state), value);
-}
+H hash_weakly_mixed_integer(H hash_state, WeaklyMixedInteger value) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // AbslHashValue for Basic Types
@@ -461,32 +429,16 @@ H hash_weakly_mixed_integer(H hash_state, WeaklyMixedInteger value) {
 // are convertible to bool.
 template <typename H, typename B>
 std::enable_if_t<std::is_same_v<B, bool>, H> AbslHashValue(H hash_state,
-                                                           B value) {
-  // We use ~size_t{} instead of 1 so that all bits are different between
-  // true/false instead of only 1.
-  return H::combine(std::move(hash_state),
-                    static_cast<size_t>(value ? ~size_t{} : 0));
-}
+                                                           B value) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue() for hashing enum values
 template <typename H, typename Enum>
-std::enable_if_t<std::is_enum_v<Enum>, H> AbslHashValue(H hash_state, Enum e) {
-  // In practice, we could almost certainly just invoke hash_bytes directly,
-  // but it's possible that a sanitizer might one day want to
-  // store data in the unused bits of an enum. To avoid that risk, we
-  // convert to the underlying type before hashing. Hopefully this will get
-  // optimized away; if not, we can reopen discussion with c-toolchain-team.
-  return H::combine(std::move(hash_state),
-                    static_cast<std::underlying_type_t<Enum>>(e));
-}
+std::enable_if_t<std::is_enum_v<Enum>, H> AbslHashValue(H hash_state, Enum e) { __builtin_trap() /* STUB: not implemented */; }
 // AbslHashValue() for hashing floating-point values
 template <typename H, typename Float>
 std::enable_if_t<std::is_same_v<Float, float> || std::is_same_v<Float, double>,
                  H>
-AbslHashValue(H hash_state, Float value) {
-  return hash_internal::hash_bytes(std::move(hash_state),
-                                   value == 0 ? 0 : value);
-}
+AbslHashValue(H hash_state, Float value) { __builtin_trap() /* STUB: not implemented */; }
 
 // Long double has the property that it might have extra unused bytes in it.
 // For example, in x86 sizeof(long double)==16 but it only really uses 80-bits
@@ -494,97 +446,24 @@ AbslHashValue(H hash_state, Float value) {
 // convert it to something else first.
 template <typename H, typename LongDouble>
 std::enable_if_t<std::is_same_v<LongDouble, long double>, H> AbslHashValue(
-    H hash_state, LongDouble value) {
-  const int category = std::fpclassify(value);
-  switch (category) {
-    case FP_INFINITE:
-      // Add the sign bit to differentiate between +Inf and -Inf
-      hash_state = H::combine(std::move(hash_state), std::signbit(value));
-      break;
-
-    case FP_NAN:
-    case FP_ZERO:
-    default:
-      // Category is enough for these.
-      break;
-
-    case FP_NORMAL:
-    case FP_SUBNORMAL:
-      // We can't convert `value` directly to double because this would have
-      // undefined behavior if the value is out of range.
-      // std::frexp gives us a value in the range (-1, -.5] or [.5, 1) that is
-      // guaranteed to be in range for `double`. The truncation is
-      // implementation defined, but that works as long as it is deterministic.
-      int exp;
-      auto mantissa = static_cast<double>(std::frexp(value, &exp));
-      hash_state = H::combine(std::move(hash_state), mantissa, exp);
-  }
-
-  return H::combine(std::move(hash_state), category);
-}
+    H hash_state, LongDouble value) { __builtin_trap() /* STUB: not implemented */; }
 
 // Without this overload, an array decays to a pointer and we hash that, which
 // is not likely to be what the caller intended.
 template <typename H, typename T, size_t N>
-H AbslHashValue(H hash_state, T (&)[N]) {
-  static_assert(
-      sizeof(T) == -1,
-      "Hashing C arrays is not allowed. For string literals, wrap the literal "
-      "in absl::string_view(). To hash the array contents, use "
-      "absl::MakeSpan() or make the array an std::array. To hash the array "
-      "address, use &array[0].");
-  return hash_state;
-}
+H AbslHashValue(H hash_state, T (&)[N]) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue() for hashing pointers
 template <typename H, typename T>
-std::enable_if_t<std::is_pointer_v<T>, H> AbslHashValue(H hash_state, T ptr) {
-  auto v = reinterpret_cast<uintptr_t>(ptr);
-  // Due to alignment, pointers tend to have low bits as zero, and the next few
-  // bits follow a pattern since they are also multiples of some base value.
-  // The PointerAlignment test verifies that our mixing is good enough to handle
-  // these cases.
-  return H::combine(std::move(hash_state), v);
-}
+std::enable_if_t<std::is_pointer_v<T>, H> AbslHashValue(H hash_state, T ptr) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue() for hashing nullptr_t
 template <typename H>
-H AbslHashValue(H hash_state, std::nullptr_t) {
-  return H::combine(std::move(hash_state), static_cast<void*>(nullptr));
-}
+H AbslHashValue(H hash_state, std::nullptr_t) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue() for hashing pointers-to-member
 template <typename H, typename T, typename C>
-H AbslHashValue(H hash_state, T C::*ptr) {
-  auto salient_ptm_size = [](std::size_t n) -> std::size_t {
-#if defined(_MSC_VER)
-    // Pointers-to-member-function on MSVC consist of one pointer plus 0, 1, 2,
-    // or 3 ints. In 64-bit mode, they are 8-byte aligned and thus can contain
-    // padding (namely when they have 1 or 3 ints). The value below is a lower
-    // bound on the number of salient, non-padding bytes that we use for
-    // hashing.
-    if constexpr (alignof(T C::*) == alignof(int)) {
-      // No padding when all subobjects have the same size as the total
-      // alignment. This happens in 32-bit mode.
-      return n;
-    } else {
-      // Padding for 1 int (size 16) or 3 ints (size 24).
-      // With 2 ints, the size is 16 with no padding, which we pessimize.
-      return n == 24 ? 20 : n == 16 ? 12 : n;
-    }
-#else
-  // On other platforms, we assume that pointers-to-members do not have
-  // padding.
-#ifdef __cpp_lib_has_unique_object_representations
-    static_assert(std::has_unique_object_representations_v<T C::*>);
-#endif  // __cpp_lib_has_unique_object_representations
-    return n;
-#endif
-  };
-  return H::combine_contiguous(std::move(hash_state),
-                               reinterpret_cast<unsigned char*>(&ptr),
-                               salient_ptm_size(sizeof ptr));
-}
+H AbslHashValue(H hash_state, T C::*ptr) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // AbslHashValue for Composite Types
@@ -593,16 +472,12 @@ H AbslHashValue(H hash_state, T C::*ptr) {
 // AbslHashValue() for hashing pairs
 template <typename H, typename T1, typename T2>
 std::enable_if_t<is_hashable<T1>::value && is_hashable<T2>::value, H>
-AbslHashValue(H hash_state, const std::pair<T1, T2>& p) {
-  return H::combine(std::move(hash_state), p.first, p.second);
-}
+AbslHashValue(H hash_state, const std::pair<T1, T2>& p) { __builtin_trap() /* STUB: not implemented */; }
 
 // Helper function for hashing a tuple. The third argument should
 // be an index_sequence running from 0 to tuple_size<Tuple> - 1.
 template <typename H, typename Tuple, size_t... Is>
-H hash_tuple(H hash_state, const Tuple& t, std::index_sequence<Is...>) {
-  return H::combine(std::move(hash_state), std::get<Is>(t)...);
-}
+H hash_tuple(H hash_state, const Tuple& t, std::index_sequence<Is...>) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing tuples
 template <typename H, typename... Ts>
@@ -613,10 +488,7 @@ H
 #else   // _MSC_VER
 std::enable_if_t<std::conjunction_v<is_hashable<Ts>...>, H>
 #endif  // _MSC_VER
-AbslHashValue(H hash_state, const std::tuple<Ts...>& t) {
-  return hash_internal::hash_tuple(std::move(hash_state), t,
-                                   std::make_index_sequence<sizeof...(Ts)>());
-}
+AbslHashValue(H hash_state, const std::tuple<Ts...>& t) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // AbslHashValue for Pointers
@@ -624,15 +496,11 @@ AbslHashValue(H hash_state, const std::tuple<Ts...>& t) {
 
 // AbslHashValue for hashing unique_ptr
 template <typename H, typename T, typename D>
-H AbslHashValue(H hash_state, const std::unique_ptr<T, D>& ptr) {
-  return H::combine(std::move(hash_state), ptr.get());
-}
+H AbslHashValue(H hash_state, const std::unique_ptr<T, D>& ptr) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing shared_ptr
 template <typename H, typename T>
-H AbslHashValue(H hash_state, const std::shared_ptr<T>& ptr) {
-  return H::combine(std::move(hash_state), ptr.get());
-}
+H AbslHashValue(H hash_state, const std::shared_ptr<T>& ptr) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // AbslHashValue for String-Like Types
@@ -656,9 +524,7 @@ H AbslHashValue(H hash_state, const std::shared_ptr<T>& ptr) {
 // where the traits' `eq()` member isn't equivalent to `==` on the underlying
 // character type.
 template <typename H>
-H AbslHashValue(H hash_state, absl::string_view str) {
-  return H::combine_contiguous(std::move(hash_state), str.data(), str.size());
-}
+H AbslHashValue(H hash_state, absl::string_view str) { __builtin_trap() /* STUB: not implemented */; }
 
 // Support std::wstring, std::u8string, std::u16string and std::u32string.
 template <typename Char, typename Alloc, typename H,
@@ -670,9 +536,7 @@ template <typename Char, typename Alloc, typename H,
                                       std::is_same_v<Char, char32_t>>>
 H AbslHashValue(
     H hash_state,
-    const std::basic_string<Char, std::char_traits<Char>, Alloc>& str) {
-  return H::combine_contiguous(std::move(hash_state), str.data(), str.size());
-}
+    const std::basic_string<Char, std::char_traits<Char>, Alloc>& str) { __builtin_trap() /* STUB: not implemented */; }
 
 // Support std::wstring_view, std::u8string_view, std::u16string_view and
 // std::u32string_view.
@@ -683,9 +547,7 @@ template <typename Char, typename H,
 #endif
                                       std::is_same_v<Char, char16_t> ||
                                       std::is_same_v<Char, char32_t>>>
-H AbslHashValue(H hash_state, std::basic_string_view<Char> str) {
-  return H::combine_contiguous(std::move(hash_state), str.data(), str.size());
-}
+H AbslHashValue(H hash_state, std::basic_string_view<Char> str) { __builtin_trap() /* STUB: not implemented */; }
 
 #if defined(__cpp_lib_filesystem) && __cpp_lib_filesystem >= 201703L && \
     (!defined(__ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__) ||        \
@@ -701,30 +563,7 @@ H AbslHashValue(H hash_state, std::basic_string_view<Char> str) {
 template <typename Path, typename H,
           typename = std::enable_if_t<
               std::is_same_v<Path, std::filesystem::path>>>
-H AbslHashValue(H hash_state, const Path& path) {
-  // Avoid deferring to std::filesystem::hash_value, as that makes it easy to
-  // generate offline collisions, bypassing per-table and per-process hash
-  // seeding. Instead, we hash it ourselves.
-  size_t count = 0;
-
-  for (const Path& component : path) {
-    std::basic_string_view<typename Path::value_type> part = component.native();
-
-    // If this is a directory separator, pretend it is the preferred directory
-    // separator (rather than the alternate separator) to ensure that equal
-    // paths produce equal hashes.
-    // Analogous to LLVM commit aa427b1aae445ed46d9f60c5e2eaac61bdf76be3.
-    if (!part.empty() &&
-        (*part.begin() == '/' || *part.begin() == Path::preferred_separator)) {
-      part = std::basic_string_view<typename Path::value_type>(
-          &Path::preferred_separator, 1);
-    }
-
-    hash_state = H::combine(std::move(hash_state), part);
-    ++count;
-  }
-  return H::combine(std::move(hash_state), count);
-}
+H AbslHashValue(H hash_state, const Path& path) { __builtin_trap() /* STUB: not implemented */; }
 
 #endif  // ABSL_INTERNAL_STD_FILESYSTEM_PATH_HASH_AVAILABLE
 
@@ -735,44 +574,22 @@ H AbslHashValue(H hash_state, const Path& path) {
 // AbslHashValue for hashing std::array
 template <typename H, typename T, size_t N>
 std::enable_if_t<is_hashable<T>::value, H> AbslHashValue(
-    H hash_state, const std::array<T, N>& array) {
-  return H::combine_contiguous(std::move(hash_state), array.data(),
-                               array.size());
-}
+    H hash_state, const std::array<T, N>& array) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing std::deque
 template <typename H, typename T, typename Allocator>
 std::enable_if_t<is_hashable<T>::value, H> AbslHashValue(
-    H hash_state, const std::deque<T, Allocator>& deque) {
-  // TODO(gromer): investigate a more efficient implementation taking
-  // advantage of the chunk structure.
-  for (const auto& t : deque) {
-    hash_state = H::combine(std::move(hash_state), t);
-  }
-  return H::combine(std::move(hash_state), WeaklyMixedInteger{deque.size()});
-}
+    H hash_state, const std::deque<T, Allocator>& deque) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing std::forward_list
 template <typename H, typename T, typename Allocator>
 std::enable_if_t<is_hashable<T>::value, H> AbslHashValue(
-    H hash_state, const std::forward_list<T, Allocator>& list) {
-  size_t size = 0;
-  for (const T& t : list) {
-    hash_state = H::combine(std::move(hash_state), t);
-    ++size;
-  }
-  return H::combine(std::move(hash_state), WeaklyMixedInteger{size});
-}
+    H hash_state, const std::forward_list<T, Allocator>& list) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing std::list
 template <typename H, typename T, typename Allocator>
 std::enable_if_t<is_hashable<T>::value, H> AbslHashValue(
-    H hash_state, const std::list<T, Allocator>& list) {
-  for (const auto& t : list) {
-    hash_state = H::combine(std::move(hash_state), t);
-  }
-  return H::combine(std::move(hash_state), WeaklyMixedInteger{list.size()});
-}
+    H hash_state, const std::list<T, Allocator>& list) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing std::vector
 //
@@ -781,10 +598,7 @@ std::enable_if_t<is_hashable<T>::value, H> AbslHashValue(
 // std::hash<> is most likely faster.
 template <typename H, typename T, typename Allocator>
 std::enable_if_t<is_hashable<T>::value && !std::is_same_v<T, bool>, H>
-AbslHashValue(H hash_state, const std::vector<T, Allocator>& vector) {
-  return H::combine_contiguous(std::move(hash_state), vector.data(),
-                               vector.size());
-}
+AbslHashValue(H hash_state, const std::vector<T, Allocator>& vector) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue special cases for hashing std::vector<bool>
 //
@@ -799,44 +613,7 @@ AbslHashValue(H hash_state, const std::vector<T, Allocator>& vector) {
 // otherwise users can just use std::hash as the hasher.
 template <typename H, typename T, typename Allocator>
 std::enable_if_t<is_hashable<T>::value && std::is_same_v<T, bool>, H>
-AbslHashValue(H hash_state, const std::vector<T, Allocator>& vector) {
-  typename H::AbslInternalPiecewiseCombiner combiner;
-  const size_t size = vector.size();
-  size_t i = 0;
-  // Pack full 64-bit words. Fixed inner loop count enables compiler unrolling.
-  while (i + 64 <= size) {
-    uint64_t word = 0;
-    for (size_t j = 0; j < 64; ++j) {
-      word |= static_cast<uint64_t>(vector[i + j]) << j;
-    }
-    if constexpr (absl::endian::native == absl::endian::big) {
-      word = absl::byteswap(word);
-    }
-    hash_state = combiner.add_buffer(
-        std::move(hash_state), reinterpret_cast<const unsigned char*>(&word),
-        sizeof(word));
-    i += 64;
-  }
-  // Pack remaining bits (< 64) into the final word.
-  if (i < size) {
-    uint64_t word = 0;
-    const size_t rem = size - i;
-    for (size_t j = 0; j < rem; ++j) {
-      word |= static_cast<uint64_t>(vector[i + j]) << j;
-    }
-    if constexpr (absl::endian::native == absl::endian::big) {
-      word = absl::byteswap(word);
-    }
-    hash_state = combiner.add_buffer(
-        std::move(hash_state), reinterpret_cast<const unsigned char*>(&word),
-        (rem + 7) / 8);
-  }
-  // Mix in vector.size() to distinguish vectors with trailing false/zero bits
-  // (e.g. {true} vs {true, false}) that would otherwise produce identical bit
-  // buffers.
-  return H::combine(combiner.finalize(std::move(hash_state)),
-                    WeaklyMixedInteger{size});
-}
+AbslHashValue(H hash_state, const std::vector<T, Allocator>& vector) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // AbslHashValue for Ordered Associative Containers
@@ -846,44 +623,24 @@ AbslHashValue(H hash_state, const std::vector<T, Allocator>& vector) {
 template <typename H, typename Key, typename T, typename Compare,
           typename Allocator>
 std::enable_if_t<is_hashable<Key>::value && is_hashable<T>::value, H>
-AbslHashValue(H hash_state, const std::map<Key, T, Compare, Allocator>& map) {
-  for (const auto& t : map) {
-    hash_state = H::combine(std::move(hash_state), t);
-  }
-  return H::combine(std::move(hash_state), WeaklyMixedInteger{map.size()});
-}
+AbslHashValue(H hash_state, const std::map<Key, T, Compare, Allocator>& map) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing std::multimap
 template <typename H, typename Key, typename T, typename Compare,
           typename Allocator>
 std::enable_if_t<is_hashable<Key>::value && is_hashable<T>::value, H>
 AbslHashValue(H hash_state,
-              const std::multimap<Key, T, Compare, Allocator>& map) {
-  for (const auto& t : map) {
-    hash_state = H::combine(std::move(hash_state), t);
-  }
-  return H::combine(std::move(hash_state), WeaklyMixedInteger{map.size()});
-}
+              const std::multimap<Key, T, Compare, Allocator>& map) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing std::set
 template <typename H, typename Key, typename Compare, typename Allocator>
 std::enable_if_t<is_hashable<Key>::value, H> AbslHashValue(
-    H hash_state, const std::set<Key, Compare, Allocator>& set) {
-  for (const auto& t : set) {
-    hash_state = H::combine(std::move(hash_state), t);
-  }
-  return H::combine(std::move(hash_state), WeaklyMixedInteger{set.size()});
-}
+    H hash_state, const std::set<Key, Compare, Allocator>& set) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing std::multiset
 template <typename H, typename Key, typename Compare, typename Allocator>
 std::enable_if_t<is_hashable<Key>::value, H> AbslHashValue(
-    H hash_state, const std::multiset<Key, Compare, Allocator>& set) {
-  for (const auto& t : set) {
-    hash_state = H::combine(std::move(hash_state), t);
-  }
-  return H::combine(std::move(hash_state), WeaklyMixedInteger{set.size()});
-}
+    H hash_state, const std::multiset<Key, Compare, Allocator>& set) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // AbslHashValue for Unordered Associative Containers
@@ -893,44 +650,28 @@ std::enable_if_t<is_hashable<Key>::value, H> AbslHashValue(
 template <typename H, typename Key, typename Hash, typename KeyEqual,
           typename Alloc>
 std::enable_if_t<is_hashable<Key>::value, H> AbslHashValue(
-    H hash_state, const std::unordered_set<Key, Hash, KeyEqual, Alloc>& s) {
-  return H::combine(
-      H::combine_unordered(std::move(hash_state), s.begin(), s.end()),
-      WeaklyMixedInteger{s.size()});
-}
+    H hash_state, const std::unordered_set<Key, Hash, KeyEqual, Alloc>& s) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing std::unordered_multiset
 template <typename H, typename Key, typename Hash, typename KeyEqual,
           typename Alloc>
 std::enable_if_t<is_hashable<Key>::value, H> AbslHashValue(
     H hash_state,
-    const std::unordered_multiset<Key, Hash, KeyEqual, Alloc>& s) {
-  return H::combine(
-      H::combine_unordered(std::move(hash_state), s.begin(), s.end()),
-      WeaklyMixedInteger{s.size()});
-}
+    const std::unordered_multiset<Key, Hash, KeyEqual, Alloc>& s) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing std::unordered_set
 template <typename H, typename Key, typename T, typename Hash,
           typename KeyEqual, typename Alloc>
 std::enable_if_t<is_hashable<Key>::value && is_hashable<T>::value, H>
 AbslHashValue(H hash_state,
-              const std::unordered_map<Key, T, Hash, KeyEqual, Alloc>& s) {
-  return H::combine(
-      H::combine_unordered(std::move(hash_state), s.begin(), s.end()),
-      WeaklyMixedInteger{s.size()});
-}
+              const std::unordered_map<Key, T, Hash, KeyEqual, Alloc>& s) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing std::unordered_multiset
 template <typename H, typename Key, typename T, typename Hash,
           typename KeyEqual, typename Alloc>
 std::enable_if_t<is_hashable<Key>::value && is_hashable<T>::value, H>
 AbslHashValue(H hash_state,
-              const std::unordered_multimap<Key, T, Hash, KeyEqual, Alloc>& s) {
-  return H::combine(
-      H::combine_unordered(std::move(hash_state), s.begin(), s.end()),
-      WeaklyMixedInteger{s.size()});
-}
+              const std::unordered_multimap<Key, T, Hash, KeyEqual, Alloc>& s) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // AbslHashValue for Wrapper Types
@@ -939,36 +680,24 @@ AbslHashValue(H hash_state,
 // AbslHashValue for hashing std::reference_wrapper
 template <typename H, typename T>
 std::enable_if_t<is_hashable<T>::value, H> AbslHashValue(
-    H hash_state, std::reference_wrapper<T> opt) {
-  return H::combine(std::move(hash_state), opt.get());
-}
+    H hash_state, std::reference_wrapper<T> opt) { __builtin_trap() /* STUB: not implemented */; }
 
 // AbslHashValue for hashing std::optional
 template <typename H, typename T>
 std::enable_if_t<is_hashable<T>::value, H> AbslHashValue(
-    H hash_state, const std::optional<T>& opt) {
-  if (opt) hash_state = H::combine(std::move(hash_state), *opt);
-  return H::combine(std::move(hash_state), opt.has_value());
-}
+    H hash_state, const std::optional<T>& opt) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename H>
 struct VariantVisitor {
   H&& hash_state;
   template <typename T>
-  H operator()(const T& t) const {
-    return H::combine(std::move(hash_state), t);
-  }
+  H operator()(const T& t) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // AbslHashValue for hashing std::variant
 template <typename H, typename... T>
 std::enable_if_t<std::conjunction_v<is_hashable<T>...>, H> AbslHashValue(
-    H hash_state, const std::variant<T...>& v) {
-  if (!v.valueless_by_exception()) {
-    hash_state = std::visit(VariantVisitor<H>{std::move(hash_state)}, v);
-  }
-  return H::combine(std::move(hash_state), v.index());
-}
+    H hash_state, const std::variant<T...>& v) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 // AbslHashValue for Other Types
@@ -985,39 +714,7 @@ std::enable_if_t<std::conjunction_v<is_hashable<T>...>, H> AbslHashValue(
 // std::bitset. In the event that higher-performance is needed, users can just
 // use std::hash as the hasher.
 template <typename H, size_t N>
-H AbslHashValue(H hash_state, const std::bitset<N>& set) {
-  typename H::AbslInternalPiecewiseCombiner combiner;
-  size_t i = 0;
-  // Pack full 64-bit words. Fixed inner loop count enables compiler unrolling.
-  while (i + 64 <= N) {
-    uint64_t word = 0;
-    for (size_t j = 0; j < 64; ++j) {
-      word |= static_cast<uint64_t>(set[i + j]) << j;
-    }
-    if constexpr (absl::endian::native == absl::endian::big) {
-      word = absl::byteswap(word);
-    }
-    hash_state = combiner.add_buffer(
-        std::move(hash_state), reinterpret_cast<const unsigned char*>(&word),
-        sizeof(word));
-    i += 64;
-  }
-  // Pack remaining bits (< 64) into the final word.
-  if (i < N) {
-    uint64_t word = 0;
-    const size_t rem = N - i;
-    for (size_t j = 0; j < rem; ++j) {
-      word |= static_cast<uint64_t>(set[i + j]) << j;
-    }
-    if constexpr (absl::endian::native == absl::endian::big) {
-      word = absl::byteswap(word);
-    }
-    hash_state = combiner.add_buffer(
-        std::move(hash_state), reinterpret_cast<const unsigned char*>(&word),
-        (rem + 7) / 8);
-  }
-  return H::combine(combiner.finalize(std::move(hash_state)), N);
-}
+H AbslHashValue(H hash_state, const std::bitset<N>& set) { __builtin_trap() /* STUB: not implemented */; }
 
 // -----------------------------------------------------------------------------
 
@@ -1026,20 +723,11 @@ H AbslHashValue(H hash_state, const std::bitset<N>& set) {
 // hashing the entire range of bytes.
 template <typename H, typename T>
 std::enable_if_t<is_uniquely_represented<T>::value, H> hash_range_or_bytes(
-    H hash_state, const T* data, size_t size) {
-  const auto* bytes = reinterpret_cast<const unsigned char*>(data);
-  return H::combine_contiguous(std::move(hash_state), bytes, sizeof(T) * size);
-}
+    H hash_state, const T* data, size_t size) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename H, typename T>
 std::enable_if_t<!is_uniquely_represented<T>::value, H> hash_range_or_bytes(
-    H hash_state, const T* data, size_t size) {
-  for (const auto end = data + size; data < end; ++data) {
-    hash_state = H::combine(std::move(hash_state), *data);
-  }
-  return H::combine(std::move(hash_state),
-                    hash_internal::WeaklyMixedInteger{size});
-}
+    H hash_state, const T* data, size_t size) { __builtin_trap() /* STUB: not implemented */; }
 
 inline constexpr uint64_t kMul = uint64_t{0x79d5f9e0de1e8cf5};
 
@@ -1053,32 +741,17 @@ ABSL_CACHELINE_ALIGNED inline constexpr uint64_t kStaticRandomData[] = {
 // Extremely weak mixture of length that is mixed into the state before
 // combining the data. It is used only for small strings. This also ensures that
 // we have high entropy in all bits of the state.
-inline uint64_t PrecombineLengthMix(uint64_t state, size_t len) {
-  ABSL_ASSUME(len + sizeof(uint64_t) <= sizeof(kStaticRandomData));
-  uint64_t data = absl::base_internal::UnalignedLoad64(
-      reinterpret_cast<const unsigned char*>(&kStaticRandomData[0]) + len);
-  return state ^ data;
-}
+inline uint64_t PrecombineLengthMix(uint64_t state, size_t len) { __builtin_trap() /* STUB: not implemented */; }
 
-ABSL_ATTRIBUTE_ALWAYS_INLINE inline uint64_t Mix(uint64_t lhs, uint64_t rhs) {
-  // Though the 128-bit product needs multiple instructions on non-x86-64
-  // platforms, it is still a good balance between speed and hash quality.
-  absl::uint128 m = lhs;
-  m *= rhs;
-  return Uint128High64(m) ^ Uint128Low64(m);
-}
+ABSL_ATTRIBUTE_ALWAYS_INLINE inline uint64_t Mix(uint64_t lhs, uint64_t rhs) { __builtin_trap() /* STUB: not implemented */; }
 
 // Suppress erroneous array bounds errors on GCC.
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Warray-bounds"
 #endif
-inline uint32_t Read4(const unsigned char* p) {
-  return absl::base_internal::UnalignedLoad32(p);
-}
-inline uint64_t Read8(const unsigned char* p) {
-  return absl::base_internal::UnalignedLoad64(p);
-}
+inline uint32_t Read4(const unsigned char* p) { __builtin_trap() /* STUB: not implemented */; }
+inline uint64_t Read8(const unsigned char* p) { __builtin_trap() /* STUB: not implemented */; }
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC diagnostic pop
 #endif
@@ -1087,90 +760,22 @@ inline uint64_t Read8(const unsigned char* p) {
 // The first 8 bytes are in .first, and the rest of the bytes are in .second
 // along with duplicated bytes from .first if len<16.
 inline std::pair<uint64_t, uint64_t> Read9To16(const unsigned char* p,
-                                               size_t len) {
-  return {Read8(p), Read8(p + len - 8)};
-}
+                                               size_t len) { __builtin_trap() /* STUB: not implemented */; }
 
 // Reads 4 to 8 bytes from p.
 // Bytes are permuted and some input bytes may be duplicated in output.
-inline uint64_t Read4To8(const unsigned char* p, size_t len) {
-  // If `len < 8`, we duplicate bytes. We always put low memory at the end.
-  // E.g., on little endian platforms:
-  // `ABCD` will be read as `ABCDABCD`.
-  // `ABCDE` will be read as `BCDEABCD`.
-  // `ABCDEF` will be read as `CDEFABCD`.
-  // `ABCDEFG` will be read as `DEFGABCD`.
-  // `ABCDEFGH` will be read as `EFGHABCD`.
-  // We also do not care about endianness. On big-endian platforms, bytes will
-  // be permuted differently. We always shift low memory by 32, because that
-  // can be pipelined earlier. Reading high memory requires computing
-  // `p + len - 4`.
-  uint64_t most_significant =
-      static_cast<uint64_t>(absl::base_internal::UnalignedLoad32(p)) << 32;
-  uint64_t least_significant =
-      absl::base_internal::UnalignedLoad32(p + len - 4);
-  return most_significant | least_significant;
-}
+inline uint64_t Read4To8(const unsigned char* p, size_t len) { __builtin_trap() /* STUB: not implemented */; }
 
 // Reads 1 to 3 bytes from p. Some input bytes may be duplicated in output.
-inline uint32_t Read1To3(const unsigned char* p, size_t len) {
-  // The trick used by this implementation is to avoid branches.
-  // We always read three bytes by duplicating.
-  // E.g.,
-  // `A` is read as `AAA`.
-  // `AB` is read as `ABB`.
-  // `ABC` is read as `ABC`.
-  // We always shift `p[0]` so that it can be pipelined better.
-  // Other bytes require extra computation to find indices.
-  uint32_t mem0 = (static_cast<uint32_t>(p[0]) << 16) | p[len - 1];
-  uint32_t mem1 = static_cast<uint32_t>(p[len / 2]) << 8;
-  return mem0 | mem1;
-}
+inline uint32_t Read1To3(const unsigned char* p, size_t len) { __builtin_trap() /* STUB: not implemented */; }
 
 #ifdef ABSL_HASH_INTERNAL_HAS_CRC32
 
 ABSL_ATTRIBUTE_ALWAYS_INLINE inline uint64_t CombineRawImpl(uint64_t state,
-                                                            uint64_t value) {
-  // We use a union to access the high and low 32 bits of the state.
-  union {
-    uint64_t u64;
-    struct {
-#ifdef ABSL_IS_LITTLE_ENDIAN
-      uint32_t low, high;
-#else  // big endian
-      uint32_t high, low;
-#endif
-    } u32s;
-  } s;
-  s.u64 = state;
-  // The general idea here is to do two CRC32 operations in parallel using the
-  // low and high 32 bits of state as CRC states. Note that: (1) when absl::Hash
-  // is inlined into swisstable lookups, we know that the seed's high bits are
-  // zero so s.u32s.high is available immediately. (2) We chose to multiply
-  // value by 3 for the low CRC because (a) multiplication by 3 can be done in 1
-  // cycle on x86/ARM and (b) multiplication has carry bits so it's nonlinear in
-  // GF(2) and therefore ensures that the two CRCs are independent (unlike bit
-  // rotation, XOR, etc). (3) We also tried using addition instead of
-  // multiplication by 3, but (a) code size is larger and (b) if the input keys
-  // all have 0s in the bits where the addition constant has 1s, then the
-  // addition is equivalent to XOR and linear in GF(2). (4) The union makes it
-  // easy for the compiler to understand that the high and low CRC states are
-  // independent from each other so that when CombineRawImpl is repeated (e.g.
-  // for std::pair<size_t, size_t>), the CRC chains can run in parallel. We
-  // originally tried using bswaps rather than shifting by 32 bits (to get from
-  // high to low bits) because bswap is one byte smaller in code size, but the
-  // compiler couldn't understand that the CRC chains were independent.
-  s.u32s.high =
-      static_cast<uint32_t>(ABSL_HASH_INTERNAL_CRC32_U64(s.u32s.high, value));
-  s.u32s.low = static_cast<uint32_t>(
-      ABSL_HASH_INTERNAL_CRC32_U64(s.u32s.low, 3 * value));
-  return s.u64;
-}
+                                                            uint64_t value) { __builtin_trap() /* STUB: not implemented */; }
 #else   // ABSL_HASH_INTERNAL_HAS_CRC32
 ABSL_ATTRIBUTE_ALWAYS_INLINE inline uint64_t CombineRawImpl(uint64_t state,
-                                                            uint64_t value) {
-  return Mix(state ^ value, kMul);
-}
+                                                            uint64_t value) { __builtin_trap() /* STUB: not implemented */; }
 #endif  // ABSL_HASH_INTERNAL_HAS_CRC32
 
 // Slow dispatch path for calls to CombineContiguousImpl with a size argument
@@ -1184,47 +789,13 @@ uint64_t CombineLargeContiguousImplOn64BitLengthGt32(uint64_t state,
                                                      size_t len);
 
 ABSL_ATTRIBUTE_ALWAYS_INLINE inline uint64_t CombineSmallContiguousImpl(
-    uint64_t state, const unsigned char* first, size_t len) {
-  ABSL_ASSUME(len <= 8);
-  uint64_t v;
-  if (len >= 4) {
-    v = Read4To8(first, len);
-  } else if (len > 0) {
-    v = Read1To3(first, len);
-  } else {
-    // Empty string must modify the state.
-    v = 0x57;
-  }
-  return CombineRawImpl(state, v);
-}
+    uint64_t state, const unsigned char* first, size_t len) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_ATTRIBUTE_ALWAYS_INLINE inline uint64_t CombineContiguousImpl9to16(
-    uint64_t state, const unsigned char* first, size_t len) {
-  ABSL_ASSUME(len >= 9);
-  ABSL_ASSUME(len <= 16);
-  // Note: any time one half of the mix function becomes zero it will fail to
-  // incorporate any bits from the other half. However, there is exactly 1 in
-  // 2^64 values for each side that achieve this, and only when the size is
-  // exactly 16 -- for smaller sizes there is an overlapping byte that makes
-  // this impossible unless the seed is *also* incredibly unlucky.
-  auto p = Read9To16(first, len);
-  return Mix(state ^ p.first, kMul ^ p.second);
-}
+    uint64_t state, const unsigned char* first, size_t len) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_ATTRIBUTE_ALWAYS_INLINE inline uint64_t CombineContiguousImpl17to32(
-    uint64_t state, const unsigned char* first, size_t len) {
-  ABSL_ASSUME(len >= 17);
-  ABSL_ASSUME(len <= 32);
-  // Do two mixes of overlapping 16-byte ranges in parallel to minimize
-  // latency.
-  const uint64_t m0 =
-      Mix(Read8(first) ^ kStaticRandomData[1], Read8(first + 8) ^ state);
-
-  const unsigned char* tail_16b_ptr = first + (len - 16);
-  const uint64_t m1 = Mix(Read8(tail_16b_ptr) ^ kStaticRandomData[3],
-                          Read8(tail_16b_ptr + 8) ^ state);
-  return m0 ^ m1;
-}
+    uint64_t state, const unsigned char* first, size_t len) { __builtin_trap() /* STUB: not implemented */; }
 
 // Implementation of the base case for combine_contiguous where we actually
 // mix the bytes into the state.
@@ -1232,102 +803,16 @@ ABSL_ATTRIBUTE_ALWAYS_INLINE inline uint64_t CombineContiguousImpl17to32(
 // on the value of `sizeof(size_t)`.
 inline uint64_t CombineContiguousImpl(
     uint64_t state, const unsigned char* first, size_t len,
-    std::integral_constant<int, 4> /* sizeof_size_t */) {
-  // For large values we use CityHash, for small ones we use custom low latency
-  // hash.
-  if (len <= 8) {
-    return CombineSmallContiguousImpl(PrecombineLengthMix(state, len), first,
-                                      len);
-  }
-  return CombineLargeContiguousImplOn32BitLengthGt8(state, first, len);
-}
+    std::integral_constant<int, 4> /* sizeof_size_t */) { __builtin_trap() /* STUB: not implemented */; }
 
 #ifdef ABSL_HASH_INTERNAL_HAS_CRC32
 inline uint64_t CombineContiguousImpl(
     uint64_t state, const unsigned char* first, size_t len,
-    std::integral_constant<int, 8> /* sizeof_size_t */) {
-  if (ABSL_PREDICT_FALSE(len > 32)) {
-    return CombineLargeContiguousImplOn64BitLengthGt32(state, first, len);
-  }
-  // `mul` is the salt that is used for final mixing. It is important to fill
-  // high 32 bits because CRC wipes out high 32 bits.
-  // `rotr` is important to mix `len` into high 32 bits.
-  uint64_t mul = absl::rotr(kMul, static_cast<int>(len));
-  // Only low 32 bits of each uint64_t are used in CRC32 so we use gbswap_64 to
-  // move high 32 bits to low 32 bits. It has slightly smaller binary size than
-  // `>> 32`. `state + 8 * len` is a single instruction on both x86 and ARM, so
-  // we use it to better mix length. Although only the low 32 bits of the pair
-  // elements are used, we use pair<uint64_t, uint64_t> for better generated
-  // code.
-  std::pair<uint64_t, uint64_t> crcs = {state + 8 * len,
-                                        absl::gbswap_64(state)};
-
-  // All CRC operations here directly read bytes from the memory.
-  // Single fused instructions are used, like `crc32 rcx, qword ptr [rsi]`.
-  // On x86, llvm-mca reports latency `R + 2` for such fused instructions, while
-  // `R + 3` for two separate `mov` + `crc` instructions. `R` is the latency of
-  // reading the memory. Fused instructions also reduce register pressure
-  // allowing surrounding code to be more efficient when this code is inlined.
-  if (len > 8) {
-    crcs = {ABSL_HASH_INTERNAL_CRC32_U64(crcs.first, Read8(first)),
-            ABSL_HASH_INTERNAL_CRC32_U64(crcs.second, Read8(first + len - 8))};
-    if (len > 16) {
-      // We compute the second round of dependent CRC32 operations.
-      crcs = {ABSL_HASH_INTERNAL_CRC32_U64(crcs.first, Read8(first + len - 16)),
-              ABSL_HASH_INTERNAL_CRC32_U64(crcs.second, Read8(first + 8))};
-    }
-  } else {
-    if (len >= 4) {
-      // We use CRC for 4 bytes to benefit from the fused instruction and better
-      // hash quality.
-      // Using `xor` or `add` may reduce latency for this case, but would
-      // require more registers, more instructions and will have worse hash
-      // quality.
-      crcs = {ABSL_HASH_INTERNAL_CRC32_U32(static_cast<uint32_t>(crcs.first),
-                                           Read4(first)),
-              ABSL_HASH_INTERNAL_CRC32_U32(static_cast<uint32_t>(crcs.second),
-                                           Read4(first + len - 4))};
-    } else if (len >= 1) {
-      // We mix three bytes all into different output registers.
-      // This way, we do not need shifting of these bytes (so they don't overlap
-      // with each other).
-      crcs = {ABSL_HASH_INTERNAL_CRC32_U8(static_cast<uint32_t>(crcs.first),
-                                          first[0]),
-              ABSL_HASH_INTERNAL_CRC32_U8(static_cast<uint32_t>(crcs.second),
-                                          first[len - 1])};
-      // Middle byte is mixed weaker. It is a new byte only for len == 3.
-      // Mixing is independent from CRC operations so it is scheduled ASAP.
-      mul += first[len / 2];
-    }
-  }
-  // `mul` is mixed into both sides of `Mix` to guarantee non-zero values for
-  // both multiplicands. Using Mix instead of just multiplication here improves
-  // hash quality, especially for short strings.
-  return Mix(mul - crcs.first, crcs.second - mul);
-}
+    std::integral_constant<int, 8> /* sizeof_size_t */) { __builtin_trap() /* STUB: not implemented */; }
 #else
 inline uint64_t CombineContiguousImpl(
     uint64_t state, const unsigned char* first, size_t len,
-    std::integral_constant<int, 8> /* sizeof_size_t */) {
-  // For large values we use LowLevelHash or CityHash depending on the platform,
-  // for small ones we use custom low latency hash.
-  if (len <= 8) {
-    return CombineSmallContiguousImpl(PrecombineLengthMix(state, len), first,
-                                      len);
-  }
-  if (len <= 16) {
-    return CombineContiguousImpl9to16(PrecombineLengthMix(state, len), first,
-                                      len);
-  }
-  if (len <= 32) {
-    return CombineContiguousImpl17to32(PrecombineLengthMix(state, len), first,
-                                       len);
-  }
-  // We must not mix length into the state here because calling
-  // CombineContiguousImpl twice with PiecewiseChunkSize() must be equivalent
-  // to calling CombineLargeContiguousImpl once with 2 * PiecewiseChunkSize().
-  return CombineLargeContiguousImplOn64BitLengthGt32(state, first, len);
-}
+    std::integral_constant<int, 8> /* sizeof_size_t */) { __builtin_trap() /* STUB: not implemented */; }
 #endif  // ABSL_HASH_INTERNAL_HAS_CRC32
 
 #if defined(ABSL_INTERNAL_LEGACY_HASH_NAMESPACE)
@@ -1347,9 +832,7 @@ struct HashSelect {
  private:
   struct WeaklyMixedIntegerProbe {
     template <typename H>
-    static H Invoke(H state, WeaklyMixedInteger value) {
-      return hash_internal::hash_weakly_mixed_integer(std::move(state), value);
-    }
+    static H Invoke(H state, WeaklyMixedInteger value) { __builtin_trap() /* STUB: not implemented */; }
   };
 
   struct State : HashStateBase<State> {
@@ -1364,18 +847,14 @@ struct HashSelect {
   struct UniquelyRepresentedProbe {
     template <typename H, typename T>
     static auto Invoke(H state, const T& value)
-        -> std::enable_if_t<is_uniquely_represented<T>::value, H> {
-      return hash_internal::hash_bytes(std::move(state), value);
-    }
+        -> std::enable_if_t<is_uniquely_represented<T>::value, H> { __builtin_trap() /* STUB: not implemented */; }
   };
 
   struct HashValueProbe {
     template <typename H, typename T>
     static auto Invoke(H state, const T& value) -> std::enable_if_t<
         std::is_same_v<H, decltype(AbslHashValue(std::move(state), value))>,
-        H> {
-      return AbslHashValue(std::move(state), value);
-    }
+        H> { __builtin_trap() /* STUB: not implemented */; }
   };
 
   struct LegacyHashProbe {
@@ -1385,20 +864,14 @@ struct HashSelect {
         std::is_convertible_v<
             decltype(ABSL_INTERNAL_LEGACY_HASH_NAMESPACE::hash<T>()(value)),
             size_t>,
-        H> {
-      return hash_internal::hash_bytes(
-          std::move(state),
-          ABSL_INTERNAL_LEGACY_HASH_NAMESPACE::hash<T>{}(value));
-    }
+        H> { __builtin_trap() /* STUB: not implemented */; }
 #endif  // ABSL_HASH_INTERNAL_SUPPORT_LEGACY_HASH_
   };
 
   struct StdHashProbe {
     template <typename H, typename T>
     static auto Invoke(H state, const T& value)
-        -> std::enable_if_t<type_traits_internal::IsHashable<T>::value, H> {
-      return hash_internal::hash_bytes(std::move(state), std::hash<T>{}(value));
-    }
+        -> std::enable_if_t<type_traits_internal::IsHashable<T>::value, H> { __builtin_trap() /* STUB: not implemented */; }
   };
 
   template <typename Hash, typename T>
@@ -1577,16 +1050,12 @@ struct PoisonedHash : private AggregateBarrier {
 
 template <typename T>
 struct HashImpl {
-  size_t operator()(const T& value) const {
-    return MixingHashState::hash(value);
-  }
+  size_t operator()(const T& value) const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   friend struct HashWithSeed;
 
-  size_t hash_with_seed(const T& value, size_t seed) const {
-    return MixingHashState::hash_with_seed(value, seed);
-  }
+  size_t hash_with_seed(const T& value, size_t seed) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename T>
@@ -1595,67 +1064,22 @@ struct Hash
 
 template <typename H>
 template <typename T, typename... Ts>
-H HashStateBase<H>::combine(H state, const T& value, const Ts&... values) {
-  return H::combine(hash_internal::HashSelect::template Apply<T>::Invoke(
-                        std::move(state), value),
-                    values...);
-}
+H HashStateBase<H>::combine(H state, const T& value, const Ts&... values) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename H>
 template <typename T>
-H HashStateBase<H>::combine_contiguous(H state, const T* data, size_t size) {
-  return hash_internal::hash_range_or_bytes(std::move(state), data, size);
-}
+H HashStateBase<H>::combine_contiguous(H state, const T* data, size_t size) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename H>
 template <typename I>
-H HashStateBase<H>::combine_unordered(H state, I begin, I end) {
-  return H::RunCombineUnordered(std::move(state),
-                                CombineUnorderedCallback<I>{begin, end});
-}
+H HashStateBase<H>::combine_unordered(H state, I begin, I end) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename H>
 H PiecewiseCombiner::add_buffer(H state, const unsigned char* data,
-                                size_t size) {
-  if (position_ + size < PiecewiseChunkSize()) {
-    // This partial chunk does not fill our existing buffer
-    memcpy(buf_ + position_, data, size);
-    position_ += size;
-    return state;
-  }
-  added_something_ = true;
-  // If the buffer is partially filled we need to complete the buffer
-  // and hash it.
-  if (position_ != 0) {
-    const size_t bytes_needed = PiecewiseChunkSize() - position_;
-    memcpy(buf_ + position_, data, bytes_needed);
-    state = H::combine_contiguous(std::move(state), buf_, PiecewiseChunkSize());
-    data += bytes_needed;
-    size -= bytes_needed;
-  }
-
-  // Hash whatever chunks we can without copying
-  while (size >= PiecewiseChunkSize()) {
-    state = H::combine_contiguous(std::move(state), data, PiecewiseChunkSize());
-    data += PiecewiseChunkSize();
-    size -= PiecewiseChunkSize();
-  }
-  // Fill the buffer with the remainder
-  memcpy(buf_, data, size);
-  position_ = size;
-  return state;
-}
+                                size_t size) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename H>
-H PiecewiseCombiner::finalize(H state) {
-  // Do not call combine_contiguous with empty remainder since it is modifying
-  // state.
-  if (added_something_ && position_ == 0) {
-    return state;
-  }
-  // We still call combine_contiguous for the entirely empty buffer.
-  return H::combine_contiguous(std::move(state), buf_, position_);
-}
+H PiecewiseCombiner::finalize(H state) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace hash_internal
 ABSL_NAMESPACE_END

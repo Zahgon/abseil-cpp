@@ -41,10 +41,7 @@ using testing::StartsWith;
 using FailureSignalHandlerDeathTest = ::testing::TestWithParam<int>;
 
 // This function runs in a fork()ed process on most systems.
-void InstallHandlerAndRaise(int signo) {
-  absl::InstallFailureSignalHandler(absl::FailureSignalHandlerOptions());
-  raise(signo);
-}
+void InstallHandlerAndRaise(int signo) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(FailureSignalHandlerDeathTest, AbslFailureSignal) {
   const int signo = GetParam();
@@ -62,38 +59,12 @@ TEST_P(FailureSignalHandlerDeathTest, AbslFailureSignal) {
 
 ABSL_CONST_INIT FILE* error_file = nullptr;
 
-void WriteToErrorFile(const char* msg) {
-  if (msg != nullptr) {
-    ABSL_RAW_CHECK(fwrite(msg, strlen(msg), 1, error_file) == 1,
-                   "fwrite() failed");
-  }
-  ABSL_RAW_CHECK(fflush(error_file) == 0, "fflush() failed");
-}
+void WriteToErrorFile(const char* msg) { __builtin_trap() /* STUB: not implemented */; }
 
-std::string GetTmpDir() {
-  // TEST_TMPDIR is set by Bazel. Try the others when not running under Bazel.
-  static const char* const kTmpEnvVars[] = {"TEST_TMPDIR", "TMPDIR", "TEMP",
-                                            "TEMPDIR", "TMP"};
-  for (const char* const var : kTmpEnvVars) {
-    const char* tmp_dir = std::getenv(var);
-    if (tmp_dir != nullptr) {
-      return tmp_dir;
-    }
-  }
-
-  // Try something reasonable.
-  return "/tmp";
-}
+std::string GetTmpDir() { __builtin_trap() /* STUB: not implemented */; }
 
 // This function runs in a fork()ed process on most systems.
-void InstallHandlerWithWriteToFileAndRaise(const char* file, int signo) {
-  error_file = fopen(file, "w");
-  CHECK_NE(error_file, nullptr) << "Failed create error_file";
-  absl::FailureSignalHandlerOptions options;
-  options.writerfn = WriteToErrorFile;
-  absl::InstallFailureSignalHandler(options);
-  raise(signo);
-}
+void InstallHandlerWithWriteToFileAndRaise(const char* file, int signo) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(FailureSignalHandlerDeathTest, AbslFatalSignalsWithWriterFn) {
   const int signo = GetParam();
@@ -142,14 +113,7 @@ constexpr int kFailureSignals[] = {
 #endif
 };
 
-std::string SignalParamToString(const ::testing::TestParamInfo<int>& info) {
-  std::string result =
-      absl::debugging_internal::FailureSignalToString(info.param);
-  if (result.empty()) {
-    result = absl::StrCat(info.param);
-  }
-  return result;
-}
+std::string SignalParamToString(const ::testing::TestParamInfo<int>& info) { __builtin_trap() /* STUB: not implemented */; }
 
 INSTANTIATE_TEST_SUITE_P(AbslDeathTest, FailureSignalHandlerDeathTest,
                          ::testing::ValuesIn(kFailureSignals),
@@ -159,8 +123,4 @@ INSTANTIATE_TEST_SUITE_P(AbslDeathTest, FailureSignalHandlerDeathTest,
 
 }  // namespace
 
-int main(int argc, char** argv) {
-  absl::InitializeSymbolizer(argv[0]);
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
+int main(int argc, char** argv) { __builtin_trap() /* STUB: not implemented */; }

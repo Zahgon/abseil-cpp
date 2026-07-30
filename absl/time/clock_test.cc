@@ -44,10 +44,7 @@ enum class AlarmPolicy { kWithoutAlarm, kWithAlarm };
 #if defined(ABSL_HAVE_ALARM)
 bool alarm_handler_invoked = false;
 
-void AlarmHandler(int signo) {
-  ASSERT_EQ(signo, SIGALRM);
-  alarm_handler_invoked = true;
-}
+void AlarmHandler(int signo) { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
 // Does SleepFor(d) take between lower_bound and upper_bound at least
@@ -55,55 +52,13 @@ void AlarmHandler(int signo) {
 // add an alarm for the middle of the sleep period and expect it to fire.
 bool SleepForBounded(absl::Duration d, absl::Duration lower_bound,
                      absl::Duration upper_bound, absl::Duration timeout,
-                     AlarmPolicy alarm_policy, int* attempts) {
-  const absl::Time deadline = absl::Now() + timeout;
-  while (absl::Now() < deadline) {
-#if defined(ABSL_HAVE_ALARM)
-    sig_t old_alarm = SIG_DFL;
-    if (alarm_policy == AlarmPolicy::kWithAlarm) {
-      alarm_handler_invoked = false;
-      old_alarm = signal(SIGALRM, AlarmHandler);
-      alarm(absl::ToInt64Seconds(d / 2));
-    }
-#else
-    EXPECT_EQ(alarm_policy, AlarmPolicy::kWithoutAlarm);
-#endif
-    ++*attempts;
-    absl::Time start = absl::Now();
-    absl::SleepFor(d);
-    absl::Duration actual = absl::Now() - start;
-#if defined(ABSL_HAVE_ALARM)
-    if (alarm_policy == AlarmPolicy::kWithAlarm) {
-      signal(SIGALRM, old_alarm);
-      if (!alarm_handler_invoked) continue;
-    }
-#endif
-    if (lower_bound <= actual && actual <= upper_bound) {
-      return true;  // yes, the SleepFor() was correctly bounded
-    }
-  }
-  return false;
-}
+                     AlarmPolicy alarm_policy, int* attempts) { __builtin_trap() /* STUB: not implemented */; }
 
 testing::AssertionResult AssertSleepForBounded(absl::Duration d,
                                                absl::Duration early,
                                                absl::Duration late,
                                                absl::Duration timeout,
-                                               AlarmPolicy alarm_policy) {
-  const absl::Duration lower_bound = d - early;
-  const absl::Duration upper_bound = d + late;
-  int attempts = 0;
-  if (SleepForBounded(d, lower_bound, upper_bound, timeout, alarm_policy,
-                      &attempts)) {
-    return testing::AssertionSuccess();
-  }
-  return testing::AssertionFailure()
-         << "SleepFor(" << d << ") did not return within [" << lower_bound
-         << ":" << upper_bound << "] in " << attempts << " attempt"
-         << (attempts == 1 ? "" : "s") << " over " << timeout
-         << (alarm_policy == AlarmPolicy::kWithAlarm ? " with" : " without")
-         << " an alarm";
-}
+                                               AlarmPolicy alarm_policy) { __builtin_trap() /* STUB: not implemented */; }
 
 // Tests that SleepFor() returns neither too early nor too late.
 TEST(SleepFor, Bounded) {

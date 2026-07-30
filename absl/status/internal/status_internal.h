@@ -89,7 +89,7 @@ class StatusRep {
       : ref_(int32_t{1}),
         code_(code_arg),
         message_(message_arg),
-        payloads_(std::move(payloads_arg)) {}
+        payloads_(std::move(payloads_arg)) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename String,
             typename = std::enable_if_t<std::is_same_v<String, std::string>>>
@@ -98,14 +98,14 @@ class StatusRep {
       : ref_(int32_t{1}),
         code_(code_arg),
         message_(std::forward<String>(message_arg)),
-        payloads_(std::move(payloads_arg)) {}
+        payloads_(std::move(payloads_arg)) { __builtin_trap() /* STUB: not implemented */; }
 
-  absl::StatusCode code() const { return code_; }
-  const std::string& message() const { return message_; }
+  absl::StatusCode code() const { __builtin_trap() /* STUB: not implemented */; }
+  const std::string& message() const { __builtin_trap() /* STUB: not implemented */; }
 
   // Ref and unref are const to allow access through a const pointer, and are
   // used during copying operations.
-  void Ref() const { ref_.fetch_add(1, std::memory_order_relaxed); }
+  void Ref() const { __builtin_trap() /* STUB: not implemented */; }
   void Unref() const;
 
   // Payload methods correspond to the same methods in absl::Status.
@@ -126,7 +126,7 @@ class StatusRep {
   std::string ToString(StatusToStringMode mode) const;
 
   bool operator==(const StatusRep& other) const;
-  bool operator!=(const StatusRep& other) const { return !(*this == other); }
+  bool operator!=(const StatusRep& other) const { __builtin_trap() /* STUB: not implemented */; }
 
   // Returns an equivalent heap allocated StatusRep with refcount 1.
   //

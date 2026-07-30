@@ -61,12 +61,7 @@
 extern void __cpuid(int[4], int);
 #else
 // MSVC-equivalent __cpuid intrinsic function.
-static void __cpuid(int cpu_info[4], int info_type) {
-  __asm__ volatile("cpuid \n\t"
-                   : "=a"(cpu_info[0]), "=b"(cpu_info[1]), "=c"(cpu_info[2]),
-                     "=d"(cpu_info[3])
-                   : "a"(info_type), "c"(0));
-}
+static void __cpuid(int cpu_info[4], int info_type) { __builtin_trap() /* STUB: not implemented */; }
 #endif
 #endif  // ABSL_INTERNAL_USE_X86_CPUID
 
@@ -75,9 +70,7 @@ static void __cpuid(int cpu_info[4], int info_type) {
 
 #include <sys/auxv.h>
 
-static uint32_t GetAuxval(uint32_t hwcap_type) {
-  return static_cast<uint32_t>(getauxval(hwcap_type));
-}
+static uint32_t GetAuxval(uint32_t hwcap_type) { __builtin_trap() /* STUB: not implemented */; }
 
 #endif
 
@@ -90,39 +83,13 @@ static uint32_t GetAuxval(uint32_t hwcap_type) {
 #if defined(ABSL_INTERNAL_USE_ANDROID_GETAUXVAL)
 #include <dlfcn.h>
 
-static uint32_t GetAuxval(uint32_t hwcap_type) {
-  // NOLINTNEXTLINE(runtime/int)
-  typedef unsigned long (*getauxval_func_t)(unsigned long);
-
-  dlerror();  // Cleaning error state before calling dlopen.
-  void* libc_handle = dlopen("libc.so", RTLD_NOW);
-  if (!libc_handle) {
-    return 0;
-  }
-  uint32_t result = 0;
-  void* sym = dlsym(libc_handle, "getauxval");
-  if (sym) {
-    getauxval_func_t func;
-    memcpy(&func, &sym, sizeof(func));
-    result = static_cast<uint32_t>((*func)(hwcap_type));
-  }
-  dlclose(libc_handle);
-  return result;
-}
+static uint32_t GetAuxval(uint32_t hwcap_type) { __builtin_trap() /* STUB: not implemented */; }
 
 #endif
 
 #if defined(__APPLE__) && defined(ABSL_ARCH_AARCH64)
 template <typename T>
-static std::optional<T> ReadSysctlByName(const char* name) {
-  T val;
-  size_t val_size = sizeof(T);
-  int ret = sysctlbyname(name, &val, &val_size, nullptr, 0);
-  if (ret == -1) {
-    return std::nullopt;
-  }
-  return val;
-}
+static std::optional<T> ReadSysctlByName(const char* name) { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
 namespace absl {

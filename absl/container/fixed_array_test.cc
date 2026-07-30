@@ -44,28 +44,22 @@ namespace {
 
 // Helper routine to determine if a absl::FixedArray used stack allocation.
 template <typename ArrayType>
-static bool IsOnStack(const ArrayType& a) {
-  return a.size() <= ArrayType::inline_elements;
-}
+static bool IsOnStack(const ArrayType& a) { __builtin_trap() /* STUB: not implemented */; }
 
 class ConstructionTester {
  public:
-  ConstructionTester() : self_ptr_(this), value_(0) { constructions++; }
-  ~ConstructionTester() {
-    assert(self_ptr_ == this);
-    self_ptr_ = nullptr;
-    destructions++;
-  }
+  ConstructionTester() : self_ptr_(this), value_(0) { __builtin_trap() /* STUB: not implemented */; }
+  ~ConstructionTester() { __builtin_trap() /* STUB: not implemented */; }
 
   // These are incremented as elements are constructed and destructed so we can
   // be sure all elements are properly cleaned up.
   static int constructions;
   static int destructions;
 
-  void CheckConstructed() { assert(self_ptr_ == this); }
+  void CheckConstructed() { __builtin_trap() /* STUB: not implemented */; }
 
-  void set(int value) { value_ = value; }
-  int get() { return value_; }
+  void set(int value) { __builtin_trap() /* STUB: not implemented */; }
+  int get() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   // self_ptr_ should always point to 'this' -- that's how we can be sure the
@@ -82,12 +76,7 @@ int ConstructionTester::destructions = 0;
 // in an array of ThreeInts will have different values.
 class ThreeInts {
  public:
-  ThreeInts() {
-    x_ = counter;
-    y_ = counter;
-    z_ = counter;
-    ++counter;
-  }
+  ThreeInts() { __builtin_trap() /* STUB: not implemented */; }
 
   static int counter;
 
@@ -255,109 +244,10 @@ TEST(FixedArrayRelationalsTest, UnequalArrays) {
 }
 
 template <int stack_elements>
-static void TestArray(int n) {
-  SCOPED_TRACE(n);
-  SCOPED_TRACE(stack_elements);
-  ConstructionTester::constructions = 0;
-  ConstructionTester::destructions = 0;
-  {
-    absl::FixedArray<ConstructionTester, stack_elements> array(n);
-
-    EXPECT_THAT(array.size(), n);
-    EXPECT_THAT(array.memsize(), sizeof(ConstructionTester) * n);
-    EXPECT_THAT(array.begin() + n, array.end());
-
-    // Check that all elements were constructed
-    for (int i = 0; i < n; i++) {
-      array[i].CheckConstructed();
-    }
-    // Check that no other elements were constructed
-    EXPECT_THAT(ConstructionTester::constructions, n);
-
-    // Test operator[]
-    for (int i = 0; i < n; i++) {
-      array[i].set(i);
-    }
-    for (int i = 0; i < n; i++) {
-      EXPECT_THAT(array[i].get(), i);
-      EXPECT_THAT(array.data()[i].get(), i);
-    }
-
-    // Test data()
-    for (int i = 0; i < n; i++) {
-      array.data()[i].set(i + 1);
-    }
-    for (int i = 0; i < n; i++) {
-      EXPECT_THAT(array[i].get(), i + 1);
-      EXPECT_THAT(array.data()[i].get(), i + 1);
-    }
-  }  // Close scope containing 'array'.
-
-  // Check that all constructed elements were destructed.
-  EXPECT_EQ(ConstructionTester::constructions,
-            ConstructionTester::destructions);
-}
+static void TestArray(int n) { __builtin_trap() /* STUB: not implemented */; }
 
 template <int elements_per_inner_array, int inline_elements>
-static void TestArrayOfArrays(int n) {
-  SCOPED_TRACE(n);
-  SCOPED_TRACE(inline_elements);
-  SCOPED_TRACE(elements_per_inner_array);
-  ConstructionTester::constructions = 0;
-  ConstructionTester::destructions = 0;
-  {
-    using InnerArray = ConstructionTester[elements_per_inner_array];
-    // Heap-allocate the FixedArray to avoid blowing the stack frame.
-    auto array_ptr =
-        std::make_unique<absl::FixedArray<InnerArray, inline_elements>>(n);
-    auto& array = *array_ptr;
-
-    ASSERT_EQ(array.size(), n);
-    ASSERT_EQ(array.memsize(),
-              sizeof(ConstructionTester) * elements_per_inner_array * n);
-    ASSERT_EQ(array.begin() + n, array.end());
-
-    // Check that all elements were constructed
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < elements_per_inner_array; j++) {
-        (array[i])[j].CheckConstructed();
-      }
-    }
-    // Check that no other elements were constructed
-    ASSERT_EQ(ConstructionTester::constructions, n * elements_per_inner_array);
-
-    // Test operator[]
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < elements_per_inner_array; j++) {
-        (array[i])[j].set(i * elements_per_inner_array + j);
-      }
-    }
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < elements_per_inner_array; j++) {
-        ASSERT_EQ((array[i])[j].get(), i * elements_per_inner_array + j);
-        ASSERT_EQ((array.data()[i])[j].get(), i * elements_per_inner_array + j);
-      }
-    }
-
-    // Test data()
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < elements_per_inner_array; j++) {
-        (array.data()[i])[j].set((i + 1) * elements_per_inner_array + j);
-      }
-    }
-    for (int i = 0; i < n; i++) {
-      for (int j = 0; j < elements_per_inner_array; j++) {
-        ASSERT_EQ((array[i])[j].get(), (i + 1) * elements_per_inner_array + j);
-        ASSERT_EQ((array.data()[i])[j].get(),
-                  (i + 1) * elements_per_inner_array + j);
-      }
-    }
-  }  // Close scope containing 'array'.
-
-  // Check that all constructed elements were destructed.
-  EXPECT_EQ(ConstructionTester::constructions,
-            ConstructionTester::destructions);
-}
+static void TestArrayOfArrays(int n) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(IteratorConstructorTest, NonInline) {
   int const kInput[] = {2, 3, 5, 7, 11, 13, 17};
@@ -525,16 +415,10 @@ TEST(FixedArrayTest, TooBigInlinedSpace) {
 
 // PickyDelete EXPECTs its class-scope deallocation funcs are unused.
 struct PickyDelete {
-  PickyDelete() {}
-  ~PickyDelete() {}
-  void operator delete(void* p) {
-    EXPECT_TRUE(false) << __FUNCTION__;
-    ::operator delete(p);
-  }
-  void operator delete[](void* p) {
-    EXPECT_TRUE(false) << __FUNCTION__;
-    ::operator delete[](p);
-  }
+  PickyDelete() { __builtin_trap() /* STUB: not implemented */; }
+  ~PickyDelete() { __builtin_trap() /* STUB: not implemented */; }
+  void operator delete(void* p) { __builtin_trap() /* STUB: not implemented */; }
+  void operator delete[](void* p) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(FixedArrayTest, UsesGlobalAlloc) {

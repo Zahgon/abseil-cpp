@@ -884,7 +884,7 @@ class Condition {
                 synchronization_internal::HasConstMemberCallOperator<T>::value,
                 int> = 0>
   explicit Condition(const T* absl_nonnull obj)
-      : Condition(obj, static_cast<bool (T::*)() const>(&T::operator())) {}
+      : Condition(obj, static_cast<bool (T::*)() const>(&T::operator())) { __builtin_trap() /* STUB: not implemented */; }
 
   // Constructor for functors that do not match the `bool operator()() const`
   // signature, such as those using C++23 "deducing this" or static operator().
@@ -894,7 +894,7 @@ class Condition {
           !synchronization_internal::HasConstMemberCallOperator<T>::value &&
           sizeof(static_cast<bool (*)(const T&)>(&T::operator())) != 0>>
   explicit Condition(const T* absl_nonnull obj)
-      : Condition(&CallByRef<T>, obj) {}
+      : Condition(&CallByRef<T>, obj) { __builtin_trap() /* STUB: not implemented */; }
 
   // A Condition that always returns `true`.
   // kTrue is only useful in a narrow set of circumstances, mostly when
@@ -958,28 +958,19 @@ class Condition {
   static bool CastAndCallMethod(const Condition* absl_nonnull c);
 
   template <typename T>
-  static bool CallByRef(const T* absl_nonnull self) {
-    return (*self)();
-  }
+  static bool CallByRef(const T* absl_nonnull self) { __builtin_trap() /* STUB: not implemented */; }
 
   // Helper methods for storing, validating, and reading callback arguments.
   template <typename T>
-  inline void StoreCallback(T callback) {
-    static_assert(
-        sizeof(callback) <= sizeof(callback_),
-        "An overlarge pointer was passed as a callback to Condition.");
-    std::memcpy(callback_, &callback, sizeof(callback));
-  }
+  inline void StoreCallback(T callback) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
-  inline void ReadCallback(T* absl_nonnull callback) const {
-    std::memcpy(callback, callback_, sizeof(*callback));
-  }
+  inline void ReadCallback(T* absl_nonnull callback) const { __builtin_trap() /* STUB: not implemented */; }
 
-  static bool AlwaysTrue(const Condition* absl_nullable) { return true; }
+  static bool AlwaysTrue(const Condition* absl_nullable) { __builtin_trap() /* STUB: not implemented */; }
 
   // Used only to create kTrue.
-  constexpr Condition() : eval_(AlwaysTrue), arg_(nullptr) {}
+  constexpr Condition() : eval_(AlwaysTrue), arg_(nullptr) { }
 };
 
 // -----------------------------------------------------------------------------
@@ -1030,9 +1021,7 @@ class CondVar {
   // spurious wakeup), then reacquires the `Mutex` and returns.
   //
   // Requires and ensures that the current thread holds the `Mutex`.
-  void Wait(Mutex* absl_nonnull mu) {
-    WaitCommon(mu, synchronization_internal::KernelTimeout::Never());
-  }
+  void Wait(Mutex* absl_nonnull mu) { __builtin_trap() /* STUB: not implemented */; }
 
   // CondVar::WaitWithTimeout()
   //
@@ -1047,9 +1036,7 @@ class CondVar {
   // to return `true` or `false`.
   //
   // Requires and ensures that the current thread holds the `Mutex`.
-  bool WaitWithTimeout(Mutex* absl_nonnull mu, absl::Duration timeout) {
-    return WaitCommon(mu, synchronization_internal::KernelTimeout(timeout));
-  }
+  bool WaitWithTimeout(Mutex* absl_nonnull mu, absl::Duration timeout) { __builtin_trap() /* STUB: not implemented */; }
 
   // CondVar::WaitWithDeadline()
   //
@@ -1066,9 +1053,7 @@ class CondVar {
   // to return `true` or `false`.
   //
   // Requires and ensures that the current thread holds the `Mutex`.
-  bool WaitWithDeadline(Mutex* absl_nonnull mu, absl::Time deadline) {
-    return WaitCommon(mu, synchronization_internal::KernelTimeout(deadline));
-  }
+  bool WaitWithDeadline(Mutex* absl_nonnull mu, absl::Time deadline) { __builtin_trap() /* STUB: not implemented */; }
 
   // CondVar::Signal()
   //
@@ -1184,15 +1169,13 @@ class ABSL_SCOPED_LOCKABLE ReleasableMutexLock {
   ReleasableMutexLock& operator=(ReleasableMutexLock&&) = delete;
 };
 
-inline Mutex::Mutex() : mu_(0) {
-  ABSL_TSAN_MUTEX_CREATE(this, __tsan_mutex_not_static);
-}
+inline Mutex::Mutex() : mu_(0) { __builtin_trap() /* STUB: not implemented */; }
 
-inline constexpr Mutex::Mutex(absl::ConstInitType) : mu_(0) {}
+inline constexpr Mutex::Mutex(absl::ConstInitType) : mu_(0) { }
 
 #if !defined(__APPLE__) && !defined(ABSL_BUILD_DLL)
 ABSL_ATTRIBUTE_ALWAYS_INLINE
-inline Mutex::~Mutex() { Dtor(); }
+inline Mutex::~Mutex() { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
 #if defined(NDEBUG) && !defined(ABSL_HAVE_THREAD_SANITIZER) && \
@@ -1203,39 +1186,25 @@ inline Mutex::~Mutex() { Dtor(); }
 // Mutex::Dtor symbol is exported from the DLL, maintaining ABI compatibility
 // with clients that might be built in debug mode and thus expect the symbol.
 ABSL_ATTRIBUTE_ALWAYS_INLINE
-inline void Mutex::Dtor() {}
+inline void Mutex::Dtor() { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
-inline CondVar::CondVar() : cv_(0) {}
+inline CondVar::CondVar() : cv_(0) { __builtin_trap() /* STUB: not implemented */; }
 
 // static
 template <typename T, typename ConditionMethodPtr>
-bool Condition::CastAndCallMethod(const Condition* absl_nonnull c) {
-  T* object = static_cast<T*>(c->arg_);
-  ConditionMethodPtr condition_method_pointer;
-  c->ReadCallback(&condition_method_pointer);
-  return (object->*condition_method_pointer)();
-}
+bool Condition::CastAndCallMethod(const Condition* absl_nonnull c) { __builtin_trap() /* STUB: not implemented */; }
 
 // static
 template <typename T>
-bool Condition::CastAndCallFunction(const Condition* absl_nonnull c) {
-  bool (*function)(T*);
-  c->ReadCallback(&function);
-  T* argument = static_cast<T*>(c->arg_);
-  return (*function)(argument);
-}
+bool Condition::CastAndCallFunction(const Condition* absl_nonnull c) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
 inline Condition::Condition(
     bool (*absl_nonnull func)(T* absl_nullability_unknown),
     T* absl_nullability_unknown arg)
     : eval_(&CastAndCallFunction<T>),
-      arg_(const_cast<void*>(static_cast<const void*>(arg))) {
-  static_assert(sizeof(&func) <= sizeof(callback_),
-                "An overlarge function pointer was passed to Condition.");
-  StoreCallback(func);
-}
+      arg_(const_cast<void*>(static_cast<const void*>(arg))) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, typename>
 inline Condition::Condition(
@@ -1243,17 +1212,13 @@ inline Condition::Condition(
     typename absl::type_identity<T>::type* absl_nullability_unknown
         arg)
     // Just delegate to the overload above.
-    : Condition(func, arg) {}
+    : Condition(func, arg) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
 inline Condition::Condition(
     T* absl_nonnull object,
     bool (absl::type_identity<T>::type::* absl_nonnull method)())
-    : eval_(&CastAndCallMethod<T, decltype(method)>), arg_(object) {
-  static_assert(sizeof(&method) <= sizeof(callback_),
-                "An overlarge method pointer was passed to Condition.");
-  StoreCallback(method);
-}
+    : eval_(&CastAndCallMethod<T, decltype(method)>), arg_(object) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
 inline Condition::Condition(
@@ -1261,9 +1226,7 @@ inline Condition::Condition(
     bool (absl::type_identity<T>::type::* absl_nonnull method)()
         const)
     : eval_(&CastAndCallMethod<const T, decltype(method)>),
-      arg_(reinterpret_cast<void*>(const_cast<T*>(object))) {
-  StoreCallback(method);
-}
+      arg_(reinterpret_cast<void*>(const_cast<T*>(object))) { __builtin_trap() /* STUB: not implemented */; }
 
 // Register hooks for profiling support.
 //

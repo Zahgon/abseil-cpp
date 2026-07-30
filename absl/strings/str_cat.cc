@@ -42,134 +42,19 @@ ABSL_NAMESPACE_BEGIN
 //    of a mix of raw C strings, string_views, strings, and integer values.
 // ----------------------------------------------------------------------
 
-namespace {
-// Append is merely a version of memcpy that returns the address of the byte
-// after the area just overwritten.
-inline char* absl_nonnull Append(char* absl_nonnull out, const AlphaNum& x) {
-  // memcpy is allowed to overwrite arbitrary memory, so doing this after the
-  // call would force an extra fetch of x.size().
-  char* after = out + x.size();
-  if (x.size() != 0) {
-    memcpy(out, x.data(), x.size());
-  }
-  return after;
-}
+namespace { __builtin_trap() /* STUB: not implemented */; }  // namespace
 
-// Safely adds size_t values, throwing std::length_error if overflow occurs.
-inline size_t SafeAdd(size_t a, size_t b) {
-  const uint64_t sum = static_cast<uint64_t>(a) + b;
-  if (ABSL_PREDICT_FALSE(sum > (std::numeric_limits<size_t>::max)())) {
-    ThrowStdLengthError("absl string append length overflow");
-  }
-  return static_cast<size_t>(sum);
-}
+std::string StrCat(const AlphaNum& a, const AlphaNum& b) { __builtin_trap() /* STUB: not implemented */; }
 
-inline size_t SafeAdd(std::initializer_list<size_t> sizes) {
-  uint64_t sum = 0;
-  for (size_t size : sizes) {
-    sum += size;
-  }
-  if (ABSL_PREDICT_FALSE(sum > (std::numeric_limits<size_t>::max)())) {
-    ThrowStdLengthError("absl string append length overflow");
-  }
-  return static_cast<size_t>(sum);
-}
-
-}  // namespace
-
-std::string StrCat(const AlphaNum& a, const AlphaNum& b) {
-  std::string result;
-  // Use uint64_t to prevent size_t overflow. We assume it is not possible for
-  // in memory strings to overflow a uint64_t.
-  constexpr uint64_t kMaxSize = uint64_t{std::numeric_limits<size_t>::max()};
-  const uint64_t result_size =
-      static_cast<uint64_t>(a.size()) + static_cast<uint64_t>(b.size());
-  ABSL_INTERNAL_CHECK(result_size <= kMaxSize, "size_t overflow");
-  absl::StringResizeAndOverwrite(result, static_cast<size_t>(result_size),
-                                 [&a, &b](char* const begin, size_t buf_size) {
-                                   char* out = begin;
-                                   out = Append(out, a);
-                                   out = Append(out, b);
-                                   assert(out == begin + buf_size);
-                                   return buf_size;
-                                 });
-  return result;
-}
-
-std::string StrCat(const AlphaNum& a, const AlphaNum& b, const AlphaNum& c) {
-  std::string result;
-  // Use uint64_t to prevent size_t overflow. We assume it is not possible for
-  // in memory strings to overflow a uint64_t.
-  constexpr uint64_t kMaxSize = uint64_t{std::numeric_limits<size_t>::max()};
-  const uint64_t result_size = static_cast<uint64_t>(a.size()) +
-                               static_cast<uint64_t>(b.size()) +
-                               static_cast<uint64_t>(c.size());
-  ABSL_INTERNAL_CHECK(result_size <= kMaxSize, "size_t overflow");
-  absl::StringResizeAndOverwrite(
-      result, static_cast<size_t>(result_size),
-      [&a, &b, &c](char* const begin, size_t buf_size) {
-        char* out = begin;
-        out = Append(out, a);
-        out = Append(out, b);
-        out = Append(out, c);
-        assert(out == begin + buf_size);
-        return buf_size;
-      });
-  return result;
-}
+std::string StrCat(const AlphaNum& a, const AlphaNum& b, const AlphaNum& c) { __builtin_trap() /* STUB: not implemented */; }
 
 std::string StrCat(const AlphaNum& a, const AlphaNum& b, const AlphaNum& c,
-                   const AlphaNum& d) {
-  std::string result;
-  // Use uint64_t to prevent size_t overflow. We assume it is not possible for
-  // in memory strings to overflow a uint64_t.
-  constexpr uint64_t kMaxSize = uint64_t{std::numeric_limits<size_t>::max()};
-  const uint64_t result_size =
-      static_cast<uint64_t>(a.size()) + static_cast<uint64_t>(b.size()) +
-      static_cast<uint64_t>(c.size()) + static_cast<uint64_t>(d.size());
-  ABSL_INTERNAL_CHECK(result_size <= kMaxSize, "size_t overflow");
-  absl::StringResizeAndOverwrite(
-      result, static_cast<size_t>(result_size),
-      [&a, &b, &c, &d](char* const begin, size_t buf_size) {
-        char* out = begin;
-        out = Append(out, a);
-        out = Append(out, b);
-        out = Append(out, c);
-        out = Append(out, d);
-        assert(out == begin + buf_size);
-        return buf_size;
-      });
-  return result;
-}
+                   const AlphaNum& d) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace strings_internal {
 
 // Do not call directly - these are not part of the public API.
-std::string CatPieces(std::initializer_list<absl::string_view> pieces) {
-  std::string result;
-  // Use uint64_t to prevent size_t overflow. We assume it is not possible for
-  // in memory strings to overflow a uint64_t.
-  constexpr uint64_t kMaxSize = uint64_t{std::numeric_limits<size_t>::max()};
-  uint64_t total_size = 0;
-  for (absl::string_view piece : pieces) {
-    total_size += piece.size();
-  }
-  ABSL_INTERNAL_CHECK(total_size <= kMaxSize, "size_t overflow");
-  absl::StringResizeAndOverwrite(result, static_cast<size_t>(total_size),
-                                 [&pieces](char* const begin, size_t buf_size) {
-                                   char* out = begin;
-                                   for (absl::string_view piece : pieces) {
-                                     const size_t this_size = piece.size();
-                                     if (this_size != 0) {
-                                       memcpy(out, piece.data(), this_size);
-                                       out += this_size;
-                                     }
-                                   }
-                                   assert(out == begin + buf_size);
-                                   return buf_size;
-                                 });
-  return result;
-}
+std::string CatPieces(std::initializer_list<absl::string_view> pieces) { __builtin_trap() /* STUB: not implemented */; }
 
 // It's possible to call StrAppend with an absl::string_view that is itself a
 // fragment of the string we're appending to.  However the results of this are
@@ -181,90 +66,20 @@ std::string CatPieces(std::initializer_list<absl::string_view> pieces) {
          (uintptr_t((src).data() - (dest).data()) > uintptr_t((dest).size())))
 
 void AppendPieces(std::string* absl_nonnull dest,
-                  std::initializer_list<absl::string_view> pieces) {
-  size_t to_append = 0;
-  for (absl::string_view piece : pieces) {
-    ASSERT_NO_OVERLAP(*dest, piece);
-    to_append = SafeAdd(to_append, piece.size());
-  }
-  StringAppendAndOverwrite(*dest, to_append,
-                           [&pieces](char* const buf, size_t buf_size) {
-                             char* out = buf;
-                             for (absl::string_view piece : pieces) {
-                               const size_t this_size = piece.size();
-                               if (this_size != 0) {
-                                 memcpy(out, piece.data(), this_size);
-                                 out += this_size;
-                               }
-                             }
-                             assert(out == buf + buf_size);
-                             return buf_size;
-                           });
-}
+                  std::initializer_list<absl::string_view> pieces) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace strings_internal
 
-void StrAppend(std::string* absl_nonnull dest, const AlphaNum& a) {
-  ASSERT_NO_OVERLAP(*dest, a);
-  strings_internal::StringAppendAndOverwrite(
-      *dest, a.size(), [&a](char* const buf, size_t buf_size) {
-        char* out = buf;
-        out = Append(out, a);
-        assert(out == buf + buf_size);
-        return buf_size;
-      });
-}
+void StrAppend(std::string* absl_nonnull dest, const AlphaNum& a) { __builtin_trap() /* STUB: not implemented */; }
 
 void StrAppend(std::string* absl_nonnull dest, const AlphaNum& a,
-               const AlphaNum& b) {
-  ASSERT_NO_OVERLAP(*dest, a);
-  ASSERT_NO_OVERLAP(*dest, b);
-  strings_internal::StringAppendAndOverwrite(
-      *dest, SafeAdd(a.size(), b.size()),
-      [&a, &b](char* const buf, size_t buf_size) {
-        char* out = buf;
-        out = Append(out, a);
-        out = Append(out, b);
-        assert(out == buf + buf_size);
-        return buf_size;
-      });
-}
+               const AlphaNum& b) { __builtin_trap() /* STUB: not implemented */; }
 
 void StrAppend(std::string* absl_nonnull dest, const AlphaNum& a,
-               const AlphaNum& b, const AlphaNum& c) {
-  ASSERT_NO_OVERLAP(*dest, a);
-  ASSERT_NO_OVERLAP(*dest, b);
-  ASSERT_NO_OVERLAP(*dest, c);
-  strings_internal::StringAppendAndOverwrite(
-      *dest, SafeAdd({a.size(), b.size(), c.size()}),
-      [&a, &b, &c](char* const buf, size_t buf_size) {
-        char* out = buf;
-        out = Append(out, a);
-        out = Append(out, b);
-        out = Append(out, c);
-        assert(out == buf + buf_size);
-        return buf_size;
-      });
-}
+               const AlphaNum& b, const AlphaNum& c) { __builtin_trap() /* STUB: not implemented */; }
 
 void StrAppend(std::string* absl_nonnull dest, const AlphaNum& a,
-               const AlphaNum& b, const AlphaNum& c, const AlphaNum& d) {
-  ASSERT_NO_OVERLAP(*dest, a);
-  ASSERT_NO_OVERLAP(*dest, b);
-  ASSERT_NO_OVERLAP(*dest, c);
-  ASSERT_NO_OVERLAP(*dest, d);
-  strings_internal::StringAppendAndOverwrite(
-      *dest, SafeAdd({a.size(), b.size(), c.size(), d.size()}),
-      [&a, &b, &c, &d](char* const buf, size_t buf_size) {
-        char* out = buf;
-        out = Append(out, a);
-        out = Append(out, b);
-        out = Append(out, c);
-        out = Append(out, d);
-        assert(out == buf + buf_size);
-        return buf_size;
-      });
-}
+               const AlphaNum& b, const AlphaNum& c, const AlphaNum& d) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

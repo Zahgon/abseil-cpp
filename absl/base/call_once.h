@@ -88,7 +88,7 @@ void call_once(absl::once_flag& flag, Callable&& fn, Args&&... args);
 // constructor, and is safe to use as a namespace-scoped global variable.
 class once_flag {
  public:
-  constexpr once_flag() : control_(0) {}
+  constexpr once_flag() : control_(0) { }
   once_flag(const once_flag&) = delete;
   once_flag& operator=(const once_flag&) = delete;
 
@@ -115,17 +115,9 @@ void LowLevelCallOnce(absl::once_flag* absl_nonnull flag, Callable&& fn,
 // No effect for cooperative scheduling modes.
 class SchedulingHelper {
  public:
-  explicit SchedulingHelper(base_internal::SchedulingMode mode) : mode_(mode) {
-    if (mode_ == base_internal::SCHEDULE_KERNEL_ONLY) {
-      guard_result_ = base_internal::SchedulingGuard::DisableRescheduling();
-    }
-  }
+  explicit SchedulingHelper(base_internal::SchedulingMode mode) : mode_(mode) { __builtin_trap() /* STUB: not implemented */; }
 
-  ~SchedulingHelper() {
-    if (mode_ == base_internal::SCHEDULE_KERNEL_ONLY) {
-      base_internal::SchedulingGuard::EnableRescheduling(guard_result_);
-    }
-  }
+  ~SchedulingHelper() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   base_internal::SchedulingMode mode_;
@@ -192,35 +184,17 @@ template <typename Callable, typename... Args>
 }
 
 inline std::atomic<uint32_t>* absl_nonnull ControlWord(
-    once_flag* absl_nonnull flag) {
-  return &flag->control_;
-}
+    once_flag* absl_nonnull flag) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Callable, typename... Args>
 void LowLevelCallOnce(absl::once_flag* absl_nonnull flag, Callable&& fn,
-                      Args&&... args) {
-  std::atomic<uint32_t>* once = base_internal::ControlWord(flag);
-  uint32_t s = once->load(std::memory_order_acquire);
-  if (ABSL_PREDICT_FALSE(s != base_internal::kOnceDone)) {
-    base_internal::CallOnceImpl(once, base_internal::SCHEDULE_KERNEL_ONLY,
-                                std::forward<Callable>(fn),
-                                std::forward<Args>(args)...);
-  }
-}
+                      Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace base_internal
 
 template <typename Callable, typename... Args>
     void
-    call_once(absl::once_flag& flag, Callable&& fn, Args&&... args) {
-  std::atomic<uint32_t>* once = base_internal::ControlWord(&flag);
-  uint32_t s = once->load(std::memory_order_acquire);
-  if (ABSL_PREDICT_FALSE(s != base_internal::kOnceDone)) {
-    base_internal::CallOnceImpl(
-        once, base_internal::SCHEDULE_COOPERATIVE_AND_KERNEL,
-        std::forward<Callable>(fn), std::forward<Args>(args)...);
-  }
-}
+    call_once(absl::once_flag& flag, Callable&& fn, Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

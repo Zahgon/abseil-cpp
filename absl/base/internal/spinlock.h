@@ -149,9 +149,7 @@ class ABSL_LOCKABLE ABSL_ATTRIBUTE_WARN_UNUSED SpinLock {
   // Determine if the lock is held.  When the lock is held by the invoking
   // thread, true will always be returned. Intended to be used as
   // CHECK(lock.IsHeld()).
-  [[nodiscard]] inline bool IsHeld() const {
-    return (lockword_.load(std::memory_order_relaxed) & kSpinLockHeld) != 0;
-  }
+  [[nodiscard]] inline bool IsHeld() const { __builtin_trap() /* STUB: not implemented */; }
 
   // Return immediately if this thread holds the SpinLock exclusively.
   // Otherwise, report an error by crashing with a diagnostic.
@@ -177,12 +175,8 @@ class ABSL_LOCKABLE ABSL_ATTRIBUTE_WARN_UNUSED SpinLock {
   friend class tcmalloc::tcmalloc_internal::AllocationGuardSpinLockHolder;
   friend class tcmalloc::tcmalloc_internal::Static;
 
-  static int GetAdaptiveSpinCount() {
-    return adaptive_spin_count_.load(std::memory_order_relaxed);
-  }
-  static void SetAdaptiveSpinCount(int count) {
-    adaptive_spin_count_.store(count, std::memory_order_relaxed);
-  }
+  static int GetAdaptiveSpinCount() { __builtin_trap() /* STUB: not implemented */; }
+  static void SetAdaptiveSpinCount(int count) { __builtin_trap() /* STUB: not implemented */; }
 
   static std::atomic<int> adaptive_spin_count_;
 
@@ -214,31 +208,18 @@ class ABSL_LOCKABLE ABSL_ATTRIBUTE_WARN_UNUSED SpinLock {
       ~(kSpinLockHeld | kSpinLockCooperative | kSpinLockDisabledScheduling);
 
   // Returns true if the provided scheduling mode is cooperative.
-  static constexpr bool IsCooperative(SchedulingMode scheduling_mode) {
-    return scheduling_mode == SCHEDULE_COOPERATIVE_AND_KERNEL;
-  }
+  static constexpr bool IsCooperative(SchedulingMode scheduling_mode) { return {}; }
 
-  constexpr void RegisterWithTsan() {
-#if ABSL_HAVE_BUILTIN(__builtin_is_constant_evaluated)
-    if (!__builtin_is_constant_evaluated()) {
-      ABSL_TSAN_MUTEX_CREATE(this, __tsan_mutex_not_static);
-    }
-#endif
-  }
+  constexpr void RegisterWithTsan() { }
 
-  bool IsCooperative() const {
-    return lockword_.load(std::memory_order_relaxed) & kSpinLockCooperative;
-  }
+  bool IsCooperative() const { __builtin_trap() /* STUB: not implemented */; }
 
   uint32_t TryLockInternal(uint32_t lock_value, uint32_t wait_cycles);
   void SlowLock() ABSL_ATTRIBUTE_COLD;
   void SlowUnlock(uint32_t lock_value) ABSL_ATTRIBUTE_COLD;
   uint32_t SpinLoop();
 
-  inline bool TryLockImpl() {
-    uint32_t lock_value = lockword_.load(std::memory_order_relaxed);
-    return (TryLockInternal(lock_value, 0) & kSpinLockHeld) == 0;
-  }
+  inline bool TryLockImpl() { __builtin_trap() /* STUB: not implemented */; }
 
   std::atomic<uint32_t> lockword_;
 
@@ -279,29 +260,7 @@ void RegisterSpinLockProfiler(void (*fn)(const void* lock,
 // If (result & kSpinLockHeld) == 0, then *this was successfully locked.
 // Otherwise, returns last observed value for lockword_.
 inline uint32_t SpinLock::TryLockInternal(uint32_t lock_value,
-                                          uint32_t wait_cycles) {
-  if ((lock_value & kSpinLockHeld) != 0) {
-    return lock_value;
-  }
-
-  uint32_t sched_disabled_bit = 0;
-  if ((lock_value & kSpinLockCooperative) == 0) {
-    // For non-cooperative locks we must make sure we mark ourselves as
-    // non-reschedulable before we attempt to CompareAndSwap.
-    if (SchedulingGuard::DisableRescheduling()) {
-      sched_disabled_bit = kSpinLockDisabledScheduling;
-    }
-  }
-
-  if (!lockword_.compare_exchange_strong(
-          lock_value,
-          kSpinLockHeld | lock_value | wait_cycles | sched_disabled_bit,
-          std::memory_order_acquire, std::memory_order_relaxed)) {
-    SchedulingGuard::EnableRescheduling(sched_disabled_bit != 0);
-  }
-
-  return lock_value;
-}
+                                          uint32_t wait_cycles) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace base_internal
 ABSL_NAMESPACE_END

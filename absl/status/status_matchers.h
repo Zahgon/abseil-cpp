@@ -105,10 +105,7 @@ ABSL_NAMESPACE_BEGIN
 // OK and whose value matches the inner matcher.
 template <typename InnerMatcherT>
 status_internal::IsOkAndHoldsMatcher<std::decay_t<InnerMatcherT>> IsOkAndHolds(
-    InnerMatcherT&& inner_matcher) {
-  return status_internal::IsOkAndHoldsMatcher<std::decay_t<InnerMatcherT>>(
-      std::forward<InnerMatcherT>(inner_matcher));
-}
+    InnerMatcherT&& inner_matcher) { __builtin_trap() /* STUB: not implemented */; }
 
 // Returns a gMock matcher that matches a Status or StatusOr<> whose status code
 // matches code_matcher and whose error message matches message_matcher.
@@ -118,24 +115,15 @@ status_internal::IsOkAndHoldsMatcher<std::decay_t<InnerMatcherT>> IsOkAndHolds(
 template <typename StatusCodeMatcherT, typename StatusMessageMatcherT>
 status_internal::StatusIsMatcher StatusIs(
     StatusCodeMatcherT&& code_matcher,
-    StatusMessageMatcherT&& message_matcher) {
-  return status_internal::StatusIsMatcher(
-      std::forward<StatusCodeMatcherT>(code_matcher),
-      std::forward<StatusMessageMatcherT>(message_matcher));
-}
+    StatusMessageMatcherT&& message_matcher) { __builtin_trap() /* STUB: not implemented */; }
 
 // Returns a gMock matcher that matches a Status or StatusOr<> and whose status
 // code matches code_matcher.  See above for details.
 template <typename StatusCodeMatcherT>
-status_internal::StatusIsMatcher StatusIs(StatusCodeMatcherT&& code_matcher) {
-  return absl_testing::StatusIs(std::forward<StatusCodeMatcherT>(code_matcher),
-                                ::testing::_);
-}
+status_internal::StatusIsMatcher StatusIs(StatusCodeMatcherT&& code_matcher) { __builtin_trap() /* STUB: not implemented */; }
 
 // Returns a gMock matcher that matches a Status or StatusOr<> which is OK.
-inline status_internal::IsOkMatcher IsOk() {
-  return status_internal::IsOkMatcher();
-}
+inline status_internal::IsOkMatcher IsOk() { __builtin_trap() /* STUB: not implemented */; }
 
 // By defining ABSL_DEFINE_UNQUALIFIED_STATUS_TESTING_MACROS, this library also
 // provides unqualified versions of macros

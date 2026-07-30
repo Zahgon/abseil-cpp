@@ -30,21 +30,21 @@ using ::testing::VariantWith;
 
 struct Convertible2;
 struct Convertible1 {
-  Convertible1() {}
-  Convertible1(const Convertible1&) {}
-  Convertible1& operator=(const Convertible1&) { return *this; }
+  Convertible1() { __builtin_trap() /* STUB: not implemented */; }
+  Convertible1(const Convertible1&) { __builtin_trap() /* STUB: not implemented */; }
+  Convertible1& operator=(const Convertible1&) { __builtin_trap() /* STUB: not implemented */; }
 
   // implicit conversion from Convertible2
-  Convertible1(const Convertible2&) {}  // NOLINT(runtime/explicit)
+  Convertible1(const Convertible2&) { __builtin_trap() /* STUB: not implemented */; }  // NOLINT(runtime/explicit)
 };
 
 struct Convertible2 {
-  Convertible2() {}
-  Convertible2(const Convertible2&) {}
-  Convertible2& operator=(const Convertible2&) { return *this; }
+  Convertible2() { __builtin_trap() /* STUB: not implemented */; }
+  Convertible2(const Convertible2&) { __builtin_trap() /* STUB: not implemented */; }
+  Convertible2& operator=(const Convertible2&) { __builtin_trap() /* STUB: not implemented */; }
 
   // implicit conversion from Convertible1
-  Convertible2(const Convertible1&) {}  // NOLINT(runtime/explicit)
+  Convertible2(const Convertible1&) { __builtin_trap() /* STUB: not implemented */; }  // NOLINT(runtime/explicit)
 };
 
 TEST(VariantTest, TestRvalueConversion) {

@@ -69,42 +69,34 @@ class exponential_distribution {
         "using a floating-point type.");
   };
 
-  exponential_distribution() : exponential_distribution(1) {}
+  exponential_distribution() : exponential_distribution(1) { __builtin_trap() /* STUB: not implemented */; }
 
-  explicit exponential_distribution(result_type lambda) : param_(lambda) {}
+  explicit exponential_distribution(result_type lambda) : param_(lambda) { __builtin_trap() /* STUB: not implemented */; }
 
-  explicit exponential_distribution(const param_type& p) : param_(p) {}
+  explicit exponential_distribution(const param_type& p) : param_(p) { __builtin_trap() /* STUB: not implemented */; }
 
-  void reset() {}
+  void reset() { __builtin_trap() /* STUB: not implemented */; }
 
   // Generating functions
   template <typename URBG>
-  result_type operator()(URBG& g) {  // NOLINT(runtime/references)
-    return (*this)(g, param_);
-  }
+  result_type operator()(URBG& g) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename URBG>
   result_type operator()(URBG& g,  // NOLINT(runtime/references)
                          const param_type& p);
 
-  param_type param() const { return param_; }
-  void param(const param_type& p) { param_ = p; }
+  param_type param() const { __builtin_trap() /* STUB: not implemented */; }
+  void param(const param_type& p) { __builtin_trap() /* STUB: not implemented */; }
 
-  result_type(min)() const { return 0; }
-  result_type(max)() const {
-    return std::numeric_limits<result_type>::infinity();
-  }
+  result_type(min)() const { __builtin_trap() /* STUB: not implemented */; }
+  result_type(max)() const { __builtin_trap() /* STUB: not implemented */; }
 
-  result_type lambda() const { return param_.lambda(); }
+  result_type lambda() const { __builtin_trap() /* STUB: not implemented */; }
 
   friend bool operator==(const exponential_distribution& a,
-                         const exponential_distribution& b) {
-    return a.param_ == b.param_;
-  }
+                         const exponential_distribution& b) { __builtin_trap() /* STUB: not implemented */; }
   friend bool operator!=(const exponential_distribution& a,
-                         const exponential_distribution& b) {
-    return a.param_ != b.param_;
-  }
+                         const exponential_distribution& b) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   param_type param_;
@@ -120,45 +112,17 @@ template <typename URBG>
 typename exponential_distribution<RealType>::result_type
 exponential_distribution<RealType>::operator()(
     URBG& g,  // NOLINT(runtime/references)
-    const param_type& p) {
-  using random_internal::GenerateNegativeTag;
-  using random_internal::GenerateRealFromBits;
-  using real_type =
-      std::conditional_t<std::is_same_v<RealType, float>, float, double>;
-
-  const result_type u = GenerateRealFromBits<real_type, GenerateNegativeTag,
-                                             false>(fast_u64_(g));  // U(-1, 0)
-
-  // log1p(-x) is mathematically equivalent to log(1 - x) but has more
-  // accuracy for x near zero.
-  return p.neg_inv_lambda_ * std::log1p(u);
-}
+    const param_type& p) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename CharT, typename Traits, typename RealType>
 std::basic_ostream<CharT, Traits>& operator<<(
     std::basic_ostream<CharT, Traits>& os,  // NOLINT(runtime/references)
-    const exponential_distribution<RealType>& x) {
-  auto saver = random_internal::make_ostream_state_saver(os);
-  os.precision(random_internal::stream_precision_helper<RealType>::kPrecision);
-  os << x.lambda();
-  return os;
-}
+    const exponential_distribution<RealType>& x) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename CharT, typename Traits, typename RealType>
 std::basic_istream<CharT, Traits>& operator>>(
     std::basic_istream<CharT, Traits>& is,    // NOLINT(runtime/references)
-    exponential_distribution<RealType>& x) {  // NOLINT(runtime/references)
-  using result_type = typename exponential_distribution<RealType>::result_type;
-  using param_type = typename exponential_distribution<RealType>::param_type;
-  result_type lambda;
-
-  auto saver = random_internal::make_istream_state_saver(is);
-  lambda = random_internal::read_floating_point<result_type>(is);
-  if (!is.fail()) {
-    x.param(param_type(lambda));
-  }
-  return is;
-}
+    exponential_distribution<RealType>& x) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

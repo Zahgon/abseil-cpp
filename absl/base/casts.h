@@ -104,22 +104,16 @@ constexpr std::enable_if_t<
     !type_traits_internal::IsView<std::enable_if_t<
         !std::is_reference_v<To>, std::remove_cv_t<To>>>::value,
     To>
-implicit_cast(absl::type_identity_t<To> to) {
-  return to;
-}
+implicit_cast(absl::type_identity_t<To> to) { return {}; }
 template <typename To>
 constexpr std::enable_if_t<
     type_traits_internal::IsView<std::enable_if_t<!std::is_reference_v<To>,
                                                   std::remove_cv_t<To>>>::value,
     To>
-implicit_cast(absl::type_identity_t<To> to ABSL_ATTRIBUTE_LIFETIME_BOUND) {
-  return to;
-}
+implicit_cast(absl::type_identity_t<To> to ABSL_ATTRIBUTE_LIFETIME_BOUND) { return {}; }
 template <typename To>
 constexpr std::enable_if_t<std::is_reference_v<To>, To> implicit_cast(
-    absl::type_identity_t<To> to ABSL_ATTRIBUTE_LIFETIME_BOUND) {
-  return std::forward<absl::type_identity_t<To>>(to);
-}
+    absl::type_identity_t<To> to ABSL_ATTRIBUTE_LIFETIME_BOUND) { return {}; }
 
 // bit_cast()
 //
@@ -190,12 +184,7 @@ inline constexpr Dest bit_cast(const Source& source) {
   return __builtin_bit_cast(Dest, source);
 }
 #else  // ABSL_HAVE_BUILTIN(__builtin_bit_cast)
-inline Dest bit_cast(const Source& source) {
-  Dest dest;
-  memcpy(static_cast<void*>(std::addressof(dest)),
-         static_cast<const void*>(std::addressof(source)), sizeof(dest));
-  return dest;
-}
+inline Dest bit_cast(const Source& source) { __builtin_trap() /* STUB: not implemented */; }
 #endif  // ABSL_HAVE_BUILTIN(__builtin_bit_cast)
 
 #endif  // defined(__cpp_lib_bit_cast) && __cpp_lib_bit_cast >= 201806L
@@ -252,26 +241,7 @@ inline void ValidateDownCast(From* f ABSL_ATTRIBUTE_UNUSED) {
 
 template <typename To, typename From>  // use like this: down_cast<T*>(foo);
 [[nodiscard]]
-inline To down_cast(From* f) {  // so we only accept pointers
-  static_assert(std::is_pointer_v<To>, "target type not a pointer");
-  // dynamic_cast allows casting to the same type or a more cv-qualified
-  // version of the same type without them being polymorphic.
-  if constexpr (!std::is_same_v<std::remove_cv_t<std::remove_pointer_t<To>>,
-                                std::remove_cv_t<From>>) {
-    static_assert(std::is_polymorphic_v<From>,
-                  "source type must be polymorphic");
-    static_assert(std::is_polymorphic_v<std::remove_pointer_t<To>>,
-                  "target type must be polymorphic");
-  }
-  static_assert(
-      std::is_convertible_v<std::remove_cv_t<std::remove_pointer_t<To>>*,
-                            std::remove_cv_t<From>*>,
-      "target type not derived from source type");
-
-  absl::base_internal::ValidateDownCast<To>(f);
-
-  return static_cast<To>(f);
-}
+inline To down_cast(From* f) { __builtin_trap() /* STUB: not implemented */; }
 
 // Overload of down_cast for references. Use like this:
 // absl::down_cast<T&>(foo). The code is slightly convoluted because we're still
@@ -283,27 +253,7 @@ inline To down_cast(From* f) {  // so we only accept pointers
 // compiler will just bind From to const T.
 template <typename To, typename From>
 [[nodiscard]]
-inline To down_cast(From& f) {
-  static_assert(std::is_lvalue_reference_v<To>, "target type not a reference");
-  // dynamic_cast allows casting to the same type or a more cv-qualified
-  // version of the same type without them being polymorphic.
-  if constexpr (!std::is_same_v<std::remove_cv_t<std::remove_reference_t<To>>,
-                                std::remove_cv_t<From>>) {
-    static_assert(std::is_polymorphic_v<From>,
-                  "source type must be polymorphic");
-    static_assert(std::is_polymorphic_v<std::remove_reference_t<To>>,
-                  "target type must be polymorphic");
-  }
-  static_assert(
-      std::is_convertible_v<std::remove_cv_t<std::remove_reference_t<To>>*,
-                            std::remove_cv_t<From>*>,
-      "target type not derived from source type");
-
-  absl::base_internal::ValidateDownCast<std::remove_reference_t<To>*>(
-      std::addressof(f));
-
-  return static_cast<To>(f);
-}
+inline To down_cast(From& f) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

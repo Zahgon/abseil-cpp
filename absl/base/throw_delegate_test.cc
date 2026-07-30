@@ -39,45 +39,13 @@ using absl::ThrowStdUnderflowError;
 constexpr const char* what_arg = "The quick brown fox jumps over the lazy dog";
 
 template <typename E>
-void ExpectThrowChar(void (*f)(const char*)) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  try {
-    f(what_arg);
-    FAIL() << "Didn't throw";
-  } catch (const E& e) {
-    EXPECT_STREQ(e.what(), what_arg);
-  }
-#else
-  EXPECT_DEATH_IF_SUPPORTED(f(what_arg), what_arg);
-#endif
-}
+void ExpectThrowChar(void (*f)(const char*)) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename E>
-void ExpectThrowString(void (*f)(const std::string&)) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  try {
-    f(what_arg);
-    FAIL() << "Didn't throw";
-  } catch (const E& e) {
-    EXPECT_STREQ(e.what(), what_arg);
-  }
-#else
-  EXPECT_DEATH_IF_SUPPORTED(f(what_arg), what_arg);
-#endif
-}
+void ExpectThrowString(void (*f)(const std::string&)) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename E>
-void ExpectThrowNoWhat(void (*f)()) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  try {
-    f();
-    FAIL() << "Didn't throw";
-  } catch (const E& e) {
-  }
-#else
-  EXPECT_DEATH_IF_SUPPORTED(f(), "");
-#endif
-}
+void ExpectThrowNoWhat(void (*f)()) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ThrowDelegate, ThrowStdLogicErrorChar) {
   ExpectThrowChar<std::logic_error>(ThrowStdLogicError);

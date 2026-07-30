@@ -186,13 +186,9 @@ namespace log_internal {
 // Convert a Status or a StatusOr to its underlying status value.
 //
 // (This implementation does not require a dep on absl::Status to work.)
-inline const absl::Status* absl_nonnull AsStatus(const absl::Status& s) {
-  return &s;
-}
+inline const absl::Status* absl_nonnull AsStatus(const absl::Status& s) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T>
-const absl::Status* absl_nonnull AsStatus(const absl::StatusOr<T>& s) {
-  return &s.status();
-}
+const absl::Status* absl_nonnull AsStatus(const absl::StatusOr<T>& s) { __builtin_trap() /* STUB: not implemented */; }
 
 // A helper class for formatting `expr (V1 vs. V2)` in a `CHECK_XX` statement.
 // See `MakeCheckOpString` for sample usage.
@@ -202,7 +198,7 @@ class CheckOpMessageBuilder final {
   explicit CheckOpMessageBuilder(const char* absl_nonnull exprtext);
   ~CheckOpMessageBuilder() = default;
   // For inserting the first variable.
-  std::ostream& ForVar1() { return stream_; }
+  std::ostream& ForVar1() { __builtin_trap() /* STUB: not implemented */; }
   // For inserting the second variable (adds an intermediate ` vs. `).
   std::ostream& ForVar2();
   // Get the result (inserts the closing `)`).
@@ -215,9 +211,7 @@ class CheckOpMessageBuilder final {
 // This formats a value for a failing `CHECK_XX` statement.  Ordinarily, it uses
 // the definition for `operator<<`, with a few special cases below.
 template <typename T>
-inline void MakeCheckOpValueString(std::ostream& os, const T& v) {
-  os << log_internal::NullGuard<T>::Guard(v);
-}
+inline void MakeCheckOpValueString(std::ostream& os, const T& v) { __builtin_trap() /* STUB: not implemented */; }
 
 // Overloads for char types provide readable values for unprintable characters.
 void MakeCheckOpValueString(std::ostream& os, char v);
@@ -228,7 +222,7 @@ void MakeCheckOpValueString(std::ostream& os, const void* absl_nullable p);
 // A wrapper for types that have no operator<<.
 struct UnprintableWrapper {
   template <typename T>
-  explicit UnprintableWrapper(const T&) {}
+  explicit UnprintableWrapper(const T&) { __builtin_trap() /* STUB: not implemented */; }
 
   friend std::ostream& operator<<(std::ostream& os, UnprintableWrapper);
 };
@@ -332,14 +326,10 @@ template <typename T>
 class StringifyToStreamWrapper {
  public:
   explicit StringifyToStreamWrapper(const T& v ABSL_ATTRIBUTE_LIFETIME_BOUND)
-      : v_(v) {}
+      : v_(v) { __builtin_trap() /* STUB: not implemented */; }
 
   friend std::ostream& operator<<(std::ostream& os,
-                                  const StringifyToStreamWrapper& wrapper) {
-    StringifySink sink(os);
-    AbslStringify(sink, wrapper.v_);
-    return os;
-  }
+                                  const StringifyToStreamWrapper& wrapper) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   const T& v_;
@@ -403,18 +393,7 @@ using Detected = decltype(Detect<T>(0));
 // C-String so printing them as such could lead to UB, and more importantly we
 // compared pointers so showing the pointers is a better result.
 template <typename T>
-constexpr bool IsCharStarOrVoidStar() {
-  if constexpr (std::is_reference_v<T>) {
-    return IsCharStarOrVoidStar<std::remove_reference_t<T>>();
-  } else if constexpr (std::is_array_v<T>) {
-    return IsCharStarOrVoidStar<std::decay_t<T>>();
-  } else {
-    using U = std::remove_const_t<std::remove_pointer_t<T>>;
-    return std::is_pointer_v<T> &&
-        (std::is_same_v<char, U> || std::is_same_v<unsigned char, U> ||
-         std::is_same_v<signed char, U> || std::is_void_v<U>);
-  }
-}
+constexpr bool IsCharStarOrVoidStar() { return {}; }
 
 template <typename T1, typename T2,
           typename U1 = detect_specialization::Detected<T1>,
@@ -430,18 +409,7 @@ ABSL_ATTRIBUTE_RETURNS_NONNULL const char* absl_nonnull MakeCheckOpString(
 
 template <typename T1, typename T2>
 const char* absl_nonnull MakeCheckOpString(T1 v1, T2 v2,
-                                           const char* absl_nonnull exprtext) {
-  if constexpr (std::is_same_v<CheckOpStreamType<T1, T2>, UnprintableWrapper> &&
-                std::is_same_v<CheckOpStreamType<T2, T1>, UnprintableWrapper>) {
-    // No sense printing " (UNPRINTABLE vs. UNPRINTABLE)"
-    return exprtext;
-  } else {
-    CheckOpMessageBuilder comb(exprtext);
-    MakeCheckOpValueString(comb.ForVar1(), v1);
-    MakeCheckOpValueString(comb.ForVar2(), v2);
-    return comb.NewString();
-  }
-}
+                                           const char* absl_nonnull exprtext) { __builtin_trap() /* STUB: not implemented */; }
 
 // Add a few commonly used instantiations as extern to reduce size of objects
 // files.
@@ -539,13 +507,11 @@ constexpr signed char GetReferenceableValue(signed char t) { return t; }
 constexpr short GetReferenceableValue(short t) { return t; }
 constexpr unsigned short GetReferenceableValue(unsigned short t) { return t; }
 constexpr int GetReferenceableValue(int t) { return t; }
-constexpr unsigned int GetReferenceableValue(unsigned int t) { return t; }
-constexpr long GetReferenceableValue(long t) { return t; }
-constexpr unsigned long GetReferenceableValue(unsigned long t) { return t; }
-constexpr long long GetReferenceableValue(long long t) { return t; }
-constexpr unsigned long long GetReferenceableValue(unsigned long long t) {
-  return t;
-}
+constexpr unsigned int GetReferenceableValue(unsigned int t) { return {}; }
+constexpr long GetReferenceableValue(long t) { return {}; }
+constexpr unsigned long GetReferenceableValue(unsigned long t) { return {}; }
+constexpr long long GetReferenceableValue(long long t) { return {}; }
+constexpr unsigned long long GetReferenceableValue(unsigned long long t) { return {}; }
 // NOLINTEND(google-runtime-int)
 // NOLINTEND(runtime/int)
 

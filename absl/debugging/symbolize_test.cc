@@ -60,21 +60,9 @@ using testing::Contains;
 
 // Functions to symbolize. Use C linkage to avoid mangled names.
 extern "C" {
-ABSL_SYMBOLIZE_TEST_NOINLINE void nonstatic_func() {
-  // The next line makes this a unique function to prevent the compiler from
-  // folding identical functions together.
-  volatile int x = __LINE__;
-  static_cast<void>(x);
-  ABSL_BLOCK_TAIL_CALL_OPTIMIZATION();
-}
+ABSL_SYMBOLIZE_TEST_NOINLINE void nonstatic_func() { __builtin_trap() /* STUB: not implemented */; }
 
-ABSL_SYMBOLIZE_TEST_NOINLINE static void static_func() {
-  // The next line makes this a unique function to prevent the compiler from
-  // folding identical functions together.
-  volatile int x = __LINE__;
-  static_cast<void>(x);
-  ABSL_BLOCK_TAIL_CALL_OPTIMIZATION();
-}
+ABSL_SYMBOLIZE_TEST_NOINLINE static void static_func() { __builtin_trap() /* STUB: not implemented */; }
 }  // extern "C"
 
 struct Foo {
@@ -82,27 +70,19 @@ struct Foo {
 };
 
 // A C++ method that should have a mangled name.
-ABSL_SYMBOLIZE_TEST_NOINLINE void Foo::func(int) {
-  // The next line makes this a unique function to prevent the compiler from
-  // folding identical functions together.
-  volatile int x = __LINE__;
-  static_cast<void>(x);
-  ABSL_BLOCK_TAIL_CALL_OPTIMIZATION();
-}
+ABSL_SYMBOLIZE_TEST_NOINLINE void Foo::func(int) { __builtin_trap() /* STUB: not implemented */; }
 
 // Create functions that will remain in different text sections in the
 // final binary when linker option "-z,keep-text-section-prefix" is used.
-int ABSL_ATTRIBUTE_SECTION_VARIABLE(.text.unlikely) unlikely_func() {
-  return 0;
-}
+int ABSL_ATTRIBUTE_SECTION_VARIABLE(.text.unlikely) unlikely_func() { __builtin_trap() /* STUB: not implemented */; }
 
-int ABSL_ATTRIBUTE_SECTION_VARIABLE(.text.hot) hot_func() { return 0; }
+int ABSL_ATTRIBUTE_SECTION_VARIABLE(.text.hot) hot_func() { __builtin_trap() /* STUB: not implemented */; }
 
-int ABSL_ATTRIBUTE_SECTION_VARIABLE(.text.startup) startup_func() { return 0; }
+int ABSL_ATTRIBUTE_SECTION_VARIABLE(.text.startup) startup_func() { __builtin_trap() /* STUB: not implemented */; }
 
-int ABSL_ATTRIBUTE_SECTION_VARIABLE(.text.exit) exit_func() { return 0; }
+int ABSL_ATTRIBUTE_SECTION_VARIABLE(.text.exit) exit_func() { __builtin_trap() /* STUB: not implemented */; }
 
-int /*ABSL_ATTRIBUTE_SECTION_VARIABLE(.text)*/ regular_func() { return 0; }
+int /*ABSL_ATTRIBUTE_SECTION_VARIABLE(.text)*/ regular_func() { __builtin_trap() /* STUB: not implemented */; }
 
 // Thread-local data may confuse the symbolizer, ensure that it does not.
 // Variable sizes and order are important.
@@ -131,44 +111,17 @@ static char try_symbolize_buffer[4096];
 // limit must be < sizeof(try_symbolize_buffer).  Returns null if
 // absl::Symbolize() returns false, otherwise returns try_symbolize_buffer with
 // the result of absl::Symbolize().
-static const char *TrySymbolizeWithLimit(void *pc, int limit) {
-  CHECK_LE(limit, sizeof(try_symbolize_buffer))
-      << "try_symbolize_buffer is too small";
-
-  // Use the heap to facilitate heap and buffer sanitizer tools.
-  auto heap_buffer = std::make_unique<char[]>(sizeof(try_symbolize_buffer));
-  bool found = absl::Symbolize(pc, heap_buffer.get(), limit);
-  if (found) {
-    CHECK_LT(static_cast<int>(
-                 strnlen(heap_buffer.get(), static_cast<size_t>(limit))),
-             limit)
-        << "absl::Symbolize() did not properly terminate the string";
-    strncpy(try_symbolize_buffer, heap_buffer.get(),
-            sizeof(try_symbolize_buffer) - 1);
-    try_symbolize_buffer[sizeof(try_symbolize_buffer) - 1] = '\0';
-  }
-
-  return found ? try_symbolize_buffer : nullptr;
-}
+static const char *TrySymbolizeWithLimit(void *pc, int limit) { __builtin_trap() /* STUB: not implemented */; }
 
 // A wrapper for TrySymbolizeWithLimit(), with a large limit.
-static const char *TrySymbolize(void *pc) {
-  return TrySymbolizeWithLimit(pc, sizeof(try_symbolize_buffer));
-}
+static const char *TrySymbolize(void *pc) { __builtin_trap() /* STUB: not implemented */; }
 
 #if defined(ABSL_INTERNAL_HAVE_ELF_SYMBOLIZE) ||    \
     defined(ABSL_INTERNAL_HAVE_DARWIN_SYMBOLIZE) || \
     defined(ABSL_INTERNAL_HAVE_EMSCRIPTEN_SYMBOLIZE)
 
 // Test with a return address.
-void ABSL_ATTRIBUTE_NOINLINE TestWithReturnAddress() {
-#if defined(ABSL_HAVE_ATTRIBUTE_NOINLINE)
-  void *return_address = __builtin_return_address(0);
-  const char *symbol = TrySymbolize(return_address);
-  ASSERT_NE(symbol, nullptr) << "TestWithReturnAddress failed";
-  EXPECT_STREQ(symbol, "main") << "TestWithReturnAddress failed";
-#endif
-}
+void ABSL_ATTRIBUTE_NOINLINE TestWithReturnAddress() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Symbolize, Cached) {
   // Compilers should give us pointers to them.
@@ -226,33 +179,12 @@ static void *g_pc_to_symbolize;
 static char g_symbolize_buffer[4096];
 static char *g_symbolize_result;
 
-static void SymbolizeSignalHandler(int signo) {
-  if (absl::Symbolize(g_pc_to_symbolize, g_symbolize_buffer,
-                      sizeof(g_symbolize_buffer))) {
-    g_symbolize_result = g_symbolize_buffer;
-  } else {
-    g_symbolize_result = nullptr;
-  }
-}
+static void SymbolizeSignalHandler(int signo) { __builtin_trap() /* STUB: not implemented */; }
 
 // Call Symbolize and figure out the stack footprint of this call.
-static const char *SymbolizeStackConsumption(void *pc, int *stack_consumed) {
-  g_pc_to_symbolize = pc;
-  *stack_consumed = absl::debugging_internal::GetSignalHandlerStackConsumption(
-      SymbolizeSignalHandler);
-  return g_symbolize_result;
-}
+static const char *SymbolizeStackConsumption(void *pc, int *stack_consumed) { __builtin_trap() /* STUB: not implemented */; }
 
-static int GetStackConsumptionUpperLimit() {
-  // Symbolize stack consumption should be within 2kB.
-  int stack_consumption_upper_limit = 2048;
-#if defined(ABSL_HAVE_ADDRESS_SANITIZER) || \
-    defined(ABSL_HAVE_MEMORY_SANITIZER) || defined(ABSL_HAVE_THREAD_SANITIZER)
-  // Account for sanitizer instrumentation requiring additional stack space.
-  stack_consumption_upper_limit *= 5;
-#endif
-  return stack_consumption_upper_limit;
-}
+static int GetStackConsumptionUpperLimit() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Symbolize, SymbolizeStackConsumption) {
   int stack_consumed = 0;
@@ -295,31 +227,7 @@ const size_t kPageSize = 64 << 10;
 const char kPadding0[kPageSize * 4] ABSL_ATTRIBUTE_SECTION_VARIABLE(.text) = "";
 const char kPadding1[kPageSize * 4] ABSL_ATTRIBUTE_SECTION_VARIABLE(.text) = "";
 
-static int FilterElfHeader(struct dl_phdr_info *info, size_t size, void *data) {
-  for (int i = 0; i < info->dlpi_phnum; i++) {
-    if (info->dlpi_phdr[i].p_type == PT_LOAD &&
-        info->dlpi_phdr[i].p_flags == (PF_R | PF_X)) {
-      const void *const vaddr =
-          absl::bit_cast<void *>(info->dlpi_addr + info->dlpi_phdr[i].p_vaddr);
-      const auto segsize = info->dlpi_phdr[i].p_memsz;
-
-      const char *self_exe;
-      if (info->dlpi_name != nullptr && info->dlpi_name[0] != '\0') {
-        self_exe = info->dlpi_name;
-      } else {
-        self_exe = "/proc/self/exe";
-      }
-
-      absl::debugging_internal::RegisterFileMappingHint(
-          vaddr, reinterpret_cast<const char *>(vaddr) + segsize,
-          info->dlpi_phdr[i].p_offset, self_exe);
-
-      return 1;
-    }
-  }
-
-  return 1;
-}
+static int FilterElfHeader(struct dl_phdr_info *info, size_t size, void *data) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Symbolize, SymbolizeWithMultipleMaps) {
   // Force kPadding0 and kPadding1 to be linked in.
@@ -379,19 +287,11 @@ template <char C>
 class TestSymbolDecorator final
     : public absl::debugging_internal::SymbolDecorator {
  public:
-  static absl::debugging_internal::SymbolDecoratorPtr Factory(int /*fd*/) {
-    void* ptr = absl::base_internal::LowLevelAlloc::AllocWithArena(
-        sizeof(TestSymbolDecorator), absl::base_internal::SigSafeArena());
-    return absl::debugging_internal::SymbolDecoratorPtr(
-        new (ptr) TestSymbolDecorator());
-  }
+  static absl::debugging_internal::SymbolDecoratorPtr Factory(int /*fd*/) { __builtin_trap() /* STUB: not implemented */; }
 
   void Decorate(const void* /*pc*/, ptrdiff_t /*relocation*/, char* symbol_buf,
                 size_t symbol_buf_size, char* /*tmp_buf*/,
-                size_t /*tmp_buf_size*/) const override {
-    const size_t len = strlen(symbol_buf);
-    absl::SNPrintF(symbol_buf + len, symbol_buf_size - len, " hello %c", C);
-  }
+                size_t /*tmp_buf_size*/) const override { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(Symbolize, SetSymbolDecorator) {
@@ -443,46 +343,13 @@ TEST(Symbolize, ForEachSection) {
 
 // x86 specific tests.  Uses some inline assembler.
 extern "C" {
-inline void *ABSL_ATTRIBUTE_ALWAYS_INLINE inline_func() {
-  void *pc = nullptr;
-#if defined(__i386__)
-  __asm__ __volatile__("call 1f;\n 1: pop %[PC]" : [PC] "=r"(pc));
-#elif defined(__x86_64__)
-  __asm__ __volatile__("leaq 0(%%rip),%[PC];\n" : [PC] "=r"(pc));
-#endif
-  return pc;
-}
+inline void *ABSL_ATTRIBUTE_ALWAYS_INLINE inline_func() { __builtin_trap() /* STUB: not implemented */; }
 
-void *ABSL_ATTRIBUTE_NOINLINE non_inline_func() {
-  void *pc = nullptr;
-#if defined(__i386__)
-  __asm__ __volatile__("call 1f;\n 1: pop %[PC]" : [PC] "=r"(pc));
-#elif defined(__x86_64__)
-  __asm__ __volatile__("leaq 0(%%rip),%[PC];\n" : [PC] "=r"(pc));
-#endif
-  return pc;
-}
+void *ABSL_ATTRIBUTE_NOINLINE non_inline_func() { __builtin_trap() /* STUB: not implemented */; }
 
-void ABSL_ATTRIBUTE_NOINLINE TestWithPCInsideNonInlineFunction() {
-#if defined(ABSL_HAVE_ATTRIBUTE_NOINLINE) && \
-    (defined(__i386__) || defined(__x86_64__))
-  void *pc = non_inline_func();
-  const char *symbol = TrySymbolize(pc);
-  ASSERT_NE(symbol, nullptr) << "TestWithPCInsideNonInlineFunction failed";
-  EXPECT_STREQ(symbol, "non_inline_func")
-      << "TestWithPCInsideNonInlineFunction failed";
-#endif
-}
+void ABSL_ATTRIBUTE_NOINLINE TestWithPCInsideNonInlineFunction() { __builtin_trap() /* STUB: not implemented */; }
 
-void ABSL_ATTRIBUTE_NOINLINE TestWithPCInsideInlineFunction() {
-#if defined(ABSL_HAVE_ATTRIBUTE_ALWAYS_INLINE) && \
-    (defined(__i386__) || defined(__x86_64__))
-  void *pc = inline_func();  // Must be inlined.
-  const char *symbol = TrySymbolize(pc);
-  ASSERT_NE(symbol, nullptr) << "TestWithPCInsideInlineFunction failed";
-  EXPECT_STREQ(symbol, __FUNCTION__) << "TestWithPCInsideInlineFunction failed";
-#endif
-}
+void ABSL_ATTRIBUTE_NOINLINE TestWithPCInsideInlineFunction() { __builtin_trap() /* STUB: not implemented */; }
 }
 
 #if defined(__arm__) && ABSL_HAVE_ATTRIBUTE(target) && \
@@ -510,21 +377,11 @@ void ABSL_ATTRIBUTE_NOINLINE TestWithPCInsideInlineFunction() {
 // the hard float ABI because gcc refuses to compile thumb functions on such
 // systems with a "sorry, unimplemented: Thumb-1 hard-float VFP ABI" error.
 
-__attribute__((target("thumb"))) int ArmThumbOverlapThumb(int x) {
-  return x * x * x;
-}
+__attribute__((target("thumb"))) int ArmThumbOverlapThumb(int x) { __builtin_trap() /* STUB: not implemented */; }
 
-__attribute__((target("arm"))) int ArmThumbOverlapArm(int x) {
-  return x * x * x;
-}
+__attribute__((target("arm"))) int ArmThumbOverlapArm(int x) { __builtin_trap() /* STUB: not implemented */; }
 
-void ABSL_ATTRIBUTE_NOINLINE TestArmThumbOverlap() {
-#if defined(ABSL_HAVE_ATTRIBUTE_NOINLINE)
-  const char *symbol = TrySymbolize((void *)&ArmThumbOverlapArm);
-  ASSERT_NE(symbol, nullptr) << "TestArmThumbOverlap failed";
-  EXPECT_STREQ("ArmThumbOverlapArm()", symbol) << "TestArmThumbOverlap failed";
-#endif
-}
+void ABSL_ATTRIBUTE_NOINLINE TestArmThumbOverlap() { __builtin_trap() /* STUB: not implemented */; }
 
 #endif  // defined(__arm__) && ABSL_HAVE_ATTRIBUTE(target) && ((__ARM_ARCH >= 7)
         // || !defined(__ARM_PCS_VFP))
@@ -580,41 +437,4 @@ TEST(Symbolize, Unimplemented) {
 
 #endif
 
-int main(int argc, char **argv) {
-#if !defined(__EMSCRIPTEN__)
-  // Make sure kHpageTextPadding is linked into the binary.
-  if (volatile_bool) {
-    LOG(INFO) << kHpageTextPadding;
-  }
-#endif  // !defined(__EMSCRIPTEN__)
-
-#if ABSL_PER_THREAD_TLS
-  // Touch the per-thread variables.
-  symbolize_test_thread_small[0] = 0;
-  symbolize_test_thread_big[0] = 0;
-#endif
-
-  absl::InitializeSymbolizer(argv[0]);
-  testing::InitGoogleTest(&argc, argv);
-
-#if defined(ABSL_INTERNAL_HAVE_ELF_SYMBOLIZE) ||        \
-    defined(ABSL_INTERNAL_HAVE_EMSCRIPTEN_SYMBOLIZE) || \
-    defined(ABSL_INTERNAL_HAVE_DARWIN_SYMBOLIZE)
-  TestWithPCInsideInlineFunction();
-  TestWithPCInsideNonInlineFunction();
-  TestWithReturnAddress();
-#if defined(__arm__) && ABSL_HAVE_ATTRIBUTE(target) && \
-    ((__ARM_ARCH >= 7) || !defined(__ARM_PCS_VFP))
-  TestArmThumbOverlap();
-#endif
-#endif
-
-#if !defined(__EMSCRIPTEN__)
-  // All of these test cases rely on symbolizing function pointers.
-  // On most platforms, function pointers directly map to PC.
-  // In WebAssembly, function pointers are indices into the function table
-  // and there is no longer a mapping from function index back into the
-  // file offset for symbolization.
-  return RUN_ALL_TESTS();
-#endif  // !defined(__EMSCRIPTEN__)
-}
+int main(int argc, char **argv) { __builtin_trap() /* STUB: not implemented */; }

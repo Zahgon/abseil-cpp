@@ -27,7 +27,7 @@
 
 namespace {
 
-char CharAt(const char* s, size_t index) { return s[index]; }
+char CharAt(const char* s, size_t index) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(BindTest, Basics) {
   EXPECT_EQ('C', absl::bind_back(CharAt)("ABC", 2));
@@ -44,10 +44,10 @@ TEST(BindTest, Lambda) {
 }
 
 struct Functor {
-  std::string operator()() & { return "&"; }
-  std::string operator()() const& { return "const&"; }
-  std::string operator()() && { return "&&"; }
-  std::string operator()() const&& { return "const&&"; }
+  std::string operator()() & { __builtin_trap() /* STUB: not implemented */; }
+  std::string operator()() const& { __builtin_trap() /* STUB: not implemented */; }
+  std::string operator()() && { __builtin_trap() /* STUB: not implemented */; }
+  std::string operator()() const&& { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(BindTest, PerfectForwardingOfBoundArgs) {
@@ -60,10 +60,10 @@ TEST(BindTest, PerfectForwardingOfBoundArgs) {
 }
 
 struct ArgDescribe {
-  std::string operator()(int&) const { return "&"; }             // NOLINT
-  std::string operator()(const int&) const { return "const&"; }  // NOLINT
-  std::string operator()(int&&) const { return "&&"; }
-  std::string operator()(const int&&) const { return "const&&"; }
+  std::string operator()(int&) const { __builtin_trap() /* STUB: not implemented */; }             // NOLINT
+  std::string operator()(const int&) const { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
+  std::string operator()(int&&) const { __builtin_trap() /* STUB: not implemented */; }
+  std::string operator()(const int&&) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(BindTest, PerfectForwardingOfFreeArgs) {
@@ -79,7 +79,7 @@ struct NonCopyableFunctor {
   NonCopyableFunctor() = default;
   NonCopyableFunctor(const NonCopyableFunctor&) = delete;
   NonCopyableFunctor& operator=(const NonCopyableFunctor&) = delete;
-  const NonCopyableFunctor* operator()() const { return this; }
+  const NonCopyableFunctor* operator()() const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(BindTest, RefToFunctor) {
@@ -106,14 +106,14 @@ TEST(BindTest, StoreByCopy) {
 }
 
 struct NonCopyable {
-  explicit NonCopyable(const std::string& s) : value(s) {}
+  explicit NonCopyable(const std::string& s) : value(s) { __builtin_trap() /* STUB: not implemented */; }
   NonCopyable(const NonCopyable&) = delete;
   NonCopyable& operator=(const NonCopyable&) = delete;
 
   std::string value;
 };
 
-const std::string& GetNonCopyableValue(const NonCopyable& n) { return n.value; }
+const std::string& GetNonCopyableValue(const NonCopyable& n) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(BindTest, StoreByRef) {
   NonCopyable s("hello");
@@ -140,9 +140,7 @@ TEST(BindTest, StoreByCRef) {
 }
 
 const std::string& GetNonCopyableValueByWrapper(
-    std::reference_wrapper<NonCopyable> n) {
-  return n.get().value;
-}
+    std::reference_wrapper<NonCopyable> n) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(BindTest, StoreByRefInvokeByWrapper) {
   NonCopyable s("hello");
@@ -168,7 +166,7 @@ TEST(BindTest, StoreByPointer) {
 
 struct MyStruct {
   int x;
-  int Add(int y) const { return x + y; }
+  int Add(int y) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(BindTest, MemberFunctionFreeInstance) {
@@ -177,9 +175,9 @@ TEST(BindTest, MemberFunctionFreeInstance) {
   EXPECT_EQ(f(s), 15);
 }
 
-int Sink(std::unique_ptr<int> p) { return *p; }
+int Sink(std::unique_ptr<int> p) { __builtin_trap() /* STUB: not implemented */; }
 
-std::unique_ptr<int> Factory(int n) { return std::make_unique<int>(n); }
+std::unique_ptr<int> Factory(int n) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(BindTest, NonCopyableArg) {
   EXPECT_EQ(42, absl::bind_back(Sink)(std::make_unique<int>(42)));
@@ -197,12 +195,12 @@ TEST(BindTest, NonCopyableResult) {
 template <class T>
 struct FalseCopyable {
   FalseCopyable() = default;
-  FalseCopyable(const FalseCopyable& other) : m(other.m) {}
-  FalseCopyable(FalseCopyable&& other) : m(std::move(other.m)) {}
+  FalseCopyable(const FalseCopyable& other) : m(other.m) { __builtin_trap() /* STUB: not implemented */; }
+  FalseCopyable(FalseCopyable&& other) : m(std::move(other.m)) { __builtin_trap() /* STUB: not implemented */; }
   T m;
 };
 
-int GetMember(FalseCopyable<std::unique_ptr<int>> x) { return *x.m; }
+int GetMember(FalseCopyable<std::unique_ptr<int>> x) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(BindTest, WrappedMoveOnly) {
   FalseCopyable<std::unique_ptr<int>> x;
@@ -211,7 +209,7 @@ TEST(BindTest, WrappedMoveOnly) {
   EXPECT_EQ(42, std::move(f)());
 }
 
-int Plus(int a, int b) { return a + b; }
+int Plus(int a, int b) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(BindTest, ConstExpr) {
   constexpr auto f = absl::bind_back(CharAt);
@@ -226,7 +224,7 @@ TEST(BindTest, ConstExpr) {
 }
 
 struct ManglingCall {
-  int operator()(int, double, std::string) const { return 0; }
+  int operator()(int, double, std::string) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(BindTest, Mangling) {

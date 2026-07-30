@@ -348,36 +348,17 @@ class StringifySink final {
 
 // Note: the following is declared `ABSL_ATTRIBUTE_NOINLINE`
 template <typename T>
-LogMessage& LogMessage::operator<<(const T& v) {
-  if constexpr (absl::HasAbslStringify<T>::value) {
-    StringifySink sink(*this);
-    // Replace with public API.
-    AbslStringify(sink, v);
-  } else {
-    OstreamView view(*data_);
-    view.stream() << log_internal::NullGuard<T>().Guard(v);
-  }
-  return *this;
-}
+LogMessage& LogMessage::operator<<(const T& v) { __builtin_trap() /* STUB: not implemented */; }
 
 template <int SIZE>
-LogMessage& LogMessage::operator<<(const char (&buf)[SIZE]) {
-  CopyToEncodedBuffer<StringType::kLiteral>(buf);
-  return *this;
-}
+LogMessage& LogMessage::operator<<(const char (&buf)[SIZE]) { __builtin_trap() /* STUB: not implemented */; }
 
 template <int SIZE>
-LogMessage& LogMessage::operator<<(const wchar_t (&buf)[SIZE]) {
-  CopyToEncodedBuffer<StringType::kLiteral>(buf);
-  return *this;
-}
+LogMessage& LogMessage::operator<<(const wchar_t (&buf)[SIZE]) { __builtin_trap() /* STUB: not implemented */; }
 
 // Note: the following is declared `ABSL_ATTRIBUTE_NOINLINE`
 template <int SIZE>
-LogMessage& LogMessage::operator<<(char (&buf)[SIZE]) {
-  CopyToEncodedBuffer<StringType::kNotLiteral>(buf);
-  return *this;
-}
+LogMessage& LogMessage::operator<<(char (&buf)[SIZE]) { __builtin_trap() /* STUB: not implemented */; }
 // We instantiate these specializations in the library's TU to save space in
 // other TUs.  Since the template is marked `ABSL_ATTRIBUTE_NOINLINE` we will be
 // emitting a function call either way.

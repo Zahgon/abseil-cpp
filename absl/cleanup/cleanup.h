@@ -95,23 +95,11 @@ class [[nodiscard]] Cleanup final {
 
   Cleanup(Cleanup&& other) = default;
 
-  void Cancel() && {
-    absl::base_internal::HardeningAssert(storage_.IsCallbackEngaged());
-    storage_.DestroyCallback();
-  }
+  void Cancel() && { __builtin_trap() /* STUB: not implemented */; }
 
-  void Invoke() && {
-    absl::base_internal::HardeningAssert(storage_.IsCallbackEngaged());
-    storage_.InvokeCallback();
-    storage_.DestroyCallback();
-  }
+  void Invoke() && { __builtin_trap() /* STUB: not implemented */; }
 
-  ~Cleanup() {
-    if (storage_.IsCallbackEngaged()) {
-      storage_.InvokeCallback();
-      storage_.DestroyCallback();
-    }
-  }
+  ~Cleanup() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   cleanup_internal::Storage<Callback> storage_;
@@ -127,15 +115,7 @@ Cleanup(Callback callback) -> Cleanup<cleanup_internal::Tag, Callback>;
 //
 // C++11 type deduction API for creating an instance of `absl::Cleanup`
 template <typename... Args, typename Callback>
-absl::Cleanup<cleanup_internal::Tag, Callback> MakeCleanup(Callback callback) {
-  static_assert(cleanup_internal::WasDeduced<cleanup_internal::Tag, Args...>(),
-                "Explicit template parameters are not supported.");
-
-  static_assert(cleanup_internal::ReturnsVoid<Callback>(),
-                "Callbacks that return values are not supported.");
-
-  return {std::move(callback)};
-}
+absl::Cleanup<cleanup_internal::Tag, Callback> MakeCleanup(Callback callback) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

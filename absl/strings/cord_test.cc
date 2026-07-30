@@ -87,189 +87,45 @@ using ::testing::Le;
 static std::string RandomLowercaseString(RandomEngine* rng);
 static std::string RandomLowercaseString(RandomEngine* rng, size_t length);
 
-static int GetUniformRandomUpTo(RandomEngine* rng, int upper_bound) {
-  if (upper_bound > 0) {
-    std::uniform_int_distribution<int> uniform(0, upper_bound - 1);
-    return uniform(*rng);
-  } else {
-    return 0;
-  }
-}
+static int GetUniformRandomUpTo(RandomEngine* rng, int upper_bound) { __builtin_trap() /* STUB: not implemented */; }
 
-static size_t GetUniformRandomUpTo(RandomEngine* rng, size_t upper_bound) {
-  if (upper_bound > 0) {
-    std::uniform_int_distribution<size_t> uniform(0, upper_bound - 1);
-    return uniform(*rng);
-  } else {
-    return 0;
-  }
-}
+static size_t GetUniformRandomUpTo(RandomEngine* rng, size_t upper_bound) { __builtin_trap() /* STUB: not implemented */; }
 
-static int32_t GenerateSkewedRandom(RandomEngine* rng, int max_log) {
-  const uint32_t base = (*rng)() % (max_log + 1);
-  const uint32_t mask = ((base < 32) ? (1u << base) : 0u) - 1u;
-  return (*rng)() & mask;
-}
+static int32_t GenerateSkewedRandom(RandomEngine* rng, int max_log) { __builtin_trap() /* STUB: not implemented */; }
 
-static std::string RandomLowercaseString(RandomEngine* rng) {
-  int length;
-  std::bernoulli_distribution one_in_1k(0.001);
-  std::bernoulli_distribution one_in_10k(0.0001);
-  // With low probability, make a large fragment
-  if (one_in_10k(*rng)) {
-    length = GetUniformRandomUpTo(rng, 1048576);
-  } else if (one_in_1k(*rng)) {
-    length = GetUniformRandomUpTo(rng, 10000);
-  } else {
-    length = GenerateSkewedRandom(rng, 10);
-  }
-  return RandomLowercaseString(rng, length);
-}
+static std::string RandomLowercaseString(RandomEngine* rng) { __builtin_trap() /* STUB: not implemented */; }
 
-static std::string RandomLowercaseString(RandomEngine* rng, size_t length) {
-  std::string result(length, '\0');
-  std::uniform_int_distribution<int> chars('a', 'z');
-  std::generate(result.begin(), result.end(),
-                [&]() { return static_cast<char>(chars(*rng)); });
-  return result;
-}
+static std::string RandomLowercaseString(RandomEngine* rng, size_t length) { __builtin_trap() /* STUB: not implemented */; }
 
-static void DoNothing(absl::string_view /* data */, void* /* arg */) {}
+static void DoNothing(absl::string_view /* data */, void* /* arg */) { __builtin_trap() /* STUB: not implemented */; }
 
-static void DeleteExternalString(absl::string_view data, void* arg) {
-  std::string* s = reinterpret_cast<std::string*>(arg);
-  EXPECT_EQ(data, *s);
-  delete s;
-}
+static void DeleteExternalString(absl::string_view data, void* arg) { __builtin_trap() /* STUB: not implemented */; }
 
 // Add "s" to *dst via `MakeCordFromExternal`
-static void AddExternalMemory(absl::string_view s, absl::Cord* dst) {
-  std::string* str = new std::string(s.data(), s.size());
-  dst->Append(absl::MakeCordFromExternal(*str, [str](absl::string_view data) {
-    DeleteExternalString(data, str);
-  }));
-}
+static void AddExternalMemory(absl::string_view s, absl::Cord* dst) { __builtin_trap() /* STUB: not implemented */; }
 
-static void DumpGrowth() {
-  absl::Cord str;
-  for (int i = 0; i < 1000; i++) {
-    char c = 'a' + i % 26;
-    str.Append(absl::string_view(&c, 1));
-  }
-}
+static void DumpGrowth() { __builtin_trap() /* STUB: not implemented */; }
 
 // Make a Cord with some number of fragments.  Return the size (in bytes)
 // of the smallest fragment.
 static size_t AppendWithFragments(const std::string& s, RandomEngine* rng,
-                                  absl::Cord* cord) {
-  size_t j = 0;
-  const size_t max_size = s.size() / 5;  // Make approx. 10 fragments
-  size_t min_size = max_size;            // size of smallest fragment
-  while (j < s.size()) {
-    size_t N = 1 + GetUniformRandomUpTo(rng, max_size);
-    if (N > (s.size() - j)) {
-      N = s.size() - j;
-    }
-    if (N < min_size) {
-      min_size = N;
-    }
-
-    std::bernoulli_distribution coin_flip(0.5);
-    if (coin_flip(*rng)) {
-      // Grow by adding an external-memory.
-      AddExternalMemory(absl::string_view(s.data() + j, N), cord);
-    } else {
-      cord->Append(absl::string_view(s.data() + j, N));
-    }
-    j += N;
-  }
-  return min_size;
-}
+                                  absl::Cord* cord) { __builtin_trap() /* STUB: not implemented */; }
 
 // Add an external memory that contains the specified std::string to cord
-static void AddNewStringBlock(const std::string& str, absl::Cord* dst) {
-  char* data = new char[str.size()];
-  memcpy(data, str.data(), str.size());
-  dst->Append(absl::MakeCordFromExternal(
-      absl::string_view(data, str.size()),
-      [](absl::string_view s) { delete[] s.data(); }));
-}
+static void AddNewStringBlock(const std::string& str, absl::Cord* dst) { __builtin_trap() /* STUB: not implemented */; }
 
 // Make a Cord out of many different types of nodes.
-static absl::Cord MakeComposite() {
-  absl::Cord cord;
-  cord.Append("the");
-  AddExternalMemory(" quick brown", &cord);
-  AddExternalMemory(" fox jumped", &cord);
-
-  absl::Cord full(" over");
-  AddExternalMemory(" the lazy", &full);
-  AddNewStringBlock(" dog slept the whole day away", &full);
-  absl::Cord substring = full.Subcord(0, 18);
-
-  // Make substring long enough to defeat the copying fast path in Append.
-  substring.Append(std::string(1000, '.'));
-  cord.Append(substring);
-  cord = cord.Subcord(0, cord.size() - 998);  // Remove most of extra junk
-
-  return cord;
-}
+static absl::Cord MakeComposite() { __builtin_trap() /* STUB: not implemented */; }
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
 
-class CordTestPeer {
- public:
-  static void ForEachChunk(
-      const Cord& c, absl::FunctionRef<void(absl::string_view)> callback) {
-    c.ForEachChunk(callback);
-  }
-
-  static bool IsTree(const Cord& c) { return c.contents_.is_tree(); }
-  static CordRep* Tree(const Cord& c) { return c.contents_.tree(); }
-
-  static cord_internal::CordzInfo* GetCordzInfo(const Cord& c) {
-    return c.contents_.cordz_info();
-  }
-
-  static Cord MakeSubstring(Cord src, size_t offset, size_t length) {
-    CHECK(src.contents_.is_tree()) << "Can not be inlined";
-    CHECK(!src.ExpectedChecksum().has_value()) << "Can not be hardened";
-    Cord cord;
-    auto* tree = cord_internal::SkipCrcNode(src.contents_.tree());
-    auto* rep = CordRepSubstring::Create(CordRep::Ref(tree), offset, length);
-    cord.contents_.EmplaceTree(rep, CordzUpdateTracker::kSubCord);
-    return cord;
-  }
-};
-
-ABSL_NAMESPACE_END
-}  // namespace absl
-
-// The CordTest fixture runs all tests with and without expected CRCs being set
-// on the subject Cords.
-class CordTest : public testing::TestWithParam<bool /*useCrc*/> {
- public:
-  // Returns true if test is running with Crc enabled.
-  bool UseCrc() const { return GetParam(); }
-  void MaybeHarden(absl::Cord& c) {
-    if (UseCrc()) {
-      c.SetExpectedChecksum(1);
-    }
-  }
-  absl::Cord MaybeHardened(absl::Cord c) {
-    MaybeHarden(c);
-    return c;
-  }
+class CordTestPeer { __builtin_trap() /* STUB: not implemented */; }c() const { __builtin_trap() /* STUB: not implemented */; }
+  void MaybeHarden(absl::Cord& c) { __builtin_trap() /* STUB: not implemented */; }
+  absl::Cord MaybeHardened(absl::Cord c) { __builtin_trap() /* STUB: not implemented */; }
 
   // Returns human readable string representation of the test parameter.
-  static std::string ToString(testing::TestParamInfo<bool> useCrc) {
-    if (useCrc.param) {
-      return "BtreeHardened";
-    } else {
-      return "Btree";
-    }
-  }
+  static std::string ToString(testing::TestParamInfo<bool> useCrc) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 INSTANTIATE_TEST_SUITE_P(WithParam, CordTest, testing::Bool(),
@@ -397,15 +253,7 @@ TEST_P(CordTest, GigabyteCordFromExternal) {
   // Note: on a 64-bit build, this comes out to 171,932,385,280 bytes.
 }
 
-static absl::Cord MakeExternalCord(int size) {
-  char* buffer = new char[size];
-  memset(buffer, 'x', size);
-  absl::Cord cord;
-  cord.Append(absl::MakeCordFromExternal(
-      absl::string_view(buffer, size),
-      [](absl::string_view s) { delete[] s.data(); }));
-  return cord;
-}
+static absl::Cord MakeExternalCord(int size) { __builtin_trap() /* STUB: not implemented */; }
 
 // Extern to fool clang that this is not constant. Needed to suppress
 // a warning of unsafe code we want to test.
@@ -676,24 +524,7 @@ TEST_P(CordTest, Swap) {
   ASSERT_EQ(y, absl::Cord(b));
 }
 
-static void VerifyCopyToString(const absl::Cord& cord) {
-  std::string initially_empty;
-  absl::CopyCordToString(cord, &initially_empty);
-  EXPECT_EQ(initially_empty, cord);
-
-  constexpr size_t kInitialLength = 1024;
-  std::string has_initial_contents(kInitialLength, 'x');
-  const char* address_before_copy = has_initial_contents.data();
-  absl::CopyCordToString(cord, &has_initial_contents);
-  EXPECT_EQ(has_initial_contents, cord);
-
-  if (cord.size() <= kInitialLength) {
-    EXPECT_EQ(has_initial_contents.data(), address_before_copy)
-        << "CopyCordToString allocated new string storage; "
-           "has_initial_contents = \""
-        << has_initial_contents << "\"";
-  }
-}
+static void VerifyCopyToString(const absl::Cord& cord) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(CordTest, CopyToString) {
   VerifyCopyToString(absl::Cord());  // empty cords cannot carry CRCs
@@ -703,29 +534,7 @@ TEST_P(CordTest, CopyToString) {
                                 "copying ", "to ", "a ", "string."})));
 }
 
-static void VerifyAppendCordToString(const absl::Cord& cord) {
-  std::string initially_empty;
-  absl::AppendCordToString(cord, &initially_empty);
-  EXPECT_EQ(initially_empty, cord);
-
-  const absl::string_view kInitialContents = "initial contents.";
-  std::string expected_after_append =
-      absl::StrCat(kInitialContents, std::string(cord));
-
-  std::string no_reserve(kInitialContents);
-  absl::AppendCordToString(cord, &no_reserve);
-  EXPECT_EQ(no_reserve, expected_after_append);
-
-  std::string has_reserved_capacity(kInitialContents);
-  has_reserved_capacity.reserve(has_reserved_capacity.size() + cord.size());
-  const char* address_before_copy = has_reserved_capacity.data();
-  absl::AppendCordToString(cord, &has_reserved_capacity);
-  EXPECT_EQ(has_reserved_capacity, expected_after_append);
-  EXPECT_EQ(has_reserved_capacity.data(), address_before_copy)
-      << "AppendCordToString allocated new string storage; "
-         "has_reserved_capacity = \""
-      << has_reserved_capacity << "\"";
-}
+static void VerifyAppendCordToString(const absl::Cord& cord) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(CordTest, AppendToString) {
   VerifyAppendCordToString(absl::Cord());  // empty cords cannot carry CRCs
@@ -735,44 +544,7 @@ TEST_P(CordTest, AppendToString) {
                                 "appending ", "to ", "a ", "string."})));
 }
 
-static void VerifyCopyToSpan(const absl::Cord& cord) {
-  // Test with span exactly the same size as the cord.
-  {
-    std::string dst(cord.size(), '\0');
-    size_t copied = absl::CopyCordToSpan(cord, absl::MakeSpan(dst));
-    EXPECT_EQ(copied, cord.size());
-    EXPECT_EQ(dst, cord);
-  }
-
-  // Test with span larger than the cord.
-  {
-    std::string dst(cord.size() + 10, 'x');
-    size_t copied = absl::CopyCordToSpan(cord, absl::MakeSpan(dst));
-    EXPECT_EQ(copied, cord.size());
-    EXPECT_EQ(absl::string_view(dst).substr(0, copied), cord);
-    if (cord.size() < dst.size()) {
-      absl::string_view tail = absl::string_view(dst).substr(copied);
-      EXPECT_EQ(tail, std::string(tail.size(), 'x'));
-    }
-  }
-
-  // Test with span smaller than the cord.
-  {
-    size_t target_size = cord.size() / 2;
-    std::string dst(target_size, '\0');
-    size_t copied = absl::CopyCordToSpan(cord, absl::MakeSpan(dst));
-    EXPECT_EQ(copied, target_size);
-    EXPECT_EQ(dst, std::string(cord).substr(0, target_size));
-  }
-
-  // Test with empty span.
-  {
-    char c = 'x';
-    size_t copied = absl::CopyCordToSpan(cord, absl::MakeSpan(&c, 0));
-    EXPECT_EQ(copied, 0);
-    EXPECT_EQ(c, 'x');
-  }
-}
+static void VerifyCopyToSpan(const absl::Cord& cord) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(CordTest, CopyToSpan) {
   VerifyCopyToSpan(absl::Cord());  // Empty cords cannot be hardened.
@@ -920,29 +692,17 @@ TEST_P(CordTest, PrependLargeBuffer) {
 
 class CordAppendBufferTest : public testing::TestWithParam<bool> {
  public:
-  size_t is_default() const { return GetParam(); }
+  size_t is_default() const { __builtin_trap() /* STUB: not implemented */; }
 
   // Returns human readable string representation of the test parameter.
-  static std::string ToString(testing::TestParamInfo<bool> param) {
-    return param.param ? "DefaultLimit" : "CustomLimit";
-  }
+  static std::string ToString(testing::TestParamInfo<bool> param) { __builtin_trap() /* STUB: not implemented */; }
 
-  size_t limit() const {
-    return is_default() ? absl::CordBuffer::kDefaultLimit
-                        : absl::CordBuffer::kCustomLimit;
-  }
+  size_t limit() const { __builtin_trap() /* STUB: not implemented */; }
 
-  size_t maximum_payload() const {
-    return is_default() ? absl::CordBuffer::MaximumPayload()
-                        : absl::CordBuffer::MaximumPayload(limit());
-  }
+  size_t maximum_payload() const { __builtin_trap() /* STUB: not implemented */; }
 
   absl::CordBuffer GetAppendBuffer(absl::Cord& cord, size_t capacity,
-                                   size_t min_capacity = 16) {
-    return is_default()
-               ? cord.GetAppendBuffer(capacity, min_capacity)
-               : cord.GetCustomAppendBuffer(limit(), capacity, min_capacity);
-  }
+                                   size_t min_capacity = 16) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 INSTANTIATE_TEST_SUITE_P(WithParam, CordAppendBufferTest, testing::Bool(),
@@ -1164,33 +924,9 @@ TEST_P(CordTest, TryFlatCommonlyAssumedInvariants) {
   }
 }
 
-static bool IsFlat(const absl::Cord& c) {
-  return c.chunk_begin() == c.chunk_end() || ++c.chunk_begin() == c.chunk_end();
-}
+static bool IsFlat(const absl::Cord& c) { __builtin_trap() /* STUB: not implemented */; }
 
-static void VerifyFlatten(absl::Cord c) {
-  std::string old_contents(c);
-  absl::string_view old_flat;
-  bool already_flat_and_non_empty = IsFlat(c) && !c.empty();
-  if (already_flat_and_non_empty) {
-    old_flat = *c.chunk_begin();
-  }
-  absl::string_view new_flat = c.Flatten();
-
-  // Verify that the contents of the flattened Cord are correct.
-  EXPECT_EQ(new_flat, old_contents);
-  EXPECT_EQ(std::string(c), old_contents);
-
-  // If the Cord contained data and was already flat, verify that the data
-  // wasn't copied.
-  if (already_flat_and_non_empty) {
-    EXPECT_EQ(old_flat.data(), new_flat.data())
-        << "Allocated new memory even though the Cord was already flat.";
-  }
-
-  // Verify that the flattened Cord is in fact flat.
-  EXPECT_TRUE(IsFlat(c));
-}
+static void VerifyFlatten(absl::Cord c) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(CordTest, Flatten) {
   VerifyFlatten(absl::Cord());
@@ -1212,39 +948,13 @@ class TestData {
   std::vector<std::string> data_;
 
   // Return a std::string of the specified length.
-  static std::string MakeString(int length) {
-    std::string result;
-    char buf[30];
-    snprintf(buf, sizeof(buf), "(%d)", length);
-    while (result.size() < length) {
-      result += buf;
-    }
-    result.resize(length);
-    return result;
-  }
+  static std::string MakeString(int length) { __builtin_trap() /* STUB: not implemented */; }
 
  public:
-  TestData() {
-    // short strings increasing in length by one
-    for (int i = 0; i < 30; i++) {
-      data_.push_back(MakeString(i));
-    }
+  TestData() { __builtin_trap() /* STUB: not implemented */; }
 
-    // strings around half kMaxFlatLength
-    static const int kMaxFlatLength = 4096 - 9;
-    static const int kHalf = kMaxFlatLength / 2;
-
-    for (int i = -10; i <= +10; i++) {
-      data_.push_back(MakeString(kHalf + i));
-    }
-
-    for (int i = -10; i <= +10; i++) {
-      data_.push_back(MakeString(kMaxFlatLength + i));
-    }
-  }
-
-  size_t size() const { return data_.size(); }
-  const std::string& data(size_t i) const { return data_[i]; }
+  size_t size() const { __builtin_trap() /* STUB: not implemented */; }
+  const std::string& data(size_t i) const { __builtin_trap() /* STUB: not implemented */; }
 };
 }  // namespace
 
@@ -1369,16 +1079,7 @@ TEST_P(CordTest, RemoveSuffixMakesZeroLengthNode) {
 namespace {
 
 // Create a cord with an external memory block filled with 'z'
-absl::Cord CordWithZedBlock(size_t size) {
-  char* data = new char[size];
-  if (size > 0) {
-    memset(data, 'z', size);
-  }
-  absl::Cord cord = absl::MakeCordFromExternal(
-      absl::string_view(data, size),
-      [](absl::string_view s) { delete[] s.data(); });
-  return cord;
-}
+absl::Cord CordWithZedBlock(size_t size) { __builtin_trap() /* STUB: not implemented */; }
 
 // Establish that ZedBlock does what we think it does.
 TEST_P(CordTest, CordSpliceTestZedBlock) {
@@ -1424,25 +1125,11 @@ TEST_P(CordTest, CordSpliceTestZedBlockSuffix0) {
   EXPECT_EQ("", s);
 }
 
-absl::Cord BigCord(size_t len, char v) {
-  std::string s(len, v);
-  return absl::Cord(s);
-}
+absl::Cord BigCord(size_t len, char v) { __builtin_trap() /* STUB: not implemented */; }
 
 // Splice block into cord.
 absl::Cord SpliceCord(const absl::Cord& blob, int64_t offset,
-                      const absl::Cord& block) {
-  CHECK_GE(offset, 0);
-  CHECK_LE(static_cast<size_t>(offset) + block.size(), blob.size());
-  absl::Cord result(blob);
-  result.RemoveSuffix(blob.size() - offset);
-  result.Append(block);
-  absl::Cord suffix(blob);
-  suffix.RemovePrefix(offset + block.size());
-  result.Append(suffix);
-  CHECK_EQ(blob.size(), result.size());
-  return result;
-}
+                      const absl::Cord& block) { __builtin_trap() /* STUB: not implemented */; }
 
 // Taking an empty suffix of a block breaks appending.
 TEST_P(CordTest, CordSpliceTestRemoveEntireBlock1) {
@@ -1476,11 +1163,7 @@ TEST_P(CordTest, CordSpliceTestRemoveEntireBlock3) {
 struct CordCompareTestCase {
   template <typename LHS, typename RHS>
   CordCompareTestCase(const LHS& lhs, const RHS& rhs, bool use_crc)
-      : lhs_cord(lhs), rhs_cord(rhs) {
-    if (use_crc) {
-      lhs_cord.SetExpectedChecksum(1);
-    }
-  }
+      : lhs_cord(lhs), rhs_cord(rhs) { __builtin_trap() /* STUB: not implemented */; }
 
   absl::Cord lhs_cord;
   absl::Cord rhs_cord;
@@ -1488,19 +1171,7 @@ struct CordCompareTestCase {
 
 const auto sign = [](int x) { return x == 0 ? 0 : (x > 0 ? 1 : -1); };
 
-void VerifyComparison(const CordCompareTestCase& test_case) {
-  std::string lhs_string(test_case.lhs_cord);
-  std::string rhs_string(test_case.rhs_cord);
-  int expected = sign(lhs_string.compare(rhs_string));
-  EXPECT_EQ(expected, test_case.lhs_cord.Compare(test_case.rhs_cord))
-      << "LHS=" << lhs_string << "; RHS=" << rhs_string;
-  EXPECT_EQ(expected, test_case.lhs_cord.Compare(rhs_string))
-      << "LHS=" << lhs_string << "; RHS=" << rhs_string;
-  EXPECT_EQ(-expected, test_case.rhs_cord.Compare(test_case.lhs_cord))
-      << "LHS=" << rhs_string << "; RHS=" << lhs_string;
-  EXPECT_EQ(-expected, test_case.rhs_cord.Compare(lhs_string))
-      << "LHS=" << rhs_string << "; RHS=" << lhs_string;
-}
+void VerifyComparison(const CordCompareTestCase& test_case) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(CordTest, Compare) {
   absl::Cord subcord("aaaaaBBBBBcccccDDDDD");
@@ -1592,14 +1263,7 @@ TEST_P(CordTest, CompareAfterAssign) {
 // Test CompareTo() and ComparePrefix() against string and substring
 // comparison methods from basic_string.
 static void TestCompare(const absl::Cord& c, const absl::Cord& d,
-                        RandomEngine* rng) {
-  // char_traits<char>::lt is guaranteed to do an unsigned comparison:
-  // https://en.cppreference.com/w/cpp/string/char_traits/cmp. We also expect
-  // Cord comparisons to be based on unsigned byte comparisons regardless of
-  // whether char is signed.
-  int expected = sign(std::string(c).compare(std::string(d)));
-  EXPECT_EQ(expected, sign(c.Compare(d))) << c << ", " << d;
-}
+                        RandomEngine* rng) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(CordTest, CompareComparisonIsUnsigned) {
   RandomEngine rng(GTEST_FLAG_GET(random_seed));
@@ -1641,34 +1305,7 @@ TEST_P(CordTest, CompareRandomComparisons) {
 }
 
 template <typename T1, typename T2>
-void CompareOperators() {
-  const T1 a("a");
-  const T2 b("b");
-
-  EXPECT_TRUE(a == a);
-  // For pointer type (i.e. `const char*`), operator== compares the address
-  // instead of the string, so `a == const char*("a")` isn't necessarily true.
-  EXPECT_TRUE(std::is_pointer_v<T1> || a == T1("a"));
-  EXPECT_TRUE(std::is_pointer_v<T2> || a == T2("a"));
-  EXPECT_FALSE(a == b);
-
-  EXPECT_TRUE(a != b);
-  EXPECT_FALSE(a != a);
-
-  EXPECT_TRUE(a < b);
-  EXPECT_FALSE(b < a);
-
-  EXPECT_TRUE(b > a);
-  EXPECT_FALSE(a > b);
-
-  EXPECT_TRUE(a >= a);
-  EXPECT_TRUE(b >= a);
-  EXPECT_FALSE(a >= b);
-
-  EXPECT_TRUE(a <= a);
-  EXPECT_TRUE(a <= b);
-  EXPECT_FALSE(b <= a);
-}
+void CompareOperators() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(CordTest, ComparisonOperators_Cord_Cord) {
   CompareOperators<absl::Cord, absl::Cord>();
@@ -1983,10 +1620,7 @@ constexpr auto kTotalMorePrecise =
     absl::CordMemoryAccounting::kTotalMorePrecise;
 
 // Creates a cord of `n` `c` values, making sure no string stealing occurs.
-absl::Cord MakeCord(size_t n, char c) {
-  const std::string s(n, c);
-  return absl::Cord(s);
-}
+absl::Cord MakeCord(size_t n, char c) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(CordTest, CordMemoryUsageEmpty) {
   absl::Cord cord;
@@ -2260,34 +1894,7 @@ TEST_P(CordTest, DiabolicalGrowth) {
 // that's appropriate for the binary.
 
 // Construct a huge cord with the specified valid prefix.
-static absl::Cord MakeHuge(absl::string_view prefix) {
-  absl::Cord cord;
-  if (sizeof(size_t) > 4) {
-    // In 64-bit binaries, test 64-bit Cord support.
-    const size_t size =
-        static_cast<size_t>(std::numeric_limits<uint32_t>::max()) + 314;
-    cord.Append(absl::MakeCordFromExternal(
-        absl::string_view(prefix.data(), size),
-        [](absl::string_view s) { DoNothing(s, nullptr); }));
-  } else {
-    // Cords are limited to 32-bit lengths in 32-bit binaries.  The following
-    // tests check for use of "signed int" to represent Cord length/offset.
-    // However absl::string_view does not allow lengths >= (1u<<31), so we need
-    // to append in two parts;
-    const size_t s1 = (1u << 31) - 1;
-    // For shorter cord, `Append` copies the data rather than allocating a new
-    // node. The threshold is currently set to 511, so `s2` needs to be bigger
-    // to not trigger the copy.
-    const size_t s2 = 600;
-    cord.Append(absl::MakeCordFromExternal(
-        absl::string_view(prefix.data(), s1),
-        [](absl::string_view s) { DoNothing(s, nullptr); }));
-    cord.Append(absl::MakeCordFromExternal(
-        absl::string_view("", s2),
-        [](absl::string_view s) { DoNothing(s, nullptr); }));
-  }
-  return cord;
-}
+static absl::Cord MakeHuge(absl::string_view prefix) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(CordTest, HugeCord) {
   absl::Cord cord = MakeHuge("huge cord");
@@ -2396,51 +2003,7 @@ TEST_P(CordTest, CordChunkIteratorTraits) {
 }
 
 static void VerifyChunkIterator(const absl::Cord& cord,
-                                size_t expected_chunks) {
-  EXPECT_EQ(cord.chunk_begin() == cord.chunk_end(), cord.empty()) << cord;
-  EXPECT_EQ(cord.chunk_begin() != cord.chunk_end(), !cord.empty());
-
-  absl::Cord::ChunkRange range = cord.Chunks();
-  EXPECT_EQ(range.begin() == range.end(), cord.empty());
-  EXPECT_EQ(range.begin() != range.end(), !cord.empty());
-
-  std::string content(cord);
-  size_t pos = 0;
-  auto pre_iter = cord.chunk_begin(), post_iter = cord.chunk_begin();
-  size_t n_chunks = 0;
-  while (pre_iter != cord.chunk_end() && post_iter != cord.chunk_end()) {
-    EXPECT_FALSE(pre_iter == cord.chunk_end());   // NOLINT: explicitly test ==
-    EXPECT_FALSE(post_iter == cord.chunk_end());  // NOLINT
-
-    EXPECT_EQ(pre_iter, post_iter);
-    EXPECT_EQ(*pre_iter, *post_iter);
-
-    EXPECT_EQ(pre_iter->data(), (*pre_iter).data());
-    EXPECT_EQ(pre_iter->size(), (*pre_iter).size());
-
-    absl::string_view chunk = *pre_iter;
-    EXPECT_FALSE(chunk.empty());
-    EXPECT_LE(pos + chunk.size(), content.size());
-    EXPECT_EQ(absl::string_view(content.c_str() + pos, chunk.size()), chunk);
-
-    int n_equal_iterators = 0;
-    for (absl::Cord::ChunkIterator it = range.begin(); it != range.end();
-         ++it) {
-      n_equal_iterators += static_cast<int>(it == pre_iter);
-    }
-    EXPECT_EQ(n_equal_iterators, 1);
-
-    ++pre_iter;
-    EXPECT_EQ(*post_iter++, chunk);
-
-    pos += chunk.size();
-    ++n_chunks;
-  }
-  EXPECT_EQ(expected_chunks, n_chunks);
-  EXPECT_EQ(pos, content.size());
-  EXPECT_TRUE(pre_iter == cord.chunk_end());   // NOLINT: explicitly test ==
-  EXPECT_TRUE(post_iter == cord.chunk_end());  // NOLINT
-}
+                                size_t expected_chunks) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(CordTest, CordChunkIteratorOperations) {
   absl::Cord empty_cord;
@@ -2582,92 +2145,7 @@ TEST_P(CordTest, CharIteratorTraits) {
       "");
 }
 
-static void VerifyCharIterator(const absl::Cord& cord) {
-  EXPECT_EQ(cord.char_begin() == cord.char_end(), cord.empty());
-  EXPECT_EQ(cord.char_begin() != cord.char_end(), !cord.empty());
-
-  absl::Cord::CharRange range = cord.Chars();
-  EXPECT_EQ(range.begin() == range.end(), cord.empty());
-  EXPECT_EQ(range.begin() != range.end(), !cord.empty());
-  EXPECT_EQ(absl::Cord::Distance(range.begin(), range.end()),
-            static_cast<ptrdiff_t>(cord.size()));
-  EXPECT_EQ(absl::Cord::Distance(range.end(), range.begin()),
-            -static_cast<ptrdiff_t>(cord.size()));
-
-  size_t i = 0;
-  absl::Cord::CharIterator pre_iter = cord.char_begin();
-  absl::Cord::CharIterator post_iter = cord.char_begin();
-  std::string content(cord);
-  while (pre_iter != cord.char_end() && post_iter != cord.char_end()) {
-    EXPECT_FALSE(pre_iter == cord.char_end());   // NOLINT: explicitly test ==
-    EXPECT_FALSE(post_iter == cord.char_end());  // NOLINT
-
-    EXPECT_LT(i, cord.size());
-    EXPECT_EQ(content[i], *pre_iter);
-
-    EXPECT_EQ(pre_iter, post_iter);
-    EXPECT_EQ(*pre_iter, *post_iter);
-    EXPECT_EQ(&*pre_iter, &*post_iter);
-
-    const char* character_address = &*pre_iter;
-    absl::Cord::CharIterator copy = pre_iter;
-    ++copy;
-    EXPECT_EQ(character_address, &*pre_iter);
-
-    int n_equal_iterators = 0;
-    for (absl::Cord::CharIterator it = range.begin(); it != range.end(); ++it) {
-      n_equal_iterators += static_cast<int>(it == pre_iter);
-    }
-    EXPECT_EQ(n_equal_iterators, 1);
-
-    absl::Cord::CharIterator advance_iter = range.begin();
-    absl::Cord::Advance(&advance_iter, i);
-    EXPECT_EQ(pre_iter, advance_iter);
-    EXPECT_EQ(absl::Cord::Distance(range.begin(), advance_iter),
-              static_cast<ptrdiff_t>(i));
-
-    advance_iter = range.begin();
-    EXPECT_EQ(absl::Cord::AdvanceAndRead(&advance_iter, i), cord.Subcord(0, i));
-    EXPECT_EQ(pre_iter, advance_iter);
-    EXPECT_EQ(absl::Cord::Distance(range.begin(), advance_iter),
-              static_cast<ptrdiff_t>(i));
-
-    advance_iter = pre_iter;
-    absl::Cord::Advance(&advance_iter, cord.size() - i);
-    EXPECT_EQ(range.end(), advance_iter);
-    EXPECT_EQ(absl::Cord::Distance(range.begin(), advance_iter),
-              static_cast<ptrdiff_t>(cord.size()));
-    EXPECT_EQ(absl::Cord::Distance(advance_iter, range.end()), 0);
-
-    advance_iter = pre_iter;
-    EXPECT_EQ(absl::Cord::AdvanceAndRead(&advance_iter, cord.size() - i),
-              cord.Subcord(i, cord.size() - i));
-    EXPECT_EQ(range.end(), advance_iter);
-    EXPECT_EQ(absl::Cord::Distance(range.begin(), advance_iter),
-              static_cast<ptrdiff_t>(cord.size()));
-    EXPECT_EQ(absl::Cord::Distance(advance_iter, range.end()), 0);
-
-    ++i;
-    ++pre_iter;
-    post_iter++;
-  }
-  EXPECT_EQ(i, cord.size());
-  EXPECT_TRUE(pre_iter == cord.char_end());   // NOLINT: explicitly test ==
-  EXPECT_TRUE(post_iter == cord.char_end());  // NOLINT
-
-  absl::Cord::CharIterator zero_advanced_end = cord.char_end();
-  absl::Cord::Advance(&zero_advanced_end, 0);
-  EXPECT_EQ(zero_advanced_end, cord.char_end());
-
-  absl::Cord::CharIterator it = cord.char_begin();
-  for (absl::string_view chunk : cord.Chunks()) {
-    while (!chunk.empty()) {
-      EXPECT_EQ(absl::Cord::ChunkRemaining(it), chunk);
-      chunk.remove_prefix(1);
-      ++it;
-    }
-  }
-}
+static void VerifyCharIterator(const absl::Cord& cord) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(CordTest, CharIteratorOperations) {
   absl::Cord empty_cord;
@@ -2879,77 +2357,25 @@ TEST_P(CordTest, BtreeHostileSplitInsertJoin) {
 
 class AfterExitCordTester {
  public:
-  bool Set(absl::Cord* cord, absl::string_view expected) {
-    cord_ = cord;
-    expected_ = expected;
-    return true;
-  }
+  bool Set(absl::Cord* cord, absl::string_view expected) { __builtin_trap() /* STUB: not implemented */; }
 
-  ~AfterExitCordTester() {
-    EXPECT_EQ(*cord_, expected_);
-  }
+  ~AfterExitCordTester() { __builtin_trap() /* STUB: not implemented */; }
  private:
   absl::Cord* cord_;
   absl::string_view expected_;
 };
 
 template <typename Str>
-void TestAfterExit(Str) {
-  const auto expected = Str::value;
-  // Defined before `cord` to be destroyed after it.
-  static AfterExitCordTester exit_tester;  // NOLINT
-  static absl::NoDestructor<absl::Cord> cord_leaker(Str{});
-  // cord_leaker is static, so this reference will remain valid through the end
-  // of program execution.
-  static absl::Cord& cord = *cord_leaker;
-  static bool init_exit_tester = exit_tester.Set(&cord, expected);
-  (void)init_exit_tester;
+void TestAfterExit(Str) { __builtin_trap() /* STUB: not implemented */; }
 
-  EXPECT_EQ(cord, expected);
-  // Copy the object and test the copy, and the original.
-  {
-    absl::Cord copy = cord;
-    EXPECT_EQ(copy, expected);
-  }
-  // The original still works
-  EXPECT_EQ(cord, expected);
-
-  // Try making adding more structure to the tree.
-  {
-    absl::Cord copy = cord;
-    std::string expected_copy(expected);
-    for (int i = 0; i < 10; ++i) {
-      copy.Append(cord);
-      absl::StrAppend(&expected_copy, expected);
-      EXPECT_EQ(copy, expected_copy);
-    }
-  }
-
-  // Make sure we are using the right branch during constant evaluation.
-  EXPECT_EQ(absl::CordTestPeer::IsTree(cord), cord.size() >= 16);
-
-  for (int i = 0; i < 10; ++i) {
-    // Make a few more Cords from the same global rep.
-    // This tests what happens when the refcount for it gets below 1.
-    EXPECT_EQ(expected, absl::Cord(Str{}));
-  }
-}
-
-constexpr int SimpleStrlen(const char* p) {
-  return *p ? 1 + SimpleStrlen(p + 1) : 0;
-}
+constexpr int SimpleStrlen(const char* p) { return {}; }
 
 struct ShortView {
-  constexpr absl::string_view operator()() const {
-    return absl::string_view("SSO string", SimpleStrlen("SSO string"));
-  }
+  constexpr absl::string_view operator()() const { return {}; }
 };
 
 struct LongView {
-  constexpr absl::string_view operator()() const {
-    return absl::string_view("String that does not fit SSO.",
-                             SimpleStrlen("String that does not fit SSO."));
-  }
+  constexpr absl::string_view operator()() const { return {}; }
 };
 
 
@@ -2968,10 +2394,10 @@ class PopulatedCordFactory {
  public:
   constexpr PopulatedCordFactory(absl::string_view name,
                                  absl::Cord (*generator)())
-      : name_(name), generator_(generator) {}
+      : name_(name), generator_(generator) { }
 
-  absl::string_view Name() const { return name_; }
-  absl::Cord Generate() const { return generator_(); }
+  absl::string_view Name() const { __builtin_trap() /* STUB: not implemented */; }
+  absl::Cord Generate() const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   absl::string_view name_;
@@ -3020,12 +2446,12 @@ class CordMutator {
  public:
   constexpr CordMutator(absl::string_view name, void (*mutate)(absl::Cord&),
                         void (*undo)(absl::Cord&) = nullptr)
-      : name_(name), mutate_(mutate), undo_(undo) {}
+      : name_(name), mutate_(mutate), undo_(undo) { }
 
-  absl::string_view Name() const { return name_; }
-  void Mutate(absl::Cord& cord) const { mutate_(cord); }
-  bool CanUndo() const { return undo_ != nullptr; }
-  void Undo(absl::Cord& cord) const { undo_(cord); }
+  absl::string_view Name() const { __builtin_trap() /* STUB: not implemented */; }
+  void Mutate(absl::Cord& cord) const { __builtin_trap() /* STUB: not implemented */; }
+  bool CanUndo() const { __builtin_trap() /* STUB: not implemented */; }
+  void Undo(absl::Cord& cord) const { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   absl::string_view name_;
@@ -3380,14 +2806,7 @@ ABSL_ATTRIBUTE_WEAK
 size_t FalseReport(const absl::Cord& a, bool f);
 
 ABSL_ATTRIBUTE_NOINLINE
-size_t FalseReport(const absl::Cord& a, bool f) {
-  absl::Cord b;
-  const absl::Cord& ref = f ? b : a;
-  // Test that sanitizers report nothing here. Without
-  // InlineData::Rep::annotated_this() compiler can unconditionally load
-  // poisoned parts, assuming that local variable is fully accessible.
-  return ref.size();
-}
+size_t FalseReport(const absl::Cord& a, bool f) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(CordSanitizerTest, SanitizesCordFalseReport) {
   absl::Cord c;
@@ -3429,9 +2848,7 @@ TEST(CordThreeWayComparisonTest, CompareCordsAndStringViews) {
 #if defined(GTEST_HAS_DEATH_TEST) && defined(ABSL_INTERNAL_CORD_HAVE_SANITIZER)
 
 // Returns an expected poison / uninitialized death message expression.
-const char* MASanDeathExpr() {
-  return "(use-after-poison|use-of-uninitialized-value)";
-}
+const char* MASanDeathExpr() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(CordSanitizerTest, SanitizesEmptyCord) {
   absl::Cord cord;

@@ -320,38 +320,18 @@ enum class StatusToStringMode : int {
 // absl::StatusToStringMode is specified as a bitmask type, which means the
 // following operations must be provided:
 constexpr StatusToStringMode operator&(StatusToStringMode lhs,
-                                       StatusToStringMode rhs) {
-  return static_cast<StatusToStringMode>(static_cast<int>(lhs) &
-                                         static_cast<int>(rhs));
-}
+                                       StatusToStringMode rhs) { return {}; }
 constexpr StatusToStringMode operator|(StatusToStringMode lhs,
-                                       StatusToStringMode rhs) {
-  return static_cast<StatusToStringMode>(static_cast<int>(lhs) |
-                                         static_cast<int>(rhs));
-}
+                                       StatusToStringMode rhs) { return {}; }
 constexpr StatusToStringMode operator^(StatusToStringMode lhs,
-                                       StatusToStringMode rhs) {
-  return static_cast<StatusToStringMode>(static_cast<int>(lhs) ^
-                                         static_cast<int>(rhs));
-}
-constexpr StatusToStringMode operator~(StatusToStringMode arg) {
-  return static_cast<StatusToStringMode>(~static_cast<int>(arg));
-}
+                                       StatusToStringMode rhs) { return {}; }
+constexpr StatusToStringMode operator~(StatusToStringMode arg) { return {}; }
 inline StatusToStringMode& operator&=(StatusToStringMode& lhs,
-                                      StatusToStringMode rhs) {
-  lhs = lhs & rhs;
-  return lhs;
-}
+                                      StatusToStringMode rhs) { __builtin_trap() /* STUB: not implemented */; }
 inline StatusToStringMode& operator|=(StatusToStringMode& lhs,
-                                      StatusToStringMode rhs) {
-  lhs = lhs | rhs;
-  return lhs;
-}
+                                      StatusToStringMode rhs) { __builtin_trap() /* STUB: not implemented */; }
 inline StatusToStringMode& operator^=(StatusToStringMode& lhs,
-                                      StatusToStringMode rhs) {
-  lhs = lhs ^ rhs;
-  return lhs;
-}
+                                      StatusToStringMode rhs) { __builtin_trap() /* STUB: not implemented */; }
 
 // absl::Status
 //
@@ -912,174 +892,89 @@ Status ErrnoToStatus(int error_number, absl::string_view message,
 // Implementation details follow
 //------------------------------------------------------------------------------
 
-inline Status::Status() : Status(absl::StatusCode::kOk) {}
+inline Status::Status() : Status(absl::StatusCode::kOk) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Status::Status(absl::StatusCode code) : Status(CodeToInlinedRep(code)) {}
+inline Status::Status(absl::StatusCode code) : Status(CodeToInlinedRep(code)) { __builtin_trap() /* STUB: not implemented */; }
 
 inline Status::Status(absl::StatusCode code, absl::string_view msg,
                       absl::SourceLocation loc)
-    : Status(MakeRepFromStringView(CodeToInlinedRep(code), msg, loc)) {}
+    : Status(MakeRepFromStringView(CodeToInlinedRep(code), msg, loc)) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename String, typename>
 inline Status::Status(absl::StatusCode code, String&& msg,
                       absl::SourceLocation loc)
     : Status(MakeRepFromStringRvalue(CodeToInlinedRep(code),
-                                     std::forward<String>(msg), loc)) {}
+                                     std::forward<String>(msg), loc)) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Status::Status(const Status& x) : Status(x.rep_) { Ref(rep_); }
+inline Status::Status(const Status& x) : Status(x.rep_) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Status& Status::operator=(const Status& x) {
-  uintptr_t old_rep = rep_;
-  if (x.rep_ != old_rep) {
-    Ref(x.rep_);
-    rep_ = x.rep_;
-    Unref(old_rep);
-  }
-  return *this;
-}
+inline Status& Status::operator=(const Status& x) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Status::Status(Status&& x) noexcept : Status(x.rep_) {
-  x.rep_ = MovedFromRep();
-}
+inline Status::Status(Status&& x) noexcept : Status(x.rep_) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Status& Status::operator=(Status&& x) noexcept {
-  uintptr_t old_rep = rep_;
-  if (x.rep_ != old_rep) {
-    rep_ = x.rep_;
-    x.rep_ = MovedFromRep();
-    Unref(old_rep);
-  }
-  return *this;
-}
+inline Status& Status::operator=(Status&& x) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Status::Update(const Status& new_status) {
-  if (ok()) {
-    *this = new_status;
-  }
-}
+inline void Status::Update(const Status& new_status) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Status::Update(Status&& new_status) {
-  if (ok()) {
-    *this = std::move(new_status);
-  }
-}
+inline void Status::Update(Status&& new_status) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Status::~Status() { Unref(rep_); }
+inline Status::~Status() { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool Status::ok() const {
-  return rep_ == CodeToInlinedRep(absl::StatusCode::kOk);
-}
+inline bool Status::ok() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline absl::StatusCode Status::code() const {
-  return status_internal::MapToLocalCode(raw_code());
-}
+inline absl::StatusCode Status::code() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline int Status::raw_code() const {
-  if (IsInlined(rep_)) return static_cast<int>(InlinedRepToCode(rep_));
-  return static_cast<int>(RepToPointer(rep_)->code());
-}
+inline int Status::raw_code() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline absl::string_view Status::message() const {
-  return !IsInlined(rep_)
-             ? RepToPointer(rep_)->message()
-             : (IsMovedFrom(rep_) ? absl::string_view(kMovedFromString)
-                                  : absl::string_view());
-}
+inline absl::string_view Status::message() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool operator==(const Status& lhs, const Status& rhs) {
-  if (lhs.rep_ == rhs.rep_) return true;
-  if (Status::IsInlined(lhs.rep_)) return false;
-  if (Status::IsInlined(rhs.rep_)) return false;
-  return *Status::RepToPointer(lhs.rep_) == *Status::RepToPointer(rhs.rep_);
-}
+inline bool operator==(const Status& lhs, const Status& rhs) { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool operator!=(const Status& lhs, const Status& rhs) {
-  return !(lhs == rhs);
-}
+inline bool operator!=(const Status& lhs, const Status& rhs) { __builtin_trap() /* STUB: not implemented */; }
 
-inline std::string Status::ToString(StatusToStringMode mode) const {
-  return ok() ? "OK" : ToStringSlow(rep_, mode);
-}
+inline std::string Status::ToString(StatusToStringMode mode) const { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Status::IgnoreError() const {
-  // no-op
-}
+inline void Status::IgnoreError() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline void swap(absl::Status& a, absl::Status& b) noexcept {
-  using std::swap;
-  swap(a.rep_, b.rep_);
-}
+inline void swap(absl::Status& a, absl::Status& b) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 inline std::optional<absl::Cord> Status::GetPayload(
-    absl::string_view type_url) const {
-  if (IsInlined(rep_)) return std::nullopt;
-  return RepToPointer(rep_)->GetPayload(type_url);
-}
+    absl::string_view type_url) const { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Status::SetPayload(absl::string_view type_url, absl::Cord payload) {
-  if (ok()) return;
-  status_internal::StatusRep* rep = PrepareToModify(rep_);
-  rep->SetPayload(type_url, std::move(payload));
-  rep_ = PointerToRep(rep);
-}
+inline void Status::SetPayload(absl::string_view type_url, absl::Cord payload) { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool Status::ErasePayload(absl::string_view type_url) {
-  if (IsInlined(rep_)) return false;
-  status_internal::StatusRep* rep = PrepareToModify(rep_);
-  auto res = rep->ErasePayload(type_url);
-  rep_ = res.new_rep;
-  return res.erased;
-}
+inline bool Status::ErasePayload(absl::string_view type_url) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void Status::ForEachPayload(
     absl::FunctionRef<void(absl::string_view, const absl::Cord&)> visitor)
-    const {
-  if (IsInlined(rep_)) return;
-  RepToPointer(rep_)->ForEachPayload(visitor);
-}
+    const { __builtin_trap() /* STUB: not implemented */; }
 
-constexpr bool Status::IsInlined(uintptr_t rep) { return (rep & 1) != 0; }
+constexpr bool Status::IsInlined(uintptr_t rep) { return {}; }
 
-constexpr bool Status::IsMovedFrom(uintptr_t rep) { return (rep & 2) != 0; }
+constexpr bool Status::IsMovedFrom(uintptr_t rep) { return {}; }
 
-constexpr uintptr_t Status::CodeToInlinedRep(absl::StatusCode code) {
-  return (static_cast<uintptr_t>(code) << 2) + 1;
-}
+constexpr uintptr_t Status::CodeToInlinedRep(absl::StatusCode code) { return {}; }
 
-constexpr absl::StatusCode Status::InlinedRepToCode(uintptr_t rep) {
-  ABSL_ASSERT(IsInlined(rep));
-  return static_cast<absl::StatusCode>(rep >> 2);
-}
+constexpr absl::StatusCode Status::InlinedRepToCode(uintptr_t rep) { return {}; }
 
-constexpr uintptr_t Status::MovedFromRep() {
-  return CodeToInlinedRep(absl::StatusCode::kInternal) | 2;
-}
+constexpr uintptr_t Status::MovedFromRep() { return {}; }
 
 inline const status_internal::StatusRep* absl_nonnull Status::RepToPointer(
-    uintptr_t rep) {
-  assert(!IsInlined(rep));
-  return reinterpret_cast<const status_internal::StatusRep*>(rep);
-}
+    uintptr_t rep) { __builtin_trap() /* STUB: not implemented */; }
 
 inline uintptr_t Status::PointerToRep(
-    status_internal::StatusRep* absl_nonnull rep) {
-  return reinterpret_cast<uintptr_t>(rep);
-}
+    status_internal::StatusRep* absl_nonnull rep) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Status::Ref(uintptr_t rep) {
-  if (!IsInlined(rep)) RepToPointer(rep)->Ref();
-}
+inline void Status::Ref(uintptr_t rep) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Status::Unref(uintptr_t rep) {
-  if (!IsInlined(rep)) RepToPointer(rep)->Unref();
-}
+inline void Status::Unref(uintptr_t rep) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Status OkStatus() { return Status(); }
+inline Status OkStatus() { __builtin_trap() /* STUB: not implemented */; }
 
 // Creates a `Status` object with the `absl::StatusCode::kCancelled` error code
 // and an empty message. It is provided only for efficiency, given that
 // message-less kCancelled errors are common in the infrastructure.
-inline Status CancelledError() { return Status(absl::StatusCode::kCancelled); }
+inline Status CancelledError() { __builtin_trap() /* STUB: not implemented */; }
 
 // Retrieves a message's status as a null terminated C string. The lifetime of
 // this string is tied to the lifetime of the status object itself.
@@ -1114,86 +1009,43 @@ extern template Status MakeErrorImpl<15>(string_view, SourceLocation);
 extern template Status MakeErrorImpl<16>(string_view, SourceLocation);
 
 template <StatusCode error_code>
-Status MakeError(string_view message, SourceLocation loc) {
-  Status out = MakeErrorImpl<static_cast<int>(error_code)>(message, loc);
-  // -Wassume warning complains about potential side effects of `ok()`, so use a
-  // local to avoid that.
-  [[maybe_unused]] bool ok = out.ok();
-  ABSL_ASSUME(!ok);
-  return out;
-}
+Status MakeError(string_view message, SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 }  // namespace status_internal
 
 // Inline implementations to give the compiler static knowledge about the
 // objects.
 inline Status AbortedError(absl::string_view message,
-                           absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kAborted>(message, loc);
-}
+                           absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status AlreadyExistsError(absl::string_view message,
-                                 absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kAlreadyExists>(message, loc);
-}
+                                 absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status CancelledError(absl::string_view message,
-                             absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kCancelled>(message, loc);
-}
+                             absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status DataLossError(absl::string_view message,
-                            absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kDataLoss>(message, loc);
-}
+                            absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status DeadlineExceededError(absl::string_view message,
-                                    absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kDeadlineExceeded>(message,
-                                                                   loc);
-}
+                                    absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status FailedPreconditionError(absl::string_view message,
-                                      absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kFailedPrecondition>(message,
-                                                                     loc);
-}
+                                      absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status InternalError(absl::string_view message,
-                            absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kInternal>(message, loc);
-}
+                            absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status InvalidArgumentError(absl::string_view message,
-                                   absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kInvalidArgument>(message, loc);
-}
+                                   absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status NotFoundError(absl::string_view message,
-                            absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kNotFound>(message, loc);
-}
+                            absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status OutOfRangeError(absl::string_view message,
-                              absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kOutOfRange>(message, loc);
-}
+                              absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status PermissionDeniedError(absl::string_view message,
-                                    absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kPermissionDenied>(message,
-                                                                   loc);
-}
+                                    absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status ResourceExhaustedError(absl::string_view message,
-                                     absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kResourceExhausted>(message,
-                                                                    loc);
-}
+                                     absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status UnauthenticatedError(absl::string_view message,
-                                   absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kUnauthenticated>(message, loc);
-}
+                                   absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status UnavailableError(absl::string_view message,
-                               absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kUnavailable>(message, loc);
-}
+                               absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status UnimplementedError(absl::string_view message,
-                                 absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kUnimplemented>(message, loc);
-}
+                                 absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 inline Status UnknownError(absl::string_view message,
-                           absl::SourceLocation loc) {
-  return status_internal::MakeError<StatusCode::kUnknown>(message, loc);
-}
+                           absl::SourceLocation loc) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

@@ -24,7 +24,7 @@ namespace {
 using ::testing::Eq;
 
 int value = 0;
-void TestHook(int x) { value = x; }
+void TestHook(int x) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(AtomicHookTest, NoDefaultFunction) {
   ABSL_INTERNAL_ATOMIC_HOOK_ATTRIBUTES static absl::base_internal::AtomicHook<
@@ -75,9 +75,9 @@ TEST(AtomicHookTest, WithDefaultFunction) {
 }
 
 ABSL_CONST_INIT int override_func_calls = 0;
-void OverrideFunc() { override_func_calls++; }
+void OverrideFunc() { __builtin_trap() /* STUB: not implemented */; }
 static struct OverrideInstaller {
-  OverrideInstaller() { absl::atomic_hook_internal::func.Store(OverrideFunc); }
+  OverrideInstaller() { __builtin_trap() /* STUB: not implemented */; }
 } override_installer;
 
 TEST(AtomicHookTest, DynamicInitFromAnotherTU) {

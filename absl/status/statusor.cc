@@ -28,78 +28,32 @@ namespace absl {
 ABSL_NAMESPACE_BEGIN
 
 BadStatusOrAccess::BadStatusOrAccess(absl::Status status)
-    : status_(std::move(status)) {}
+    : status_(std::move(status)) { __builtin_trap() /* STUB: not implemented */; }
 
 BadStatusOrAccess::BadStatusOrAccess(const BadStatusOrAccess& other)
-    : status_(other.status_) {}
+    : status_(other.status_) { __builtin_trap() /* STUB: not implemented */; }
 
 BadStatusOrAccess& BadStatusOrAccess::operator=(
-    const BadStatusOrAccess& other) {
-  // Ensure assignment is correct regardless of whether this->InitWhat() has
-  // already been called.
-  other.InitWhat();
-  status_ = other.status_;
-  what_ = other.what_;
-  return *this;
-}
+    const BadStatusOrAccess& other) { __builtin_trap() /* STUB: not implemented */; }
 
-BadStatusOrAccess& BadStatusOrAccess::operator=(BadStatusOrAccess&& other) {
-  // Ensure assignment is correct regardless of whether this->InitWhat() has
-  // already been called.
-  other.InitWhat();
-  status_ = std::move(other.status_);
-  what_ = std::move(other.what_);
-  return *this;
-}
+BadStatusOrAccess& BadStatusOrAccess::operator=(BadStatusOrAccess&& other) { __builtin_trap() /* STUB: not implemented */; }
 
 BadStatusOrAccess::BadStatusOrAccess(BadStatusOrAccess&& other)
-    : status_(std::move(other.status_)) {}
+    : status_(std::move(other.status_)) { __builtin_trap() /* STUB: not implemented */; }
 
-const char* absl_nonnull BadStatusOrAccess::what() const noexcept {
-  InitWhat();
-  return what_.c_str();
-}
+const char* absl_nonnull BadStatusOrAccess::what() const noexcept { __builtin_trap() /* STUB: not implemented */; }
 
-const absl::Status& BadStatusOrAccess::status() const { return status_; }
+const absl::Status& BadStatusOrAccess::status() const { __builtin_trap() /* STUB: not implemented */; }
 
-void BadStatusOrAccess::InitWhat() const {
-  absl::call_once(init_what_, [this] {
-    what_ = absl::StrCat("Bad StatusOr access: ", status_.ToString());
-  });
-}
+void BadStatusOrAccess::InitWhat() const { __builtin_trap() /* STUB: not implemented */; }
 
 namespace internal_statusor {
 
-void Helper::HandleInvalidStatusCtorArg(absl::Status* absl_nonnull status) {
-  const char* kMessage =
-      "An OK status is not a valid constructor argument to StatusOr<T>";
-#ifdef NDEBUG
-  ABSL_INTERNAL_LOG(ERROR, kMessage);
-#else
-  ABSL_INTERNAL_LOG(FATAL, kMessage);
-#endif
-  // In optimized builds, we will fall back to InternalError.
-  *status = absl::InternalError(kMessage);
-}
+void Helper::HandleInvalidStatusCtorArg(absl::Status* absl_nonnull status) { __builtin_trap() /* STUB: not implemented */; }
 
-void Helper::Crash(const absl::Status& status) {
-  ABSL_INTERNAL_LOG(
-      FATAL,
-      absl::StrCat("Attempting to fetch value instead of handling error ",
-                   status.ToString()));
-}
+void Helper::Crash(const absl::Status& status) { __builtin_trap() /* STUB: not implemented */; }
 
-void ThrowBadStatusOrAccess(absl::Status status) {
-#ifdef ABSL_HAVE_EXCEPTIONS
-  throw absl::BadStatusOrAccess(std::move(status));
-#else
-  ABSL_INTERNAL_LOG(
-      FATAL,
-      absl::StrCat("Attempting to fetch value instead of handling error ",
-                   status.ToString()));
-  std::abort();
-#endif
-}
+void ThrowBadStatusOrAccess(absl::Status status) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace internal_statusor
 ABSL_NAMESPACE_END

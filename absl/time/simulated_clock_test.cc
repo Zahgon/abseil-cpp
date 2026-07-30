@@ -85,10 +85,7 @@ TEST(SimulatedClock, NowAdvanceTime) {
 }
 
 void SleepAndNotify(absl::Clock* clock, absl::Duration sleep_secs,
-                    absl::Notification* note) {
-  clock->Sleep(sleep_secs);
-  note->Notify();
-}
+                    absl::Notification* note) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(SimulatedClock, Sleep_SetToSleepTime) {
   if (kSkipFlakyReason != nullptr) {
@@ -200,10 +197,7 @@ TEST(SimulatedClock, SleepZeroSleepTime) {
 }
 
 void SleepUntilAndNotify(absl::Clock* clock, absl::Time wakeup_time,
-                         absl::Notification* note) {
-  clock->SleepUntil(wakeup_time);
-  note->Notify();
-}
+                         absl::Notification* note) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(SimulatedClock, SleepUntilSetToSleepTime) {
   if (kSkipFlakyReason != nullptr) {
@@ -323,12 +317,7 @@ TEST(SimulatedClock, SleepUntilTimeAlreadyPassed) {
 
 void AwaitWithDeadlineAndNotify(absl::Clock* clock, absl::Mutex* mu,
                                 absl::Condition* cond, absl::Time wakeup_time,
-                                absl::Notification* note, bool* return_val) {
-  mu->lock_shared();
-  *return_val = clock->AwaitWithDeadline(mu, *cond, wakeup_time);
-  mu->unlock_shared();
-  note->Notify();
-}
+                                absl::Notification* note, bool* return_val) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(SimulatedClock, AwaitWithDeadlineConditionInitiallyTrue) {
   absl::SimulatedClock simclock;
@@ -416,23 +405,11 @@ TEST(SimulatedClock, AwaitWithDeadlineDeadlineAlreadyPassed) {
 }
 
 void RacerMakesConditionTrue(absl::Notification* start_note, absl::Mutex* mu,
-                             bool* f, absl::BlockingCounter* threads_done) {
-  start_note->WaitForNotification();
-  absl::SleepFor(absl::Milliseconds(1));
-  mu->lock();
-  *f = true;
-  mu->unlock();
-  threads_done->DecrementCount();
-}
+                             bool* f, absl::BlockingCounter* threads_done) { __builtin_trap() /* STUB: not implemented */; }
 
 void RacerAdvancesTime(absl::Notification* start_note,
                        absl::SimulatedClock* simclock, absl::Duration d,
-                       absl::BlockingCounter* threads_done) {
-  start_note->WaitForNotification();
-  absl::SleepFor(absl::Milliseconds(1));
-  simclock->AdvanceTime(d);
-  threads_done->DecrementCount();
-}
+                       absl::BlockingCounter* threads_done) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(SimulatedClock, SimultaneousConditionTrueAndDeadline) {
   absl::SimulatedClock simclock;
@@ -469,16 +446,7 @@ TEST(SimulatedClock, SimultaneousConditionTrueAndDeadline) {
 
 void RacerDeletesClock(absl::Mutex* mu, absl::Notification* start_note,
                        absl::Clock* clock,
-                       absl::BlockingCounter* threads_done) {
-  start_note->WaitForNotification();
-  // mu is acquired temporarily to make sure that AwaitWithDeadline() in
-  // SimultaneousConditionTrueAndDestruction has blocked.
-  mu->lock();
-  mu->unlock();
-  absl::SleepFor(absl::Milliseconds(1));
-  delete clock;
-  threads_done->DecrementCount();
-}
+                       absl::BlockingCounter* threads_done) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(SimulatedClock, SimultaneousConditionTrueAndDestruction) {
   for (int iteration = 0; iteration < 100; ++iteration) {
@@ -513,7 +481,7 @@ class SimulatedClockTorturer {
         num_threads_(num_threads),
         num_iterations_(num_iterations),
         num_flags_(2 * num_threads),
-        mutex_and_flag_(static_cast<size_t>(num_flags_)) {}
+        mutex_and_flag_(static_cast<size_t>(num_flags_)) { __builtin_trap() /* STUB: not implemented */; }
 
   // Implements a torture test.
   //
@@ -522,74 +490,17 @@ class SimulatedClockTorturer {
   //   Mutex protected flag
   // It starts several threads that call AwaitWithDeadline() and several
   // threads that call AdvanceTime() or toggle flag values.
-  void DoTorture() {
-    // The threads calling AwaitWithDeadline() have a separate BlockingCounter
-    // than the threads calling AdvanceTime()/toggling flags, since the former
-    // would be deadlocked if all the threads that might unblock them had
-    // already finished.
-    absl::Notification go;
-    absl::BlockingCounter await_threads_done(num_threads_);
-    absl::Notification signal_threads_should_exit;
-    absl::BlockingCounter signal_threads_done(num_threads_);
-    std::vector<std::thread> trs;
-    for (int i = 0; i < num_threads_; ++i) {
-      trs.emplace_back(&SimulatedClockTorturer::AwaitRandomly, this, &go,
-                       &await_threads_done);
-    }
-    for (int i = 0; i < num_threads_; ++i) {
-      trs.emplace_back(&SimulatedClockTorturer::SignalRandomly, this, &go,
-                       &signal_threads_should_exit, &signal_threads_done);
-    }
-    go.Notify();
-    await_threads_done.Wait();
-    signal_threads_should_exit.Notify();
-    signal_threads_done.Wait();
-    for (auto& thread : trs) {
-      thread.join();
-    }
-  }
+  void DoTorture() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   // Randomly call AwaitWithDeadline() for num_iterations_ times.
   void AwaitRandomly(absl::Notification* go,
-                     absl::BlockingCounter* threads_done) {
-    go->WaitForNotification();
-
-    absl::BitGen gen;
-    for (int i = 0; i < num_iterations_; ++i) {
-      auto& [mu, f] = mutex_and_flag_[absl::Uniform<size_t>(gen, size_t{0},
-                                         static_cast<size_t>(num_flags_))];
-      absl::MutexLock lock(mu);
-      absl::Time deadline = simclock_->TimeNow() + absl::Seconds(1);
-      simclock_->AwaitWithDeadline(&mu, absl::Condition(&f), deadline);
-      ABSL_RAW_CHECK(f || simclock_->TimeNow() >= deadline, "");
-    }
-
-    threads_done->DecrementCount();
-  }
+                     absl::BlockingCounter* threads_done) { __builtin_trap() /* STUB: not implemented */; }
 
   // Randomly call AdvanceTime() or toggle a flag value until notified to
   // stop.
   void SignalRandomly(absl::Notification* go, absl::Notification* should_exit,
-                      absl::BlockingCounter* threads_done) {
-    go->WaitForNotification();
-
-    absl::BitGen gen;
-    while (!should_exit->HasBeenNotified()) {
-      int action = absl::Uniform<int>(gen, 0, num_flags_ + 1);
-      if (action < num_flags_) {
-        // Change a flag value.
-        auto& [mutex, flag] = mutex_and_flag_[static_cast<size_t>(action)];
-        absl::MutexLock lock(mutex);
-        flag = !flag;
-      } else {
-        // Advance time.
-        simclock_->AdvanceTime(absl::Seconds(1));
-      }
-    }
-
-    threads_done->DecrementCount();
-  }
+                      absl::BlockingCounter* threads_done) { __builtin_trap() /* STUB: not implemented */; }
 
   absl::SimulatedClock* simclock_;
   int num_threads_;

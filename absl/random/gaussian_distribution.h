@@ -94,22 +94,18 @@ class gaussian_distribution : random_internal::gaussian_distribution_base {
     using distribution_type = gaussian_distribution;
 
     explicit param_type(result_type mean = 0, result_type stddev = 1)
-        : mean_(mean), stddev_(stddev) {}
+        : mean_(mean), stddev_(stddev) { __builtin_trap() /* STUB: not implemented */; }
 
     // Returns the mean distribution parameter.  The mean specifies the location
     // of the peak.  The default value is 0.0.
-    result_type mean() const { return mean_; }
+    result_type mean() const { __builtin_trap() /* STUB: not implemented */; }
 
     // Returns the deviation distribution parameter.  The default value is 1.0.
-    result_type stddev() const { return stddev_; }
+    result_type stddev() const { __builtin_trap() /* STUB: not implemented */; }
 
-    friend bool operator==(const param_type& a, const param_type& b) {
-      return a.mean_ == b.mean_ && a.stddev_ == b.stddev_;
-    }
+    friend bool operator==(const param_type& a, const param_type& b) { __builtin_trap() /* STUB: not implemented */; }
 
-    friend bool operator!=(const param_type& a, const param_type& b) {
-      return !(a == b);
-    }
+    friend bool operator!=(const param_type& a, const param_type& b) { __builtin_trap() /* STUB: not implemented */; }
 
    private:
     result_type mean_;
@@ -121,46 +117,36 @@ class gaussian_distribution : random_internal::gaussian_distribution_base {
         "using a floating-point type.");
   };
 
-  gaussian_distribution() : gaussian_distribution(0) {}
+  gaussian_distribution() : gaussian_distribution(0) { __builtin_trap() /* STUB: not implemented */; }
 
   explicit gaussian_distribution(result_type mean, result_type stddev = 1)
-      : param_(mean, stddev) {}
+      : param_(mean, stddev) { __builtin_trap() /* STUB: not implemented */; }
 
-  explicit gaussian_distribution(const param_type& p) : param_(p) {}
+  explicit gaussian_distribution(const param_type& p) : param_(p) { __builtin_trap() /* STUB: not implemented */; }
 
-  void reset() {}
+  void reset() { __builtin_trap() /* STUB: not implemented */; }
 
   // Generating functions
   template <typename URBG>
-  result_type operator()(URBG& g) {  // NOLINT(runtime/references)
-    return (*this)(g, param_);
-  }
+  result_type operator()(URBG& g) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename URBG>
   result_type operator()(URBG& g,  // NOLINT(runtime/references)
                          const param_type& p);
 
-  param_type param() const { return param_; }
-  void param(const param_type& p) { param_ = p; }
+  param_type param() const { __builtin_trap() /* STUB: not implemented */; }
+  void param(const param_type& p) { __builtin_trap() /* STUB: not implemented */; }
 
-  result_type(min)() const {
-    return -std::numeric_limits<result_type>::infinity();
-  }
-  result_type(max)() const {
-    return std::numeric_limits<result_type>::infinity();
-  }
+  result_type(min)() const { __builtin_trap() /* STUB: not implemented */; }
+  result_type(max)() const { __builtin_trap() /* STUB: not implemented */; }
 
-  result_type mean() const { return param_.mean(); }
-  result_type stddev() const { return param_.stddev(); }
+  result_type mean() const { __builtin_trap() /* STUB: not implemented */; }
+  result_type stddev() const { __builtin_trap() /* STUB: not implemented */; }
 
   friend bool operator==(const gaussian_distribution& a,
-                         const gaussian_distribution& b) {
-    return a.param_ == b.param_;
-  }
+                         const gaussian_distribution& b) { __builtin_trap() /* STUB: not implemented */; }
   friend bool operator!=(const gaussian_distribution& a,
-                         const gaussian_distribution& b) {
-    return a.param_ != b.param_;
-  }
+                         const gaussian_distribution& b) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   param_type param_;
@@ -175,99 +161,26 @@ template <typename URBG>
 typename gaussian_distribution<RealType>::result_type
 gaussian_distribution<RealType>::operator()(
     URBG& g,  // NOLINT(runtime/references)
-    const param_type& p) {
-  return p.mean() + p.stddev() * static_cast<result_type>(zignor(g));
-}
+    const param_type& p) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename CharT, typename Traits, typename RealType>
 std::basic_ostream<CharT, Traits>& operator<<(
     std::basic_ostream<CharT, Traits>& os,  // NOLINT(runtime/references)
-    const gaussian_distribution<RealType>& x) {
-  auto saver = random_internal::make_ostream_state_saver(os);
-  os.precision(random_internal::stream_precision_helper<RealType>::kPrecision);
-  os << x.mean() << os.fill() << x.stddev();
-  return os;
-}
+    const gaussian_distribution<RealType>& x) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename CharT, typename Traits, typename RealType>
 std::basic_istream<CharT, Traits>& operator>>(
     std::basic_istream<CharT, Traits>& is,  // NOLINT(runtime/references)
-    gaussian_distribution<RealType>& x) {   // NOLINT(runtime/references)
-  using result_type = typename gaussian_distribution<RealType>::result_type;
-  using param_type = typename gaussian_distribution<RealType>::param_type;
-
-  auto saver = random_internal::make_istream_state_saver(is);
-  auto mean = random_internal::read_floating_point<result_type>(is);
-  if (is.fail()) return is;
-  auto stddev = random_internal::read_floating_point<result_type>(is);
-  if (!is.fail()) {
-    x.param(param_type(mean, stddev));
-  }
-  return is;
-}
+    gaussian_distribution<RealType>& x) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace random_internal {
 
 template <typename URBG>
-inline double gaussian_distribution_base::zignor_fallback(URBG& g, bool neg) {
-  using random_internal::GeneratePositiveTag;
-  using random_internal::GenerateRealFromBits;
-
-  // This fallback path happens approximately 0.05% of the time.
-  double x, y;
-  do {
-    // kRInv = 1/r, U(0, 1)
-    x = kRInv *
-        std::log(GenerateRealFromBits<double, GeneratePositiveTag, false>(
-            fast_u64_(g)));
-    y = -std::log(
-        GenerateRealFromBits<double, GeneratePositiveTag, false>(fast_u64_(g)));
-  } while ((y + y) < (x * x));
-  return neg ? (x - kR) : (kR - x);
-}
+inline double gaussian_distribution_base::zignor_fallback(URBG& g, bool neg) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename URBG>
 inline double gaussian_distribution_base::zignor(
-    URBG& g) {  // NOLINT(runtime/references)
-  using random_internal::GeneratePositiveTag;
-  using random_internal::GenerateRealFromBits;
-  using random_internal::GenerateSignedTag;
-
-  while (true) {
-    // We use a single uint64_t to generate both a double and a strip.
-    // These bits are unused when the generated double is > 1/2^5.
-    // This may introduce some bias from the duplicated low bits of small
-    // values (those smaller than 1/2^5, which all end up on the left tail).
-    uint64_t bits = fast_u64_(g);
-    int i = static_cast<int>(bits & kMask);  // pick a random strip
-    double j = GenerateRealFromBits<double, GenerateSignedTag, false>(
-        bits);  // U(-1, 1)
-    const double x = j * zg_.x[i];
-
-    // Rectangular box. Handles >97% of all cases.
-    // For any given box, this handles between 75% and 99% of values.
-    // Equivalent to U(01) < (x[i+1] / x[i]), and when i == 0, ~93.5%
-    if (std::abs(x) < zg_.x[i + 1]) {
-      return x;
-    }
-
-    // i == 0: Base box. Sample using a ratio of uniforms.
-    if (i == 0) {
-      // This path happens about 0.05% of the time.
-      return zignor_fallback(g, j < 0);
-    }
-
-    // i > 0: Wedge samples using precomputed values.
-    double v = GenerateRealFromBits<double, GeneratePositiveTag, false>(
-        fast_u64_(g));  // U(0, 1)
-    if ((zg_.f[i + 1] + v * (zg_.f[i] - zg_.f[i + 1])) <
-        std::exp(-0.5 * x * x)) {
-      return x;
-    }
-
-    // The wedge was missed; reject the value and try again.
-  }
-}
+    URBG& g) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace random_internal
 ABSL_NAMESPACE_END

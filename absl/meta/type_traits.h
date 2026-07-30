@@ -304,7 +304,7 @@ struct IsHashable<
 
 struct AssertHashEnabledHelper {
  private:
-  static void Sink(...) {}
+  static void Sink(...) { __builtin_trap() /* STUB: not implemented */; }
   struct NAT {};
 
   template <class Key>
@@ -314,35 +314,14 @@ struct AssertHashEnabledHelper {
   static NAT GetReturnType(...);
 
   template <class Key>
-  static std::nullptr_t DoIt() {
-    static_assert(IsHashable<Key>::value,
-                  "std::hash<Key> does not provide a call operator");
-    static_assert(
-        std::is_default_constructible_v<std::hash<Key>>,
-        "std::hash<Key> must be default constructible when it is enabled");
-    static_assert(
-        std::is_copy_constructible_v<std::hash<Key>>,
-        "std::hash<Key> must be copy constructible when it is enabled");
-    static_assert(std::is_copy_assignable_v<std::hash<Key>>,
-                  "std::hash<Key> must be copy assignable when it is enabled");
-    // is_destructible is unchecked as it's implied by each of the
-    // is_constructible checks.
-    using ReturnType = decltype(GetReturnType<Key>(0));
-    static_assert(
-        std::is_same_v<ReturnType, NAT> || std::is_same_v<ReturnType, size_t>,
-        "std::hash<Key> must return size_t");
-    return nullptr;
-  }
+  static std::nullptr_t DoIt() { __builtin_trap() /* STUB: not implemented */; }
 
   template <class... Ts>
   friend void AssertHashEnabled();
 };
 
 template <class... Ts>
-inline void AssertHashEnabled() {
-  using Helper = AssertHashEnabledHelper;
-  Helper::Sink(Helper::DoIt<Ts>()...);
-}
+inline void AssertHashEnabled() { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace type_traits_internal
 
@@ -386,9 +365,7 @@ struct IsNothrowSwappable
 // Performs the swap idiom from a namespace where valid candidates may only be
 // found in `std` or via ADL.
 template <class T, std::enable_if_t<IsSwappable<T>::value, int> = 0>
-void Swap(T& lhs, T& rhs) noexcept(IsNothrowSwappable<T>::value) {
-  swap(lhs, rhs);
-}
+void Swap(T& lhs, T& rhs) noexcept(IsNothrowSwappable<T>::value) { __builtin_trap() /* STUB: not implemented */; }
 
 // StdSwapIsUnconstrained
 //
@@ -524,13 +501,7 @@ struct is_trivially_relocatable : std::is_trivially_copyable<T> {};
 // http://gcc.gnu.org/onlinedocs/gcc/Other-Builtins.html#:~:text=__builtin_is_constant_evaluated
 //
 #if defined(ABSL_HAVE_CONSTANT_EVALUATED)
-constexpr bool is_constant_evaluated() noexcept {
-#ifdef __cpp_lib_is_constant_evaluated
-  return std::is_constant_evaluated();
-#elif ABSL_HAVE_BUILTIN(__builtin_is_constant_evaluated)
-  return __builtin_is_constant_evaluated();
-#endif
-}
+constexpr bool is_constant_evaluated() noexcept { return {}; }
 #endif  // ABSL_HAVE_CONSTANT_EVALUATED
 
 namespace type_traits_internal {

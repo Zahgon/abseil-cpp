@@ -51,29 +51,21 @@ constexpr bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2) {
 template <class InputIt1, class InputIt2, class BinaryPredicate>
 ABSL_DEPRECATE_AND_INLINE()
 constexpr bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2,
-                     BinaryPredicate p) {
-  return std::equal(first1, last1, first2, p);
-}
+                     BinaryPredicate p) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class InputIt1, class InputIt2>
 ABSL_DEPRECATE_AND_INLINE()
 constexpr bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2,
-                     InputIt2 last2) {
-  return std::equal(first1, last1, first2, last2);
-}
+                     InputIt2 last2) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class InputIt1, class InputIt2, class BinaryPredicate>
 ABSL_DEPRECATE_AND_INLINE()
 constexpr bool equal(InputIt1 first1, InputIt1 last1, InputIt2 first2,
-                     InputIt2 last2, BinaryPredicate p) {
-  return std::equal(first1, last1, first2, last2, p);
-}
+                     InputIt2 last2, BinaryPredicate p) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class ForwardIt>
 ABSL_DEPRECATE_AND_INLINE()
-constexpr ForwardIt rotate(ForwardIt first, ForwardIt n_first, ForwardIt last) {
-  return std::rotate(first, n_first, last);
-}
+constexpr ForwardIt rotate(ForwardIt first, ForwardIt n_first, ForwardIt last) { __builtin_trap() /* STUB: not implemented */; }
 
 // linear_search()
 //
@@ -86,9 +78,7 @@ constexpr ForwardIt rotate(ForwardIt first, ForwardIt n_first, ForwardIt last) {
 // may be faster than a binary search, even when the container is sorted.
 template <typename InputIterator, typename EqualityComparable>
 constexpr bool linear_search(InputIterator first, InputIterator last,
-                             const EqualityComparable& value) {
-  return std::find(first, last, value) != last;
-}
+                             const EqualityComparable& value) { return {}; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

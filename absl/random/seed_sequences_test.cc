@@ -93,28 +93,7 @@ TEST(CreateSeedSeqFrom, CompatibleWithRawURBG) {
 }
 
 template <typename URBG>
-void TestReproducibleVariateSequencesForNonsecureURBG() {
-  const size_t kNumVariates = 1000;
-
-  URBG rng;
-  // Reused for both RNG instances.
-  auto reusable_seed = absl::CreateSeedSeqFrom(&rng);
-
-  typename URBG::result_type variates[kNumVariates];
-  {
-    URBG child(reusable_seed);
-    for (auto& variate : variates) {
-      variate = child();
-    }
-  }
-  // Ensure that variate-sequence can be "replayed" by identical RNG.
-  {
-    URBG child(reusable_seed);
-    for (auto& variate : variates) {
-      ASSERT_EQ(variate, child());
-    }
-  }
-}
+void TestReproducibleVariateSequencesForNonsecureURBG() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(CreateSeedSeqFrom, ReproducesVariateSequencesForInsecureBitGen) {
   TestReproducibleVariateSequencesForNonsecureURBG<absl::InsecureBitGen>();

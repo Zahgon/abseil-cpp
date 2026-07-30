@@ -280,8 +280,8 @@ TEST(SplitIterator, Basics) {
 // Simple Predicate to skip a particular string.
 class Skip {
  public:
-  explicit Skip(const std::string& s) : s_(s) {}
-  bool operator()(absl::string_view sp) { return sp != s_; }
+  explicit Skip(const std::string& s) : s_(s) { __builtin_trap() /* STUB: not implemented */; }
+  bool operator()(absl::string_view sp) { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   std::string s_;
@@ -382,28 +382,16 @@ TEST(Splitter, RangeIterators) {
 
 // Some template functions for use in testing conversion operators
 template <typename ContainerType, typename Splitter>
-void TestConversionOperator(const Splitter& splitter) {
-  ContainerType output = splitter;
-  EXPECT_THAT(output, UnorderedElementsAre("a", "b", "c", "d"));
-}
+void TestConversionOperator(const Splitter& splitter) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename MapType, typename Splitter>
-void TestMapConversionOperator(const Splitter& splitter) {
-  MapType m = splitter;
-  EXPECT_THAT(m, UnorderedElementsAre(Pair("a", "b"), Pair("c", "d")));
-}
+void TestMapConversionOperator(const Splitter& splitter) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename FirstType, typename SecondType, typename Splitter>
-void TestPairConversionOperator(const Splitter& splitter) {
-  std::pair<FirstType, SecondType> p = splitter;
-  EXPECT_EQ(p, (std::pair<FirstType, SecondType>("a", "b")));
-}
+void TestPairConversionOperator(const Splitter& splitter) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename StringType, typename Splitter>
-void TestArrayConversionOperator(const Splitter& splitter) {
-  std::array<StringType, 2> a = splitter;
-  EXPECT_THAT(a, ElementsAre("a", "b"));
-}
+void TestArrayConversionOperator(const Splitter& splitter) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Splitter, ConversionOperator) {
   auto splitter = absl::StrSplit("a,b,c,d", ',');
@@ -647,9 +635,9 @@ TEST(Split, Basics) {
   }
 }
 
-absl::string_view ReturnStringView() { return "Hello World"; }
-const char* ReturnConstCharP() { return "Hello World"; }
-char* ReturnCharP() { return const_cast<char*>("Hello World"); }
+absl::string_view ReturnStringView() { __builtin_trap() /* STUB: not implemented */; }
+const char* ReturnConstCharP() { __builtin_trap() /* STUB: not implemented */; }
+char* ReturnCharP() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Split, AcceptsCertainTemporaries) {
   std::vector<std::string> v;
@@ -689,9 +677,7 @@ TEST(Split, Temporary) {
 }
 
 template <typename T>
-static std::unique_ptr<T> CopyToHeap(const T& value) {
-  return std::unique_ptr<T>(new T(value));
-}
+static std::unique_ptr<T> CopyToHeap(const T& value) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Split, LvalueCaptureIsCopyable) {
   std::string input = "a,b";
@@ -863,11 +849,7 @@ TEST(Split, EmptyResults) {
 
 template <typename Delimiter>
 static bool IsFoundAtStartingPos(absl::string_view text, Delimiter d,
-                                 size_t starting_pos, int expected_pos) {
-  absl::string_view found = d.Find(text, starting_pos);
-  return found.data() != text.data() + text.size() &&
-         expected_pos == found.data() - text.data();
-}
+                                 size_t starting_pos, int expected_pos) { __builtin_trap() /* STUB: not implemented */; }
 
 // Helper function for testing Delimiter objects. Returns true if the given
 // Delimiter is found in the given string at the given position. This function
@@ -875,13 +857,7 @@ static bool IsFoundAtStartingPos(absl::string_view text, Delimiter d,
 //   1. The actual text given, staring at position 0
 //   2. The text given with leading padding that should be ignored
 template <typename Delimiter>
-static bool IsFoundAt(absl::string_view text, Delimiter d, int expected_pos) {
-  const std::string leading_text = ",x,y,z,";
-  return IsFoundAtStartingPos(text, d, 0, expected_pos) &&
-         IsFoundAtStartingPos(leading_text + std::string(text), d,
-                              leading_text.length(),
-                              expected_pos + leading_text.length());
-}
+static bool IsFoundAt(absl::string_view text, Delimiter d, int expected_pos) { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // Tests for ByString
@@ -889,20 +865,7 @@ static bool IsFoundAt(absl::string_view text, Delimiter d, int expected_pos) {
 
 // Tests using any delimiter that represents a single comma.
 template <typename Delimiter>
-void TestComma(Delimiter d) {
-  EXPECT_TRUE(IsFoundAt(",", d, 0));
-  EXPECT_TRUE(IsFoundAt("a,", d, 1));
-  EXPECT_TRUE(IsFoundAt(",b", d, 0));
-  EXPECT_TRUE(IsFoundAt("a,b", d, 1));
-  EXPECT_TRUE(IsFoundAt("a,b,", d, 1));
-  EXPECT_TRUE(IsFoundAt("a,b,c", d, 1));
-  EXPECT_FALSE(IsFoundAt("", d, -1));
-  EXPECT_FALSE(IsFoundAt(" ", d, -1));
-  EXPECT_FALSE(IsFoundAt("a", d, -1));
-  EXPECT_FALSE(IsFoundAt("a b c", d, -1));
-  EXPECT_FALSE(IsFoundAt("a;b;c", d, -1));
-  EXPECT_FALSE(IsFoundAt(";", d, -1));
-}
+void TestComma(Delimiter d) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Delimiter, ByString) {
   using absl::ByString;

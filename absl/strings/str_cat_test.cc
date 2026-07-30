@@ -252,28 +252,22 @@ struct Mallocator {
   typedef T& reference;
   typedef const T& const_reference;
 
-  size_type max_size() const {
-    return size_t(std::numeric_limits<size_type>::max()) / sizeof(value_type);
-  }
+  size_type max_size() const { __builtin_trap() /* STUB: not implemented */; }
   template <typename U>
   struct rebind {
     typedef Mallocator<U> other;
   };
   Mallocator() = default;
   template <class U>
-  Mallocator(const Mallocator<U>&) {}  // NOLINT(runtime/explicit)
+  Mallocator(const Mallocator<U>&) { __builtin_trap() /* STUB: not implemented */; }  // NOLINT(runtime/explicit)
 
-  T* allocate(size_t n) { return static_cast<T*>(std::malloc(n * sizeof(T))); }
-  void deallocate(T* p, size_t) { std::free(p); }
+  T* allocate(size_t n) { __builtin_trap() /* STUB: not implemented */; }
+  void deallocate(T* p, size_t) { __builtin_trap() /* STUB: not implemented */; }
 };
 template <typename T, typename U>
-bool operator==(const Mallocator<T>&, const Mallocator<U>&) {
-  return true;
-}
+bool operator==(const Mallocator<T>&, const Mallocator<U>&) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T, typename U>
-bool operator!=(const Mallocator<T>&, const Mallocator<U>&) {
-  return false;
-}
+bool operator!=(const Mallocator<T>&, const Mallocator<U>&) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StrCat, CustomAllocator) {
   using mstring =
@@ -525,128 +519,19 @@ TEST(StrAppend, CornerCasesNonEmptyAppend) {
 
 template <typename IntType>
 void CheckHex(IntType v, const char* nopad_format, const char* zeropad_format,
-              const char* spacepad_format) {
-  char expected[256];
-
-  std::string actual = absl::StrCat(absl::Hex(v, absl::kNoPad));
-  snprintf(expected, sizeof(expected), nopad_format, v);
-  EXPECT_EQ(expected, actual) << " decimal value " << v;
-
-  for (int spec = absl::kZeroPad2; spec <= absl::kZeroPad20; ++spec) {
-    std::string actual =
-        absl::StrCat(absl::Hex(v, static_cast<absl::PadSpec>(spec)));
-    snprintf(expected, sizeof(expected), zeropad_format,
-             spec - absl::kZeroPad2 + 2, v);
-    EXPECT_EQ(expected, actual) << " decimal value " << v;
-  }
-
-  for (int spec = absl::kSpacePad2; spec <= absl::kSpacePad20; ++spec) {
-    std::string actual =
-        absl::StrCat(absl::Hex(v, static_cast<absl::PadSpec>(spec)));
-    snprintf(expected, sizeof(expected), spacepad_format,
-             spec - absl::kSpacePad2 + 2, v);
-    EXPECT_EQ(expected, actual) << " decimal value " << v;
-  }
-}
+              const char* spacepad_format) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename IntType>
 void CheckDec(IntType v, const char* nopad_format, const char* zeropad_format,
-              const char* spacepad_format) {
-  char expected[256];
+              const char* spacepad_format) { __builtin_trap() /* STUB: not implemented */; }
 
-  std::string actual = absl::StrCat(absl::Dec(v, absl::kNoPad));
-  snprintf(expected, sizeof(expected), nopad_format, v);
-  EXPECT_EQ(expected, actual) << " decimal value " << v;
+void CheckHexDec64(uint64_t v) { __builtin_trap() /* STUB: not implemented */; }
 
-  for (int spec = absl::kZeroPad2; spec <= absl::kZeroPad20; ++spec) {
-    std::string actual =
-        absl::StrCat(absl::Dec(v, static_cast<absl::PadSpec>(spec)));
-    snprintf(expected, sizeof(expected), zeropad_format,
-             spec - absl::kZeroPad2 + 2, v);
-    EXPECT_EQ(expected, actual)
-        << " decimal value " << v << " format '" << zeropad_format
-        << "' digits " << (spec - absl::kZeroPad2 + 2);
-  }
+void CheckHexDec32(uint32_t uv) { __builtin_trap() /* STUB: not implemented */; }
 
-  for (int spec = absl::kSpacePad2; spec <= absl::kSpacePad20; ++spec) {
-    std::string actual =
-        absl::StrCat(absl::Dec(v, static_cast<absl::PadSpec>(spec)));
-    snprintf(expected, sizeof(expected), spacepad_format,
-             spec - absl::kSpacePad2 + 2, v);
-    EXPECT_EQ(expected, actual)
-        << " decimal value " << v << " format '" << spacepad_format
-        << "' digits " << (spec - absl::kSpacePad2 + 2);
-  }
-}
+void CheckAll(uint64_t v) { __builtin_trap() /* STUB: not implemented */; }
 
-void CheckHexDec64(uint64_t v) {
-  unsigned long long ullv = v;  // NOLINT(runtime/int)
-
-  CheckHex(ullv, "%llx", "%0*llx", "%*llx");
-  CheckDec(ullv, "%llu", "%0*llu", "%*llu");
-
-  long long llv = static_cast<long long>(ullv);  // NOLINT(runtime/int)
-  CheckDec(llv, "%lld", "%0*lld", "%*lld");
-
-  if (sizeof(v) == sizeof(&v)) {
-    auto uintptr = static_cast<uintptr_t>(v);
-    void* ptr = reinterpret_cast<void*>(uintptr);
-    CheckHex(ptr, "%llx", "%0*llx", "%*llx");
-  }
-}
-
-void CheckHexDec32(uint32_t uv) {
-  CheckHex(uv, "%x", "%0*x", "%*x");
-  CheckDec(uv, "%u", "%0*u", "%*u");
-  int32_t v = static_cast<int32_t>(uv);
-  CheckDec(v, "%d", "%0*d", "%*d");
-
-  if (sizeof(v) == sizeof(&v)) {
-    auto uintptr = static_cast<uintptr_t>(v);
-    void* ptr = reinterpret_cast<void*>(uintptr);
-    CheckHex(ptr, "%x", "%0*x", "%*x");
-  }
-}
-
-void CheckAll(uint64_t v) {
-  CheckHexDec64(v);
-  CheckHexDec32(static_cast<uint32_t>(v));
-}
-
-void TestFastPrints() {
-  // Test all small ints; there aren't many and they're common.
-  for (int i = 0; i < 10000; i++) {
-    CheckAll(i);
-  }
-
-  CheckAll(std::numeric_limits<uint64_t>::max());
-  CheckAll(std::numeric_limits<uint64_t>::max() - 1);
-  CheckAll(std::numeric_limits<int64_t>::min());
-  CheckAll(std::numeric_limits<int64_t>::min() + 1);
-  CheckAll(std::numeric_limits<uint32_t>::max());
-  CheckAll(std::numeric_limits<uint32_t>::max() - 1);
-  CheckAll(std::numeric_limits<int32_t>::min());
-  CheckAll(std::numeric_limits<int32_t>::min() + 1);
-  CheckAll(999999999);              // fits in 32 bits
-  CheckAll(1000000000);             // fits in 32 bits
-  CheckAll(9999999999);             // doesn't fit in 32 bits
-  CheckAll(10000000000);            // doesn't fit in 32 bits
-  CheckAll(999999999999999999);     // fits in signed 64-bit
-  CheckAll(9999999999999999999u);   // fits in unsigned 64-bit, but not signed.
-  CheckAll(1000000000000000000);    // fits in signed 64-bit
-  CheckAll(10000000000000000000u);  // fits in unsigned 64-bit, but not signed.
-
-  CheckAll(999999999876543210);    // check all decimal digits, signed
-  CheckAll(9999999999876543210u);  // check all decimal digits, unsigned.
-  CheckAll(0x123456789abcdef0);    // check all hex digits
-  CheckAll(0x12345678);
-
-  int8_t minus_one_8bit = -1;
-  EXPECT_EQ("ff", absl::StrCat(absl::Hex(minus_one_8bit)));
-
-  int16_t minus_one_16bit = -1;
-  EXPECT_EQ("ffff", absl::StrCat(absl::Hex(minus_one_16bit)));
-}
+void TestFastPrints() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Numbers, TestFunctionsMovedOverFromNumbersMain) {
   TestFastPrints();
@@ -654,13 +539,7 @@ TEST(Numbers, TestFunctionsMovedOverFromNumbersMain) {
 
 struct PointStringify {
   template <typename FormatSink>
-  friend void AbslStringify(FormatSink& sink, const PointStringify& p) {
-    sink.Append("(");
-    sink.Append(absl::StrCat(p.x));
-    sink.Append(", ");
-    sink.Append(absl::StrCat(p.y));
-    sink.Append(")");
-  }
+  friend void AbslStringify(FormatSink& sink, const PointStringify& p) { __builtin_trap() /* STUB: not implemented */; }
 
   double x = 10.0;
   double y = 20.0;
@@ -675,9 +554,7 @@ TEST(StrCat, AbslStringifyExample) {
 struct PointStringifyUsingFormat {
   template <typename FormatSink>
   friend void AbslStringify(FormatSink& sink,
-                            const PointStringifyUsingFormat& p) {
-    absl::Format(&sink, "(%g, %g)", p.x, p.y);
-  }
+                            const PointStringifyUsingFormat& p) { __builtin_trap() /* STUB: not implemented */; }
 
   double x = 10.0;
   double y = 20.0;
@@ -692,9 +569,7 @@ TEST(StrCat, AbslStringifyExampleUsingFormat) {
 enum class EnumWithStringify { Many = 0, Choices = 1 };
 
 template <typename Sink>
-void AbslStringify(Sink& sink, EnumWithStringify e) {
-  absl::Format(&sink, "%s", e == EnumWithStringify::Many ? "Many" : "Choices");
-}
+void AbslStringify(Sink& sink, EnumWithStringify e) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StrCat, AbslStringifyWithEnum) {
   const auto e = EnumWithStringify::Choices;
@@ -702,13 +577,7 @@ TEST(StrCat, AbslStringifyWithEnum) {
 }
 
 template <typename Integer>
-void CheckSingleArgumentIntegerLimits() {
-  Integer max = std::numeric_limits<Integer>::max();
-  Integer min = std::numeric_limits<Integer>::min();
-
-  EXPECT_EQ(absl::StrCat(max), std::to_string(max));
-  EXPECT_EQ(absl::StrCat(min), std::to_string(min));
-}
+void CheckSingleArgumentIntegerLimits() { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(StrCat, SingleArgumentLimits) {
   CheckSingleArgumentIntegerLimits<int32_t>();

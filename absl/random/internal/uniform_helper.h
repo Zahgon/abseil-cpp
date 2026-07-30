@@ -40,14 +40,9 @@ template <typename T>
 struct TagTypeCompare {};
 
 template <typename T>
-constexpr bool operator==(TagTypeCompare<T>, TagTypeCompare<T>) {
-  // Tags are mono-states. They always compare equal.
-  return true;
-}
+constexpr bool operator==(TagTypeCompare<T>, TagTypeCompare<T>) { return {}; }
 template <typename T>
-constexpr bool operator!=(TagTypeCompare<T>, TagTypeCompare<T>) {
-  return false;
-}
+constexpr bool operator!=(TagTypeCompare<T>, TagTypeCompare<T>) { return {}; }
 
 }  // namespace random_internal
 
@@ -103,9 +98,7 @@ typename std::enable_if_t<
         std::disjunction<std::is_same<Tag, IntervalOpenClosedTag>,
                          std::is_same<Tag, IntervalOpenOpenTag>>>,
     IntType>
-uniform_lower_bound(Tag, IntType a, IntType) {
-  return a < (std::numeric_limits<IntType>::max)() ? (a + 1) : a;
-}
+uniform_lower_bound(Tag, IntType a, IntType) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename FloatType, typename Tag>
 typename std::enable_if_t<
@@ -114,18 +107,14 @@ typename std::enable_if_t<
         std::disjunction<std::is_same<Tag, IntervalOpenClosedTag>,
                          std::is_same<Tag, IntervalOpenOpenTag>>>,
     FloatType>
-uniform_lower_bound(Tag, FloatType a, FloatType b) {
-  return std::nextafter(a, b);
-}
+uniform_lower_bound(Tag, FloatType a, FloatType b) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename NumType, typename Tag>
 typename std::enable_if_t<
     std::disjunction_v<std::is_same<Tag, IntervalClosedClosedTag>,
                        std::is_same<Tag, IntervalClosedOpenTag>>,
     NumType>
-uniform_lower_bound(Tag, NumType a, NumType) {
-  return a;
-}
+uniform_lower_bound(Tag, NumType a, NumType) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename IntType, typename Tag>
 typename std::enable_if_t<
@@ -134,9 +123,7 @@ typename std::enable_if_t<
         std::disjunction<std::is_same<Tag, IntervalClosedOpenTag>,
                          std::is_same<Tag, IntervalOpenOpenTag>>>,
     IntType>
-uniform_upper_bound(Tag, IntType, IntType b) {
-  return b > (std::numeric_limits<IntType>::min)() ? (b - 1) : b;
-}
+uniform_upper_bound(Tag, IntType, IntType b) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename FloatType, typename Tag>
 typename std::enable_if_t<
@@ -145,9 +132,7 @@ typename std::enable_if_t<
         std::disjunction<std::is_same<Tag, IntervalClosedOpenTag>,
                          std::is_same<Tag, IntervalOpenOpenTag>>>,
     FloatType>
-uniform_upper_bound(Tag, FloatType, FloatType b) {
-  return b;
-}
+uniform_upper_bound(Tag, FloatType, FloatType b) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename IntType, typename Tag>
 typename std::enable_if_t<
@@ -156,9 +141,7 @@ typename std::enable_if_t<
         std::disjunction<std::is_same<Tag, IntervalClosedClosedTag>,
                          std::is_same<Tag, IntervalOpenClosedTag>>>,
     IntType>
-uniform_upper_bound(Tag, IntType, IntType b) {
-  return b;
-}
+uniform_upper_bound(Tag, IntType, IntType b) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename FloatType, typename Tag>
 typename std::enable_if_t<
@@ -167,9 +150,7 @@ typename std::enable_if_t<
         std::disjunction<std::is_same<Tag, IntervalClosedClosedTag>,
                          std::is_same<Tag, IntervalOpenClosedTag>>>,
     FloatType>
-uniform_upper_bound(Tag, FloatType, FloatType b) {
-  return std::nextafter(b, (std::numeric_limits<FloatType>::max)());
-}
+uniform_upper_bound(Tag, FloatType, FloatType b) { __builtin_trap() /* STUB: not implemented */; }
 
 // Returns whether the bounds are valid for the underlying distribution.
 // Inputs must have already been resolved via uniform_*_bound calls.
@@ -195,15 +176,11 @@ uniform_upper_bound(Tag, FloatType, FloatType b) {
 //
 template <typename FloatType>
 std::enable_if_t<std::is_floating_point_v<FloatType>, bool>
-is_uniform_range_valid(FloatType a, FloatType b) {
-  return a <= b && std::isfinite(b - a);
-}
+is_uniform_range_valid(FloatType a, FloatType b) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename IntType>
 std::enable_if_t<IsIntegral<IntType>::value, bool> is_uniform_range_valid(
-    IntType a, IntType b) {
-  return a <= b;
-}
+    IntType a, IntType b) { __builtin_trap() /* STUB: not implemented */; }
 
 // UniformDistribution selects either absl::uniform_int_distribution
 // or absl::uniform_real_distribution depending on the NumType parameter.
@@ -224,16 +201,16 @@ struct UniformDistributionWrapper : public UniformDistribution<NumType> {
   explicit UniformDistributionWrapper(TagType, NumType lo, NumType hi)
       : UniformDistribution<NumType>(
             uniform_lower_bound<NumType>(TagType{}, lo, hi),
-            uniform_upper_bound<NumType>(TagType{}, lo, hi)) {}
+            uniform_upper_bound<NumType>(TagType{}, lo, hi)) { __builtin_trap() /* STUB: not implemented */; }
 
   explicit UniformDistributionWrapper(NumType lo, NumType hi)
       : UniformDistribution<NumType>(
             uniform_lower_bound<NumType>(IntervalClosedOpenTag(), lo, hi),
-            uniform_upper_bound<NumType>(IntervalClosedOpenTag(), lo, hi)) {}
+            uniform_upper_bound<NumType>(IntervalClosedOpenTag(), lo, hi)) { __builtin_trap() /* STUB: not implemented */; }
 
   explicit UniformDistributionWrapper()
       : UniformDistribution<NumType>(std::numeric_limits<NumType>::lowest(),
-                                     (std::numeric_limits<NumType>::max)()) {}
+                                     (std::numeric_limits<NumType>::max)()) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 }  // namespace random_internal

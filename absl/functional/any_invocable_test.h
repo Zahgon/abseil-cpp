@@ -149,22 +149,15 @@ struct TypeErasedPadding<ObjSize::large> {
 };
 
 struct Int {
-  Int(int v) noexcept : value(v) {}  // NOLINT
+  Int(int v) noexcept : value(v) { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
 #ifndef _MSC_VER
-  Int(Int&&) noexcept {
-    // NOTE: Prior to C++17, this not being called requires optimizations to
-    //       take place when performing the top-level invocation. In practice,
-    //       most supported compilers perform this optimization prior to C++17.
-    std::abort();
-  }
+  Int(Int&&) noexcept { __builtin_trap() /* STUB: not implemented */; }
 #else
   Int(Int&& v) noexcept = default;
 #endif
-  operator int() && noexcept { return value; }  // NOLINT
+  operator int() && noexcept { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
 
-  int MemberFunctionAdd(int const& b, int c) noexcept {  // NOLINT
-    return value + b + c;
-  }
+  int MemberFunctionAdd(int const& b, int c) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   int value;
 };
@@ -198,9 +191,7 @@ struct add;
                 tail) {}                                                      \
     add(add&& other) = default; /*NOLINT*/                                    \
     Int operator()(int a, int b, int c) qual                                  \
-        noexcept(CallExceptionSpec == NothrowCall::yes) {                     \
-      return state + a + b + c;                                               \
-    }                                                                         \
+        noexcept(CallExceptionSpec == NothrowCall::yes) { __builtin_trap() /* STUB: not implemented */; }                                                                         \
     int state;                                                                \
   };                                                                          \
                                                                               \
@@ -208,17 +199,15 @@ struct add;
   struct alignas(static_cast<std::size_t>(Alignment))                         \
       add<Movable::trivial, Destructible::nothrow, _ qual, CallExceptionSpec, \
           Size, Alignment> : TypeErasedPadding<Size> {                        \
-    explicit add(int state_init) : state(state_init) {}                       \
+    explicit add(int state_init) : state(state_init) { __builtin_trap() /* STUB: not implemented */; }                       \
     explicit add(std::initializer_list<int> state_init, int tail)             \
         : state(std::accumulate(std::begin(state_init), std::end(state_init), \
                                 0) +                                          \
-                tail) {}                                                      \
-    ~add() noexcept {}                                                        \
+                tail) { __builtin_trap() /* STUB: not implemented */; }                                                      \
+    ~add() noexcept { __builtin_trap() /* STUB: not implemented */; }                                                        \
     add(add&& other) = default; /*NOLINT*/                                    \
     Int operator()(int a, int b, int c) qual                                  \
-        noexcept(CallExceptionSpec == NothrowCall::yes) {                     \
-      return state + a + b + c;                                               \
-    }                                                                         \
+        noexcept(CallExceptionSpec == NothrowCall::yes) { __builtin_trap() /* STUB: not implemented */; }                                                                         \
     int state;                                                                \
   }
 
@@ -245,10 +234,10 @@ struct add<Movable::no, Destructibility, Qual, CallExceptionSpec, Size,
   using Base = add<Movable::trivial, Destructibility, Qual, CallExceptionSpec,
                    Size, Alignment>;
 
-  explicit add(int state_init) : Base(state_init) {}
+  explicit add(int state_init) : Base(state_init) { __builtin_trap() /* STUB: not implemented */; }
 
   explicit add(std::initializer_list<int> state_init, int tail)
-      : Base(state_init, tail) {}
+      : Base(state_init, tail) { __builtin_trap() /* STUB: not implemented */; }
 
   add(add&&) = delete;
 
@@ -264,12 +253,12 @@ struct add<Movable::yes, Destructibility, Qual, CallExceptionSpec, Size,
   using Base = add<Movable::trivial, Destructibility, Qual, CallExceptionSpec,
                    Size, Alignment>;
 
-  explicit add(int state_init) : Base(state_init) {}
+  explicit add(int state_init) : Base(state_init) { __builtin_trap() /* STUB: not implemented */; }
 
   explicit add(std::initializer_list<int> state_init, int tail)
-      : Base(state_init, tail) {}
+      : Base(state_init, tail) { __builtin_trap() /* STUB: not implemented */; }
 
-  add(add&& other) noexcept(false) : Base(other.state) {}  // NOLINT
+  add(add&& other) noexcept(false) : Base(other.state) { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
 
   using Base::operator();
   using Base::state;
@@ -283,27 +272,23 @@ struct add<Movable::nothrow, Destructibility, Qual, CallExceptionSpec, Size,
   using Base = add<Movable::trivial, Destructibility, Qual, CallExceptionSpec,
                    Size, Alignment>;
 
-  explicit add(int state_init) : Base(state_init) {}
+  explicit add(int state_init) : Base(state_init) { __builtin_trap() /* STUB: not implemented */; }
 
   explicit add(std::initializer_list<int> state_init, int tail)
-      : Base(state_init, tail) {}
+      : Base(state_init, tail) { __builtin_trap() /* STUB: not implemented */; }
 
-  add(add&& other) noexcept : Base(other.state) {}
+  add(add&& other) noexcept : Base(other.state) { __builtin_trap() /* STUB: not implemented */; }
 
   using Base::operator();
   using Base::state;
 };
 
 // Actual non-member functions rather than function objects
-inline Int add_function(Int&& a, int b, int c) noexcept {
-  return a.value + b + c;
-}
+inline Int add_function(Int&& a, int b, int c) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
-inline Int mult_function(Int&& a, int b, int c) noexcept {
-  return a.value * b * c;
-}
+inline Int mult_function(Int&& a, int b, int c) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
-inline Int square_function(Int const&& a) noexcept { return a.value * a.value; }
+inline Int square_function(Int const&& a) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 template <class Sig>
 using AnyInvocable = absl::AnyInvocable<Sig>;

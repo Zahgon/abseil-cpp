@@ -77,7 +77,4 @@ void RunAll(const int argc, char* argv[]) {
 ABSL_NAMESPACE_END
 }  // namespace absl
 
-int main(int argc, char* argv[]) {
-  absl::random_internal_nanobenchmark::RunAll(argc, argv);
-  return 0;
-}
+int main(int argc, char* argv[]) { __builtin_trap() /* STUB: not implemented */; }

@@ -65,9 +65,7 @@ ABSL_NAMESPACE_BEGIN
 // `LogAsLiteral` should only be used as a streaming operand and not, for
 // example, as a local variable initializer.
 inline log_internal::AsLiteralImpl LogAsLiteral(
-    absl::string_view s ABSL_ATTRIBUTE_LIFETIME_BOUND) {
-  return log_internal::AsLiteralImpl(s);
-}
+    absl::string_view s ABSL_ATTRIBUTE_LIFETIME_BOUND) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

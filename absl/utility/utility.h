@@ -41,30 +41,20 @@ template <class F, class T>
 ABSL_DEPRECATE_AND_INLINE()
 constexpr decltype(auto)
     apply(F&& f, T&& t) noexcept(noexcept(std::apply(std::declval<F>(),
-                                                     std::declval<T>()))) {
-  return std::apply(std::forward<F>(f), std::forward<T>(t));
-}
+                                                     std::declval<T>()))) { return {}; }
 
 template <class T1, class T2 = T1>
 ABSL_DEPRECATE_AND_INLINE()
 constexpr T1 exchange(T1& obj, T2&& new_value) noexcept(
-    noexcept(std::exchange(std::declval<T1&>(), std::declval<T2>()))) {
-  return std::exchange(obj, std::forward<T2>(new_value));
-}
+    noexcept(std::exchange(std::declval<T1&>(), std::declval<T2>()))) { __builtin_trap() /* STUB: not implemented */; }
 
 template <class T>
 [[deprecated("Use std::forward instead.")]] [[nodiscard]] constexpr T&& forward(
-    std::remove_reference_t<T>& arg ABSL_ATTRIBUTE_LIFETIME_BOUND) noexcept {
-  // NOLINTNEXTLINE: Avoid warnings about T not being the spelled type of arg.
-  return std::forward<T>(arg);
-}
+    std::remove_reference_t<T>& arg ABSL_ATTRIBUTE_LIFETIME_BOUND) noexcept { return {}; }
 
 template <class T>
 [[deprecated("Use std::forward instead.")]] [[nodiscard]] constexpr T&& forward(
-    std::remove_reference_t<T>&& arg ABSL_ATTRIBUTE_LIFETIME_BOUND) noexcept {
-  // NOLINTNEXTLINE: Avoid warnings about T not being the spelled type of arg.
-  return std::forward<T>(arg);
-}
+    std::remove_reference_t<T>&& arg ABSL_ATTRIBUTE_LIFETIME_BOUND) noexcept { return {}; }
 
 inline constexpr const std::in_place_t& in_place ABSL_DEPRECATE_AND_INLINE() =
     std::in_place;
@@ -104,9 +94,7 @@ template <class T, class Tuple>
 ABSL_DEPRECATE_AND_INLINE()
 [[nodiscard]] constexpr decltype(std::make_from_tuple<T>(std::declval<Tuple>()))
     make_from_tuple(Tuple&& arg) noexcept(
-        noexcept(std::make_from_tuple<T>(std::declval<Tuple>()))) {
-  return std::make_from_tuple<T>(std::forward<Tuple>(arg));
-}
+        noexcept(std::make_from_tuple<T>(std::declval<Tuple>()))) { }
 
 template <size_t N>
 using make_index_sequence
@@ -120,17 +108,12 @@ using make_integer_sequence
 
 template <class It, class OutIt>
 [[deprecated("Use std::move instead.")]]
-constexpr OutIt move(It&& begin, It&& end, OutIt&& output) {
-  return std::move(std::forward<It>(begin), std::forward<It>(end),
-                   std::forward<OutIt>(output));
-}
+constexpr OutIt move(It&& begin, It&& end, OutIt&& output) { return {}; }
 
 template <class T>
 [[deprecated("Use std::move instead.")]]
 [[nodiscard]] constexpr std::remove_reference_t<T>&&
-move(T&& arg ABSL_ATTRIBUTE_LIFETIME_BOUND) noexcept {
-  return std::move(arg);  // NOLINT(bugprone-move-forwarding-reference)
-}
+move(T&& arg ABSL_ATTRIBUTE_LIFETIME_BOUND) noexcept { return {}; }
 
 #if ABSL_INTERNAL_CPLUSPLUS_LANG >= 202002L
 // Backfill for std::nontype_t. An instance of this class can be provided as a

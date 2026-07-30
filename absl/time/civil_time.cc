@@ -104,102 +104,48 @@ bool ParseLenient(string_view s, CivilT* c) {
 }
 }  // namespace
 
-std::string FormatCivilTime(CivilSecond c) {
-  return FormatYearAnd("-%m-%d%ET%H:%M:%S", c);
-}
-std::string FormatCivilTime(CivilMinute c) {
-  return FormatYearAnd("-%m-%d%ET%H:%M", c);
-}
-std::string FormatCivilTime(CivilHour c) {
-  return FormatYearAnd("-%m-%d%ET%H", c);
-}
-std::string FormatCivilTime(CivilDay c) { return FormatYearAnd("-%m-%d", c); }
-std::string FormatCivilTime(CivilMonth c) { return FormatYearAnd("-%m", c); }
-std::string FormatCivilTime(CivilYear c) { return FormatYearAnd("", c); }
+std::string FormatCivilTime(CivilSecond c) { __builtin_trap() /* STUB: not implemented */; }
+std::string FormatCivilTime(CivilMinute c) { __builtin_trap() /* STUB: not implemented */; }
+std::string FormatCivilTime(CivilHour c) { __builtin_trap() /* STUB: not implemented */; }
+std::string FormatCivilTime(CivilDay c) { __builtin_trap() /* STUB: not implemented */; }
+std::string FormatCivilTime(CivilMonth c) { __builtin_trap() /* STUB: not implemented */; }
+std::string FormatCivilTime(CivilYear c) { __builtin_trap() /* STUB: not implemented */; }
 
-bool ParseCivilTime(string_view s, CivilSecond* c) {
-  return ParseYearAnd("-%m-%d%ET%H:%M:%S", s, c);
-}
-bool ParseCivilTime(string_view s, CivilMinute* c) {
-  return ParseYearAnd("-%m-%d%ET%H:%M", s, c);
-}
-bool ParseCivilTime(string_view s, CivilHour* c) {
-  return ParseYearAnd("-%m-%d%ET%H", s, c);
-}
-bool ParseCivilTime(string_view s, CivilDay* c) {
-  return ParseYearAnd("-%m-%d", s, c);
-}
-bool ParseCivilTime(string_view s, CivilMonth* c) {
-  return ParseYearAnd("-%m", s, c);
-}
-bool ParseCivilTime(string_view s, CivilYear* c) {
-  return ParseYearAnd("", s, c);
-}
+bool ParseCivilTime(string_view s, CivilSecond* c) { __builtin_trap() /* STUB: not implemented */; }
+bool ParseCivilTime(string_view s, CivilMinute* c) { __builtin_trap() /* STUB: not implemented */; }
+bool ParseCivilTime(string_view s, CivilHour* c) { __builtin_trap() /* STUB: not implemented */; }
+bool ParseCivilTime(string_view s, CivilDay* c) { __builtin_trap() /* STUB: not implemented */; }
+bool ParseCivilTime(string_view s, CivilMonth* c) { __builtin_trap() /* STUB: not implemented */; }
+bool ParseCivilTime(string_view s, CivilYear* c) { __builtin_trap() /* STUB: not implemented */; }
 
-bool ParseLenientCivilTime(string_view s, CivilSecond* c) {
-  return ParseLenient(s, c);
-}
-bool ParseLenientCivilTime(string_view s, CivilMinute* c) {
-  return ParseLenient(s, c);
-}
-bool ParseLenientCivilTime(string_view s, CivilHour* c) {
-  return ParseLenient(s, c);
-}
-bool ParseLenientCivilTime(string_view s, CivilDay* c) {
-  return ParseLenient(s, c);
-}
-bool ParseLenientCivilTime(string_view s, CivilMonth* c) {
-  return ParseLenient(s, c);
-}
-bool ParseLenientCivilTime(string_view s, CivilYear* c) {
-  return ParseLenient(s, c);
-}
+bool ParseLenientCivilTime(string_view s, CivilSecond* c) { __builtin_trap() /* STUB: not implemented */; }
+bool ParseLenientCivilTime(string_view s, CivilMinute* c) { __builtin_trap() /* STUB: not implemented */; }
+bool ParseLenientCivilTime(string_view s, CivilHour* c) { __builtin_trap() /* STUB: not implemented */; }
+bool ParseLenientCivilTime(string_view s, CivilDay* c) { __builtin_trap() /* STUB: not implemented */; }
+bool ParseLenientCivilTime(string_view s, CivilMonth* c) { __builtin_trap() /* STUB: not implemented */; }
+bool ParseLenientCivilTime(string_view s, CivilYear* c) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace time_internal {
 
-std::ostream& operator<<(std::ostream& os, CivilYear y) {
-  return os << FormatCivilTime(y);
-}
-std::ostream& operator<<(std::ostream& os, CivilMonth m) {
-  return os << FormatCivilTime(m);
-}
-std::ostream& operator<<(std::ostream& os, CivilDay d) {
-  return os << FormatCivilTime(d);
-}
-std::ostream& operator<<(std::ostream& os, CivilHour h) {
-  return os << FormatCivilTime(h);
-}
-std::ostream& operator<<(std::ostream& os, CivilMinute m) {
-  return os << FormatCivilTime(m);
-}
-std::ostream& operator<<(std::ostream& os, CivilSecond s) {
-  return os << FormatCivilTime(s);
-}
+std::ostream& operator<<(std::ostream& os, CivilYear y) { __builtin_trap() /* STUB: not implemented */; }
+std::ostream& operator<<(std::ostream& os, CivilMonth m) { __builtin_trap() /* STUB: not implemented */; }
+std::ostream& operator<<(std::ostream& os, CivilDay d) { __builtin_trap() /* STUB: not implemented */; }
+std::ostream& operator<<(std::ostream& os, CivilHour h) { __builtin_trap() /* STUB: not implemented */; }
+std::ostream& operator<<(std::ostream& os, CivilMinute m) { __builtin_trap() /* STUB: not implemented */; }
+std::ostream& operator<<(std::ostream& os, CivilSecond s) { __builtin_trap() /* STUB: not implemented */; }
 
-bool AbslParseFlag(string_view s, CivilSecond* c, std::string*) {
-  return ParseLenientCivilTime(s, c);
-}
-bool AbslParseFlag(string_view s, CivilMinute* c, std::string*) {
-  return ParseLenientCivilTime(s, c);
-}
-bool AbslParseFlag(string_view s, CivilHour* c, std::string*) {
-  return ParseLenientCivilTime(s, c);
-}
-bool AbslParseFlag(string_view s, CivilDay* c, std::string*) {
-  return ParseLenientCivilTime(s, c);
-}
-bool AbslParseFlag(string_view s, CivilMonth* c, std::string*) {
-  return ParseLenientCivilTime(s, c);
-}
-bool AbslParseFlag(string_view s, CivilYear* c, std::string*) {
-  return ParseLenientCivilTime(s, c);
-}
-std::string AbslUnparseFlag(CivilSecond c) { return FormatCivilTime(c); }
-std::string AbslUnparseFlag(CivilMinute c) { return FormatCivilTime(c); }
-std::string AbslUnparseFlag(CivilHour c) { return FormatCivilTime(c); }
-std::string AbslUnparseFlag(CivilDay c) { return FormatCivilTime(c); }
-std::string AbslUnparseFlag(CivilMonth c) { return FormatCivilTime(c); }
-std::string AbslUnparseFlag(CivilYear c) { return FormatCivilTime(c); }
+bool AbslParseFlag(string_view s, CivilSecond* c, std::string*) { __builtin_trap() /* STUB: not implemented */; }
+bool AbslParseFlag(string_view s, CivilMinute* c, std::string*) { __builtin_trap() /* STUB: not implemented */; }
+bool AbslParseFlag(string_view s, CivilHour* c, std::string*) { __builtin_trap() /* STUB: not implemented */; }
+bool AbslParseFlag(string_view s, CivilDay* c, std::string*) { __builtin_trap() /* STUB: not implemented */; }
+bool AbslParseFlag(string_view s, CivilMonth* c, std::string*) { __builtin_trap() /* STUB: not implemented */; }
+bool AbslParseFlag(string_view s, CivilYear* c, std::string*) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(CivilSecond c) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(CivilMinute c) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(CivilHour c) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(CivilDay c) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(CivilMonth c) { __builtin_trap() /* STUB: not implemented */; }
+std::string AbslUnparseFlag(CivilYear c) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace time_internal
 

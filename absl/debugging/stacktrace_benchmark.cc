@@ -26,53 +26,13 @@ static bool g_enable_fixup = false;
 
 #if ABSL_HAVE_ATTRIBUTE_WEAK
 // Override these weak symbols if possible.
-bool absl::internal_stacktrace::ShouldFixUpStack() { return g_enable_fixup; }
+bool absl::internal_stacktrace::ShouldFixUpStack() { __builtin_trap() /* STUB: not implemented */; }
 void absl::internal_stacktrace::FixUpStack(void**, uintptr_t*, int*, size_t,
-                                           size_t&) {}
+                                           size_t&) { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-namespace {
-
-static constexpr int kMaxStackDepth = 100;
-static constexpr int kCacheSize = (1 << 16);
-void* pcs[kMaxStackDepth];
-
-ABSL_ATTRIBUTE_NOINLINE void func(benchmark::State& state, int x, int depth) {
-  if (x <= 0) {
-    // Touch a significant amount of memory so that the stack is likely to be
-    // not cached in the L1 cache.
-    state.PauseTiming();
-    int* arr = new int[kCacheSize];
-    for (int i = 0; i < kCacheSize; ++i) benchmark::DoNotOptimize(arr[i] = 100);
-    delete[] arr;
-    state.ResumeTiming();
-    benchmark::DoNotOptimize(absl::GetStackTrace(pcs, depth, 0));
-    return;
-  }
-  ABSL_BLOCK_TAIL_CALL_OPTIMIZATION();
-  func(state, --x, depth);
-}
-
-template <bool EnableFixup>
-void BM_GetStackTrace(benchmark::State& state) {
-  const Cleanup restore_state(
-      [prev = g_enable_fixup]() { g_enable_fixup = prev; });
-  g_enable_fixup = EnableFixup;
-  int depth = state.range(0);
-  for (auto s : state) {
-    func(state, depth, depth);
-  }
-}
-
-#if ABSL_HAVE_ATTRIBUTE_WEAK
-auto& BM_GetStackTraceWithFixup = BM_GetStackTrace<true>;
-BENCHMARK(BM_GetStackTraceWithFixup)->DenseRange(10, kMaxStackDepth, 10);
-#endif
-
-auto& BM_GetStackTraceWithoutFixup = BM_GetStackTrace<false>;
-BENCHMARK(BM_GetStackTraceWithoutFixup)->DenseRange(10, kMaxStackDepth, 10);
-}  // namespace
+namespace { __builtin_trap() /* STUB: not implemented */; }  // namespace
 ABSL_NAMESPACE_END
 }  // namespace absl

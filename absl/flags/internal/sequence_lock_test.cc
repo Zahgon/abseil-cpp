@@ -33,7 +33,7 @@ class ConcurrentSequenceLockTest
  public:
   ConcurrentSequenceLockTest()
       : buf_bytes_(std::get<0>(GetParam())),
-        num_threads_(std::get<1>(GetParam())) {}
+        num_threads_(std::get<1>(GetParam())) { __builtin_trap() /* STUB: not implemented */; }
 
  protected:
   const int buf_bytes_;
@@ -104,14 +104,7 @@ TEST_P(ConcurrentSequenceLockTest, ReadAndWrite) {
 // Simple helper for generating a range of thread counts.
 // Generates [low, low*scale, low*scale^2, ...high)
 // (even if high is between low*scale^k and low*scale^(k+1)).
-std::vector<int> MultiplicativeRange(int low, int high, int scale) {
-  std::vector<int> result;
-  for (int current = low; current < high; current *= scale) {
-    result.push_back(current);
-  }
-  result.push_back(high);
-  return result;
-}
+std::vector<int> MultiplicativeRange(int low, int high, int scale) { __builtin_trap() /* STUB: not implemented */; }
 
 #ifndef ABSL_HAVE_THREAD_SANITIZER
 const int kMaxThreads = absl::base_internal::NumCPUs();
@@ -123,17 +116,7 @@ const int kMaxThreads = std::min(absl::base_internal::NumCPUs(), 4);
 
 // Return all of the interesting buffer sizes worth testing:
 // powers of two and adjacent values.
-std::vector<int> InterestingBufferSizes() {
-  std::vector<int> ret;
-  for (int v : MultiplicativeRange(1, 128, 2)) {
-    ret.push_back(v);
-    if (v > 1) {
-      ret.push_back(v - 1);
-    }
-    ret.push_back(v + 1);
-  }
-  return ret;
-}
+std::vector<int> InterestingBufferSizes() { __builtin_trap() /* STUB: not implemented */; }
 
 INSTANTIATE_TEST_SUITE_P(
     TestManyByteSizes, ConcurrentSequenceLockTest,

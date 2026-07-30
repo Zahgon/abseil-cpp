@@ -55,29 +55,20 @@ namespace {
 static constexpr bool kExtendedTest = false;
 
 std::unique_ptr<absl::synchronization_internal::ThreadPool> CreatePool(
-    int threads) {
-  return std::make_unique<absl::synchronization_internal::ThreadPool>(threads);
-}
+    int threads) { __builtin_trap() /* STUB: not implemented */; }
 
 std::unique_ptr<absl::synchronization_internal::ThreadPool>
-CreateDefaultPool() {
-  return CreatePool(kExtendedTest ? 32 : 10);
-}
+CreateDefaultPool() { __builtin_trap() /* STUB: not implemented */; }
 
 // Hack to schedule a function to run on a thread pool thread after a
 // duration has elapsed.
 static void ScheduleAfter(absl::synchronization_internal::ThreadPool *tp,
                           absl::Duration after,
-                          const std::function<void()> &func) {
-  tp->Schedule([func, after] {
-    absl::SleepFor(after);
-    func();
-  });
-}
+                          const std::function<void()> &func) { __builtin_trap() /* STUB: not implemented */; }
 
 struct ScopedInvariantDebugging {
-  ScopedInvariantDebugging() { absl::EnableMutexInvariantDebugging(true); }
-  ~ScopedInvariantDebugging() { absl::EnableMutexInvariantDebugging(false); }
+  ScopedInvariantDebugging() { __builtin_trap() /* STUB: not implemented */; }
+  ~ScopedInvariantDebugging() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 struct TestContext {
@@ -92,66 +83,19 @@ struct TestContext {
 // To test whether the invariant check call occurs
 static std::atomic<bool> invariant_checked;
 
-static bool GetInvariantChecked() {
-  return invariant_checked.load(std::memory_order_relaxed);
-}
+static bool GetInvariantChecked() { __builtin_trap() /* STUB: not implemented */; }
 
-static void SetInvariantChecked(bool new_value) {
-  invariant_checked.store(new_value, std::memory_order_relaxed);
-}
+static void SetInvariantChecked(bool new_value) { __builtin_trap() /* STUB: not implemented */; }
 
-static void CheckSumG0G1(void *v) {
-  TestContext *cxt = static_cast<TestContext *>(v);
-  CHECK_EQ(cxt->g0, -cxt->g1) << "Error in CheckSumG0G1";
-  SetInvariantChecked(true);
-}
+static void CheckSumG0G1(void *v) { __builtin_trap() /* STUB: not implemented */; }
 
-static void TestMu(TestContext *cxt, int c) {
-  for (int i = 0; i != cxt->iterations; i++) {
-    absl::MutexLock l(cxt->mu);
-    int a = cxt->g0 + 1;
-    cxt->g0 = a;
-    cxt->g1--;
-  }
-}
+static void TestMu(TestContext *cxt, int c) { __builtin_trap() /* STUB: not implemented */; }
 
-static void TestTry(TestContext *cxt, int c) {
-  for (int i = 0; i != cxt->iterations; i++) {
-    do {
-      std::this_thread::yield();
-    } while (!cxt->mu.try_lock());
-    int a = cxt->g0 + 1;
-    cxt->g0 = a;
-    cxt->g1--;
-    cxt->mu.unlock();
-  }
-}
+static void TestTry(TestContext *cxt, int c) { __builtin_trap() /* STUB: not implemented */; }
 
-static void TestR20ms(TestContext *cxt, int c) {
-  for (int i = 0; i != cxt->iterations; i++) {
-    absl::ReaderMutexLock l(cxt->mu);
-    absl::SleepFor(absl::Milliseconds(20));
-    cxt->mu.AssertReaderHeld();
-  }
-}
+static void TestR20ms(TestContext *cxt, int c) { __builtin_trap() /* STUB: not implemented */; }
 
-static void TestRW(TestContext *cxt, int c) {
-  if ((c & 1) == 0) {
-    for (int i = 0; i != cxt->iterations; i++) {
-      absl::WriterMutexLock l(cxt->mu);
-      cxt->g0++;
-      cxt->g1--;
-      cxt->mu.AssertHeld();
-      cxt->mu.AssertReaderHeld();
-    }
-  } else {
-    for (int i = 0; i != cxt->iterations; i++) {
-      absl::ReaderMutexLock l(cxt->mu);
-      CHECK_EQ(cxt->g0, -cxt->g1) << "Error in TestRW";
-      cxt->mu.AssertReaderHeld();
-    }
-  }
-}
+static void TestRW(TestContext *cxt, int c) { __builtin_trap() /* STUB: not implemented */; }
 
 struct MyContext {
   int target;
@@ -159,240 +103,34 @@ struct MyContext {
   bool MyTurn();
 };
 
-bool MyContext::MyTurn() {
-  TestContext *cxt = this->cxt;
-  return cxt->g0 == this->target || cxt->g0 == cxt->iterations;
-}
+bool MyContext::MyTurn() { __builtin_trap() /* STUB: not implemented */; }
 
-static void TestAwait(TestContext *cxt, int c) {
-  MyContext mc;
-  mc.target = c;
-  mc.cxt = cxt;
-  absl::MutexLock l(cxt->mu);
-  cxt->mu.AssertHeld();
-  while (cxt->g0 < cxt->iterations) {
-    cxt->mu.Await(absl::Condition(&mc, &MyContext::MyTurn));
-    CHECK(mc.MyTurn()) << "Error in TestAwait";
-    cxt->mu.AssertHeld();
-    if (cxt->g0 < cxt->iterations) {
-      int a = cxt->g0 + 1;
-      cxt->g0 = a;
-      mc.target += cxt->threads;
-    }
-  }
-}
+static void TestAwait(TestContext *cxt, int c) { __builtin_trap() /* STUB: not implemented */; }
 
-static void TestSignalAll(TestContext *cxt, int c) {
-  int target = c;
-  absl::MutexLock l(cxt->mu);
-  cxt->mu.AssertHeld();
-  while (cxt->g0 < cxt->iterations) {
-    while (cxt->g0 != target && cxt->g0 != cxt->iterations) {
-      cxt->cv.Wait(&cxt->mu);
-    }
-    if (cxt->g0 < cxt->iterations) {
-      int a = cxt->g0 + 1;
-      cxt->g0 = a;
-      cxt->cv.SignalAll();
-      target += cxt->threads;
-    }
-  }
-}
+static void TestSignalAll(TestContext *cxt, int c) { __builtin_trap() /* STUB: not implemented */; }
 
-static void TestSignal(TestContext *cxt, int c) {
-  CHECK_EQ(cxt->threads, 2) << "TestSignal should use 2 threads";
-  int target = c;
-  absl::MutexLock l(cxt->mu);
-  cxt->mu.AssertHeld();
-  while (cxt->g0 < cxt->iterations) {
-    while (cxt->g0 != target && cxt->g0 != cxt->iterations) {
-      cxt->cv.Wait(&cxt->mu);
-    }
-    if (cxt->g0 < cxt->iterations) {
-      int a = cxt->g0 + 1;
-      cxt->g0 = a;
-      cxt->cv.Signal();
-      target += cxt->threads;
-    }
-  }
-}
+static void TestSignal(TestContext *cxt, int c) { __builtin_trap() /* STUB: not implemented */; }
 
-static void TestCVTimeout(TestContext *cxt, int c) {
-  int target = c;
-  absl::MutexLock l(cxt->mu);
-  cxt->mu.AssertHeld();
-  while (cxt->g0 < cxt->iterations) {
-    while (cxt->g0 != target && cxt->g0 != cxt->iterations) {
-      cxt->cv.WaitWithTimeout(&cxt->mu, absl::Seconds(100));
-    }
-    if (cxt->g0 < cxt->iterations) {
-      int a = cxt->g0 + 1;
-      cxt->g0 = a;
-      cxt->cv.SignalAll();
-      target += cxt->threads;
-    }
-  }
-}
+static void TestCVTimeout(TestContext *cxt, int c) { __builtin_trap() /* STUB: not implemented */; }
 
 static bool G0GE2(TestContext *cxt) { return cxt->g0 >= 2; }
 
-static void TestTime(TestContext *cxt, int c, bool use_cv) {
-  CHECK_EQ(cxt->iterations, 1) << "TestTime should only use 1 iteration";
-  CHECK_GT(cxt->threads, 2) << "TestTime should use more than 2 threads";
-  const bool kFalse = false;
-  absl::Condition false_cond(&kFalse);
-  absl::Condition g0ge2(G0GE2, cxt);
-  if (c == 0) {
-    absl::MutexLock l(cxt->mu);
+static void TestTime(TestContext *cxt, int c, bool use_cv) { __builtin_trap() /* STUB: not implemented */; }
 
-    absl::Time start = absl::Now();
-    if (use_cv) {
-      cxt->cv.WaitWithTimeout(&cxt->mu, absl::Seconds(1));
-    } else {
-      CHECK(!cxt->mu.AwaitWithTimeout(false_cond, absl::Seconds(1)))
-          << "TestTime failed";
-    }
-    absl::Duration elapsed = absl::Now() - start;
-    CHECK(absl::Seconds(0.9) <= elapsed && elapsed <= absl::Seconds(2.0))
-        << "TestTime failed";
-    CHECK_EQ(cxt->g0, 1) << "TestTime failed";
+static void TestMuTime(TestContext *cxt, int c) { __builtin_trap() /* STUB: not implemented */; }
 
-    start = absl::Now();
-    if (use_cv) {
-      cxt->cv.WaitWithTimeout(&cxt->mu, absl::Seconds(1));
-    } else {
-      CHECK(!cxt->mu.AwaitWithTimeout(false_cond, absl::Seconds(1)))
-          << "TestTime failed";
-    }
-    elapsed = absl::Now() - start;
-    CHECK(absl::Seconds(0.9) <= elapsed && elapsed <= absl::Seconds(2.0))
-        << "TestTime failed";
-    cxt->g0++;
-    if (use_cv) {
-      cxt->cv.Signal();
-    }
-
-    start = absl::Now();
-    if (use_cv) {
-      cxt->cv.WaitWithTimeout(&cxt->mu, absl::Seconds(4));
-    } else {
-      CHECK(!cxt->mu.AwaitWithTimeout(false_cond, absl::Seconds(4)))
-          << "TestTime failed";
-    }
-    elapsed = absl::Now() - start;
-    CHECK(absl::Seconds(3.9) <= elapsed && elapsed <= absl::Seconds(6.0))
-        << "TestTime failed";
-    CHECK_GE(cxt->g0, 3) << "TestTime failed";
-
-    start = absl::Now();
-    if (use_cv) {
-      cxt->cv.WaitWithTimeout(&cxt->mu, absl::Seconds(1));
-    } else {
-      CHECK(!cxt->mu.AwaitWithTimeout(false_cond, absl::Seconds(1)))
-          << "TestTime failed";
-    }
-    elapsed = absl::Now() - start;
-    CHECK(absl::Seconds(0.9) <= elapsed && elapsed <= absl::Seconds(2.0))
-        << "TestTime failed";
-    if (use_cv) {
-      cxt->cv.SignalAll();
-    }
-
-    start = absl::Now();
-    if (use_cv) {
-      cxt->cv.WaitWithTimeout(&cxt->mu, absl::Seconds(1));
-    } else {
-      CHECK(!cxt->mu.AwaitWithTimeout(false_cond, absl::Seconds(1)))
-          << "TestTime failed";
-    }
-    elapsed = absl::Now() - start;
-    CHECK(absl::Seconds(0.9) <= elapsed && elapsed <= absl::Seconds(2.0))
-        << "TestTime failed";
-    CHECK_EQ(cxt->g0, cxt->threads) << "TestTime failed";
-
-  } else if (c == 1) {
-    absl::MutexLock l(cxt->mu);
-    const absl::Time start = absl::Now();
-    if (use_cv) {
-      cxt->cv.WaitWithTimeout(&cxt->mu, absl::Milliseconds(500));
-    } else {
-      CHECK(!cxt->mu.AwaitWithTimeout(false_cond, absl::Milliseconds(500)))
-          << "TestTime failed";
-    }
-    const absl::Duration elapsed = absl::Now() - start;
-    CHECK(absl::Seconds(0.4) <= elapsed && elapsed <= absl::Seconds(0.9))
-        << "TestTime failed";
-    cxt->g0++;
-  } else if (c == 2) {
-    absl::MutexLock l(cxt->mu);
-    if (use_cv) {
-      while (cxt->g0 < 2) {
-        cxt->cv.WaitWithTimeout(&cxt->mu, absl::Seconds(100));
-      }
-    } else {
-      CHECK(cxt->mu.AwaitWithTimeout(g0ge2, absl::Seconds(100)))
-          << "TestTime failed";
-    }
-    cxt->g0++;
-  } else {
-    absl::MutexLock l(cxt->mu);
-    if (use_cv) {
-      while (cxt->g0 < 2) {
-        cxt->cv.Wait(&cxt->mu);
-      }
-    } else {
-      cxt->mu.Await(g0ge2);
-    }
-    cxt->g0++;
-  }
-}
-
-static void TestMuTime(TestContext *cxt, int c) { TestTime(cxt, c, false); }
-
-static void TestCVTime(TestContext *cxt, int c) { TestTime(cxt, c, true); }
+static void TestCVTime(TestContext *cxt, int c) { __builtin_trap() /* STUB: not implemented */; }
 
 static void EndTest(int *c0, int *c1, absl::Mutex *mu, absl::CondVar *cv,
-                    const std::function<void(int)> &cb) {
-  mu->lock();
-  int c = (*c0)++;
-  mu->unlock();
-  cb(c);
-  absl::MutexLock l(*mu);
-  (*c1)++;
-  cv->Signal();
-}
+                    const std::function<void(int)> &cb) { __builtin_trap() /* STUB: not implemented */; }
 
 // Code common to RunTest() and RunTestWithInvariantDebugging().
 static int RunTestCommon(TestContext *cxt, void (*test)(TestContext *cxt, int),
-                         int threads, int iterations, int operations) {
-  absl::Mutex mu2;
-  absl::CondVar cv2;
-  int c0 = 0;
-  int c1 = 0;
-  cxt->g0 = 0;
-  cxt->g1 = 0;
-  cxt->iterations = iterations;
-  cxt->threads = threads;
-  absl::synchronization_internal::ThreadPool tp(threads);
-  for (int i = 0; i != threads; i++) {
-    tp.Schedule(std::bind(
-        &EndTest, &c0, &c1, &mu2, &cv2,
-        std::function<void(int)>(std::bind(test, cxt, std::placeholders::_1))));
-  }
-  mu2.lock();
-  while (c1 != threads) {
-    cv2.Wait(&mu2);
-  }
-  mu2.unlock();
-  return cxt->g0;
-}
+                         int threads, int iterations, int operations) { __builtin_trap() /* STUB: not implemented */; }
 
 // Basis for the parameterized tests configured below.
 static int RunTest(void (*test)(TestContext *cxt, int), int threads,
-                   int iterations, int operations) {
-  TestContext cxt;
-  return RunTestCommon(&cxt, test, threads, iterations, operations);
-}
+                   int iterations, int operations) { __builtin_trap() /* STUB: not implemented */; }
 
 // Like RunTest(), but sets an invariant on the tested Mutex and
 // verifies that the invariant check happened. The invariant function
@@ -402,15 +140,7 @@ static int RunTest(void (*test)(TestContext *cxt, int), int threads,
 static int RunTestWithInvariantDebugging(void (*test)(TestContext *cxt, int),
                                          int threads, int iterations,
                                          int operations,
-                                         void (*invariant)(void *)) {
-  ScopedInvariantDebugging scoped_debugging;
-  SetInvariantChecked(false);
-  TestContext cxt;
-  cxt.mu.EnableInvariantDebugging(invariant, &cxt);
-  int ret = RunTestCommon(&cxt, test, threads, iterations, operations);
-  CHECK(GetInvariantChecked()) << "Invariant not checked";
-  return ret;
-}
+                                         void (*invariant)(void *)) { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
 // --------------------------------------------------------
@@ -421,13 +151,9 @@ struct TimeoutBugStruct {
   int a_waiter_count;
 };
 
-static void WaitForA(TimeoutBugStruct *x) {
-  x->mu.LockWhen(absl::Condition(&x->a));
-  x->a_waiter_count--;
-  x->mu.unlock();
-}
+static void WaitForA(TimeoutBugStruct *x) { __builtin_trap() /* STUB: not implemented */; }
 
-static bool NoAWaiters(TimeoutBugStruct *x) { return x->a_waiter_count == 0; }
+static bool NoAWaiters(TimeoutBugStruct *x) { __builtin_trap() /* STUB: not implemented */; }
 
 // Test that a CondVar.Wait(&mutex) can un-block a call to mutex.Await() in
 // another thread.
@@ -550,37 +276,11 @@ struct CondVarWaitDeadlock : testing::TestWithParam<int> {
   bool read_lock2;
   bool signal_unlocked;
 
-  CondVarWaitDeadlock() {
-    read_lock1 = GetParam() & (1 << 0);
-    read_lock2 = GetParam() & (1 << 1);
-    signal_unlocked = GetParam() & (1 << 2);
-  }
+  CondVarWaitDeadlock() { __builtin_trap() /* STUB: not implemented */; }
 
-  void Waiter1() {
-    if (read_lock1) {
-      mu.lock_shared();
-      while (!cond1) {
-        cv.Wait(&mu);
-      }
-      mu.unlock_shared();
-    } else {
-      mu.lock();
-      while (!cond1) {
-        cv.Wait(&mu);
-      }
-      mu.unlock();
-    }
-  }
+  void Waiter1() { __builtin_trap() /* STUB: not implemented */; }
 
-  void Waiter2() {
-    if (read_lock2) {
-      mu.ReaderLockWhen(absl::Condition(&cond2));
-      mu.unlock_shared();
-    } else {
-      mu.LockWhen(absl::Condition(&cond2));
-      mu.unlock();
-    }
-  }
+  void Waiter2() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // Test for a deadlock bug in Mutex::Fer().
@@ -640,21 +340,7 @@ struct DequeueAllWakeableBugStruct {
 };
 
 // Test for regression of a bug in loop of DequeueAllWakeable()
-static void AcquireAsReader(DequeueAllWakeableBugStruct *x) {
-  x->mu.lock_shared();
-  x->mu2.lock();
-  x->unfinished_count--;
-  x->done1 = (x->unfinished_count == 0);
-  x->mu2.unlock();
-  // make sure that both readers acquired mu before we release it.
-  absl::SleepFor(absl::Seconds(2));
-  x->mu.unlock_shared();
-
-  x->mu2.lock();
-  x->finished_count--;
-  x->done2 = (x->finished_count == 0);
-  x->mu2.unlock();
-}
+static void AcquireAsReader(DequeueAllWakeableBugStruct *x) { __builtin_trap() /* STUB: not implemented */; }
 
 // Test for regression of a bug in loop of DequeueAllWakeable()
 TEST(Mutex, MutexReaderWakeupBug) {
@@ -690,17 +376,9 @@ struct LockWhenTestStruct {
   bool waiting = false;
 };
 
-static bool LockWhenTestIsCond(LockWhenTestStruct *s) {
-  s->mu2.lock();
-  s->waiting = true;
-  s->mu2.unlock();
-  return s->cond;
-}
+static bool LockWhenTestIsCond(LockWhenTestStruct *s) { __builtin_trap() /* STUB: not implemented */; }
 
-static void LockWhenTestWaitForIsCond(LockWhenTestStruct *s) {
-  s->mu1.LockWhen(absl::Condition(&LockWhenTestIsCond, s));
-  s->mu1.unlock();
-}
+static void LockWhenTestWaitForIsCond(LockWhenTestStruct *s) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Mutex, LockWhen) {
   LockWhenTestStruct s;
@@ -776,41 +454,16 @@ struct ReaderDecrementBugStruct {
 };
 
 // L >= mu, L < mu_waiting_on_cond
-static bool IsCond(void *v) {
-  ReaderDecrementBugStruct *x = reinterpret_cast<ReaderDecrementBugStruct *>(v);
-  x->mu2.lock();
-  x->waiting_on_cond = true;
-  x->mu2.unlock();
-  return x->cond;
-}
+static bool IsCond(void *v) { __builtin_trap() /* STUB: not implemented */; }
 
 // L >= mu
-static bool AllDone(void *v) {
-  ReaderDecrementBugStruct *x = reinterpret_cast<ReaderDecrementBugStruct *>(v);
-  return x->done == 0;
-}
+static bool AllDone(void *v) { __builtin_trap() /* STUB: not implemented */; }
 
 // L={}
-static void WaitForCond(ReaderDecrementBugStruct *x) {
-  absl::Mutex dummy;
-  absl::MutexLock l(dummy);
-  x->mu.LockWhen(absl::Condition(&IsCond, x));
-  x->done--;
-  x->mu.unlock();
-}
+static void WaitForCond(ReaderDecrementBugStruct *x) { __builtin_trap() /* STUB: not implemented */; }
 
 // L={}
-static void GetReadLock(ReaderDecrementBugStruct *x) {
-  x->mu.lock_shared();
-  x->mu2.lock();
-  x->have_reader_lock = true;
-  x->mu2.Await(absl::Condition(&x->complete));
-  x->mu2.unlock();
-  x->mu.unlock_shared();
-  x->mu.lock();
-  x->done--;
-  x->mu.unlock();
-}
+static void GetReadLock(ReaderDecrementBugStruct *x) { __builtin_trap() /* STUB: not implemented */; }
 
 // Test for reader counter being decremented incorrectly by waiter
 // with false condition.
@@ -880,24 +533,20 @@ TEST(Mutex, LockedMutexDestructionBug) ABSL_NO_THREAD_SAFETY_ANALYSIS {
 }
 
 // Some functions taking pointers to non-const.
-bool Equals42(int *p) { return *p == 42; }
-bool Equals43(int *p) { return *p == 43; }
+bool Equals42(int *p) { __builtin_trap() /* STUB: not implemented */; }
+bool Equals43(int *p) { __builtin_trap() /* STUB: not implemented */; }
 
 // Some functions taking pointers to const.
-bool ConstEquals42(const int *p) { return *p == 42; }
-bool ConstEquals43(const int *p) { return *p == 43; }
+bool ConstEquals42(const int *p) { __builtin_trap() /* STUB: not implemented */; }
+bool ConstEquals43(const int *p) { __builtin_trap() /* STUB: not implemented */; }
 
 // Some function templates taking pointers. Note it's possible for `T` to be
 // deduced as non-const or const, which creates the potential for ambiguity,
 // but which the implementation is careful to avoid.
 template <typename T>
-bool TemplateEquals42(T *p) {
-  return *p == 42;
-}
+bool TemplateEquals42(T *p) { __builtin_trap() /* STUB: not implemented */; }
 template <typename T>
-bool TemplateEquals43(T *p) {
-  return *p == 43;
-}
+bool TemplateEquals43(T *p) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Mutex, FunctionPointerCondition) {
   // Some arguments.
@@ -935,20 +584,20 @@ TEST(Mutex, FunctionPointerCondition) {
 // Example base and derived class for use in predicates and test below. Not a
 // particularly realistic example, but it suffices for testing purposes.
 struct Base {
-  explicit Base(int v) : value(v) {}
+  explicit Base(int v) : value(v) { __builtin_trap() /* STUB: not implemented */; }
   int value;
 };
 struct Derived : Base {
-  explicit Derived(int v) : Base(v) {}
+  explicit Derived(int v) : Base(v) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // Some functions taking pointer to non-const `Base`.
-bool BaseEquals42(Base *p) { return p->value == 42; }
-bool BaseEquals43(Base *p) { return p->value == 43; }
+bool BaseEquals42(Base *p) { __builtin_trap() /* STUB: not implemented */; }
+bool BaseEquals43(Base *p) { __builtin_trap() /* STUB: not implemented */; }
 
 // Some functions taking pointer to const `Base`.
-bool ConstBaseEquals42(const Base *p) { return p->value == 42; }
-bool ConstBaseEquals43(const Base *p) { return p->value == 43; }
+bool ConstBaseEquals42(const Base *p) { __builtin_trap() /* STUB: not implemented */; }
+bool ConstBaseEquals43(const Base *p) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Mutex, FunctionPointerConditionWithDerivedToBaseConversion) {
   // Some arguments.
@@ -985,7 +634,7 @@ TEST(Mutex, FunctionPointerConditionWithDerivedToBaseConversion) {
 }
 
 struct Constable {
-  bool WotsAllThisThen() const { return true; }
+  bool WotsAllThisThen() const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(Mutex, FunctionPointerConditionWithConstMethod) {
@@ -996,9 +645,7 @@ TEST(Mutex, FunctionPointerConditionWithConstMethod) {
 #ifdef __cpp_explicit_this_parameter
 struct TrueViaDeducingThis {
   template <class This, class... Args>
-  bool operator()(this const This&, Args...) {
-    return true;
-  }
+  bool operator()(this const This&, Args...) { __builtin_trap() /* STUB: not implemented */; }
 };
 
 TEST(Mutex, FunctorConditionDeducingThis) {
@@ -1009,9 +656,7 @@ TEST(Mutex, FunctorConditionDeducingThis) {
 
 struct True {
   template <class... Args>
-  bool operator()(Args...) const {
-    return true;
-  }
+  bool operator()(Args...) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 struct DerivedTrue : True {};
@@ -1080,21 +725,9 @@ TEST(Mutex, ConditionSwap) {
 // case was handled incorrectly in one place.)
 
 static void ReaderForReaderOnCondVar(absl::Mutex *mu, absl::CondVar *cv,
-                                     int *running) {
-  absl::InsecureBitGen gen;
-  std::uniform_int_distribution<int> random_millis(0, 15);
-  mu->lock_shared();
-  while (*running == 3) {
-    absl::SleepFor(absl::Milliseconds(random_millis(gen)));
-    cv->WaitWithTimeout(mu, absl::Milliseconds(random_millis(gen)));
-  }
-  mu->unlock_shared();
-  mu->lock();
-  (*running)--;
-  mu->unlock();
-}
+                                     int *running) { __builtin_trap() /* STUB: not implemented */; }
 
-static bool IntIsZero(int *x) { return *x == 0; }
+static bool IntIsZero(int *x) { __builtin_trap() /* STUB: not implemented */; }
 
 // Test for reader waiting condition variable when there are other readers
 // but no waiters.
@@ -1122,31 +755,9 @@ struct AcquireFromConditionStruct {
                      // CondVar::Wait().
 };
 
-static bool ConditionWithAcquire(AcquireFromConditionStruct *x) {
-  x->value++;  // count times this function is called
+static bool ConditionWithAcquire(AcquireFromConditionStruct *x) { __builtin_trap() /* STUB: not implemented */; }
 
-  if (x->value == 2 || x->value == 3) {
-    // On the second and third invocation of this function, sleep for 100ms,
-    // but with the side-effect of altering the state of a Mutex other than
-    // than one for which this is a condition.  The spec now explicitly allows
-    // this side effect; previously it did not.  it was illegal.
-    bool always_false = false;
-    x->mu1.LockWhenWithTimeout(absl::Condition(&always_false),
-                               absl::Milliseconds(100));
-    x->mu1.unlock();
-  }
-  CHECK_LT(x->value, 4) << "should not be invoked a fourth time";
-
-  // We arrange for the condition to return true on only the 2nd and 3rd calls.
-  return x->value == 2 || x->value == 3;
-}
-
-static void WaitForCond2(AcquireFromConditionStruct *x) {
-  // wait for cond0 to become true
-  x->mu0.LockWhen(absl::Condition(&ConditionWithAcquire, x));
-  x->done = true;
-  x->mu0.unlock();
-}
+static void WaitForCond2(AcquireFromConditionStruct *x) { __builtin_trap() /* STUB: not implemented */; }
 
 // Test for Condition whose function acquires other Mutexes
 TEST(Mutex, AcquireFromCondition) {
@@ -1215,31 +826,9 @@ TEST(Mutex, DeadlockDetector) {
 // file until it goes out of scope.
 class ScopedDisableBazelTestWarnings {
  public:
-  ScopedDisableBazelTestWarnings() {
-#ifdef _WIN32
-    char file[MAX_PATH];
-    if (GetEnvironmentVariableA(kVarName, file, sizeof(file)) < sizeof(file)) {
-      warnings_output_file_ = file;
-      SetEnvironmentVariableA(kVarName, nullptr);
-    }
-#else
-    const char *file = getenv(kVarName);
-    if (file != nullptr) {
-      warnings_output_file_ = file;
-      unsetenv(kVarName);
-    }
-#endif
-  }
+  ScopedDisableBazelTestWarnings() { __builtin_trap() /* STUB: not implemented */; }
 
-  ~ScopedDisableBazelTestWarnings() {
-    if (!warnings_output_file_.empty()) {
-#ifdef _WIN32
-      SetEnvironmentVariableA(kVarName, warnings_output_file_.c_str());
-#else
-      setenv(kVarName, warnings_output_file_.c_str(), 0);
-#endif
-    }
-  }
+  ~ScopedDisableBazelTestWarnings() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   static const char kVarName[];
@@ -1365,43 +954,13 @@ TEST(Mutex, DeadlockIdBug) ABSL_NO_THREAD_SAFETY_ANALYSIS {
 // and so never expires/passes, and one that will expire/pass in the near
 // future.
 
-static absl::Duration TimeoutTestAllowedSchedulingDelay() {
-  // Note: we use a function here because Microsoft Visual Studio fails to
-  // properly initialize constexpr static absl::Duration variables.
-  return absl::Milliseconds(150);
-}
+static absl::Duration TimeoutTestAllowedSchedulingDelay() { __builtin_trap() /* STUB: not implemented */; }
 
 // Returns true if `actual_delay` is close enough to `expected_delay` to pass
 // the timeouts/deadlines test.  Otherwise, logs warnings and returns false.
 [[nodiscard]]
 static bool DelayIsWithinBounds(absl::Duration expected_delay,
-                                absl::Duration actual_delay) {
-  bool pass = true;
-  // Do not allow the observed delay to be less than expected.  This may occur
-  // in practice due to clock skew or when the synchronization primitives use a
-  // different clock than absl::Now(), but these cases should be handled by the
-  // the retry mechanism in each TimeoutTest.
-  if (actual_delay < expected_delay) {
-    LOG(WARNING) << "Actual delay " << actual_delay
-                 << " was too short, expected " << expected_delay
-                 << " (difference " << actual_delay - expected_delay << ")";
-    pass = false;
-  }
-  // If the expected delay is <= zero then allow a small error tolerance, since
-  // we do not expect context switches to occur during test execution.
-  // Otherwise, thread scheduling delays may be substantial in rare cases, so
-  // tolerate up to kTimeoutTestAllowedSchedulingDelay of error.
-  absl::Duration tolerance = expected_delay <= absl::ZeroDuration()
-                                 ? absl::Milliseconds(10)
-                                 : TimeoutTestAllowedSchedulingDelay();
-  if (actual_delay > expected_delay + tolerance) {
-    LOG(WARNING) << "Actual delay " << actual_delay
-                 << " was too long, expected " << expected_delay
-                 << " (difference " << actual_delay - expected_delay << ")";
-    pass = false;
-  }
-  return pass;
-}
+                                absl::Duration actual_delay) { __builtin_trap() /* STUB: not implemented */; }
 
 // Parameters for TimeoutTest, below.
 struct TimeoutTestParam {
@@ -1436,16 +995,7 @@ struct TimeoutTestParam {
 };
 
 // Print a `TimeoutTestParam` to a debug log.
-std::ostream &operator<<(std::ostream &os, const TimeoutTestParam &param) {
-  return os << "from: " << param.from_file << ":" << param.from_line
-            << " use_absolute_deadline: "
-            << (param.use_absolute_deadline ? "true" : "false")
-            << " wait_timeout: " << param.wait_timeout
-            << " satisfy_condition_delay: " << param.satisfy_condition_delay
-            << " expected_result: "
-            << (param.expected_result ? "true" : "false")
-            << " expected_delay: " << param.expected_delay;
-}
+std::ostream &operator<<(std::ostream &os, const TimeoutTestParam &param) { __builtin_trap() /* STUB: not implemented */; }
 
 // Like `thread::Executor::ScheduleAt` except:
 // a) Delays zero or negative are executed immediately in the current thread.
@@ -1453,122 +1003,12 @@ std::ostream &operator<<(std::ostream &os, const TimeoutTestParam &param) {
 // c) Calls this test's `ScheduleAt` helper instead of using `pool` directly.
 static void RunAfterDelay(absl::Duration delay,
                           absl::synchronization_internal::ThreadPool *pool,
-                          const std::function<void()> &callback) {
-  if (delay <= absl::ZeroDuration()) {
-    callback();  // immediate
-  } else if (delay != absl::InfiniteDuration()) {
-    ScheduleAfter(pool, delay, callback);
-  }
-}
+                          const std::function<void()> &callback) { __builtin_trap() /* STUB: not implemented */; }
 
 class TimeoutTest : public ::testing::Test,
                     public ::testing::WithParamInterface<TimeoutTestParam> {};
 
-std::vector<TimeoutTestParam> MakeTimeoutTestParamValues() {
-  // The `finite` delay is a finite, relatively short, delay.  We make it larger
-  // than our allowed scheduling delay (slop factor) to avoid confusion when
-  // diagnosing test failures.  The other constants here have clear meanings.
-  const absl::Duration finite = 3 * TimeoutTestAllowedSchedulingDelay();
-  const absl::Duration never = absl::InfiniteDuration();
-  const absl::Duration negative = -absl::InfiniteDuration();
-  const absl::Duration immediate = absl::ZeroDuration();
-
-  // Every test case is run twice; once using the absolute deadline API and once
-  // using the relative timeout API.
-  std::vector<TimeoutTestParam> values;
-  for (bool use_absolute_deadline : {false, true}) {
-    // Tests with a negative timeout (deadline in the past), which should
-    // immediately return current state of the condition.
-
-    // The condition is already true:
-    values.push_back(TimeoutTestParam{
-        __FILE__, __LINE__, use_absolute_deadline,
-        negative,   // wait_timeout
-        immediate,  // satisfy_condition_delay
-        true,       // expected_result
-        immediate,  // expected_delay
-    });
-
-    // The condition becomes true, but the timeout has already expired:
-    values.push_back(TimeoutTestParam{
-        __FILE__, __LINE__, use_absolute_deadline,
-        negative,  // wait_timeout
-        finite,    // satisfy_condition_delay
-        false,     // expected_result
-        immediate  // expected_delay
-    });
-
-    // The condition never becomes true:
-    values.push_back(TimeoutTestParam{
-        __FILE__, __LINE__, use_absolute_deadline,
-        negative,  // wait_timeout
-        never,     // satisfy_condition_delay
-        false,     // expected_result
-        immediate  // expected_delay
-    });
-
-    // Tests with an infinite timeout (deadline in the infinite future), which
-    // should only return when the condition becomes true.
-
-    // The condition is already true:
-    values.push_back(TimeoutTestParam{
-        __FILE__, __LINE__, use_absolute_deadline,
-        never,      // wait_timeout
-        immediate,  // satisfy_condition_delay
-        true,       // expected_result
-        immediate   // expected_delay
-    });
-
-    // The condition becomes true before the (infinite) expiry:
-    values.push_back(TimeoutTestParam{
-        __FILE__, __LINE__, use_absolute_deadline,
-        never,   // wait_timeout
-        finite,  // satisfy_condition_delay
-        true,    // expected_result
-        finite,  // expected_delay
-    });
-
-    // Tests with a (small) finite timeout (deadline soon), with the condition
-    // becoming true both before and after its expiry.
-
-    // The condition is already true:
-    values.push_back(TimeoutTestParam{
-        __FILE__, __LINE__, use_absolute_deadline,
-        never,      // wait_timeout
-        immediate,  // satisfy_condition_delay
-        true,       // expected_result
-        immediate   // expected_delay
-    });
-
-    // The condition becomes true before the expiry:
-    values.push_back(TimeoutTestParam{
-        __FILE__, __LINE__, use_absolute_deadline,
-        finite * 2,  // wait_timeout
-        finite,      // satisfy_condition_delay
-        true,        // expected_result
-        finite       // expected_delay
-    });
-
-    // The condition becomes true, but the timeout has already expired:
-    values.push_back(TimeoutTestParam{
-        __FILE__, __LINE__, use_absolute_deadline,
-        finite,      // wait_timeout
-        finite * 2,  // satisfy_condition_delay
-        false,       // expected_result
-        finite       // expected_delay
-    });
-
-    // The condition never becomes true:
-    values.push_back(TimeoutTestParam{
-        __FILE__, __LINE__, use_absolute_deadline,
-        finite,  // wait_timeout
-        never,   // satisfy_condition_delay
-        false,   // expected_result
-        finite   // expected_delay
-    });
-  }
-  return values;
-}
+std::vector<TimeoutTestParam> MakeTimeoutTestParamValues() { __builtin_trap() /* STUB: not implemented */; }
 
 // Instantiate `TimeoutTest` with `MakeTimeoutTestParamValues()`.
 INSTANTIATE_TEST_SUITE_P(All, TimeoutTest,
@@ -1796,12 +1236,7 @@ TEST(Mutex, SynchEventRace) {
 // --------------------------------------------------------
 
 // Generate the vector of thread counts for tests parameterized on thread count.
-static std::vector<int> AllThreadCountValues() {
-  if (kExtendedTest) {
-    return {2, 4, 8, 10, 16, 20, 24, 30, 32};
-  }
-  return {2, 4, 10};
-}
+static std::vector<int> AllThreadCountValues() { __builtin_trap() /* STUB: not implemented */; }
 
 // A test fixture parameterized by thread count.
 class MutexVariableThreadCountTest : public ::testing::TestWithParam<int> {};
@@ -1813,16 +1248,7 @@ INSTANTIATE_TEST_SUITE_P(ThreadCounts, MutexVariableThreadCountTest,
 
 // Reduces iterations by some factor for slow platforms
 // (determined empirically).
-static int ScaleIterations(int x) {
-  // ABSL_MUTEX_READER_LOCK_IS_EXCLUSIVE is set in the implementation
-  // of Mutex that uses either std::mutex or pthread_mutex_t. Use
-  // these as keys to determine the slow implementation.
-#if defined(ABSL_MUTEX_READER_LOCK_IS_EXCLUSIVE)
-  return x / 10;
-#else
-  return x;
-#endif
-}
+static int ScaleIterations(int x) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(MutexVariableThreadCountTest, Mutex) {
   int threads = GetParam();

@@ -67,23 +67,9 @@ TEST(Charmap, AllTests) {
   EXPECT_FALSE(lets.empty());
 }
 
-std::string Members(const absl::CharSet& m) {
-  std::string r;
-  for (size_t i = 0; i < 256; ++i)
-    if (m.contains(i)) r.push_back(i);
-  return r;
-}
+std::string Members(const absl::CharSet& m) { __builtin_trap() /* STUB: not implemented */; }
 
-std::string ClosedRangeString(unsigned char lo, unsigned char hi) {
-  // Don't depend on lo<hi. Just increment until lo==hi.
-  std::string s;
-  while (true) {
-    s.push_back(lo);
-    if (lo == hi) break;
-    ++lo;
-  }
-  return s;
-}
+std::string ClosedRangeString(unsigned char lo, unsigned char hi) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(Charmap, Constexpr) {
   constexpr absl::CharSet kEmpty = absl::CharSet();

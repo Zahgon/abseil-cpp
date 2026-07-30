@@ -65,36 +65,4 @@ TEST(RandenHwAesTest, Default) {
 
 }  // namespace
 
-int main(int argc, char* argv[]) {
-  testing::InitGoogleTest(&argc, argv);
-
-  LOG(INFO) << "ABSL_HAVE_ACCELERATED_AES=" << ABSL_HAVE_ACCELERATED_AES;
-  LOG(INFO) << "ABSL_RANDOM_INTERNAL_AES_DISPATCH="
-            << ABSL_RANDOM_INTERNAL_AES_DISPATCH;
-
-#if defined(ABSL_ARCH_X86_64)
-  LOG(INFO) << "ABSL_ARCH_X86_64";
-#elif defined(ABSL_ARCH_X86_32)
-  LOG(INFO) << "ABSL_ARCH_X86_32";
-#elif defined(ABSL_ARCH_AARCH64)
-  LOG(INFO) << "ABSL_ARCH_AARCH64";
-#elif defined(ABSL_ARCH_ARM)
-  LOG(INFO) << "ABSL_ARCH_ARM";
-#elif defined(ABSL_ARCH_PPC)
-  LOG(INFO) << "ABSL_ARCH_PPC";
-#else
-  LOG(INFO) << "ARCH Unknown";
-#endif
-
-  int x = absl::random_internal::HasRandenHwAesImplementation();
-  LOG(INFO) << "HasRandenHwAesImplementation = " << x;
-
-  int y = absl::random_internal::CPUSupportsRandenHwAes();
-  LOG(INFO) << "CPUSupportsRandenHwAes = " << y;
-
-  if (!x || !y) {
-    LOG(INFO) << "Skipping Randen HWAES tests.";
-    return 0;
-  }
-  return RUN_ALL_TESTS();
-}
+int main(int argc, char* argv[]) { __builtin_trap() /* STUB: not implemented */; }

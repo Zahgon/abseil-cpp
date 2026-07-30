@@ -89,9 +89,7 @@ class ScopedMinLogLevel final {
 // Updates the Stderr Threshold parameter.
 // This function is async-signal-safe.
 void SetStderrThreshold(absl::LogSeverityAtLeast severity);
-inline void SetStderrThreshold(absl::LogSeverity severity) {
-  absl::SetStderrThreshold(static_cast<absl::LogSeverityAtLeast>(severity));
-}
+inline void SetStderrThreshold(absl::LogSeverity severity) { __builtin_trap() /* STUB: not implemented */; }
 
 // ScopedStderrThreshold
 //
@@ -174,18 +172,14 @@ void EnableLogPrefix(bool on_off);
 //
 // Sets the global `VLOG` level to threshold. Returns the previous global
 // threshold.
-inline int SetGlobalVLogLevel(int threshold) {
-  return absl::log_internal::UpdateGlobalVLogLevel(threshold);
-}
+inline int SetGlobalVLogLevel(int threshold) { __builtin_trap() /* STUB: not implemented */; }
 
 // SetVLogLevel()
 //
 // Sets the `VLOG` threshold for all files that match `module_pattern`,
 // overwriting any prior value. Files that don't match aren't affected.
 // Returns the threshold that previously applied to `module_pattern`.
-inline int SetVLogLevel(absl::string_view module_pattern, int threshold) {
-  return absl::log_internal::PrependVModule(module_pattern, threshold);
-}
+inline int SetVLogLevel(absl::string_view module_pattern, int threshold) { __builtin_trap() /* STUB: not implemented */; }
 
 //------------------------------------------------------------------------------
 // Configure Android Native Log Tag

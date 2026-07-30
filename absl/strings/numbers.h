@@ -327,35 +327,23 @@ inline size_t FastHexToBufferZeroPad16(uint64_t val, char* absl_nonnull out) {
 
 template <typename int_type>
 [[nodiscard]] bool SimpleAtoi(absl::string_view str,
-                              int_type* absl_nonnull out) {
-  return numbers_internal::safe_strtoi_base(str, out, 10);
-}
+                              int_type* absl_nonnull out) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline bool SimpleAtoi(absl::string_view str,
-                                     absl::int128* absl_nonnull out) {
-  return numbers_internal::safe_strto128_base(str, out, 10);
-}
+                                     absl::int128* absl_nonnull out) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline bool SimpleAtoi(absl::string_view str,
-                                     absl::uint128* absl_nonnull out) {
-  return numbers_internal::safe_strtou128_base(str, out, 10);
-}
+                                     absl::uint128* absl_nonnull out) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename int_type>
 [[nodiscard]] bool SimpleHexAtoi(absl::string_view str,
-                                 int_type* absl_nonnull out) {
-  return numbers_internal::safe_strtoi_base(str, out, 16);
-}
+                                 int_type* absl_nonnull out) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline bool SimpleHexAtoi(absl::string_view str,
-                                        absl::int128* absl_nonnull out) {
-  return numbers_internal::safe_strto128_base(str, out, 16);
-}
+                                        absl::int128* absl_nonnull out) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline bool SimpleHexAtoi(absl::string_view str,
-                                        absl::uint128* absl_nonnull out) {
-  return numbers_internal::safe_strtou128_base(str, out, 16);
-}
+                                        absl::uint128* absl_nonnull out) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

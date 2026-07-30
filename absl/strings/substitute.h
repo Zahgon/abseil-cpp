@@ -274,48 +274,29 @@ constexpr int PlaceholderBitmask(const char* absl_nonnull format) {
 //  }
 //
 inline void SubstituteAndAppend(std::string* absl_nonnull output,
-                                absl::string_view format) {
-  substitute_internal::SubstituteAndAppendArray(output, format, nullptr, 0);
-}
+                                absl::string_view format) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void SubstituteAndAppend(std::string* absl_nonnull output,
                                 absl::string_view format,
-                                const substitute_internal::Arg& a0) {
-  const absl::string_view args[] = {a0.piece()};
-  substitute_internal::SubstituteAndAppendArray(output, format, args,
-                                                ABSL_ARRAYSIZE(args));
-}
+                                const substitute_internal::Arg& a0) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void SubstituteAndAppend(std::string* absl_nonnull output,
                                 absl::string_view format,
                                 const substitute_internal::Arg& a0,
-                                const substitute_internal::Arg& a1) {
-  const absl::string_view args[] = {a0.piece(), a1.piece()};
-  substitute_internal::SubstituteAndAppendArray(output, format, args,
-                                                ABSL_ARRAYSIZE(args));
-}
+                                const substitute_internal::Arg& a1) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void SubstituteAndAppend(std::string* absl_nonnull output,
                                 absl::string_view format,
                                 const substitute_internal::Arg& a0,
                                 const substitute_internal::Arg& a1,
-                                const substitute_internal::Arg& a2) {
-  const absl::string_view args[] = {a0.piece(), a1.piece(), a2.piece()};
-  substitute_internal::SubstituteAndAppendArray(output, format, args,
-                                                ABSL_ARRAYSIZE(args));
-}
+                                const substitute_internal::Arg& a2) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void SubstituteAndAppend(std::string* absl_nonnull output,
                                 absl::string_view format,
                                 const substitute_internal::Arg& a0,
                                 const substitute_internal::Arg& a1,
                                 const substitute_internal::Arg& a2,
-                                const substitute_internal::Arg& a3) {
-  const absl::string_view args[] = {a0.piece(), a1.piece(), a2.piece(),
-                                    a3.piece()};
-  substitute_internal::SubstituteAndAppendArray(output, format, args,
-                                                ABSL_ARRAYSIZE(args));
-}
+                                const substitute_internal::Arg& a3) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void SubstituteAndAppend(std::string* absl_nonnull output,
                                 absl::string_view format,
@@ -323,49 +304,27 @@ inline void SubstituteAndAppend(std::string* absl_nonnull output,
                                 const substitute_internal::Arg& a1,
                                 const substitute_internal::Arg& a2,
                                 const substitute_internal::Arg& a3,
-                                const substitute_internal::Arg& a4) {
-  const absl::string_view args[] = {a0.piece(), a1.piece(), a2.piece(),
-                                    a3.piece(), a4.piece()};
-  substitute_internal::SubstituteAndAppendArray(output, format, args,
-                                                ABSL_ARRAYSIZE(args));
-}
+                                const substitute_internal::Arg& a4) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void SubstituteAndAppend(
     std::string* absl_nonnull output, absl::string_view format,
     const substitute_internal::Arg& a0, const substitute_internal::Arg& a1,
     const substitute_internal::Arg& a2, const substitute_internal::Arg& a3,
-    const substitute_internal::Arg& a4, const substitute_internal::Arg& a5) {
-  const absl::string_view args[] = {a0.piece(), a1.piece(), a2.piece(),
-                                    a3.piece(), a4.piece(), a5.piece()};
-  substitute_internal::SubstituteAndAppendArray(output, format, args,
-                                                ABSL_ARRAYSIZE(args));
-}
+    const substitute_internal::Arg& a4, const substitute_internal::Arg& a5) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void SubstituteAndAppend(
     std::string* absl_nonnull output, absl::string_view format,
     const substitute_internal::Arg& a0, const substitute_internal::Arg& a1,
     const substitute_internal::Arg& a2, const substitute_internal::Arg& a3,
     const substitute_internal::Arg& a4, const substitute_internal::Arg& a5,
-    const substitute_internal::Arg& a6) {
-  const absl::string_view args[] = {a0.piece(), a1.piece(), a2.piece(),
-                                    a3.piece(), a4.piece(), a5.piece(),
-                                    a6.piece()};
-  substitute_internal::SubstituteAndAppendArray(output, format, args,
-                                                ABSL_ARRAYSIZE(args));
-}
+    const substitute_internal::Arg& a6) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void SubstituteAndAppend(
     std::string* absl_nonnull output, absl::string_view format,
     const substitute_internal::Arg& a0, const substitute_internal::Arg& a1,
     const substitute_internal::Arg& a2, const substitute_internal::Arg& a3,
     const substitute_internal::Arg& a4, const substitute_internal::Arg& a5,
-    const substitute_internal::Arg& a6, const substitute_internal::Arg& a7) {
-  const absl::string_view args[] = {a0.piece(), a1.piece(), a2.piece(),
-                                    a3.piece(), a4.piece(), a5.piece(),
-                                    a6.piece(), a7.piece()};
-  substitute_internal::SubstituteAndAppendArray(output, format, args,
-                                                ABSL_ARRAYSIZE(args));
-}
+    const substitute_internal::Arg& a6, const substitute_internal::Arg& a7) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void SubstituteAndAppend(
     std::string* absl_nonnull output, absl::string_view format,
@@ -373,13 +332,7 @@ inline void SubstituteAndAppend(
     const substitute_internal::Arg& a2, const substitute_internal::Arg& a3,
     const substitute_internal::Arg& a4, const substitute_internal::Arg& a5,
     const substitute_internal::Arg& a6, const substitute_internal::Arg& a7,
-    const substitute_internal::Arg& a8) {
-  const absl::string_view args[] = {a0.piece(), a1.piece(), a2.piece(),
-                                    a3.piece(), a4.piece(), a5.piece(),
-                                    a6.piece(), a7.piece(), a8.piece()};
-  substitute_internal::SubstituteAndAppendArray(output, format, args,
-                                                ABSL_ARRAYSIZE(args));
-}
+    const substitute_internal::Arg& a8) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void SubstituteAndAppend(
     std::string* absl_nonnull output, absl::string_view format,
@@ -387,13 +340,7 @@ inline void SubstituteAndAppend(
     const substitute_internal::Arg& a2, const substitute_internal::Arg& a3,
     const substitute_internal::Arg& a4, const substitute_internal::Arg& a5,
     const substitute_internal::Arg& a6, const substitute_internal::Arg& a7,
-    const substitute_internal::Arg& a8, const substitute_internal::Arg& a9) {
-  const absl::string_view args[] = {
-      a0.piece(), a1.piece(), a2.piece(), a3.piece(), a4.piece(),
-      a5.piece(), a6.piece(), a7.piece(), a8.piece(), a9.piece()};
-  substitute_internal::SubstituteAndAppendArray(output, format, args,
-                                                ABSL_ARRAYSIZE(args));
-}
+    const substitute_internal::Arg& a8, const substitute_internal::Arg& a9) { __builtin_trap() /* STUB: not implemented */; }
 
 #if defined(ABSL_BAD_CALL_IF)
 // This body of functions catches cases where the number of placeholders
@@ -539,94 +486,54 @@ void SubstituteAndAppend(
 //  void VarMsg(absl::string_view format, const Args&... args) {
 //    std::string s = absl::Substitute(format, args...);
 
-[[nodiscard]] inline std::string Substitute(absl::string_view format) {
-  std::string result;
-  SubstituteAndAppend(&result, format);
-  return result;
-}
+[[nodiscard]] inline std::string Substitute(absl::string_view format) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline std::string Substitute(
-    absl::string_view format, const substitute_internal::Arg& a0) {
-  std::string result;
-  SubstituteAndAppend(&result, format, a0);
-  return result;
-}
+    absl::string_view format, const substitute_internal::Arg& a0) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline std::string Substitute(
     absl::string_view format, const substitute_internal::Arg& a0,
-    const substitute_internal::Arg& a1) {
-  std::string result;
-  SubstituteAndAppend(&result, format, a0, a1);
-  return result;
-}
+    const substitute_internal::Arg& a1) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline std::string Substitute(
     absl::string_view format, const substitute_internal::Arg& a0,
-    const substitute_internal::Arg& a1, const substitute_internal::Arg& a2) {
-  std::string result;
-  SubstituteAndAppend(&result, format, a0, a1, a2);
-  return result;
-}
+    const substitute_internal::Arg& a1, const substitute_internal::Arg& a2) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline std::string Substitute(
     absl::string_view format, const substitute_internal::Arg& a0,
     const substitute_internal::Arg& a1, const substitute_internal::Arg& a2,
-    const substitute_internal::Arg& a3) {
-  std::string result;
-  SubstituteAndAppend(&result, format, a0, a1, a2, a3);
-  return result;
-}
+    const substitute_internal::Arg& a3) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline std::string Substitute(
     absl::string_view format, const substitute_internal::Arg& a0,
     const substitute_internal::Arg& a1, const substitute_internal::Arg& a2,
-    const substitute_internal::Arg& a3, const substitute_internal::Arg& a4) {
-  std::string result;
-  SubstituteAndAppend(&result, format, a0, a1, a2, a3, a4);
-  return result;
-}
+    const substitute_internal::Arg& a3, const substitute_internal::Arg& a4) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline std::string Substitute(
     absl::string_view format, const substitute_internal::Arg& a0,
     const substitute_internal::Arg& a1, const substitute_internal::Arg& a2,
     const substitute_internal::Arg& a3, const substitute_internal::Arg& a4,
-    const substitute_internal::Arg& a5) {
-  std::string result;
-  SubstituteAndAppend(&result, format, a0, a1, a2, a3, a4, a5);
-  return result;
-}
+    const substitute_internal::Arg& a5) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline std::string Substitute(
     absl::string_view format, const substitute_internal::Arg& a0,
     const substitute_internal::Arg& a1, const substitute_internal::Arg& a2,
     const substitute_internal::Arg& a3, const substitute_internal::Arg& a4,
-    const substitute_internal::Arg& a5, const substitute_internal::Arg& a6) {
-  std::string result;
-  SubstituteAndAppend(&result, format, a0, a1, a2, a3, a4, a5, a6);
-  return result;
-}
+    const substitute_internal::Arg& a5, const substitute_internal::Arg& a6) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline std::string Substitute(
     absl::string_view format, const substitute_internal::Arg& a0,
     const substitute_internal::Arg& a1, const substitute_internal::Arg& a2,
     const substitute_internal::Arg& a3, const substitute_internal::Arg& a4,
     const substitute_internal::Arg& a5, const substitute_internal::Arg& a6,
-    const substitute_internal::Arg& a7) {
-  std::string result;
-  SubstituteAndAppend(&result, format, a0, a1, a2, a3, a4, a5, a6, a7);
-  return result;
-}
+    const substitute_internal::Arg& a7) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline std::string Substitute(
     absl::string_view format, const substitute_internal::Arg& a0,
     const substitute_internal::Arg& a1, const substitute_internal::Arg& a2,
     const substitute_internal::Arg& a3, const substitute_internal::Arg& a4,
     const substitute_internal::Arg& a5, const substitute_internal::Arg& a6,
-    const substitute_internal::Arg& a7, const substitute_internal::Arg& a8) {
-  std::string result;
-  SubstituteAndAppend(&result, format, a0, a1, a2, a3, a4, a5, a6, a7, a8);
-  return result;
-}
+    const substitute_internal::Arg& a7, const substitute_internal::Arg& a8) { __builtin_trap() /* STUB: not implemented */; }
 
 [[nodiscard]] inline std::string Substitute(
     absl::string_view format, const substitute_internal::Arg& a0,
@@ -634,11 +541,7 @@ void SubstituteAndAppend(
     const substitute_internal::Arg& a3, const substitute_internal::Arg& a4,
     const substitute_internal::Arg& a5, const substitute_internal::Arg& a6,
     const substitute_internal::Arg& a7, const substitute_internal::Arg& a8,
-    const substitute_internal::Arg& a9) {
-  std::string result;
-  SubstituteAndAppend(&result, format, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
-  return result;
-}
+    const substitute_internal::Arg& a9) { __builtin_trap() /* STUB: not implemented */; }
 
 #if defined(ABSL_BAD_CALL_IF)
 // This body of functions catches cases where the number of placeholders

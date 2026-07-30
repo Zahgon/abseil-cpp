@@ -21,14 +21,6 @@
 
 namespace absl {
 ABSL_NAMESPACE_BEGIN
-namespace log_internal {
-
-void DieBecauseNull(const char* absl_nonnull file, int line,
-                    const char* absl_nonnull exprtext) {
-  LOG(FATAL).AtLocation(file, line)
-      << absl::StrCat("Check failed: '", exprtext, "' Must be non-null");
-}
-
-}  // namespace log_internal
+namespace log_internal { __builtin_trap() /* STUB: not implemented */; }  // namespace log_internal
 ABSL_NAMESPACE_END
 }  // namespace absl

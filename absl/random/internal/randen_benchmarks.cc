@@ -52,125 +52,41 @@ struct AbsorbFn : public T {
   alignas(16) mutable uint64_t state[kStateSizeT] = {};
   alignas(16) mutable uint32_t seed[kSeedSizeT] = {};
 
-  static constexpr size_t bytes() { return sizeof(seed); }
+  static constexpr size_t bytes() { return {}; }
 
-  FuncOutput operator()(const FuncInput num_iters) const {
-    for (size_t i = 0; i < num_iters; ++i) {
-      this->Absorb(seed, state);
-    }
-    return state[0];
-  }
+  FuncOutput operator()(const FuncInput num_iters) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename T>
 struct GenerateFn : public T {
   mutable uint64_t state[kStateSizeT];
-  GenerateFn() { std::memset(state, 0, sizeof(state)); }
+  GenerateFn() { __builtin_trap() /* STUB: not implemented */; }
 
-  static constexpr size_t bytes() { return sizeof(state); }
+  static constexpr size_t bytes() { return {}; }
 
-  FuncOutput operator()(const FuncInput num_iters) const {
-    const auto* keys = this->GetKeys();
-    for (size_t i = 0; i < num_iters; ++i) {
-      this->Generate(keys, state);
-    }
-    return state[0];
-  }
+  FuncOutput operator()(const FuncInput num_iters) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <typename UInt>
 struct Engine {
   mutable absl::random_internal::randen_engine<UInt> rng;
 
-  static constexpr size_t bytes() { return sizeof(UInt); }
+  static constexpr size_t bytes() { return {}; }
 
-  FuncOutput operator()(const FuncInput num_iters) const {
-    for (size_t i = 0; i < num_iters - 1; ++i) {
-      rng();
-    }
-    return rng();
-  }
+  FuncOutput operator()(const FuncInput num_iters) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 template <size_t N>
 void Print(const char* name, const size_t n, const Result (&results)[N],
-           const size_t bytes) {
-  if (n == 0) {
-    ABSL_RAW_LOG(
-        WARNING,
-        "WARNING: Measurement failed, should not happen when using "
-        "PinThreadToCPU unless the region to measure takes > 1 second.\n");
-    return;
-  }
-
-  static const double ns_per_tick = 1e9 / InvariantTicksPerSecond();
-  static constexpr const double kNsPerS = 1e9;                 // ns/s
-  static constexpr const double kMBPerByte = 1.0 / 1048576.0;  // Mb / b
-  static auto header = [] {
-    return printf("%20s %8s: %12s ticks; %9s  (%9s) %8s\n", "Name", "Count",
-                  "Total", "Variance", "Time", "bytes/s");
-  }();
-  (void)header;
-
-  for (size_t i = 0; i < n; ++i) {
-    const double ticks_per_call = results[i].ticks / results[i].input;
-    const double ns_per_call = ns_per_tick * ticks_per_call;
-    const double bytes_per_ns = bytes / ns_per_call;
-    const double mb_per_s = bytes_per_ns * kNsPerS * kMBPerByte;
-    // Output
-    printf("%20s %8zu: %12.2f ticks; MAD=%4.2f%%  (%6.1f ns) %8.1f Mb/s\n",
-           name, results[i].input, results[i].ticks,
-           results[i].variability * 100.0, ns_per_call, mb_per_s);
-  }
-}
+           const size_t bytes) { __builtin_trap() /* STUB: not implemented */; }
 
 // Fails here
 template <typename Op, size_t N>
-void Measure(const char* name, const FuncInput (&inputs)[N]) {
-  Op op;
-
-  Result results[N];
-  Params params;
-  params.verbose = false;
-  params.max_evals = 6;  // avoid test timeout
-  const size_t num_results = MeasureClosure(op, inputs, N, results, params);
-  Print(name, num_results, results, op.bytes());
-}
+void Measure(const char* name, const FuncInput (&inputs)[N]) { __builtin_trap() /* STUB: not implemented */; }
 
 // unpredictable == 1 but the compiler does not know that.
-void RunAll(const int argc, char* argv[]) {
-  if (argc == 2) {
-    int cpu = -1;
-    if (!absl::SimpleAtoi(argv[1], &cpu)) {
-      ABSL_RAW_LOG(FATAL, "The optional argument must be a CPU number >= 0.\n");
-    }
-    PinThreadToCPU(cpu);
-  }
-
-  // The compiler cannot reduce this to a constant.
-  const FuncInput unpredictable = (argc != 999);
-  static const FuncInput inputs[] = {unpredictable * 100, unpredictable * 1000};
-
-  if (CPUSupportsRandenHwAes()) {
-    Measure<AbsorbFn<RandenHwAes>>("Absorb (HwAes)", inputs);
-  }
-  Measure<AbsorbFn<RandenSlow>>("Absorb (Slow)", inputs);
-
-  if (CPUSupportsRandenHwAes()) {
-    Measure<GenerateFn<RandenHwAes>>("Generate (HwAes)", inputs);
-  }
-  Measure<GenerateFn<RandenSlow>>("Generate (Slow)", inputs);
-
-  // Measure the production engine.
-  static const FuncInput inputs1[] = {unpredictable * 1000,
-                                      unpredictable * 10000};
-  Measure<Engine<uint64_t>>("randen_engine<uint64_t>", inputs1);
-  Measure<Engine<uint32_t>>("randen_engine<uint32_t>", inputs1);
-}
+void RunAll(const int argc, char* argv[]) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace
 
-int main(int argc, char* argv[]) {
-  RunAll(argc, argv);
-  return 0;
-}
+int main(int argc, char* argv[]) { __builtin_trap() /* STUB: not implemented */; }

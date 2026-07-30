@@ -212,9 +212,7 @@ class Cord {
   // Cord::~Cord()
   //
   // Destructs the Cord.
-  ~Cord() {
-    if (contents_.is_tree()) DestroyCordSlow();
-  }
+  ~Cord() { __builtin_trap() /* STUB: not implemented */; }
 
   // MakeCordFromExternal()
   //
@@ -361,7 +359,7 @@ class Cord {
   // swap()
   //
   // Swaps the contents of two Cords.
-  friend void swap(Cord& x, Cord& y) noexcept { x.swap(y); }
+  friend void swap(Cord& x, Cord& y) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // Cord::size()
   //
@@ -582,7 +580,7 @@ class Cord {
     using iterator = ChunkIterator;
     using const_iterator = ChunkIterator;
 
-    explicit ChunkRange(const Cord* absl_nonnull cord) : cord_(cord) {}
+    explicit ChunkRange(const Cord* absl_nonnull cord) : cord_(cord) { __builtin_trap() /* STUB: not implemented */; }
 
     ChunkIterator begin() const;
     ChunkIterator end() const;
@@ -656,7 +654,7 @@ class Cord {
 
    private:
     explicit CharIterator(const Cord* absl_nonnull cord)
-        : chunk_iterator_(cord) {}
+        : chunk_iterator_(cord) { __builtin_trap() /* STUB: not implemented */; }
 
     ChunkIterator chunk_iterator_;
   };
@@ -730,7 +728,7 @@ class Cord {
     using iterator = CharIterator;
     using const_iterator = CharIterator;
 
-    explicit CharRange(const Cord* absl_nonnull cord) : cord_(cord) {}
+    explicit CharRange(const Cord* absl_nonnull cord) : cord_(cord) { __builtin_trap() /* STUB: not implemented */; }
 
     CharIterator begin() const;
     CharIterator end() const;
@@ -796,17 +794,11 @@ class Cord {
 
   // Supports absl::Cord as a sink object for absl::Format().
   friend void AbslFormatFlush(absl::Cord* absl_nonnull cord,
-                              absl::string_view part) {
-    cord->Append(part);
-  }
+                              absl::string_view part) { __builtin_trap() /* STUB: not implemented */; }
 
   // Support automatic stringification with absl::StrCat and absl::StrFormat.
   template <typename Sink>
-  friend void AbslStringify(Sink& sink, const absl::Cord& cord) {
-    for (absl::string_view chunk : cord.Chunks()) {
-      sink.Append(chunk);
-    }
-  }
+  friend void AbslStringify(Sink& sink, const absl::Cord& cord) { __builtin_trap() /* STUB: not implemented */; }
 
   // Cord::SetExpectedChecksum()
   //
@@ -832,13 +824,7 @@ class Cord {
   std::optional<uint32_t> ExpectedChecksum() const;
 
   template <typename H>
-  friend H AbslHashValue(H hash_state, const absl::Cord& c) {
-    std::optional<absl::string_view> maybe_flat = c.TryFlat();
-    if (maybe_flat.has_value()) {
-      return H::combine(std::move(hash_state), *maybe_flat);
-    }
-    return c.HashFragmented(std::move(hash_state));
-  }
+  friend H AbslHashValue(H hash_state, const absl::Cord& c) { __builtin_trap() /* STUB: not implemented */; }
 
   // Create a Cord with the contents of StringConstant<T>::value.
   // No allocations will be done and no data will be copied.
@@ -874,29 +860,15 @@ class Cord {
   // <=> operator.
 
   static inline std::strong_ordering ConvertCompareResultToStrongOrdering(
-      int c) {
-    if (c == 0) {
-      return std::strong_ordering::equal;
-    } else if (c < 0) {
-      return std::strong_ordering::less;
-    } else {
-      return std::strong_ordering::greater;
-    }
-  }
+      int c) { __builtin_trap() /* STUB: not implemented */; }
 
-  friend inline std::strong_ordering operator<=>(const Cord& x, const Cord& y) {
-    return ConvertCompareResultToStrongOrdering(x.Compare(y));
-  }
+  friend inline std::strong_ordering operator<=>(const Cord& x, const Cord& y) { __builtin_trap() /* STUB: not implemented */; }
 
   friend inline std::strong_ordering operator<=>(const Cord& lhs,
-                                                 absl::string_view rhs) {
-    return ConvertCompareResultToStrongOrdering(lhs.Compare(rhs));
-  }
+                                                 absl::string_view rhs) { __builtin_trap() /* STUB: not implemented */; }
 
   friend inline std::strong_ordering operator<=>(absl::string_view lhs,
-                                                 const Cord& rhs) {
-    return ConvertCompareResultToStrongOrdering(-rhs.Compare(lhs));
-  }
+                                                 const Cord& rhs) { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
   friend const CordzInfo* absl_nullable GetCordzInfoForTesting(
@@ -920,8 +892,8 @@ class Cord {
     static constexpr unsigned char kMaxInline = cord_internal::kMaxInline;
     static_assert(kMaxInline >= sizeof(absl::cord_internal::CordRep*), "");
 
-    constexpr InlineRep() : data_() {}
-    explicit InlineRep(InlineData::DefaultInitType init) : data_(init) {}
+    constexpr InlineRep() : data_() { }
+    explicit InlineRep(InlineData::DefaultInitType init) : data_(init) { __builtin_trap() /* STUB: not implemented */; }
     InlineRep(const InlineRep& src);
     InlineRep(InlineRep&& src);
     InlineRep& operator=(const InlineRep& src);
@@ -992,39 +964,30 @@ class Cord {
     void PrependTreeToTree(CordRep* absl_nonnull tree, MethodIdentifier method);
     void PrependTree(CordRep* absl_nonnull tree, MethodIdentifier method);
 
-    bool IsSame(const InlineRep& other) const { return data_ == other.data_; }
+    bool IsSame(const InlineRep& other) const { __builtin_trap() /* STUB: not implemented */; }
 
     // Copies the inline contents into `dst`. Assumes the cord is not empty.
-    void CopyTo(std::string* absl_nonnull dst) const {
-      data_.CopyInlineToString(dst);
-    }
+    void CopyTo(std::string* absl_nonnull dst) const { __builtin_trap() /* STUB: not implemented */; }
 
     // Copies the inline contents into `dst`. Assumes the cord is not empty.
     void CopyToArray(char* absl_nonnull dst) const;
 
-    bool is_tree() const { return data_.is_tree(); }
+    bool is_tree() const { __builtin_trap() /* STUB: not implemented */; }
 
     // Returns true if the Cord is being profiled by cordz.
-    bool is_profiled() const { return data_.is_tree() && data_.is_profiled(); }
+    bool is_profiled() const { __builtin_trap() /* STUB: not implemented */; }
 
     // Returns the available inlined capacity, or 0 if is_tree() == true.
-    size_t remaining_inline_capacity() const {
-      return data_.is_tree() ? 0 : kMaxInline - data_.inline_size();
-    }
+    size_t remaining_inline_capacity() const { __builtin_trap() /* STUB: not implemented */; }
 
     // Returns the profiled CordzInfo, or nullptr if not sampled.
-    absl::cord_internal::CordzInfo* absl_nullable cordz_info() const {
-      return data_.cordz_info();
-    }
+    absl::cord_internal::CordzInfo* absl_nullable cordz_info() const { __builtin_trap() /* STUB: not implemented */; }
 
     // Sets the profiled CordzInfo.
-    void set_cordz_info(cord_internal::CordzInfo* absl_nonnull cordz_info) {
-      assert(cordz_info != nullptr);
-      data_.set_cordz_info(cordz_info);
-    }
+    void set_cordz_info(cord_internal::CordzInfo* absl_nonnull cordz_info) { __builtin_trap() /* STUB: not implemented */; }
 
     // Resets the current cordz_info to null / empty.
-    void clear_cordz_info() { data_.clear_cordz_info(); }
+    void clear_cordz_info() { __builtin_trap() /* STUB: not implemented */; }
 
    private:
     friend class Cord;
@@ -1033,10 +996,10 @@ class Cord {
     // Unrefs the tree and stops profiling.
     void UnrefTree();
 
-    void ResetToEmpty() { data_ = {}; }
+    void ResetToEmpty() { __builtin_trap() /* STUB: not implemented */; }
 
-    void set_inline_size(size_t size) { data_.set_inline_size(size); }
-    size_t inline_size() const { return data_.inline_size(); }
+    void set_inline_size(size_t size) { __builtin_trap() /* STUB: not implemented */; }
+    size_t inline_size() const { __builtin_trap() /* STUB: not implemented */; }
 
     // Empty cords that carry a checksum have a CordRepCrc node with a null
     // child node. The code can avoid lots of special cases where it would
@@ -1106,14 +1069,7 @@ class Cord {
 
   // Helper for AbslHashValue().
   template <typename H>
-  H HashFragmented(H hash_state) const {
-    typename H::AbslInternalPiecewiseCombiner combiner;
-    ForEachChunk([&combiner, &hash_state](absl::string_view chunk) {
-      hash_state = combiner.add_buffer(std::move(hash_state), chunk.data(),
-                                       chunk.size());
-    });
-    return combiner.finalize(std::move(hash_state));
-  }
+  H HashFragmented(H hash_state) const { __builtin_trap() /* STUB: not implemented */; }
 
   friend class CrcCord;
   void SetCrcCordState(crc_internal::CrcCordState state);
@@ -1143,155 +1099,58 @@ void InitializeCordRepExternal(absl::string_view data,
 template <typename Releaser>
 // NOLINTNEXTLINE - suppress clang-tidy raw pointer return.
 CordRep* absl_nonnull NewExternalRep(absl::string_view data,
-                                     Releaser&& releaser) {
-  assert(!data.empty());
-  using ReleaserType = std::decay_t<Releaser>;
-  CordRepExternal* rep = new CordRepExternalImpl<ReleaserType>(
-      std::forward<Releaser>(releaser), 0);
-  InitializeCordRepExternal(data, rep);
-  return rep;
-}
+                                     Releaser&& releaser) { __builtin_trap() /* STUB: not implemented */; }
 
 // Overload for function reference types that dispatches using a function
 // pointer because there are no `alignof()` or `sizeof()` a function reference.
 // NOLINTNEXTLINE - suppress clang-tidy raw pointer return.
 inline CordRep* absl_nonnull NewExternalRep(
-    absl::string_view data, void (&releaser)(absl::string_view)) {
-  return NewExternalRep(data, &releaser);
-}
+    absl::string_view data, void (&releaser)(absl::string_view)) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace cord_internal
 
 template <typename Releaser>
-Cord MakeCordFromExternal(absl::string_view data, Releaser&& releaser) {
-  Cord cord;
-  if (ABSL_PREDICT_TRUE(!data.empty())) {
-    cord.contents_.EmplaceTree(::absl::cord_internal::NewExternalRep(
-                                   data, std::forward<Releaser>(releaser)),
-                               Cord::MethodIdentifier::kMakeCordFromExternal);
-  } else {
-    using ReleaserType = std::decay_t<Releaser>;
-    cord_internal::InvokeReleaser(
-        cord_internal::Rank1{}, ReleaserType(std::forward<Releaser>(releaser)),
-        data);
-  }
-  return cord;
-}
+Cord MakeCordFromExternal(absl::string_view data, Releaser&& releaser) { __builtin_trap() /* STUB: not implemented */; }
 
 constexpr Cord::InlineRep::InlineRep(absl::string_view sv,
                                      CordRep* absl_nullable rep)
-    : data_(sv, rep) {}
+    : data_(sv, rep) { }
 
 inline Cord::InlineRep::InlineRep(const Cord::InlineRep& src)
-    : data_(InlineData::kDefaultInit) {
-  if (CordRep* tree = src.tree()) {
-    EmplaceTree(CordRep::Ref(tree), src.data_,
-                CordzUpdateTracker::kConstructorCord);
-  } else {
-    data_ = src.data_;
-  }
-}
+    : data_(InlineData::kDefaultInit) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::InlineRep::InlineRep(Cord::InlineRep&& src) : data_(src.data_) {
-  src.ResetToEmpty();
-}
+inline Cord::InlineRep::InlineRep(Cord::InlineRep&& src) : data_(src.data_) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::InlineRep& Cord::InlineRep::operator=(const Cord::InlineRep& src) {
-  if (this == &src) {
-    return *this;
-  }
-  if (!is_tree() && !src.is_tree()) {
-    data_ = src.data_;
-    return *this;
-  }
-  AssignSlow(src);
-  return *this;
-}
+inline Cord::InlineRep& Cord::InlineRep::operator=(const Cord::InlineRep& src) { __builtin_trap() /* STUB: not implemented */; }
 
 inline Cord::InlineRep& Cord::InlineRep::operator=(
-    Cord::InlineRep&& src) noexcept {
-  if (is_tree()) {
-    UnrefTree();
-  }
-  data_ = src.data_;
-  src.ResetToEmpty();
-  return *this;
-}
+    Cord::InlineRep&& src) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::InlineRep::Swap(Cord::InlineRep* absl_nonnull rhs) {
-  if (rhs == this) {
-    return;
-  }
-  using std::swap;
-  swap(data_, rhs->data_);
-}
+inline void Cord::InlineRep::Swap(Cord::InlineRep* absl_nonnull rhs) { __builtin_trap() /* STUB: not implemented */; }
 
-inline const char* absl_nullable Cord::InlineRep::data() const {
-  return is_tree() ? nullptr : data_.as_chars();
-}
+inline const char* absl_nullable Cord::InlineRep::data() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline char* absl_nonnull Cord::InlineRep::set_data(size_t n) {
-  assert(n <= kMaxInline);
-  ResetToEmpty();
-  set_inline_size(n);
-  return data_.as_chars();
-}
+inline char* absl_nonnull Cord::InlineRep::set_data(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void Cord::InlineRep::set_data(const char* absl_nullable data,
-                                      size_t n) {
-  static_assert(kMaxInline == 15, "set_data is hard-coded for a length of 15");
-  assert(data != nullptr || n == 0);
-  data_.set_inline_data(data, n);
-}
+                                      size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::InlineRep::reduce_size(size_t n) {
-  size_t tag = inline_size();
-  assert(tag <= kMaxInline);
-  assert(tag >= n);
-  tag -= n;
-  memset(data_.as_chars() + tag, 0, n);
-  set_inline_size(tag);
-}
+inline void Cord::InlineRep::reduce_size(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::InlineRep::remove_prefix(size_t n) {
-  cord_internal::SmallMemmove(data_.as_chars(), data_.as_chars() + n,
-                              inline_size() - n);
-  reduce_size(n);
-}
+inline void Cord::InlineRep::remove_prefix(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
-inline const char* absl_nonnull Cord::InlineRep::as_chars() const {
-  assert(!data_.is_tree());
-  return data_.as_chars();
-}
+inline const char* absl_nonnull Cord::InlineRep::as_chars() const { __builtin_trap() /* STUB: not implemented */; }
 
 inline absl::cord_internal::CordRep* absl_nonnull Cord::InlineRep::as_tree()
-    const {
-  assert(data_.is_tree());
-  return data_.as_tree();
-}
+    const { __builtin_trap() /* STUB: not implemented */; }
 
 inline absl::cord_internal::CordRep* absl_nullable Cord::InlineRep::tree()
-    const {
-  if (is_tree()) {
-    return as_tree();
-  } else {
-    return nullptr;
-  }
-}
+    const { __builtin_trap() /* STUB: not implemented */; }
 
-inline size_t Cord::InlineRep::size() const {
-  return is_tree() ? as_tree()->length : inline_size();
-}
+inline size_t Cord::InlineRep::size() const { __builtin_trap() /* STUB: not implemented */; }
 
 inline cord_internal::CordRepFlat* absl_nonnull
-Cord::InlineRep::MakeFlatWithExtraCapacity(size_t extra) {
-  static_assert(cord_internal::kMinFlatLength >= sizeof(data_), "");
-  size_t len = data_.inline_size();
-  auto* result = CordRepFlat::New(len + extra);
-  result->length = len;
-  data_.copy_max_inline_to(result->Data());
-  return result;
-}
+Cord::InlineRep::MakeFlatWithExtraCapacity(size_t extra) { __builtin_trap() /* STUB: not implemented */; }
 
 inline void Cord::InlineRep::EmplaceTree(CordRep* absl_nonnull rep,
                                          MethodIdentifier method) {
@@ -1329,46 +1188,18 @@ inline void Cord::InlineRep::SetTreeOrEmpty(CordRep* absl_nullable rep,
 inline void Cord::InlineRep::CommitTree(const CordRep* absl_nullable old_rep,
                                         CordRep* absl_nonnull rep,
                                         const CordzUpdateScope& scope,
-                                        MethodIdentifier method) {
-  if (old_rep) {
-    SetTree(rep, scope);
-  } else {
-    EmplaceTree(rep, method);
-  }
-}
+                                        MethodIdentifier method) { __builtin_trap() /* STUB: not implemented */; }
 
-inline absl::cord_internal::CordRep* absl_nullable Cord::InlineRep::clear() {
-  if (is_tree()) {
-    CordzInfo::MaybeUntrackCord(cordz_info());
-  }
-  absl::cord_internal::CordRep* result = tree();
-  ResetToEmpty();
-  return result;
-}
+inline absl::cord_internal::CordRep* absl_nullable Cord::InlineRep::clear() { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::InlineRep::CopyToArray(char* absl_nonnull dst) const {
-  assert(!is_tree());
-  size_t n = inline_size();
-  assert(n != 0);
-  cord_internal::SmallMemmove(dst, data_.as_chars(), n);
-}
+inline void Cord::InlineRep::CopyToArray(char* absl_nonnull dst) const { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::InlineRep::MaybeRemoveEmptyCrcNode() {
-  CordRep* rep = tree();
-  if (rep == nullptr || ABSL_PREDICT_TRUE(rep->length > 0)) {
-    return;
-  }
-  assert(rep->IsCrc());
-  assert(rep->crc()->child == nullptr);
-  CordzInfo::MaybeUntrackCord(cordz_info());
-  CordRep::Unref(rep);
-  ResetToEmpty();
-}
+inline void Cord::InlineRep::MaybeRemoveEmptyCrcNode() { __builtin_trap() /* STUB: not implemented */; }
 
-constexpr inline Cord::Cord() noexcept {}
+constexpr inline Cord::Cord() noexcept { }
 
 inline Cord::Cord(absl::string_view src)
-    : Cord(src, CordzUpdateTracker::kConstructorString) {}
+    : Cord(src, CordzUpdateTracker::kConstructorString) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T>
 constexpr Cord::Cord(strings_internal::StringConstant<T>)
@@ -1377,321 +1208,108 @@ constexpr Cord::Cord(strings_internal::StringConstant<T>)
                         cord_internal::kMaxInline
                     ? nullptr
                     : &cord_internal::ConstInitExternalStorage<
-                          strings_internal::StringConstant<T>>::value) {}
+                          strings_internal::StringConstant<T>>::value) { }
 
-inline Cord& Cord::operator=(const Cord& x) {
-  contents_ = x.contents_;
-  return *this;
-}
+inline Cord& Cord::operator=(const Cord& x) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename T, Cord::EnableIfString<T>>
-Cord& Cord::operator=(T&& src) {
-  if (src.size() <= cord_internal::kMaxBytesToCopy) {
-    return operator=(absl::string_view(src));
-  } else {
-    return AssignLargeString(std::forward<T>(src));
-  }
-}
+Cord& Cord::operator=(T&& src) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::Cord(const Cord& src) : contents_(src.contents_) {}
+inline Cord::Cord(const Cord& src) : contents_(src.contents_) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::Cord(Cord&& src) noexcept : contents_(std::move(src.contents_)) {}
+inline Cord::Cord(Cord&& src) noexcept : contents_(std::move(src.contents_)) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::swap(Cord& other) noexcept {
-  contents_.Swap(&other.contents_);
-}
+inline void Cord::swap(Cord& other) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord& Cord::operator=(Cord&& x) noexcept {
-  contents_ = std::move(x.contents_);
-  return *this;
-}
+inline Cord& Cord::operator=(Cord&& x) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 extern template Cord::Cord(std::string&& src);
 
-inline size_t Cord::size() const {
-  // Length is 1st field in str.rep_
-  return contents_.size();
-}
+inline size_t Cord::size() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool Cord::empty() const { return size() == 0; }
+inline bool Cord::empty() const { __builtin_trap() /* STUB: not implemented */; }
 
 inline size_t Cord::EstimatedMemoryUsage(
-    CordMemoryAccounting accounting_method) const {
-  size_t result = sizeof(Cord);
-  if (const absl::cord_internal::CordRep* rep = contents_.tree()) {
-    switch (accounting_method) {
-      case CordMemoryAccounting::kFairShare:
-        result += cord_internal::GetEstimatedFairShareMemoryUsage(rep);
-        break;
-      case CordMemoryAccounting::kTotalMorePrecise:
-        result += cord_internal::GetMorePreciseMemoryUsage(rep);
-        break;
-      case CordMemoryAccounting::kTotal:
-        result += cord_internal::GetEstimatedMemoryUsage(rep);
-        break;
-    }
-  }
-  return result;
-}
+    CordMemoryAccounting accounting_method) const { __builtin_trap() /* STUB: not implemented */; }
 
 inline std::optional<absl::string_view> Cord::TryFlat() const
-    ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  absl::cord_internal::CordRep* rep = contents_.tree();
-  if (rep == nullptr) {
-    return absl::string_view(contents_.data(), contents_.size());
-  }
-  absl::string_view fragment;
-  if (GetFlatAux(rep, &fragment)) {
-    return fragment;
-  }
-  return std::nullopt;
-}
+    ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
-inline absl::string_view Cord::Flatten() ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  absl::cord_internal::CordRep* rep = contents_.tree();
-  if (rep == nullptr) {
-    return absl::string_view(contents_.data(), contents_.size());
-  } else {
-    absl::string_view already_flat_contents;
-    if (GetFlatAux(rep, &already_flat_contents)) {
-      return already_flat_contents;
-    }
-  }
-  return FlattenSlowPath();
-}
+inline absl::string_view Cord::Flatten() ABSL_ATTRIBUTE_LIFETIME_BOUND { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::Append(absl::string_view src) {
-  contents_.AppendArray(src, CordzUpdateTracker::kAppendString);
-}
+inline void Cord::Append(absl::string_view src) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::Prepend(absl::string_view src) {
-  PrependArray(src, CordzUpdateTracker::kPrependString);
-}
+inline void Cord::Prepend(absl::string_view src) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::Append(CordBuffer buffer) {
-  if (ABSL_PREDICT_FALSE(buffer.length() == 0)) return;
-  contents_.MaybeRemoveEmptyCrcNode();
-  absl::string_view short_value;
-  if (CordRep* rep = buffer.ConsumeValue(short_value)) {
-    contents_.AppendTree(rep, CordzUpdateTracker::kAppendCordBuffer);
-  } else {
-    AppendPrecise(short_value, CordzUpdateTracker::kAppendCordBuffer);
-  }
-}
+inline void Cord::Append(CordBuffer buffer) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::Prepend(CordBuffer buffer) {
-  if (ABSL_PREDICT_FALSE(buffer.length() == 0)) return;
-  contents_.MaybeRemoveEmptyCrcNode();
-  absl::string_view short_value;
-  if (CordRep* rep = buffer.ConsumeValue(short_value)) {
-    contents_.PrependTree(rep, CordzUpdateTracker::kPrependCordBuffer);
-  } else {
-    PrependPrecise(short_value, CordzUpdateTracker::kPrependCordBuffer);
-  }
-}
+inline void Cord::Prepend(CordBuffer buffer) { __builtin_trap() /* STUB: not implemented */; }
 
-inline CordBuffer Cord::GetAppendBuffer(size_t capacity, size_t min_capacity) {
-  if (empty()) return CordBuffer::CreateWithDefaultLimit(capacity);
-  return GetAppendBufferSlowPath(0, capacity, min_capacity);
-}
+inline CordBuffer Cord::GetAppendBuffer(size_t capacity, size_t min_capacity) { __builtin_trap() /* STUB: not implemented */; }
 
 inline CordBuffer Cord::GetCustomAppendBuffer(size_t block_size,
                                               size_t capacity,
-                                              size_t min_capacity) {
-  if (empty()) {
-    return block_size ? CordBuffer::CreateWithCustomLimit(block_size, capacity)
-                      : CordBuffer::CreateWithDefaultLimit(capacity);
-  }
-  return GetAppendBufferSlowPath(block_size, capacity, min_capacity);
-}
+                                              size_t min_capacity) { __builtin_trap() /* STUB: not implemented */; }
 
 extern template void Cord::Append(std::string&& src);
 extern template void Cord::Prepend(std::string&& src);
 
-inline int Cord::Compare(const Cord& rhs) const {
-  if (!contents_.is_tree() && !rhs.contents_.is_tree()) {
-    return contents_.data_.Compare(rhs.contents_.data_);
-  }
-
-  return CompareImpl(rhs);
-}
+inline int Cord::Compare(const Cord& rhs) const { __builtin_trap() /* STUB: not implemented */; }
 
 // Does 'this' cord start/end with rhs
-inline bool Cord::StartsWith(const Cord& rhs) const {
-  if (contents_.IsSame(rhs.contents_)) return true;
-  size_t rhs_size = rhs.size();
-  if (size() < rhs_size) return false;
-  return EqualsImpl(rhs, rhs_size);
-}
+inline bool Cord::StartsWith(const Cord& rhs) const { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool Cord::StartsWith(absl::string_view rhs) const {
-  size_t rhs_size = rhs.size();
-  if (size() < rhs_size) return false;
-  return EqualsImpl(rhs, rhs_size);
-}
+inline bool Cord::StartsWith(absl::string_view rhs) const { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::CopyToArrayImpl(char* absl_nonnull dst) const {
-  if (!contents_.is_tree()) {
-    if (!empty()) contents_.CopyToArray(dst);
-  } else {
-    CopyToArraySlowPath(dst);
-  }
-}
+inline void Cord::CopyToArrayImpl(char* absl_nonnull dst) const { __builtin_trap() /* STUB: not implemented */; }
 
 inline void Cord::ChunkIterator::InitTree(
-    cord_internal::CordRep* absl_nonnull tree) {
-  tree = cord_internal::SkipCrcNode(tree);
-  if (tree->tag == cord_internal::BTREE) {
-    current_chunk_ = btree_reader_.Init(tree->btree());
-  } else {
-    current_leaf_ = tree;
-    current_chunk_ = cord_internal::EdgeData(tree);
-  }
-}
+    cord_internal::CordRep* absl_nonnull tree) { __builtin_trap() /* STUB: not implemented */; }
 
 inline Cord::ChunkIterator::ChunkIterator(
-    cord_internal::CordRep* absl_nonnull tree) {
-  bytes_remaining_ = tree->length;
-  InitTree(tree);
-}
+    cord_internal::CordRep* absl_nonnull tree) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::ChunkIterator::ChunkIterator(const Cord* absl_nonnull cord) {
-  if (CordRep* tree = cord->contents_.tree()) {
-    bytes_remaining_ = tree->length;
-    if (ABSL_PREDICT_TRUE(bytes_remaining_ != 0)) {
-      InitTree(tree);
-    } else {
-      current_chunk_ = {};
-    }
-  } else {
-    bytes_remaining_ = cord->contents_.inline_size();
-    current_chunk_ = {cord->contents_.data(), bytes_remaining_};
-  }
-}
+inline Cord::ChunkIterator::ChunkIterator(const Cord* absl_nonnull cord) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::ChunkIterator& Cord::ChunkIterator::AdvanceBtree() {
-  current_chunk_ = btree_reader_.Next();
-  return *this;
-}
+inline Cord::ChunkIterator& Cord::ChunkIterator::AdvanceBtree() { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::ChunkIterator::AdvanceBytesBtree(size_t n) {
-  assert(n >= current_chunk_.size());
-  bytes_remaining_ -= n;
-  if (bytes_remaining_) {
-    if (n == current_chunk_.size()) {
-      current_chunk_ = btree_reader_.Next();
-    } else {
-      size_t offset = btree_reader_.length() - bytes_remaining_;
-      current_chunk_ = btree_reader_.Seek(offset);
-    }
-  } else {
-    current_chunk_ = {};
-  }
-}
+inline void Cord::ChunkIterator::AdvanceBytesBtree(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::ChunkIterator& Cord::ChunkIterator::operator++() {
-  // Failure of this assertion indicates an attempt to iterate past `end()`.
-  absl::base_internal::HardeningAssertGT(bytes_remaining_, size_t{0});
-  assert(bytes_remaining_ >= current_chunk_.size());
-  bytes_remaining_ -= current_chunk_.size();
-  if (bytes_remaining_ > 0) {
-    if (btree_reader_) {
-      return AdvanceBtree();
-    } else {
-      assert(!current_chunk_.empty());  // Called on invalid iterator.
-    }
-    current_chunk_ = {};
-  }
-  return *this;
-}
+inline Cord::ChunkIterator& Cord::ChunkIterator::operator++() { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::ChunkIterator Cord::ChunkIterator::operator++(int) {
-  ChunkIterator tmp(*this);
-  operator++();
-  return tmp;
-}
+inline Cord::ChunkIterator Cord::ChunkIterator::operator++(int) { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool Cord::ChunkIterator::operator==(const ChunkIterator& other) const {
-  return bytes_remaining_ == other.bytes_remaining_;
-}
+inline bool Cord::ChunkIterator::operator==(const ChunkIterator& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool Cord::ChunkIterator::operator!=(const ChunkIterator& other) const {
-  return !(*this == other);
-}
+inline bool Cord::ChunkIterator::operator!=(const ChunkIterator& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::ChunkIterator::reference Cord::ChunkIterator::operator*() const {
-  absl::base_internal::HardeningAssertGT(bytes_remaining_, size_t{0});
-  ABSL_ASSERT(bytes_remaining_ >= current_chunk_.size());
-  return current_chunk_;
-}
+inline Cord::ChunkIterator::reference Cord::ChunkIterator::operator*() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::ChunkIterator::pointer Cord::ChunkIterator::operator->() const {
-  absl::base_internal::HardeningAssertGT(bytes_remaining_, size_t{0});
-  ABSL_ASSERT(bytes_remaining_ >= current_chunk_.size());
-  return &current_chunk_;
-}
+inline Cord::ChunkIterator::pointer Cord::ChunkIterator::operator->() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::ChunkIterator::RemoveChunkPrefix(size_t n) {
-  assert(n < current_chunk_.size());
-  current_chunk_.remove_prefix(n);
-  bytes_remaining_ -= n;
-}
+inline void Cord::ChunkIterator::RemoveChunkPrefix(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
-inline void Cord::ChunkIterator::AdvanceBytes(size_t n) {
-  assert(bytes_remaining_ >= n);
-  if (ABSL_PREDICT_TRUE(n < current_chunk_.size())) {
-    RemoveChunkPrefix(n);
-  } else if (n != 0) {
-    if (btree_reader_) {
-      AdvanceBytesBtree(n);
-    } else {
-      bytes_remaining_ = 0;
-    }
-  }
-}
+inline void Cord::ChunkIterator::AdvanceBytes(size_t n) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::ChunkIterator Cord::chunk_begin() const {
-  return ChunkIterator(this);
-}
+inline Cord::ChunkIterator Cord::chunk_begin() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::ChunkIterator Cord::chunk_end() const { return ChunkIterator(); }
+inline Cord::ChunkIterator Cord::chunk_end() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::ChunkIterator Cord::ChunkRange::begin() const {
-  return cord_->chunk_begin();
-}
+inline Cord::ChunkIterator Cord::ChunkRange::begin() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::ChunkIterator Cord::ChunkRange::end() const {
-  return cord_->chunk_end();
-}
+inline Cord::ChunkIterator Cord::ChunkRange::end() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::ChunkRange Cord::Chunks() const { return ChunkRange(this); }
+inline Cord::ChunkRange Cord::Chunks() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::CharIterator& Cord::CharIterator::operator++() {
-  if (ABSL_PREDICT_TRUE(chunk_iterator_->size() > 1)) {
-    chunk_iterator_.RemoveChunkPrefix(1);
-  } else {
-    ++chunk_iterator_;
-  }
-  return *this;
-}
+inline Cord::CharIterator& Cord::CharIterator::operator++() { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::CharIterator Cord::CharIterator::operator++(int) {
-  CharIterator tmp(*this);
-  operator++();
-  return tmp;
-}
+inline Cord::CharIterator Cord::CharIterator::operator++(int) { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool Cord::CharIterator::operator==(const CharIterator& other) const {
-  return chunk_iterator_ == other.chunk_iterator_;
-}
+inline bool Cord::CharIterator::operator==(const CharIterator& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool Cord::CharIterator::operator!=(const CharIterator& other) const {
-  return !(*this == other);
-}
+inline bool Cord::CharIterator::operator!=(const CharIterator& other) const { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::CharIterator::reference Cord::CharIterator::operator*() const {
-  return *chunk_iterator_->data();
-}
+inline Cord::CharIterator::reference Cord::CharIterator::operator*() const { __builtin_trap() /* STUB: not implemented */; }
 
 inline Cord Cord::AdvanceAndRead(CharIterator* absl_nonnull it,
                                  size_t n_bytes) {
@@ -1704,86 +1322,50 @@ inline void Cord::Advance(CharIterator* absl_nonnull it, size_t n_bytes) {
   it->chunk_iterator_.AdvanceBytes(n_bytes);
 }
 
-inline absl::string_view Cord::ChunkRemaining(const CharIterator& it) {
-  return *it.chunk_iterator_;
-}
+inline absl::string_view Cord::ChunkRemaining(const CharIterator& it) { __builtin_trap() /* STUB: not implemented */; }
 
 inline ptrdiff_t Cord::Distance(const CharIterator& first,
-                                const CharIterator& last) {
-  return static_cast<ptrdiff_t>(first.chunk_iterator_.bytes_remaining_ -
-                                last.chunk_iterator_.bytes_remaining_);
-}
+                                const CharIterator& last) { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::CharIterator Cord::char_begin() const {
-  return CharIterator(this);
-}
+inline Cord::CharIterator Cord::char_begin() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::CharIterator Cord::char_end() const { return CharIterator(); }
+inline Cord::CharIterator Cord::char_end() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::CharIterator Cord::CharRange::begin() const {
-  return cord_->char_begin();
-}
+inline Cord::CharIterator Cord::CharRange::begin() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::CharIterator Cord::CharRange::end() const {
-  return cord_->char_end();
-}
+inline Cord::CharIterator Cord::CharRange::end() const { __builtin_trap() /* STUB: not implemented */; }
 
-inline Cord::CharRange Cord::Chars() const { return CharRange(this); }
+inline Cord::CharRange Cord::Chars() const { __builtin_trap() /* STUB: not implemented */; }
 
 inline void Cord::ForEachChunk(
-    absl::FunctionRef<void(absl::string_view)> callback) const {
-  absl::cord_internal::CordRep* rep = contents_.tree();
-  if (rep == nullptr) {
-    callback(absl::string_view(contents_.data(), contents_.size()));
-  } else {
-    ForEachChunkAux(rep, callback);
-  }
-}
+    absl::FunctionRef<void(absl::string_view)> callback) const { __builtin_trap() /* STUB: not implemented */; }
 
 // Nonmember Cord-to-Cord relational operators.
-inline bool operator==(const Cord& lhs, const Cord& rhs) {
-  if (lhs.contents_.IsSame(rhs.contents_)) return true;
-  size_t rhs_size = rhs.size();
-  if (lhs.size() != rhs_size) return false;
-  return lhs.EqualsImpl(rhs, rhs_size);
-}
+inline bool operator==(const Cord& lhs, const Cord& rhs) { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool operator!=(const Cord& x, const Cord& y) { return !(x == y); }
-inline bool operator<(const Cord& x, const Cord& y) { return x.Compare(y) < 0; }
-inline bool operator>(const Cord& x, const Cord& y) { return x.Compare(y) > 0; }
-inline bool operator<=(const Cord& x, const Cord& y) {
-  return x.Compare(y) <= 0;
-}
-inline bool operator>=(const Cord& x, const Cord& y) {
-  return x.Compare(y) >= 0;
-}
+inline bool operator!=(const Cord& x, const Cord& y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator<(const Cord& x, const Cord& y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator>(const Cord& x, const Cord& y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator<=(const Cord& x, const Cord& y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator>=(const Cord& x, const Cord& y) { __builtin_trap() /* STUB: not implemented */; }
 
 // Nonmember Cord-to-absl::string_view relational operators.
 //
 // Due to implicit conversions, these also enable comparisons of Cord with
 // std::string and const char*.
-inline bool operator==(const Cord& lhs, absl::string_view rhs) {
-  size_t lhs_size = lhs.size();
-  size_t rhs_size = rhs.size();
-  if (lhs_size != rhs_size) return false;
-  return lhs.EqualsImpl(rhs, rhs_size);
-}
+inline bool operator==(const Cord& lhs, absl::string_view rhs) { __builtin_trap() /* STUB: not implemented */; }
 
-inline bool operator==(absl::string_view x, const Cord& y) { return y == x; }
-inline bool operator!=(const Cord& x, absl::string_view y) { return !(x == y); }
-inline bool operator!=(absl::string_view x, const Cord& y) { return !(x == y); }
-inline bool operator<(const Cord& x, absl::string_view y) {
-  return x.Compare(y) < 0;
-}
-inline bool operator<(absl::string_view x, const Cord& y) {
-  return y.Compare(x) > 0;
-}
-inline bool operator>(const Cord& x, absl::string_view y) { return y < x; }
-inline bool operator>(absl::string_view x, const Cord& y) { return y < x; }
-inline bool operator<=(const Cord& x, absl::string_view y) { return !(y < x); }
-inline bool operator<=(absl::string_view x, const Cord& y) { return !(y < x); }
-inline bool operator>=(const Cord& x, absl::string_view y) { return !(x < y); }
-inline bool operator>=(absl::string_view x, const Cord& y) { return !(x < y); }
+inline bool operator==(absl::string_view x, const Cord& y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator!=(const Cord& x, absl::string_view y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator!=(absl::string_view x, const Cord& y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator<(const Cord& x, absl::string_view y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator<(absl::string_view x, const Cord& y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator>(const Cord& x, absl::string_view y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator>(absl::string_view x, const Cord& y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator<=(const Cord& x, absl::string_view y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator<=(absl::string_view x, const Cord& y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator>=(const Cord& x, absl::string_view y) { __builtin_trap() /* STUB: not implemented */; }
+inline bool operator>=(absl::string_view x, const Cord& y) { __builtin_trap() /* STUB: not implemented */; }
 
 // Some internals exposed to test code.
 namespace strings_internal {

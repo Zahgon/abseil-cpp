@@ -58,9 +58,7 @@ struct PerThreadSynch {
   // Returns the associated ThreadIdentity.
   // This can be implemented as a cast because we guarantee
   // PerThreadSynch is the first element of ThreadIdentity.
-  ThreadIdentity* thread_identity() {
-    return reinterpret_cast<ThreadIdentity*>(this);
-  }
+  ThreadIdentity* thread_identity() { __builtin_trap() /* STUB: not implemented */; }
 
   PerThreadSynch* next;  // Circular waiter queue; initialized to 0.
   PerThreadSynch* skip;  // If non-zero, all entries in Mutex queue
@@ -161,9 +159,7 @@ struct ThreadIdentity {
     // elevated priority.
     bool waking_designated_waker;
 
-    inline SpinLock* association_lock() {
-      return reinterpret_cast<SpinLock*>(&association_lock_word);
-    }
+    inline SpinLock* association_lock() { __builtin_trap() /* STUB: not implemented */; }
   } scheduler_state;  // Private: Reserved for use in Gloop
 
   // For worker threads that may not be doing any interesting user work, this
@@ -308,9 +304,7 @@ ABSL_CONST_INIT extern thread_local ThreadIdentity* thread_identity_ptr;
 #endif
 
 #ifdef ABSL_INTERNAL_INLINE_CURRENT_THREAD_IDENTITY_IF_PRESENT
-inline ThreadIdentity* CurrentThreadIdentityIfPresent() {
-  return thread_identity_ptr;
-}
+inline ThreadIdentity* CurrentThreadIdentityIfPresent() { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
 #elif ABSL_THREAD_IDENTITY_MODE != \

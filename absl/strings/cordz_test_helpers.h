@@ -35,19 +35,11 @@ ABSL_NAMESPACE_BEGIN
 
 // Returns the CordzInfo for the cord, or nullptr if the cord is not sampled.
 inline const cord_internal::CordzInfo* GetCordzInfoForTesting(
-    const Cord& cord) {
-  if (!cord.contents_.is_tree()) return nullptr;
-  return cord.contents_.cordz_info();
-}
+    const Cord& cord) { __builtin_trap() /* STUB: not implemented */; }
 
 // Returns true if the provided cordz_info is in the list of sampled cords.
 inline bool CordzInfoIsListed(const cord_internal::CordzInfo* cordz_info,
-                              cord_internal::CordzSampleToken token = {}) {
-  for (const cord_internal::CordzInfo& info : token) {
-    if (cordz_info == &info) return true;
-  }
-  return false;
-}
+                              cord_internal::CordzSampleToken token = {}) { __builtin_trap() /* STUB: not implemented */; }
 
 // Matcher on Cord that verifies all of:
 // - the cord is sampled
@@ -104,15 +96,9 @@ MATCHER_P2(CordzMethodCountEq, method, n,
 class CordzSamplingIntervalHelper {
  public:
   explicit CordzSamplingIntervalHelper(int32_t interval)
-      : orig_mean_interval_(absl::cord_internal::get_cordz_mean_interval()) {
-    absl::cord_internal::set_cordz_mean_interval(interval);
-    absl::cord_internal::cordz_set_next_sample_for_testing(interval);
-  }
+      : orig_mean_interval_(absl::cord_internal::get_cordz_mean_interval()) { __builtin_trap() /* STUB: not implemented */; }
 
-  ~CordzSamplingIntervalHelper() {
-    absl::cord_internal::set_cordz_mean_interval(orig_mean_interval_);
-    absl::cord_internal::cordz_set_next_sample_for_testing(orig_mean_interval_);
-  }
+  ~CordzSamplingIntervalHelper() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   int32_t orig_mean_interval_;
@@ -122,12 +108,8 @@ class CordzSamplingIntervalHelper {
 struct TestCordRep {
   cord_internal::CordRepFlat* rep;
 
-  TestCordRep() {
-    rep = cord_internal::CordRepFlat::New(100);
-    rep->length = 100;
-    memset(rep->Data(), 1, 100);
-  }
-  ~TestCordRep() { cord_internal::CordRep::Unref(rep); }
+  TestCordRep() { __builtin_trap() /* STUB: not implemented */; }
+  ~TestCordRep() { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // Wrapper struct managing a small CordRep `rep`, and
@@ -139,12 +121,7 @@ struct TestCordData {
 
 // Creates a Cord that is not sampled
 template <typename... Args>
-Cord UnsampledCord(Args... args) {
-  CordzSamplingIntervalHelper never(9999);
-  Cord cord(std::forward<Args>(args)...);
-  ABSL_ASSERT(GetCordzInfoForTesting(cord) == nullptr);
-  return cord;
-}
+Cord UnsampledCord(Args... args) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

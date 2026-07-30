@@ -25,21 +25,15 @@ namespace {
 // set an int to a constant..
 class SimpleClass {
  public:
-  SimpleClass() : i(3) {}
-  ~SimpleClass() { i = 0; }
+  SimpleClass() : i(3) { __builtin_trap() /* STUB: not implemented */; }
+  ~SimpleClass() { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   int i;
 };
 
 template <typename C, size_t stack_size>
-void BM_FixedArray(benchmark::State& state) {
-  const int size = state.range(0);
-  for (auto _ : state) {
-    absl::FixedArray<C, stack_size> fa(size);
-    benchmark::DoNotOptimize(fa.data());
-  }
-}
+void BM_FixedArray(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK_TEMPLATE(BM_FixedArray, char, absl::kFixedArrayUseDefault)
     ->Range(0, 1 << 16);
 BENCHMARK_TEMPLATE(BM_FixedArray, char, 0)->Range(0, 1 << 16);

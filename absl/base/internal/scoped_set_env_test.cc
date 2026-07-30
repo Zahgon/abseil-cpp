@@ -23,28 +23,7 @@ namespace {
 
 using absl::base_internal::ScopedSetEnv;
 
-std::string GetEnvVar(const char* name) {
-#ifdef _WIN32
-  char buf[1024];
-  auto get_res = GetEnvironmentVariableA(name, buf, sizeof(buf));
-  if (get_res >= sizeof(buf)) {
-    return "TOO_BIG";
-  }
-
-  if (get_res == 0) {
-    return "UNSET";
-  }
-
-  return std::string(buf, get_res);
-#else
-  const char* val = ::getenv(name);
-  if (val == nullptr) {
-    return "UNSET";
-  }
-
-  return val;
-#endif
-}
+std::string GetEnvVar(const char* name) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST(ScopedSetEnvTest, SetNonExistingVarToString) {
   EXPECT_EQ(GetEnvVar("SCOPED_SET_ENV_TEST_VAR"), "UNSET");

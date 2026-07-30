@@ -84,11 +84,7 @@ class UnscaledCycleClock {
 
 #if defined(__x86_64__)
 
-inline int64_t UnscaledCycleClock::Now() {
-  uint64_t low, high;
-  __asm__ volatile("rdtsc" : "=a"(low), "=d"(high));
-  return static_cast<int64_t>((high << 32) | low);
-}
+inline int64_t UnscaledCycleClock::Now() { __builtin_trap() /* STUB: not implemented */; }
 
 #elif defined(__aarch64__)
 
@@ -101,11 +97,7 @@ inline int64_t UnscaledCycleClock::Now() {
 //
 // It can be read at CNTFRQ special register.  We assume the OS has set up the
 // virtual timer properly.
-inline int64_t UnscaledCycleClock::Now() {
-  int64_t virtual_timer_value;
-  asm volatile("mrs %0, cntvct_el0" : "=r"(virtual_timer_value));
-  return virtual_timer_value;
-}
+inline int64_t UnscaledCycleClock::Now() { __builtin_trap() /* STUB: not implemented */; }
 
 #endif
 

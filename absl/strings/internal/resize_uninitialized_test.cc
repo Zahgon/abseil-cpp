@@ -28,14 +28,14 @@ int resize_call_count = 0;
 struct resizable_string {
   using value_type = char;
   using size_type = size_t;
-  size_t size() const { return 0; }
-  size_t capacity() const { return 0; }
-  char* data() { return buffer; }
-  char& operator[](size_t) { return buffer[0]; }
-  void resize(size_t) { resize_call_count += 1; }
-  void reserve(size_t) {}
-  resizable_string& erase(size_t = 0, size_t = 0) { return *this; }
-  size_t max_size() const { return std::numeric_limits<size_t>::max(); }
+  size_t size() const { __builtin_trap() /* STUB: not implemented */; }
+  size_t capacity() const { __builtin_trap() /* STUB: not implemented */; }
+  char* data() { __builtin_trap() /* STUB: not implemented */; }
+  char& operator[](size_t) { __builtin_trap() /* STUB: not implemented */; }
+  void resize(size_t) { __builtin_trap() /* STUB: not implemented */; }
+  void reserve(size_t) { __builtin_trap() /* STUB: not implemented */; }
+  resizable_string& erase(size_t = 0, size_t = 0) { __builtin_trap() /* STUB: not implemented */; }
+  size_t max_size() const { __builtin_trap() /* STUB: not implemented */; }
   char buffer[1] = {};
 };
 
@@ -46,15 +46,15 @@ int resize_default_init_call_count = 0;
 struct default_init_string {
   using value_type = char;
   using size_type = size_t;
-  size_t size() const { return 0; }
-  size_t capacity() const { return 0; }
-  char* data() { return buffer; }
-  char& operator[](size_t) { return buffer[0]; }
-  void resize(size_t) { resize_call_count += 1; }
-  void __resize_default_init(size_t) { resize_default_init_call_count += 1; }
-  void reserve(size_t) {}
-  default_init_string& erase(size_t = 0, size_t = 0) { return *this; }
-  size_t max_size() const { return std::numeric_limits<size_t>::max(); }
+  size_t size() const { __builtin_trap() /* STUB: not implemented */; }
+  size_t capacity() const { __builtin_trap() /* STUB: not implemented */; }
+  char* data() { __builtin_trap() /* STUB: not implemented */; }
+  char& operator[](size_t) { __builtin_trap() /* STUB: not implemented */; }
+  void resize(size_t) { __builtin_trap() /* STUB: not implemented */; }
+  void __resize_default_init(size_t) { __builtin_trap() /* STUB: not implemented */; }
+  void reserve(size_t) { __builtin_trap() /* STUB: not implemented */; }
+  default_init_string& erase(size_t = 0, size_t = 0) { __builtin_trap() /* STUB: not implemented */; }
+  size_t max_size() const { __builtin_trap() /* STUB: not implemented */; }
   char buffer[1];
 };
 

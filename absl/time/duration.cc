@@ -351,42 +351,7 @@ inline bool IDivFastPath(const Duration num, const Duration den, int64_t* q,
 namespace {
 
 int64_t IDivSlowPath(bool satq, const Duration num, const Duration den,
-                     Duration* rem) {
-  const bool num_neg = num < ZeroDuration();
-  const bool den_neg = den < ZeroDuration();
-  const bool quotient_neg = num_neg != den_neg;
-
-  if (time_internal::IsInfiniteDuration(num) || den == ZeroDuration()) {
-    *rem = num_neg ? -InfiniteDuration() : InfiniteDuration();
-    return quotient_neg ? kint64min : kint64max;
-  }
-  if (time_internal::IsInfiniteDuration(den)) {
-    *rem = num;
-    return 0;
-  }
-
-  const uint128 a = MakeU128Ticks(num);
-  const uint128 b = MakeU128Ticks(den);
-  uint128 quotient128 = a / b;
-
-  if (satq) {
-    // Limits the quotient to the range of int64_t.
-    if (quotient128 > uint128(static_cast<uint64_t>(kint64max))) {
-      quotient128 = quotient_neg ? uint128(static_cast<uint64_t>(kint64min))
-                                 : uint128(static_cast<uint64_t>(kint64max));
-    }
-  }
-
-  const uint128 remainder128 = a - quotient128 * b;
-  *rem = MakeDurationFromU128(remainder128, num_neg);
-
-  if (!quotient_neg || quotient128 == 0) {
-    return Uint128Low64(quotient128) & kint64max;
-  }
-  // The quotient needs to be negated, but we need to carefully handle
-  // quotient128s with the top bit on.
-  return -static_cast<int64_t>(Uint128Low64(quotient128 - 1) & kint64max) - 1;
-}
+                     Duration* rem) { __builtin_trap() /* STUB: not implemented */; }
 
 // The 'satq' argument indicates whether the quotient should saturate at the
 // bounds of int64_t.  If it does saturate, the difference will spill over to
@@ -395,252 +360,74 @@ int64_t IDivSlowPath(bool satq, const Duration num, const Duration den,
 ABSL_ATTRIBUTE_ALWAYS_INLINE inline int64_t IDivDurationImpl(bool satq,
                                                              const Duration num,
                                                              const Duration den,
-                                                             Duration* rem) {
-  int64_t q = 0;
-  if (IDivFastPath(num, den, &q, rem)) {
-    return q;
-  }
-  return IDivSlowPath(satq, num, den, rem);
-}
+                                                             Duration* rem) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace
 
-int64_t IDivDuration(Duration num, Duration den, Duration* rem) {
-  return IDivDurationImpl(true, num, den,
-                          rem);  // trunc towards zero
-}
+int64_t IDivDuration(Duration num, Duration den, Duration* rem) { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // Additive operators.
 //
 
-Duration& Duration::operator+=(Duration rhs) {
-  if (time_internal::IsInfiniteDuration(*this)) return *this;
-  if (time_internal::IsInfiniteDuration(rhs)) return *this = rhs;
-  const int64_t orig_rep_hi = rep_hi_.Get();
-  rep_hi_ = DecodeTwosComp(EncodeTwosComp(rep_hi_.Get()) +
-                           EncodeTwosComp(rhs.rep_hi_.Get()));
-  if (rep_lo_ >= kTicksPerSecond - rhs.rep_lo_) {
-    rep_hi_ = DecodeTwosComp(EncodeTwosComp(rep_hi_.Get()) + 1);
-    rep_lo_ -= kTicksPerSecond;
-  }
-  rep_lo_ += rhs.rep_lo_;
-  if (rhs.rep_hi_.Get() < 0 ? rep_hi_.Get() > orig_rep_hi
-                            : rep_hi_.Get() < orig_rep_hi) {
-    return *this =
-               rhs.rep_hi_.Get() < 0 ? -InfiniteDuration() : InfiniteDuration();
-  }
-  return *this;
-}
+Duration& Duration::operator+=(Duration rhs) { __builtin_trap() /* STUB: not implemented */; }
 
-Duration& Duration::operator-=(Duration rhs) {
-  if (time_internal::IsInfiniteDuration(*this)) return *this;
-  if (time_internal::IsInfiniteDuration(rhs)) {
-    return *this = rhs.rep_hi_.Get() >= 0 ? -InfiniteDuration()
-                                          : InfiniteDuration();
-  }
-  const int64_t orig_rep_hi = rep_hi_.Get();
-  rep_hi_ = DecodeTwosComp(EncodeTwosComp(rep_hi_.Get()) -
-                           EncodeTwosComp(rhs.rep_hi_.Get()));
-  if (rep_lo_ < rhs.rep_lo_) {
-    rep_hi_ = DecodeTwosComp(EncodeTwosComp(rep_hi_.Get()) - 1);
-    rep_lo_ += kTicksPerSecond;
-  }
-  rep_lo_ -= rhs.rep_lo_;
-  if (rhs.rep_hi_.Get() < 0 ? rep_hi_.Get() < orig_rep_hi
-                            : rep_hi_.Get() > orig_rep_hi) {
-    return *this = rhs.rep_hi_.Get() >= 0 ? -InfiniteDuration()
-                                          : InfiniteDuration();
-  }
-  return *this;
-}
+Duration& Duration::operator-=(Duration rhs) { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // Multiplicative operators.
 //
 
-Duration& Duration::operator*=(int64_t r) {
-  if (time_internal::IsInfiniteDuration(*this)) {
-    const bool is_neg = (r < 0) != (rep_hi_.Get() < 0);
-    return *this = is_neg ? -InfiniteDuration() : InfiniteDuration();
-  }
-  return *this = ScaleFixed<SafeMultiply>(*this, r);
-}
+Duration& Duration::operator*=(int64_t r) { __builtin_trap() /* STUB: not implemented */; }
 
-Duration& Duration::operator*=(double r) {
-  if (time_internal::IsInfiniteDuration(*this) || !IsFinite(r)) {
-    const bool is_neg = std::isnan(r) || std::signbit(r) != (rep_hi_.Get() < 0);
-    return *this = is_neg ? -InfiniteDuration() : InfiniteDuration();
-  }
-  return *this = ScaleDouble<std::multiplies>(*this, r);
-}
+Duration& Duration::operator*=(double r) { __builtin_trap() /* STUB: not implemented */; }
 
-Duration& Duration::operator/=(int64_t r) {
-  if (time_internal::IsInfiniteDuration(*this) || r == 0) {
-    const bool is_neg = (r < 0) != (rep_hi_.Get() < 0);
-    return *this = is_neg ? -InfiniteDuration() : InfiniteDuration();
-  }
-  return *this = ScaleFixed<std::divides>(*this, r);
-}
+Duration& Duration::operator/=(int64_t r) { __builtin_trap() /* STUB: not implemented */; }
 
-Duration& Duration::operator/=(double r) {
-  if (time_internal::IsInfiniteDuration(*this) || !IsValidDivisor(r)) {
-    const bool is_neg = std::isnan(r) || std::signbit(r) != (rep_hi_.Get() < 0);
-    return *this = is_neg ? -InfiniteDuration() : InfiniteDuration();
-  }
-  return *this = ScaleDouble<std::divides>(*this, r);
-}
+Duration& Duration::operator/=(double r) { __builtin_trap() /* STUB: not implemented */; }
 
-Duration& Duration::operator%=(Duration rhs) {
-  IDivDurationImpl(false, *this, rhs, this);
-  return *this;
-}
+Duration& Duration::operator%=(Duration rhs) { __builtin_trap() /* STUB: not implemented */; }
 
-double FDivDuration(Duration num, Duration den) {
-  // Arithmetic with infinity is sticky.
-  if (time_internal::IsInfiniteDuration(num) || den == ZeroDuration()) {
-    return (num < ZeroDuration()) == (den < ZeroDuration())
-               ? std::numeric_limits<double>::infinity()
-               : -std::numeric_limits<double>::infinity();
-  }
-  if (time_internal::IsInfiniteDuration(den)) return 0.0;
-
-  double a =
-      static_cast<double>(time_internal::GetRepHi(num)) * kTicksPerSecond +
-      time_internal::GetRepLo(num);
-  double b =
-      static_cast<double>(time_internal::GetRepHi(den)) * kTicksPerSecond +
-      time_internal::GetRepLo(den);
-  return a / b;
-}
+double FDivDuration(Duration num, Duration den) { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // Trunc/Floor/Ceil.
 //
 
-Duration Trunc(Duration d, Duration unit) { return d - (d % unit); }
+Duration Trunc(Duration d, Duration unit) { __builtin_trap() /* STUB: not implemented */; }
 
-Duration Floor(const Duration d, const Duration unit) {
-  const absl::Duration td = Trunc(d, unit);
-  return td <= d ? td : td - AbsDuration(unit);
-}
+Duration Floor(const Duration d, const Duration unit) { __builtin_trap() /* STUB: not implemented */; }
 
-Duration Ceil(const Duration d, const Duration unit) {
-  const absl::Duration td = Trunc(d, unit);
-  return td >= d ? td : td + AbsDuration(unit);
-}
+Duration Ceil(const Duration d, const Duration unit) { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // Factory functions.
 //
 
-Duration DurationFromTimespec(timespec ts) {
-  if (static_cast<uint64_t>(ts.tv_nsec) < 1000 * 1000 * 1000) {
-    int64_t ticks = ts.tv_nsec * kTicksPerNanosecond;
-    return time_internal::MakeDuration(ts.tv_sec, ticks);
-  }
-  return Seconds(ts.tv_sec) + Nanoseconds(ts.tv_nsec);
-}
+Duration DurationFromTimespec(timespec ts) { __builtin_trap() /* STUB: not implemented */; }
 
-Duration DurationFromTimeval(timeval tv) {
-  if (static_cast<uint64_t>(tv.tv_usec) < 1000 * 1000) {
-    int64_t ticks = tv.tv_usec * 1000 * kTicksPerNanosecond;
-    return time_internal::MakeDuration(tv.tv_sec, ticks);
-  }
-  return Seconds(tv.tv_sec) + Microseconds(tv.tv_usec);
-}
+Duration DurationFromTimeval(timeval tv) { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // Conversion to other duration types.
 //
-double ToDoubleNanoseconds(Duration d) {
-  return FDivDuration(d, Nanoseconds(1));
-}
-double ToDoubleMicroseconds(Duration d) {
-  return FDivDuration(d, Microseconds(1));
-}
-double ToDoubleMilliseconds(Duration d) {
-  return FDivDuration(d, Milliseconds(1));
-}
-double ToDoubleSeconds(Duration d) { return FDivDuration(d, Seconds(1)); }
-double ToDoubleMinutes(Duration d) { return FDivDuration(d, Minutes(1)); }
-double ToDoubleHours(Duration d) { return FDivDuration(d, Hours(1)); }
+double ToDoubleNanoseconds(Duration d) { __builtin_trap() /* STUB: not implemented */; }
+double ToDoubleMicroseconds(Duration d) { __builtin_trap() /* STUB: not implemented */; }
+double ToDoubleMilliseconds(Duration d) { __builtin_trap() /* STUB: not implemented */; }
+double ToDoubleSeconds(Duration d) { __builtin_trap() /* STUB: not implemented */; }
+double ToDoubleMinutes(Duration d) { __builtin_trap() /* STUB: not implemented */; }
+double ToDoubleHours(Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
-timespec ToTimespec(Duration d) {
-  timespec ts;
-  if (!time_internal::IsInfiniteDuration(d)) {
-    int64_t rep_hi = time_internal::GetRepHi(d);
-    uint32_t rep_lo = time_internal::GetRepLo(d);
-    if (rep_hi < 0) {
-      // Tweak the fields so that unsigned division of rep_lo
-      // maps to truncation (towards zero) for the timespec.
-      rep_lo += kTicksPerNanosecond - 1;
-      if (rep_lo >= kTicksPerSecond) {
-        rep_hi += 1;
-        rep_lo -= kTicksPerSecond;
-      }
-    }
-    ts.tv_sec = static_cast<decltype(ts.tv_sec)>(rep_hi);
-    if (ts.tv_sec == rep_hi) {  // no time_t narrowing
-      ts.tv_nsec = rep_lo / kTicksPerNanosecond;
-      return ts;
-    }
-  }
-  if (d >= ZeroDuration()) {
-    ts.tv_sec = std::numeric_limits<time_t>::max();
-    ts.tv_nsec = 1000 * 1000 * 1000 - 1;
-  } else {
-    ts.tv_sec = std::numeric_limits<time_t>::min();
-    ts.tv_nsec = 0;
-  }
-  return ts;
-}
+timespec ToTimespec(Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
-timeval ToTimeval(Duration d) {
-  timeval tv;
-  timespec ts = ToTimespec(d);
-  if (ts.tv_sec < 0) {
-    // Tweak the fields so that positive division of tv_nsec
-    // maps to truncation (towards zero) for the timeval.
-    ts.tv_nsec += 1000 - 1;
-    if (ts.tv_nsec >= 1000 * 1000 * 1000) {
-      ts.tv_sec += 1;
-      ts.tv_nsec -= 1000 * 1000 * 1000;
-    }
-  }
-  tv.tv_sec = static_cast<decltype(tv.tv_sec)>(ts.tv_sec);
-  if (tv.tv_sec != ts.tv_sec) {  // narrowing
-    if (ts.tv_sec < 0) {
-      tv.tv_sec = std::numeric_limits<decltype(tv.tv_sec)>::min();
-      tv.tv_usec = 0;
-    } else {
-      tv.tv_sec = std::numeric_limits<decltype(tv.tv_sec)>::max();
-      tv.tv_usec = 1000 * 1000 - 1;
-    }
-    return tv;
-  }
-  tv.tv_usec = static_cast<int>(ts.tv_nsec / 1000);  // suseconds_t
-  return tv;
-}
+timeval ToTimeval(Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
-std::chrono::nanoseconds ToChronoNanoseconds(Duration d) {
-  return time_internal::ToChronoDuration<std::chrono::nanoseconds>(d);
-}
-std::chrono::microseconds ToChronoMicroseconds(Duration d) {
-  return time_internal::ToChronoDuration<std::chrono::microseconds>(d);
-}
-std::chrono::milliseconds ToChronoMilliseconds(Duration d) {
-  return time_internal::ToChronoDuration<std::chrono::milliseconds>(d);
-}
-std::chrono::seconds ToChronoSeconds(Duration d) {
-  return time_internal::ToChronoDuration<std::chrono::seconds>(d);
-}
-std::chrono::minutes ToChronoMinutes(Duration d) {
-  return time_internal::ToChronoDuration<std::chrono::minutes>(d);
-}
-std::chrono::hours ToChronoHours(Duration d) {
-  return time_internal::ToChronoDuration<std::chrono::hours>(d);
-}
+std::chrono::nanoseconds ToChronoNanoseconds(Duration d) { __builtin_trap() /* STUB: not implemented */; }
+std::chrono::microseconds ToChronoMicroseconds(Duration d) { __builtin_trap() /* STUB: not implemented */; }
+std::chrono::milliseconds ToChronoMilliseconds(Duration d) { __builtin_trap() /* STUB: not implemented */; }
+std::chrono::seconds ToChronoSeconds(Duration d) { __builtin_trap() /* STUB: not implemented */; }
+std::chrono::minutes ToChronoMinutes(Duration d) { __builtin_trap() /* STUB: not implemented */; }
+std::chrono::hours ToChronoHours(Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
 //
 // To/From string formatting.
@@ -651,14 +438,7 @@ namespace {
 // Formats a positive 64-bit integer in the given field width.  Note that
 // it is up to the caller of Format64() to ensure that there is sufficient
 // space before ep to hold the conversion.
-char* Format64(char* ep, int width, int64_t v) {
-  do {
-    --width;
-    *--ep = static_cast<char>('0' + (v % 10));  // contiguous digits
-  } while (v /= 10);
-  while (--width >= 0) *--ep = '0';  // zero pad
-  return ep;
-}
+char* Format64(char* ep, int width, int64_t v) { __builtin_trap() /* STUB: not implemented */; }
 
 // Helpers for FormatDuration() that format 'n' and append it to 'out'
 // followed by the given 'unit'.  If 'n' formats to "0", nothing is
@@ -685,39 +465,11 @@ constexpr DisplayUnit kDisplaySec = {"s", 11, 1e11};
 constexpr DisplayUnit kDisplayMin = {"m", -1, 0.0};   // prec ignored
 constexpr DisplayUnit kDisplayHour = {"h", -1, 0.0};  // prec ignored
 
-void AppendNumberUnit(std::string* out, int64_t n, DisplayUnit unit) {
-  char buf[sizeof("2562047788015216")];  // hours in max duration
-  char* const ep = buf + sizeof(buf);
-  char* bp = Format64(ep, 0, n);
-  if (*bp != '0' || bp + 1 != ep) {
-    out->append(bp, static_cast<size_t>(ep - bp));
-    out->append(unit.abbr.data(), unit.abbr.size());
-  }
-}
+void AppendNumberUnit(std::string* out, int64_t n, DisplayUnit unit) { __builtin_trap() /* STUB: not implemented */; }
 
 // Note: unit.prec is limited to double's digits10 value (typically 15) so it
 // always fits in buf[].
-void AppendNumberUnit(std::string* out, double n, DisplayUnit unit) {
-  constexpr int kBufferSize = std::numeric_limits<double>::digits10;
-  const int prec = std::min(kBufferSize, unit.prec);
-  char buf[kBufferSize];  // also large enough to hold integer part
-  char* ep = buf + sizeof(buf);
-  double d = 0;
-  int64_t frac_part =
-      static_cast<int64_t>(std::round(std::modf(n, &d) * unit.pow10));
-  int64_t int_part = static_cast<int64_t>(d);
-  if (int_part != 0 || frac_part != 0) {
-    char* bp = Format64(ep, 0, int_part);  // always < 1000
-    out->append(bp, static_cast<size_t>(ep - bp));
-    if (frac_part != 0) {
-      out->push_back('.');
-      bp = Format64(ep, prec, frac_part);
-      while (ep[-1] == '0') --ep;
-      out->append(bp, static_cast<size_t>(ep - bp));
-    }
-    out->append(unit.abbr.data(), unit.abbr.size());
-  }
-}
+void AppendNumberUnit(std::string* out, double n, DisplayUnit unit) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace
 
@@ -728,41 +480,7 @@ void AppendNumberUnit(std::string* out, double n, DisplayUnit unit) {
 //   (milli-, micro-, or nanoseconds) to ensure that the leading digit
 //   is non-zero.
 // Unlike Go, we format the zero duration as 0, with no unit.
-std::string FormatDuration(Duration d) {
-  constexpr Duration kMinDuration = Seconds(kint64min);
-  std::string s;
-  if (d == kMinDuration) {
-    // Avoid needing to negate kint64min by directly returning what the
-    // following code should produce in that case.
-    s = "-2562047788015215h30m8s";
-    return s;
-  }
-  if (d < ZeroDuration()) {
-    s.append("-");
-    d = -d;
-  }
-  if (d == InfiniteDuration()) {
-    s.append("inf");
-  } else if (d < Seconds(1)) {
-    // Special case for durations with a magnitude < 1 second.  The duration
-    // is printed as a fraction of a single unit, e.g., "1.2ms".
-    if (d < Microseconds(1)) {
-      AppendNumberUnit(&s, FDivDuration(d, Nanoseconds(1)), kDisplayNano);
-    } else if (d < Milliseconds(1)) {
-      AppendNumberUnit(&s, FDivDuration(d, Microseconds(1)), kDisplayMicro);
-    } else {
-      AppendNumberUnit(&s, FDivDuration(d, Milliseconds(1)), kDisplayMilli);
-    }
-  } else {
-    AppendNumberUnit(&s, IDivDuration(d, Hours(1), &d), kDisplayHour);
-    AppendNumberUnit(&s, IDivDuration(d, Minutes(1), &d), kDisplayMin);
-    AppendNumberUnit(&s, FDivDuration(d, Seconds(1)), kDisplaySec);
-  }
-  if (s.empty() || s == "-") {
-    s = "0";
-  }
-  return s;
-}
+std::string FormatDuration(Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
 namespace {
 
@@ -770,90 +488,13 @@ namespace {
 // string and stores the result in *int_part/*frac_part/*frac_scale.  The
 // given string pointer is modified to point to the first unconsumed char.
 bool ConsumeDurationNumber(const char** dpp, const char* ep, int64_t* int_part,
-                           int64_t* frac_part, int64_t* frac_scale) {
-  *int_part = 0;
-  *frac_part = 0;
-  *frac_scale = 1;  // invariant: *frac_part < *frac_scale
-  const char* start = *dpp;
-  for (; *dpp != ep; *dpp += 1) {
-    const int d = **dpp - '0';  // contiguous digits
-    if (d < 0 || 10 <= d) break;
-
-    if (*int_part > kint64max / 10) return false;
-    *int_part *= 10;
-    if (*int_part > kint64max - d) return false;
-    *int_part += d;
-  }
-  const bool int_part_empty = (*dpp == start);
-  if (*dpp == ep || **dpp != '.') return !int_part_empty;
-
-  for (*dpp += 1; *dpp != ep; *dpp += 1) {
-    const int d = **dpp - '0';  // contiguous digits
-    if (d < 0 || 10 <= d) break;
-    if (*frac_scale <= kint64max / 10) {
-      *frac_part *= 10;
-      *frac_part += d;
-      *frac_scale *= 10;
-    }
-  }
-  return !int_part_empty || *frac_scale != 1;
-}
+                           int64_t* frac_part, int64_t* frac_scale) { __builtin_trap() /* STUB: not implemented */; }
 
 // A helper for ParseDuration() that parses a leading unit designator (e.g.,
 // ns, us, ms, s, m, h) from the given string and stores the resulting unit
 // in "*unit".  The given string pointer is modified to point to the first
 // unconsumed char.
-bool ConsumeDurationUnit(const char** start, const char* end, Duration* unit) {
-  size_t size = static_cast<size_t>(end - *start);
-  switch (size) {
-    case 0:
-      return false;
-    default:
-      switch (**start) {
-        case 'n':
-          if (*(*start + 1) == 's') {
-            *start += 2;
-            *unit = Nanoseconds(1);
-            return true;
-          }
-          break;
-        case 'u':
-          if (*(*start + 1) == 's') {
-            *start += 2;
-            *unit = Microseconds(1);
-            return true;
-          }
-          break;
-        case 'm':
-          if (*(*start + 1) == 's') {
-            *start += 2;
-            *unit = Milliseconds(1);
-            return true;
-          }
-          break;
-        default:
-          break;
-      }
-      ABSL_FALLTHROUGH_INTENDED;
-    case 1:
-      switch (**start) {
-        case 's':
-          *unit = Seconds(1);
-          *start += 1;
-          return true;
-        case 'm':
-          *unit = Minutes(1);
-          *start += 1;
-          return true;
-        case 'h':
-          *unit = Hours(1);
-          *start += 1;
-          return true;
-        default:
-          return false;
-      }
-  }
-}
+bool ConsumeDurationUnit(const char** start, const char* end, Duration* unit) { __builtin_trap() /* STUB: not implemented */; }
 
 }  // namespace
 
@@ -862,57 +503,14 @@ bool ConsumeDurationUnit(const char** start, const char* end, Duration* unit) {
 //   a possibly signed sequence of decimal numbers, each with optional
 //   fraction and a unit suffix, such as "300ms", "-1.5h" or "2h45m".
 //   Valid time units are "ns", "us" "ms", "s", "m", "h".
-bool ParseDuration(absl::string_view dur_sv, Duration* d) {
-  int sign = 1;
-  if (absl::ConsumePrefix(&dur_sv, "-")) {
-    sign = -1;
-  } else {
-    absl::ConsumePrefix(&dur_sv, "+");
-  }
-  if (dur_sv.empty()) return false;
+bool ParseDuration(absl::string_view dur_sv, Duration* d) { __builtin_trap() /* STUB: not implemented */; }
 
-  // Special case for a string of "0".
-  if (dur_sv == "0") {
-    *d = ZeroDuration();
-    return true;
-  }
+bool AbslParseFlag(absl::string_view text, Duration* dst, std::string*) { __builtin_trap() /* STUB: not implemented */; }
 
-  if (dur_sv == "inf") {
-    *d = sign * InfiniteDuration();
-    return true;
-  }
+std::string AbslUnparseFlag(Duration d) { __builtin_trap() /* STUB: not implemented */; }
+bool ParseFlag(const std::string& text, Duration* dst, std::string* ) { __builtin_trap() /* STUB: not implemented */; }
 
-  const char* start = dur_sv.data();
-  const char* end = start + dur_sv.size();
-
-  Duration dur;
-  while (start != end) {
-    int64_t int_part;
-    int64_t frac_part;
-    int64_t frac_scale;
-    Duration unit;
-    if (!ConsumeDurationNumber(&start, end, &int_part, &frac_part,
-                               &frac_scale) ||
-        !ConsumeDurationUnit(&start, end, &unit)) {
-      return false;
-    }
-    if (int_part != 0) dur += sign * int_part * unit;
-    if (frac_part != 0) dur += sign * frac_part * unit / frac_scale;
-  }
-  *d = dur;
-  return true;
-}
-
-bool AbslParseFlag(absl::string_view text, Duration* dst, std::string*) {
-  return ParseDuration(text, dst);
-}
-
-std::string AbslUnparseFlag(Duration d) { return FormatDuration(d); }
-bool ParseFlag(const std::string& text, Duration* dst, std::string* ) {
-  return ParseDuration(text, dst);
-}
-
-std::string UnparseFlag(Duration d) { return FormatDuration(d); }
+std::string UnparseFlag(Duration d) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

@@ -27,99 +27,22 @@
 
 namespace {
 
-void BM_CUnescapeHexString(benchmark::State& state) {
-  std::string src;
-  for (int i = 0; i < 50; i++) {
-    src += "\\x55";
-  }
-  for (auto _ : state) {
-    std::string dest;
-    benchmark::DoNotOptimize(src);
-    bool result = absl::CUnescape(src, &dest);
-    benchmark::DoNotOptimize(result);
-    benchmark::DoNotOptimize(dest);
-  }
-}
+void BM_CUnescapeHexString(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_CUnescapeHexString);
 
-void BM_WebSafeBase64Escape_string(benchmark::State& state) {
-  std::string raw;
-  for (int i = 0; i < 10; ++i) {
-    for (const auto& test_set : absl::strings_internal::base64_strings()) {
-      raw += std::string(test_set.plaintext);
-    }
-  }
-  for (auto _ : state) {
-    std::string escaped = absl::WebSafeBase64Escape(raw);
-    benchmark::DoNotOptimize(escaped);
-  }
-}
+void BM_WebSafeBase64Escape_string(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_WebSafeBase64Escape_string);
 
-void BM_HexStringToBytes(benchmark::State& state) {
-  const int size = state.range(0);
-  std::string input, output;
-  for (int i = 0; i < size; ++i) input += "1c";
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(input);
-    bool result = absl::HexStringToBytes(input, &output);
-    benchmark::DoNotOptimize(result);
-    benchmark::DoNotOptimize(output);
-  }
-}
+void BM_HexStringToBytes(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_HexStringToBytes)->Range(1, 1 << 8);
 
-void BM_HexStringToBytes_Fail(benchmark::State& state) {
-  std::string binary;
-  absl::string_view hex_input1 = "1c2f003";
-  absl::string_view hex_input2 = "1c2f0032f40123456789abcdef**";
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(hex_input1);
-    bool result1 = absl::HexStringToBytes(hex_input1, &binary);
-    benchmark::DoNotOptimize(result1);
-    benchmark::DoNotOptimize(binary);
-    benchmark::DoNotOptimize(hex_input2);
-    bool result2 = absl::HexStringToBytes(hex_input2, &binary);
-    benchmark::DoNotOptimize(result2);
-    benchmark::DoNotOptimize(binary);
-  }
-}
+void BM_HexStringToBytes_Fail(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_HexStringToBytes_Fail);
 
-static void BM_UrlEscape(benchmark::State& state) {
-  std::string all;
-  std::string alnum;
-  all.reserve(256);
-  for (int c = 0; c < 256; ++c) {
-    all.push_back(c);
-    if (absl::ascii_isalnum(c)) {
-      alnum.push_back(c);
-    }
-  }
-
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(absl::UrlEscape(all));
-    benchmark::DoNotOptimize(absl::UrlEscape(alnum));
-  }
-}
+static void BM_UrlEscape(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_UrlEscape);
 
-static void BM_UrlEscapePlus(benchmark::State& state) {
-  std::string all;
-  std::string alnum;
-  all.reserve(256);
-  for (int c = 0; c < 256; ++c) {
-    all.push_back(c);
-    if (absl::ascii_isalnum(c)) {
-      alnum.push_back(c);
-    }
-  }
-
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(absl::UrlEscapePlus(all));
-    benchmark::DoNotOptimize(absl::UrlEscapePlus(alnum));
-  }
-}
+static void BM_UrlEscapePlus(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_UrlEscapePlus);
 
 // Used for the CEscape benchmarks
@@ -128,32 +51,15 @@ const char kStringValueSomeEscaped[] = "123\n56789\xA1";
 const char kStringValueMostEscaped[] = "\xA1\xA2\ny\xA4\xA5\xA6z\b\r";
 
 void CEscapeBenchmarkHelper(benchmark::State& state, const char* string_value,
-                            int max_len) {
-  std::string src;
-  while (src.size() < max_len) {
-    absl::StrAppend(&src, string_value);
-  }
+                            int max_len) { __builtin_trap() /* STUB: not implemented */; }
 
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(src);
-    std::string result = absl::CEscape(src);
-    benchmark::DoNotOptimize(result);
-  }
-}
-
-void BM_CEscape_NoEscape(benchmark::State& state) {
-  CEscapeBenchmarkHelper(state, kStringValueNoEscape, state.range(0));
-}
+void BM_CEscape_NoEscape(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_CEscape_NoEscape)->Range(1, 1 << 14);
 
-void BM_CEscape_SomeEscaped(benchmark::State& state) {
-  CEscapeBenchmarkHelper(state, kStringValueSomeEscaped, state.range(0));
-}
+void BM_CEscape_SomeEscaped(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_CEscape_SomeEscaped)->Range(1, 1 << 14);
 
-void BM_CEscape_MostEscaped(benchmark::State& state) {
-  CEscapeBenchmarkHelper(state, kStringValueMostEscaped, state.range(0));
-}
+void BM_CEscape_MostEscaped(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 BENCHMARK(BM_CEscape_MostEscaped)->Range(1, 1 << 14);
 
 }  // namespace

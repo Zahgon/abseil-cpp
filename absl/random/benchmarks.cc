@@ -64,28 +64,18 @@ class PrecompiledSeedSeq {
   PrecompiledSeedSeq() = default;
 
   template <typename Iterator>
-  PrecompiledSeedSeq(Iterator, Iterator) {}
+  PrecompiledSeedSeq(Iterator, Iterator) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename T>
-  PrecompiledSeedSeq(std::initializer_list<T>) {}
+  PrecompiledSeedSeq(std::initializer_list<T>) { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename OutIterator>
-  void generate(OutIterator begin, OutIterator end) {
-    static size_t idx = 0;
-    for (; begin != end; begin++) {
-      *begin = kSeedData[idx++];
-      if (idx >= ABSL_ARRAYSIZE(kSeedData)) {
-        idx = 0;
-      }
-    }
-  }
+  void generate(OutIterator begin, OutIterator end) { __builtin_trap() /* STUB: not implemented */; }
 
-  size_t size() const { return ABSL_ARRAYSIZE(kSeedData); }
+  size_t size() const { __builtin_trap() /* STUB: not implemented */; }
 
   template <typename OutIterator>
-  void param(OutIterator out) const {
-    std::copy(std::begin(kSeedData), std::end(kSeedData), out);
-  }
+  void param(OutIterator out) const { __builtin_trap() /* STUB: not implemented */; }
 };
 
 // Triggers default constructor initialization.
@@ -95,142 +85,49 @@ class DefaultConstructorSeedSeq {};
 // either via the default constructor, when use_default_initialization<T>
 // is true, or via the indicated seed sequence, SSeq.
 template <typename Engine, typename SSeq = DefaultConstructorSeedSeq>
-Engine make_engine() {
-  constexpr bool use_default_initialization =
-      std::is_same_v<SSeq, DefaultConstructorSeedSeq>;
-  if constexpr (use_default_initialization) {
-    return Engine();
-  } else {
-    // Otherwise, use the provided seed sequence.
-    SSeq seq(std::begin(kSeedData), std::end(kSeedData));
-    return Engine(seq);
-  }
-}
+Engine make_engine() { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine, typename SSeq>
-void BM_Construct(benchmark::State& state) {
-  for (auto _ : state) {
-    auto rng = make_engine<Engine, SSeq>();
-    benchmark::DoNotOptimize(rng());
-  }
-}
+void BM_Construct(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine>
-void BM_Direct(benchmark::State& state) {
-  using value_type = typename Engine::result_type;
-  // Direct use of the URBG.
-  auto rng = make_engine<Engine>();
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(rng());
-  }
-  state.SetBytesProcessed(sizeof(value_type) * state.iterations());
-}
+void BM_Direct(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine>
-void BM_Generate(benchmark::State& state) {
-  // std::generate makes a copy of the RNG; thus this tests the
-  // copy-constructor efficiency.
-  using value_type = typename Engine::result_type;
-  std::vector<value_type> v(64);
-  auto rng = make_engine<Engine>();
-  while (state.KeepRunningBatch(64)) {
-    std::generate(std::begin(v), std::end(v), rng);
-  }
-}
+void BM_Generate(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine, size_t elems>
-void BM_Shuffle(benchmark::State& state) {
-  // Direct use of the Engine.
-  std::vector<uint32_t> v(elems);
-  while (state.KeepRunningBatch(elems)) {
-    auto rng = make_engine<Engine>();
-    std::shuffle(std::begin(v), std::end(v), rng);
-  }
-}
+void BM_Shuffle(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine, size_t elems>
-void BM_ShuffleReuse(benchmark::State& state) {
-  // Direct use of the Engine.
-  std::vector<uint32_t> v(elems);
-  auto rng = make_engine<Engine>();
-  while (state.KeepRunningBatch(elems)) {
-    std::shuffle(std::begin(v), std::end(v), rng);
-  }
-}
+void BM_ShuffleReuse(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine, typename Dist, typename... Args>
-void BM_Dist(benchmark::State& state, Args&&... args) {
-  using value_type = typename Dist::result_type;
-  auto rng = make_engine<Engine>();
-  Dist dis{std::forward<Args>(args)...};
-  // Compare the following loop performance:
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(dis(rng));
-  }
-  state.SetBytesProcessed(sizeof(value_type) * state.iterations());
-}
+void BM_Dist(benchmark::State& state, Args&&... args) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine, typename Dist>
-void BM_Large(benchmark::State& state) {
-  using value_type = typename Dist::result_type;
-  volatile value_type kMin = 0;
-  volatile value_type kMax = std::numeric_limits<value_type>::max() / 2 + 1;
-  BM_Dist<Engine, Dist>(state, kMin, kMax);
-}
+void BM_Large(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine, typename Dist>
-void BM_Small(benchmark::State& state) {
-  using value_type = typename Dist::result_type;
-  volatile value_type kMin = 0;
-  volatile value_type kMax = std::numeric_limits<value_type>::max() / 64 + 1;
-  BM_Dist<Engine, Dist>(state, kMin, kMax);
-}
+void BM_Small(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine, typename Dist, int A>
-void BM_Bernoulli(benchmark::State& state) {
-  volatile double a = static_cast<double>(A) / 1000000;
-  BM_Dist<Engine, Dist>(state, a);
-}
+void BM_Bernoulli(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine, typename Dist, int A, int B>
-void BM_Beta(benchmark::State& state) {
-  using value_type = typename Dist::result_type;
-  volatile value_type a = static_cast<value_type>(A) / 100;
-  volatile value_type b = static_cast<value_type>(B) / 100;
-  BM_Dist<Engine, Dist>(state, a, b);
-}
+void BM_Beta(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine, typename Dist, int A>
-void BM_Gamma(benchmark::State& state) {
-  using value_type = typename Dist::result_type;
-  volatile value_type a = static_cast<value_type>(A) / 100;
-  BM_Dist<Engine, Dist>(state, a);
-}
+void BM_Gamma(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine, typename Dist, int A = 100>
-void BM_Poisson(benchmark::State& state) {
-  volatile double a = static_cast<double>(A) / 100;
-  BM_Dist<Engine, Dist>(state, a);
-}
+void BM_Poisson(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine, typename Dist, int Q = 2, int V = 1>
-void BM_Zipf(benchmark::State& state) {
-  using value_type = typename Dist::result_type;
-  volatile double q = Q;
-  volatile double v = V;
-  BM_Dist<Engine, Dist>(state, std::numeric_limits<value_type>::max(), q, v);
-}
+void BM_Zipf(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename Engine, typename Dist>
-void BM_Thread(benchmark::State& state) {
-  using value_type = typename Dist::result_type;
-  auto rng = make_engine<Engine>();
-  Dist dis{};
-  for (auto _ : state) {
-    benchmark::DoNotOptimize(dis(rng));
-  }
-  state.SetBytesProcessed(sizeof(value_type) * state.iterations());
-}
+void BM_Thread(benchmark::State& state) { __builtin_trap() /* STUB: not implemented */; }
 
 // NOTES:
 //

@@ -35,21 +35,15 @@ namespace span_internal {
 // Wrappers for access to container data pointers.
 template <typename C>
 constexpr auto GetDataImpl(C& c, char) noexcept  // NOLINT(runtime/references)
-    -> decltype(c.data()) {
-  return c.data();
-}
+    -> decltype(c.data()) { return {}; }
 
 // Before C++17, std::string::data returns a const char* in all cases.
 inline char* GetDataImpl(std::string& s,  // NOLINT(runtime/references)
-                         int) noexcept {
-  return &s[0];
-}
+                         int) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
 template <typename C>
 constexpr auto GetData(C& c) noexcept  // NOLINT(runtime/references)
-    -> decltype(GetDataImpl(c, 0)) {
-  return GetDataImpl(c, 0);
-}
+    -> decltype(GetDataImpl(c, 0)) { return {}; }
 
 // Detection idioms for size() and data().
 template <typename C>
@@ -85,18 +79,10 @@ template <typename T>
 using EnableIfMutable = std::enable_if_t<!std::is_const_v<T>, int>;
 
 template <template <typename> class SpanT, typename T>
-constexpr bool EqualImpl(SpanT<T> a, SpanT<T> b) {
-  static_assert(std::is_const_v<T>, "");
-  return std::equal(a.begin(), a.end(), b.begin(), b.end());
-}
+constexpr bool EqualImpl(SpanT<T> a, SpanT<T> b) { return {}; }
 
 template <template <typename> class SpanT, typename T>
-constexpr bool LessThanImpl(SpanT<T> a, SpanT<T> b) {
-  // We can't use value_type since that is remove_cv_t<T>, so we go the long way
-  // around.
-  static_assert(std::is_const_v<T>, "");
-  return std::lexicographical_compare(a.begin(), a.end(), b.begin(), b.end());
-}
+constexpr bool LessThanImpl(SpanT<T> a, SpanT<T> b) { return {}; }
 
 template <typename From, typename To>
 using EnableIfConvertibleTo = std::enable_if_t<std::is_convertible_v<From, To>>;

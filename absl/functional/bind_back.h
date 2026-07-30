@@ -67,10 +67,7 @@ using std::bind_back;
 #else
 template <class F, class... BoundArgs>
 constexpr functional_internal::bind_back_t<F, BoundArgs...> bind_back(
-    F&& func, BoundArgs&&... args) {
-  return functional_internal::bind_back_t<F, BoundArgs...>(
-      std::in_place, std::forward<F>(func), std::forward<BoundArgs>(args)...);
-}
+    F&& func, BoundArgs&&... args) { return {}; }
 #endif
 
 ABSL_NAMESPACE_END

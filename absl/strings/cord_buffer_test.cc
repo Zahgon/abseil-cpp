@@ -38,13 +38,7 @@ using testing::Ne;
 namespace absl {
 ABSL_NAMESPACE_BEGIN
 
-class CordBufferTestPeer {
- public:
-  static cord_internal::CordRep* ConsumeValue(CordBuffer& buffer,
-                                              absl::string_view& short_value) {
-    return buffer.ConsumeValue(short_value);
-  }
-};
+class CordBufferTestPeer { __builtin_trap() /* STUB: not implemented */; };
 
 namespace {
 
@@ -137,11 +131,7 @@ TEST_P(CordBufferTest, AvailableUpTo) {
 }
 
 // Returns the maximum capacity for a given block_size and requested size.
-size_t MaxCapacityFor(size_t block_size, size_t requested) {
-  requested = (std::min)(requested, cord_internal::kMaxLargeFlatSize);
-  // Maximum returned size is always capped at block_size - kFlatOverhead.
-  return block_size - kFlatOverhead;
-}
+size_t MaxCapacityFor(size_t block_size, size_t requested) { __builtin_trap() /* STUB: not implemented */; }
 
 TEST_P(CordBufferTest, CreateWithDefaultLimit) {
   const size_t requested = GetParam();

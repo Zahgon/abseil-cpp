@@ -62,10 +62,7 @@ class RealTimeClock final : public Clock {
 
 Clock::~Clock() = default;  // go/key-method
 
-Clock& Clock::GetRealClock() {
-  static absl::NoDestructor<RealTimeClock> rtclock;
-  return *rtclock;
-}
+Clock& Clock::GetRealClock() { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl

@@ -201,61 +201,7 @@ template <typename... Ts>
 class ABSL_INTERNAL_COMPRESSED_TUPLE_DECLSPEC CompressedTuple
     : private internal_compressed_tuple::CompressedTupleImpl<
           CompressedTuple<Ts...>, std::index_sequence_for<Ts...>,
-          internal_compressed_tuple::ShouldAnyUseBase<Ts...>()> {
- private:
-  template <int I>
-  using ElemT = internal_compressed_tuple::ElemT<CompressedTuple, I>;
-
-  template <int I>
-  using StorageT = internal_compressed_tuple::Storage<
-      ElemT<I>, I, internal_compressed_tuple::StorageTag<Ts...>>;
-
- public:
-  // There seems to be a bug in MSVC dealing in which using '=default' here will
-  // cause the compiler to ignore the body of other constructors. The work-
-  // around is to explicitly implement the default constructor.
-#if defined(_MSC_VER)
-  constexpr CompressedTuple() : CompressedTuple::CompressedTupleImpl() {}
-#else
-  constexpr CompressedTuple() = default;
-#endif
-  explicit constexpr CompressedTuple(const Ts&... base)
-      : CompressedTuple::CompressedTupleImpl(std::in_place, base...) {}
-
-  template <typename First, typename... Vs,
-            std::enable_if_t<
-                std::conjunction_v<
-                    // Ensure we are not hiding default copy/move constructors.
-                    std::negation<std::is_same<void(CompressedTuple),
-                                               void(std::decay_t<First>)>>,
-                    internal_compressed_tuple::TupleItemsMoveConstructible<
-                        CompressedTuple<Ts...>, First, Vs...>>,
-                bool> = true>
-  explicit constexpr CompressedTuple(First&& first, Vs&&... base)
-      : CompressedTuple::CompressedTupleImpl(std::in_place,
-                                             std::forward<First>(first),
-                                             std::forward<Vs>(base)...) {}
-
-  template <int I>
-  constexpr ElemT<I>& get() & {
-    return StorageT<I>::get();
-  }
-
-  template <int I>
-  constexpr const ElemT<I>& get() const& {
-    return StorageT<I>::get();
-  }
-
-  template <int I>
-  constexpr ElemT<I>&& get() && {
-    return std::move(*this).StorageT<I>::get();
-  }
-
-  template <int I>
-  constexpr const ElemT<I>&& get() const&& {
-    return std::move(*this).StorageT<I>::get();
-  }
-};
+          internal_compressed_tuple::ShouldAnyUseBase<Ts...>()> { __builtin_trap() /* STUB: not implemented */; };
 
 // Explicit specialization for a zero-element tuple
 // (needed to avoid ambiguous overloads for the default constructor).

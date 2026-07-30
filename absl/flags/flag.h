@@ -95,9 +95,7 @@ using Flag = flags_internal::Flag<T>;
 //   // FLAGS_firstname is a Flag of type `std::string`
 //   std::string first_name = absl::GetFlag(FLAGS_firstname);
 template <typename T>
-[[nodiscard]] T GetFlag(const absl::Flag<T>& flag) {
-  return flags_internal::FlagImplPeer::InvokeGet<T>(flag);
-}
+[[nodiscard]] T GetFlag(const absl::Flag<T>& flag) { __builtin_trap() /* STUB: not implemented */; }
 
 // SetFlag()
 //
@@ -131,9 +129,7 @@ void SetFlag(absl::Flag<T>* absl_nonnull flag, const V& v) {
 //   std::string = absl::GetFlagReflectionHandle(FLAGS_count).DefaultValue();
 
 template <typename T>
-const CommandLineFlag& GetFlagReflectionHandle(const absl::Flag<T>& f) {
-  return flags_internal::FlagImplPeer::InvokeReflect(f);
-}
+const CommandLineFlag& GetFlagReflectionHandle(const absl::Flag<T>& f) { __builtin_trap() /* STUB: not implemented */; }
 
 ABSL_NAMESPACE_END
 }  // namespace absl
@@ -242,10 +238,8 @@ ABSL_NAMESPACE_END
     /* long enough for NonConst to work correctly.          */               \
     static constexpr absl::string_view Value(                                \
         absl::string_view absl_flag_help ABSL_ATTRIBUTE_LIFETIME_BOUND  =     \
-            ABSL_FLAG_IMPL_FLAGHELP(txt)) {                                  \
-      return absl_flag_help;                                                 \
-    }                                                                        \
-    static std::string NonConst() { return std::string(Value()); }           \
+            ABSL_FLAG_IMPL_FLAGHELP(txt)) { return {}; }                                                                        \
+    static std::string NonConst() { __builtin_trap() /* STUB: not implemented */; }           \
   };                                                                         \
   constexpr auto FLAGS_help_storage_##name ABSL_INTERNAL_UNIQUE_SMALL_NAME() \
       ABSL_ATTRIBUTE_SECTION_VARIABLE(flags_help_cold) =                     \

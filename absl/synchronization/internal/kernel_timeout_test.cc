@@ -43,16 +43,7 @@ static_assert(
     !defined(ABSL_HAVE_THREAD_SANITIZER)
 extern "C" int __clock_gettime(clockid_t c, struct timespec* ts);
 
-extern "C" int clock_gettime(clockid_t c, struct timespec* ts) {
-  if (c == CLOCK_MONOTONIC &&
-      !absl::synchronization_internal::KernelTimeout::SupportsSteadyClock()) {
-    thread_local absl::BitGen gen;  // NOLINT
-    ts->tv_sec = absl::Uniform(gen, 0, 1'000'000'000);
-    ts->tv_nsec = absl::Uniform(gen, 0, 1'000'000'000);
-    return 0;
-  }
-  return __clock_gettime(c, ts);
-}
+extern "C" int clock_gettime(clockid_t c, struct timespec* ts) { __builtin_trap() /* STUB: not implemented */; }
 #endif
 
 namespace {

@@ -179,7 +179,7 @@ class ABSL_NULLABILITY_COMPATIBLE ABSL_ATTRIBUTE_OWNER AnyInvocable
   // Constructs the `AnyInvocable` in an empty state.
   // Invoking it results in undefined behavior.
   AnyInvocable() noexcept = default;
-  AnyInvocable(std::nullptr_t) noexcept {}  // NOLINT
+  AnyInvocable(std::nullptr_t) noexcept { __builtin_trap() /* STUB: not implemented */; }  // NOLINT
 
   // Constructs the `AnyInvocable` from an existing `AnyInvocable` by a move.
   // Note that `f` is not guaranteed to be empty after move-construction,
@@ -195,7 +195,7 @@ class ABSL_NULLABILITY_COMPATIBLE ABSL_ATTRIBUTE_OWNER AnyInvocable
                          internal_any_invocable::CanConvert<Sig, F>::value>>
   AnyInvocable(F&& f)  // NOLINT
       : Impl(internal_any_invocable::ConversionConstruct(),
-             std::forward<F>(f)) {}
+             std::forward<F>(f)) { __builtin_trap() /* STUB: not implemented */; }
 
   // Constructs an `AnyInvocable` that holds an invocable object of type `T`,
   // which is constructed in-place from the given arguments.
@@ -209,11 +209,7 @@ class ABSL_NULLABILITY_COMPATIBLE ABSL_ATTRIBUTE_OWNER AnyInvocable
             typename = std::enable_if_t<
                 internal_any_invocable::CanEmplace<Sig, T, Args...>::value>>
   explicit AnyInvocable(std::in_place_type_t<T>, Args&&... args)
-      : Impl(std::in_place_type<std::decay_t<T>>, std::forward<Args>(args)...) {
-    static_assert(std::is_same_v<T, std::decay_t<T>>,
-                  "The explicit template argument of in_place_type is required "
-                  "to be an unqualified object type.");
-  }
+      : Impl(std::in_place_type<std::decay_t<T>>, std::forward<Args>(args)...) { __builtin_trap() /* STUB: not implemented */; }
 
   // Overload of the above constructor to support list-initialization.
   template <class T, class U, class... Args,
@@ -222,11 +218,7 @@ class ABSL_NULLABILITY_COMPATIBLE ABSL_ATTRIBUTE_OWNER AnyInvocable
   explicit AnyInvocable(std::in_place_type_t<T>, std::initializer_list<U> ilist,
                         Args&&... args)
       : Impl(std::in_place_type<std::decay_t<T>>, ilist,
-             std::forward<Args>(args)...) {
-    static_assert(std::is_same_v<T, std::decay_t<T>>,
-                  "The explicit template argument of in_place_type is required "
-                  "to be an unqualified object type.");
-  }
+             std::forward<Args>(args)...) { __builtin_trap() /* STUB: not implemented */; }
 
   // Assignment Operators
 
@@ -237,10 +229,7 @@ class ABSL_NULLABILITY_COMPATIBLE ABSL_ATTRIBUTE_OWNER AnyInvocable
 
   // Assigns an `AnyInvocable` from a nullptr, clearing the `AnyInvocable`. If
   // not empty, destroys the target, putting `*this` into an empty state.
-  AnyInvocable& operator=(std::nullptr_t) noexcept {
-    this->Clear();
-    return *this;
-  }
+  AnyInvocable& operator=(std::nullptr_t) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // Assigns an `AnyInvocable` from an existing `AnyInvocable` instance.
   //
@@ -249,10 +238,7 @@ class ABSL_NULLABILITY_COMPATIBLE ABSL_ATTRIBUTE_OWNER AnyInvocable
   // empty.
   template <class F, typename = std::enable_if_t<
                          internal_any_invocable::CanAssign<Sig, F>::value>>
-  AnyInvocable& operator=(F&& f) {
-    *this = AnyInvocable(std::forward<F>(f));
-    return *this;
-  }
+  AnyInvocable& operator=(F&& f) { __builtin_trap() /* STUB: not implemented */; }
 
   // Assigns an `AnyInvocable` from a reference to an invocable object.
   // Upon assignment, stores a reference to the invocable object in the
@@ -261,10 +247,7 @@ class ABSL_NULLABILITY_COMPATIBLE ABSL_ATTRIBUTE_OWNER AnyInvocable
       class F,
       typename = std::enable_if_t<
           internal_any_invocable::CanAssignReferenceWrapper<Sig, F>::value>>
-  AnyInvocable& operator=(std::reference_wrapper<F> f) noexcept {
-    *this = AnyInvocable(f);
-    return *this;
-  }
+  AnyInvocable& operator=(std::reference_wrapper<F> f) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // Destructor
 
@@ -274,7 +257,7 @@ class ABSL_NULLABILITY_COMPATIBLE ABSL_ATTRIBUTE_OWNER AnyInvocable
   // absl::AnyInvocable::swap()
   //
   // Exchanges the targets of `*this` and `other`.
-  void swap(AnyInvocable& other) noexcept { std::swap(*this, other); }
+  void swap(AnyInvocable& other) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // absl::AnyInvocable::operator bool()
   //
@@ -288,7 +271,7 @@ class ABSL_NULLABILITY_COMPATIBLE ABSL_ATTRIBUTE_OWNER AnyInvocable
   //   absl::AnyInvocable<void()> a = f;  // not empty
   //
   // Invoking an empty `AnyInvocable` results in undefined behavior.
-  explicit operator bool() const noexcept { return this->HasValue(); }
+  explicit operator bool() const noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // Invokes the target object of `*this`. `*this` must not be empty.
   //
@@ -299,29 +282,21 @@ class ABSL_NULLABILITY_COMPATIBLE ABSL_ATTRIBUTE_OWNER AnyInvocable
   // Equality operators
 
   // Returns `true` if `f` is empty.
-  friend bool operator==(const AnyInvocable& f, std::nullptr_t) noexcept {
-    return !f.HasValue();
-  }
+  friend bool operator==(const AnyInvocable& f, std::nullptr_t) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // Returns `true` if `f` is empty.
-  friend bool operator==(std::nullptr_t, const AnyInvocable& f) noexcept {
-    return !f.HasValue();
-  }
+  friend bool operator==(std::nullptr_t, const AnyInvocable& f) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // Returns `false` if `f` is empty.
-  friend bool operator!=(const AnyInvocable& f, std::nullptr_t) noexcept {
-    return f.HasValue();
-  }
+  friend bool operator!=(const AnyInvocable& f, std::nullptr_t) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // Returns `false` if `f` is empty.
-  friend bool operator!=(std::nullptr_t, const AnyInvocable& f) noexcept {
-    return f.HasValue();
-  }
+  friend bool operator!=(std::nullptr_t, const AnyInvocable& f) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
   // swap()
   //
   // Exchanges the targets of `f1` and `f2`.
-  friend void swap(AnyInvocable& f1, AnyInvocable& f2) noexcept { f1.swap(f2); }
+  friend void swap(AnyInvocable& f1, AnyInvocable& f2) noexcept { __builtin_trap() /* STUB: not implemented */; }
 
  private:
   // Friending other instantiations is necessary for conversions.
